@@ -1,0 +1,389 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:id="@+id/contentMainRootLayout"
+             app:layout_behavior="@string/appbar_scrolling_view_behavior"
+             tools:context="kpchuck.k_klock.MainActivity"
+             tools:showIn="@layout/app_bar_main">
+
+    <!-- Default Layout -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:id="@+id/defaultLayout"
+        android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.CardView
+            android:id="@+id/romCardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="12dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/romHeaderText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="12dp"
+                    android:text="Rom Manager"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+
+                <Spinner
+                    android:id="@+id/romSelectionSpinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/romHeaderText"
+                    android:layout_marginTop="16dp"
+
+                    /></RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/clockColorCardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_below="@id/romCardView"
+            android:layout_marginTop="12dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/colorHeaderText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="12dp"
+                    android:text="Clock Color Manager"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:id="@+id/includedColorsButton"
+                    android:layout_height="wrap_content"
+                    android:text="Included Colors"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/colorHeaderText"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:clickable="true"
+                    android:onClick="showIncludedColors"
+                    />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:id="@+id/addColorButton"
+                    android:layout_height="wrap_content"
+                    android:text="Add Colors"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/includedColorsButton"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:clickable="true"
+                    android:onClick="addCustomColors"
+                    />
+
+
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+
+        <!-- Clock Format Start-->
+        <android.support.v7.widget.CardView
+            android:id="@+id/clockFormatCardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_below="@id/clockColorCardView"
+            android:layout_marginTop="12dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/formatHeaderText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="12dp"
+                    android:text="Clock Format Manager"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:id="@+id/includedFormatButton"
+                    android:layout_height="wrap_content"
+                    android:text="Included Formats"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/formatHeaderText"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:clickable="true"
+                    android:onClick="showIncludedFormats"
+                    />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:id="@+id/addFormatButton"
+                    android:layout_height="wrap_content"
+                    android:text="Add Formats"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@id/includedFormatButton"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="12dp"
+                    android:layout_marginRight="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:clickable="true"
+                    android:onClick="addCustomFormats"
+                    />
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <!-- Extra Add-On options -->
+    <android.support.v7.widget.CardView
+        android:id="@+id/extraAddOnCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_below="@id/clockFormatCardView"
+        android:layout_marginBottom="300dp"
+        android:layout_marginTop="12dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+        android:id="@+id/statusbarAddOnHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="12dp"
+        android:text="StatusBar Add-Ons"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="12dp"
+            android:onClick="moveLeftPref"
+            android:layout_marginRight="12dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/statusbarAddOnHeader"
+            android:text="Move Network Icons to the Left"
+            android:id="@+id/moveNetworkLeft"/>
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="12dp"
+            android:onClick="iconPref"
+            android:layout_marginRight="12dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/moveNetworkLeft"
+            android:text="Set StatusBar Icon Color to Match the Clock"
+            android:id="@+id/colorIcons"/>
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="12dp"
+            android:onClick="indicatorPref"
+            android:layout_marginRight="12dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/colorIcons"
+            android:text="Network Signal Indicators"
+            android:id="@+id/networkSignalIndicatorSwitch"/>
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="12dp"
+            android:onClick="hideStatusbarPref"
+            android:layout_marginRight="12dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/networkSignalIndicatorSwitch"
+            android:text="Hide StatusBar on Lockscreen"
+            android:id="@+id/hideStatusbar"/>
+
+        <TextView
+            android:id="@+id/miscAddOnHeader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="12dp"
+            android:layout_below="@id/hideStatusbar"
+            android:text="Misc. Add-Ons"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+
+        <Switch
+            android:id="@+id/noQsTilesTv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/miscAddOnHeader"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginRight="12dp"
+            android:onClick="qsPref"
+            android:text="Number of Qs Tiles"/>
+
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/noQsTilesTv"
+            android:text="Rounded Recents"
+            android:onClick="recentsPref"
+            android:layout_marginBottom="12dp"
+            android:id="@+id/roundedRecents"/>
+
+
+    </RelativeLayout>
+
+        </android.support.v7.widget.CardView>
+
+
+    </RelativeLayout>
+</ScrollView>
+
+    <!-- List Views -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:background="#bf808080"
+        android:id="@+id/listViewLayout"
+        android:visibility="gone"
+        android:onClick="hideList"
+        android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffeeeeee"
+        android:layout_margin="60dp"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+       >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+
+            android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/firstTextView"
+            android:layout_marginStart="10dp"
+            android:layout_alignParentStart="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sample Text"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"/>
+
+            <Button
+                android:id="@+id/addButton"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="10dp"
+                android:backgroundTint="#000000"
+                android:background="@android:drawable/ic_input_add"/>
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/firstListView"
+            android:layout_width="match_parent"
+            android:layout_marginEnd="10dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp">
+
+        </ListView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+
+            android:id="@+id/secondTextView"
+            android:text="Sample Text"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
+
+            android:layout_height="wrap_content"/>
+
+        <ListView
+            android:id="@+id/secondListView"
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp">
+
+        </ListView>
+    </LinearLayout>
+</RelativeLayout>
+
+
+
+    <!-- Loading Animation -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#bf000000"
+        android:visibility="gone"
+        android:id="@+id/loadingId"
+        >
+
+    <com.github.ybq.android.spinkit.SpinKitView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/spin_kit"
+        style="@style/SpinKitView.Large.FadingCircle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        app:SpinKit_Color="@color/colorAccent" />
+
+        <TextView
+            android:id="@+id/loadingTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/spin_kit"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="10dp"
+            android:text="Loading loading loading"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large.Inverse"/>
+    </RelativeLayout>
+
+
+
+</FrameLayout>

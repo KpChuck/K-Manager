@@ -1,0 +1,49 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "26.0.0"
+    defaultConfig {
+        applicationId "kpchuck.k_klock"
+        minSdkVersion 24
+        targetSdkVersion 26
+        versionCode 8
+        versionName "8.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+
+dependencies {
+
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile "org.zeroturnaround:zt-zip:${1.8}"
+    compile "commons-io:commons-io:${2.5}"
+    compile 'com.chabbal:slidingdotsplash:1.0.2'
+
+
+    compile 'com.android.support:appcompat-v7:26.+'
+    compile 'com.android.support:design:26.+'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.github.gabrielemariotti.cards:cardslib-core:2.1.0'
+    compile 'com.github.ybq:Android-SpinKit:1.1.0'
+    compile 'com.android.support:support-v4:26.+'
+
+// DEPENDENCIES FOR JaDX
+    compile files('libs/dx-1.10.jar')
+    compile files('libs/android-5.1-clst-core.jar')
+    compile 'org.slf4j:slf4j-api:1.7.21'
+    compile 'uk.com.robust-it:cloning:1.9.2'
+    compile 'com.intellij:annotations:12.0@jar'
+
+    compile 'asm:asm-all:3.3.1'
+}

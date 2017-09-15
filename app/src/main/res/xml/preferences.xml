@@ -1,0 +1,33 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/pref_title_save_additions"
+        android:defaultValue="true"
+        android:key="pref_save_title">
+        <SwitchPreference
+            android:key="saveColors"
+            android:title="Save Clock Colors"
+            android:defaultValue="true"/>
+        <SwitchPreference
+            android:key="saveFormats"
+            android:title="Save Clock Formats"
+            android:defaultValue="true"/>
+        <Preference
+            android:key="deleteSaved"
+            android:title="Delete Saved Clock Formats and Colors"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Cleanup">
+        <Preference
+            android:key="deleteApks"
+            android:title="Delete all K-Klock Apks">
+
+        </Preference>
+
+        <Preference
+            android:key="showVersions"
+            android:title="Show Rom Version"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

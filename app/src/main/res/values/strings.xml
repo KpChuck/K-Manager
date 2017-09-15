@@ -1,0 +1,126 @@
+<resources>
+    <string name="app_name">K-Manager</string>
+    <string name="action_settings">Donate</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string-array name="included_colors_title">
+        <item>White</item>
+        <item>Apple Green</item>
+        <item>Bright Red</item>
+        <item>Byzantine Pink</item>
+        <item>Cyan_Blue</item>
+        <item>Dark Orange</item>
+        <item>Dark Violet</item>
+        <item>Electric Green</item>
+        <item>Electric Ultramarine Blue</item>
+        <item>Golden Yellow</item>
+        <item>Grey</item>
+        <item>Pixel Blue</item>
+        <item>Red</item>
+
+    </string-array>
+
+    <string-array name="included_colors_value">
+        <item>#ffffff</item>
+        <item>#ff27e4a0</item>
+        <item>#ffe62020</item>
+        <item>#ffbd33a4</item>
+        <item>#ff00ffff</item>
+        <item>#ffff8c00</item>
+        <item>#ff9400d3</item>
+        <item>#ff00ff00</item>
+        <item>#ff3f00ff</item>
+        <item>#ffffdf00</item>
+        <item>#ff777777</item>
+        <item>#ff4885ed</item>
+        <item>#ffbc052d</item>
+    </string-array>
+
+    <string-array name="included_formats_title">
+        <item>Default - Normal Clock</item>
+        <item>Abbreviated Day, Date and Month</item>
+        <item>Abbreviated Day</item>
+        <item>Abbreviated Day and Date</item>
+        <item>Bigger Hour Normal Clock</item>
+        <item>Date and Month</item>
+        <item>Full Day</item>
+        <item>Full Day after Clock</item>
+        <item>Month, Date, Abbreviated Day, and Seconds</item>
+        <item>Normal Clock with no Am/Pm</item>
+
+
+    </string-array>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <!-- Example General settings -->
+    <string name="pref_header_general">Custom Clock Settins</string>
+    <string name="pref_description_xml">Remember custom colors and formats after exit</string>
+    <string name="pref_title_save_additions">Save Additions</string>
+    <string name="pref_save_colors">Remember Added Colors</string>
+    <string name="pref_save_formats">Remember Added Formats</string>
+
+    <string-array name="splashImages">
+        <item>@drawable/splash1</item>
+        <item>@drawable/splash2</item>
+        <item>@drawable/splash3</item>
+        <item>@drawable/splash4</item>
+        <item>@drawable/splash5</item>
+        <item>@drawable/splash6</item>
+        <item>@drawable/splash7</item>
+        <item>@drawable/splash8</item>
+        <item>@drawable/splash9</item>
+        <item>@drawable/splash10</item>
+        <item>@drawable/splash11</item>
+        <item>@drawable/splash12</item>
+    </string-array>
+
+    <string name="otherRomsBeta">Other Roms (Beta)</string>
+    <string name="splash_subtitle_text">Unfortunately, K-Klock doesn\'t work with every Rom right away.
+        \nYou are going to have to get it some files from your Rom\'s SystemUI.apk first.
+        \n\nThese slides are a step by step guide on how to go about doing this.\n\n
+        You do need root access for this to work with my method.\n
+        \nUsing Apk Editor isn\'t required, you could also use a Pc + Apktool.
+    </string>
+    <string name="version">version 10</string>
+    <string name="apkBuilderLoading">Building Apk, Please Wait...</string>
+    <string name="chooseRom">Choose your Rom</string>
+    <string name="selectRomToast">Please Select Your Rom</string>
+    <string name="add_color_value_title">Add a Color Value</string>
+    <string name="add_color_name_title">Add a Color Name</string>
+    <string name="add_color_value_hint">Enter color rgb value here. Eg. #00ff00</string>
+    <string name="add_color_name_hint">Enter color name here. Eg. Dark Blue</string>
+    <string name="ok">OK</string>
+    <string name="next">Next</string>
+    <string name="add_format_value_title">Add a Format Value</string>
+    <string name="add_format_name_title">Add a Format Name</string>
+    <string name="add_format_value_hint">Enter java clock format. Eg. EEE HH:mm</string>
+    <string name="add_format_name_hint">Enter color format name here. Eg. Abbreviated Day</string>
+    <string name="included_colors">Included Colors</string>
+    <string name="added_colors">Added Colors</string>
+    <string name="included_formats">Included Formats</string>
+    <string name="added_formats">Added Formats</string>
+
+    <string name="guide_0">How to get K-Klock for any Rom</string>
+    <string name="guide_1">First Download Apk Editor from the PlayStore</string>
+    <string name="guide_2">Open Apk Editor and Select Apk from App</string>
+    <string name="guide_3">Tap the 3 dots at the top corner to search for System Apps</string>
+    <string name="guide_4">Search for System UI</string>
+    <string name="guide_5">Tap on System UI and Select Full Edit</string>
+    <string name="guide_6">Select the Files option and wait for the files to Load</string>
+    <string name="guide_7">Navigate to res/layout</string>
+    <string name="guide_8">Select keyguard_status_bar.xml and Extract</string>
+    <string name="guide_9">Navigate to K-Klock/userInput and Select Ok to Extract</string>
+    <string name="guide_10">Select status_bar.xml and Extract</string>
+    <string name="guide_11">Extract to K-Klock/userInput again.\nIf you want network indicators moved to the left you will have to repeat these steps for system_icons.xml as well.</string>
+
+    <string name="button_1">Go to Playstore</string>
+    <string name="button_11">Back to K-Klock Manager</string>
+
+    <string name="cleared_saved">Saved Values Cleared</string>
+
+</resources>

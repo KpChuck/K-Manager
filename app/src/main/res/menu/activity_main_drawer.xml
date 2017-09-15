@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+    </group>
+
+    <item android:title="Help and Preferences">
+        <menu>
+            <item
+                android:id="@+id/whatIsRgb"
+                android:icon="@android:drawable/ic_menu_help"
+                android:title="RGB Colors Chart"
+                />
+            <item
+                android:id="@+id/clockFormatsHelp"
+                android:icon="@android:drawable/ic_menu_help"
+                android:title="Clock Formats Guide"
+                />
+
+            <item
+                android:id="@+id/settings"
+                android:icon="@android:drawable/ic_menu_preferences"
+                android:title="Settings"/>
+
+        </menu>
+    </item>
+
+</menu>

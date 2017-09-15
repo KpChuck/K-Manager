@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="30dip"
+    android:layout_marginTop="4dp">
+
+    <ImageView
+        android:layout_width="22dip"
+        android:layout_height="22dip"
+        android:id="@+id/colorImage"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="10dp"
+        android:src="@drawable/circle"/>
+
+    <TextView
+        android:id="@+id/colorListTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@id/colorImage"
+        android:textAppearance="@style/ListViewStyle"/>
+
+    <Button
+        android:layout_width="25dip"
+        android:layout_height="25dip"
+        android:layout_centerVertical="true"
+        android:background="@android:drawable/ic_menu_delete"
+        android:id="@+id/deleteOverlays"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp"/>
+
+    <Button
+        android:layout_width="25dip"
+        android:layout_height="25dip"
+        android:layout_centerVertical="true"
+        android:id="@+id/editOverlays"
+        android:layout_marginEnd="10dp"
+        android:layout_toLeftOf="@id/deleteOverlays"
+        android:background="@android:drawable/ic_menu_edit"/>
+
+
+</RelativeLayout>
