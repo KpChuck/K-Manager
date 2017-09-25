@@ -8,6 +8,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
+import eu.chainfire.libsuperuser.Shell;
+
 /**
  * Created by Karol Przestrzelski on 17/08/2017.
  */
@@ -49,23 +51,10 @@ public class QuickSettingsService
     private void restartSystemUi() {
 
             try {
-                ProcessBuilder builder = new ProcessBuilder( "su" );
+                Shell.SU.run("killall com.android.systemui");
 
-                Process p = builder.start();
-
-                //get stdin of shell
-                BufferedWriter p_stdin =
-                        new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
-
-                p_stdin.write("killall com.android.systemui");
-                p_stdin.newLine();
-                p_stdin.flush();
-
-                p_stdin.write("exit");
-                p_stdin.newLine();
-                p_stdin.flush();
             } catch (Exception e) {
-                Log.e(TAG, "Error killing system UI", e);
+                Log.e(TAG, "Error killing system UI"+ e.getMessage());
             }
     }
 

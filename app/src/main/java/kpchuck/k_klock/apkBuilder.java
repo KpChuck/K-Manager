@@ -5,15 +5,20 @@ import org.apache.commons.io.FileUtils;
 
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import com.github.ybq.android.spinkit.SpinKitView;
-import java.io.File;
 import android.content.Intent;
-import android.net.Uri;
+import android.content.SharedPreferences;
+import android.support.design.widget.Snackbar;
+import android.util.Log;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+
+import java.io.File;
+
+import kpchuck.k_klock.Utils.FileHelper;
+import kpchuck.k_klock.Utils.QsBgUtil;
 
 public class apkBuilder  extends android.os.AsyncTask<String, String, String> {
 
@@ -48,13 +53,15 @@ public class apkBuilder  extends android.os.AsyncTask<String, String, String> {
     private RelativeLayout relativeLayout;
     private TextView tv;
     ErrorHandle err;
+    private ScrollView frameLayout;
 
-    public apkBuilder(android.content.Context context, RelativeLayout relativeLayout, TextView tv){
+    public apkBuilder(android.content.Context context, RelativeLayout relativeLayout, TextView tv, ScrollView frameLayout){
         this.context=context;
         this.relativeLayout=relativeLayout;
         this.tv=tv;
         ErrorHandle errorHandle = new ErrorHandle();
         this.err=errorHandle;
+        this.frameLayout=frameLayout;
 
     }
 
@@ -112,14 +119,14 @@ public class apkBuilder  extends android.os.AsyncTask<String, String, String> {
 
 
                 findAndCopyXml();
+                new QsBgUtil(context);
                 File xmlFolder = new File(rootFolder + slash + "temp3" + slash + "assets");
                 try {
                     org.apache.commons.io.FileUtils.copyDirectoryToDirectory(xmlFolder, mergerFolder);
                 } catch (java.io.IOException e) {
                 }
 
-                SharedPreferences myPref = context.getSharedPreferences(prefFile, Context.MODE_PRIVATE);
-                if (myPref.getBoolean("moveLeftPref", false)) new MoveNetworkIconsLeft(context);
+                new MoveNetworkIconsLeft(context);
 
 
                 try {
@@ -158,12 +165,43 @@ public class apkBuilder  extends android.os.AsyncTask<String, String, String> {
                 String apkVersion = result;
            File apk = new File(rootFolder + slash + apkVersion);
             FileHelper fh = new FileHelper();
-            fh.FileHelper(context, apk);
+            fh.installApk(apk, context);
 
 
 
             relativeLayout.setVisibility(View.GONE);
             tv.setText("");
+
+            try {
+                Snackbar snackbar = Snackbar.make(frameLayout, "Open K-Klock in Substratum", Snackbar.LENGTH_INDEFINITE)
+                        .setAction("Open", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+
+                                final String SUBSTRATUM_PACKAGE_NAME = "projekt.substratum";
+                                final String THEME_PACKAGE_NAME = "com.kpchuck.kklock";
+
+                                Intent intent = new Intent();
+                                intent = intent.setClassName(SUBSTRATUM_PACKAGE_NAME, "projekt.substratum.activities.launch.ThemeLaunchActivity");
+                                intent.putExtra("package_name", THEME_PACKAGE_NAME);
+                                intent.setAction("projekt.substratum.THEME");
+                                intent.setPackage(THEME_PACKAGE_NAME);
+                                intent.putExtra("calling_package_name", THEME_PACKAGE_NAME);
+                                intent.putExtra("oms_check", false);
+                                intent.putExtra("theme_mode", (String) null);
+                                intent.putExtra("notification", false);
+                                intent.putExtra("hash_passthrough", true);
+                                intent.putExtra("certified", false);
+                                context.startActivity(intent);
+                            }
+                        });
+
+                snackbar.show();
+            }catch (Exception e){
+                Log.e("klock", e.getMessage());
+                shortToast(e.getMessage());
+            }
+
 
 
             // Do things like hide the progress bar or change a TextView

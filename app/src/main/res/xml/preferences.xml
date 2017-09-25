@@ -24,10 +24,6 @@
 
         </Preference>
 
-        <Preference
-            android:key="showVersions"
-            android:title="Show Rom Version"/>
-
     </PreferenceCategory>
 
 </PreferenceScreen>

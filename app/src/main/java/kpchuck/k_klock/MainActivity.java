@@ -1,14 +1,17 @@
 package kpchuck.k_klock;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -25,7 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
+
 import java.util.ArrayList;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
@@ -36,9 +39,23 @@ import java.io.IOException;
 import java.io.File;
 import android.net.Uri;
 import android.content.Intent;
+
+import com.kbeanie.multipicker.api.ImagePicker;
+import com.kbeanie.multipicker.api.Picker;
+import com.kbeanie.multipicker.api.callbacks.ImagePickerCallback;
+import com.kbeanie.multipicker.api.entity.ChosenImage;
+import com.nbsp.materialfilepicker.MaterialFilePicker;
+import com.nbsp.materialfilepicker.ui.FilePickerActivity;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
+
+import kpchuck.k_klock.Utils.FileHelper;
 
 
 public class MainActivity extends AppCompatActivity
@@ -100,12 +117,15 @@ public class MainActivity extends AppCompatActivity
         Switch moveLeftSwitch = (Switch) findViewById(R.id.moveNetworkLeft);
         Switch hideStatusbar = (Switch) findViewById(R.id.hideStatusbar);
         Switch iconColors = (Switch) findViewById(R.id.colorIcons);
+        Switch qsBg = (Switch) findViewById(R.id.qsBg);
+        Switch minit = (Switch) findViewById(R.id.minitMod);
+
         final Switch indicatorSwitch = (Switch) findViewById(R.id.networkSignalIndicatorSwitch);
         final SharedPreferences pref = getSharedPreferences(prefFile, Context.MODE_PRIVATE);
         final SharedPreferences.Editor meditor = pref.edit();
         SharedPreferences.Editor editor = pref.edit();
 
-        SharedPreferences myPref = getSharedPreferences(prefFile, Context.MODE_PRIVATE);
+        final SharedPreferences myPref = getSharedPreferences(prefFile, Context.MODE_PRIVATE);
         this.editor=editor;
         this.myPref=myPref;
         qsSwitch.setChecked(pref.getBoolean("qsPref", false));
@@ -114,6 +134,8 @@ public class MainActivity extends AppCompatActivity
         indicatorSwitch.setChecked(pref.getBoolean("indicatorPref", false));
         moveLeftSwitch.setChecked(pref.getBoolean("moveLeftPref", false));
         hideStatusbar.setChecked(pref.getBoolean("hideStatusbarPref", false));
+        qsBg.setChecked(pref.getBoolean("qsBgPref", false));
+        minit.setChecked(pref.getBoolean("minitPref", false));
 
 
         File rootfile = new File(rootFolder);
@@ -124,6 +146,8 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if (myPref.getBoolean("gsBgPref", false) && !checkQsFile()) return;
 
                 new ErrorHandle().resetAsyncError(getApplicationContext());
 
@@ -137,6 +161,7 @@ public class MainActivity extends AppCompatActivity
 
                         RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.loadingId);
                         TextView textView = (TextView) findViewById(R.id.loadingTextView);
+                        ScrollView frameLayout = (ScrollView) findViewById(R.id.defaultLayout);
 
                         //      XmlExtractor xmlExtractor = new XmlExtractor(getApplicationContext(), relativeLayout, textView);
                         //     xmlExtractor.throwInTheDex();
@@ -149,9 +174,10 @@ public class MainActivity extends AppCompatActivity
                             copyAssets("universal", "qsTiles.zip".trim());
                         if (pref.getBoolean("recentsPref", false))
                             copyAssets("universal", "recents.zip".trim());
-                        if (pref.getBoolean("hideStatusbarPref", false) && getOos(romName).equals("OxygenOS")) copyAssets("universal", "hideStatusbarOOS.zip".trim());
-                        if (pref.getBoolean("hideStatusbarPref", false) && !getOos(romName).equals("OxygenOS")) copyAssets("universal", "hideStatusbarOTHER.zip".trim());
+                        if (pref.getBoolean("hideStatusbarPref", false)) copyAssets("universal", "hideStatusbar.zip".trim());
                         if(pref.getBoolean("iconPref", false)) copyAssets("universal", "colorIcons.zip".trim());
+
+                        if (pref.getBoolean("qsBgPref", false)) copyAssets("unviersal", "qsBgs.zip");
 
 
                         handler.execute();
@@ -162,7 +188,7 @@ public class MainActivity extends AppCompatActivity
                         int k = decreaseToLowest(check);
                         String apkVersion = "K-Klock v" + k + ".apk";
 
-                        new apkBuilder(getApplication(), relativeLayout, textView).execute(apkVersion, apkVersion, apkVersion);
+                        new apkBuilder(getApplication(), relativeLayout, textView, frameLayout).execute(apkVersion, apkVersion, apkVersion);
                     }
                     else if (!handler.checkForXmls()){
                         Intent i = new Intent(getApplicationContext(), OtherRomsInfoActivity.class);
@@ -179,9 +205,11 @@ public class MainActivity extends AppCompatActivity
                     if(pref.getBoolean("qsPref", false)) copyAssets("universal", "qsTiles.zip".trim());
                     if(pref.getBoolean("iconPref", false)) copyAssets("universal", "colorIcons.zip".trim());
                     if(pref.getBoolean("recentsPref", false)) copyAssets("universal", "recents.zip".trim());
-                    if (pref.getBoolean("hideStatusbarPref", false) && getOos(romName).equals("OxygenOS")) copyAssets("universal", "hideStatusbarOOS.zip".trim());
-                    if (pref.getBoolean("hideStatusbarPref", false) && !getOos(romName).equals("OxygenOS")) copyAssets("universal", "hideStatusbarOTHER.zip".trim());
+                    if (pref.getBoolean("hideStatusbarPref", false)) copyAssets("universal", "hideStatusbar.zip".trim());
                     if(pref.getBoolean("indicatorPref", false) && getOos(romName).equals("OxygenOS")) copyAssets("universal", "indicators.zip".trim());
+                    if (pref.getBoolean("qsBgPref", false)) copyAssets("unviersal", "qsBgs.zip");
+
+                    ScrollView frameLayout = (ScrollView) findViewById(R.id.defaultLayout);
 
 
                     RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.loadingId);
@@ -192,7 +220,7 @@ public class MainActivity extends AppCompatActivity
                     int k = decreaseToLowest(check);
                     String apkVersion = "K-Klock v" + k + ".apk";
 
-                    new apkBuilder(getApplication(), relativeLayout, textView).execute(apkVersion,apkVersion,apkVersion);
+                    new apkBuilder(getApplication(), relativeLayout, textView, frameLayout).execute(apkVersion,apkVersion,apkVersion);
 
 
             }}
@@ -247,77 +275,148 @@ public class MainActivity extends AppCompatActivity
 
     public void iconPref(View v){
         Switch qsSwitch = (Switch) findViewById(R.id.colorIcons);
+        setSwitchPrefs(qsSwitch, "iconPref");
+    }
 
+    private ImagePicker imagePicker;
+
+    public void qsBgPref(View v){
+        final Switch qsSwitch = (Switch) findViewById(R.id.qsBg);
         if(qsSwitch.isChecked()) {
-            editor.putBoolean("iconPref", true);
-            editor.apply();
+
+            imagePicker = new ImagePicker(this);
+            imagePicker.setImagePickerCallback(new ImagePickerCallback(){
+                @Override
+                public void onImagesChosen(List<ChosenImage> images) {
+
+
+                    String filePath = images.get(0).getOriginalPath();
+                    editor.putString("qsBgFilePath", filePath);
+                    editor.putBoolean("qsBgPref", true);
+                    editor.apply();
+
+                }
+
+                @Override
+                public void onError(String message) {
+                    // Do error handling
+                    editor.putBoolean("qsBgPref", false);
+                    editor.remove("qsBgFilePath");
+                    editor.apply();
+                    qsSwitch.setChecked(false);
+                }}
+            );
+            imagePicker.pickImage();
+
         }else{
-            editor.putBoolean("iconPref", false);
+            editor.putBoolean("qsBgPref", false);
+            editor.remove("qsBgFilePath");
             editor.apply();
         }
+
     }
 
     public void qsPref(View v){
         Switch qsSwitch = (Switch) findViewById(R.id.noQsTilesTv);
-
-        if(qsSwitch.isChecked()) {
-            editor.putBoolean("qsPref", true);
-             editor.apply();
-        }else{
-            editor.putBoolean("qsPref", false);
-            editor.apply();
-        }
-
+        setSwitchPrefs(qsSwitch, "qsPref");
     }
 
     public void hideStatusbarPref(View v){
         Switch mswitch = (Switch) findViewById(R.id.hideStatusbar);
-        if(mswitch.isChecked()) {
-            editor.putBoolean("hideStatusbarPref", true);
-            editor.apply();
-        }else{
-            editor.putBoolean("hideStatusbarPref", false);
-            editor.apply();
-        }
+        setSwitchPrefs(mswitch, "hideStatusbarPref");
     }
 
     public void moveLeftPref(View v){
         Switch qsSwitch = (Switch) findViewById(R.id.moveNetworkLeft);
-
-        if(qsSwitch.isChecked()) {
-            editor.putBoolean("moveLeftPref", true);
-            editor.apply();
-        }else{
-            editor.putBoolean("moveLeftPref", false);
-            editor.apply();
-        }
+        setSwitchPrefs(qsSwitch, "moveLeftPref");
 
     }
 
     public void recentsPref(View v){
 
         Switch qsSwitch = (Switch) findViewById(R.id.roundedRecents);
-        if(qsSwitch.isChecked()) {
-            editor.putBoolean("recentsPref", true);
-            editor.apply();
-        }else{
-            editor.putBoolean("recentsPref", false);
-            editor.apply();
-        }
+        setSwitchPrefs(qsSwitch, "recentsPref");
     }
 
     public void indicatorPref(View v){
         Switch qsSwitch = (Switch) findViewById(R.id.networkSignalIndicatorSwitch);
-
-        if(qsSwitch.isChecked()) {
-            editor.putBoolean("indicatorPref", true);
-            editor.apply();
-        }else{
-            editor.putBoolean("indicatorPref", false);
-            editor.apply();
+        setSwitchPrefs(qsSwitch, "indicatorPref");
         }
 
+    public void setSwitchPrefs(Switch mswitch, String key){
+         if(mswitch.isChecked()) {
+            editor.putBoolean(key, true);
+            editor.apply();
+        }else{
+            editor.putBoolean(key, false);
+            editor.apply();
+        }
     }
+
+    public void minitPref(View v){
+        final Switch mswitch = (Switch) findViewById(R.id.minitMod);
+        if(mswitch.isChecked()){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("IMPORTANT");
+            TextView tv = new TextView(this);
+            tv.setText(R.string.minit_disclaimer);
+            builder.setView(tv);
+            builder.setPositiveButton("Enable", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    editor.putBoolean("minitPref", true);
+                    editor.apply();
+                }
+            });
+            builder.setOnCancelListener(new DialogInterface.OnCancelListener(){
+
+                @Override
+                public void onCancel(DialogInterface dialogInterface) {
+                    editor.putBoolean("minitPref", false);
+                    editor.apply();
+                    mswitch.setChecked(false);
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            builder.show();
+        }else {
+             editor.putBoolean("minitPref", false);
+                    editor.apply();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == RESULT_OK) {
+            if(requestCode == Picker.PICK_IMAGE_DEVICE) {
+                imagePicker.submit(data);
+            }
+        }else{
+            Switch qsSwitch = (Switch) findViewById(R.id.qsBg);
+            editor.putBoolean("qsBgPref", false);
+            editor.remove("qsBgFilePath");
+            editor.apply();
+            qsSwitch.setChecked(false);
+
+        }
+    }
+
+    public boolean checkQsFile(){
+        String path = myPref.getString("qsBgFilePath", "null");
+        if (path=="null") return  false;
+        File file = new File(path);
+        if (!file.exists()) return false;
+        String ext = FilenameUtils.getExtension(file.getName());
+        shortToast(ext);
+        return !ext.equals("png");
+    }
+
+
 
     public int decreaseToLowest(String[] testStringArray){
         int kk;
@@ -540,12 +639,9 @@ public class MainActivity extends AppCompatActivity
         twoLv.setAdapter(twoAdapter);
         twoTv.setText(getString(R.string.included_formats));
         oneTv.setText(getString(R.string.added_formats));
-        bgLayout.setVisibility(View.VISIBLE);    }
-
-    public ArrayList<String> sortList(java.util.ArrayList sortable){
-        Collections.sort(sortable);
-        return sortable;
+        bgLayout.setVisibility(View.VISIBLE);
     }
+
 
     public void deleteItems(ArrayList<String> titles, ArrayList<String> values, String title, String value, String titleArrayKey, String valueArrayKey, String toSaveBoolKey){
         SharedPreferences bleh = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -693,7 +789,6 @@ public class MainActivity extends AppCompatActivity
 
                 SharedPreferences bleh = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 if(bleh.getBoolean(toSaveBoolKey, true)){
-                    fileHelper.addPrefEdit(getApplicationContext());
                     ArrayList<String> namesArray = loadArray(nameArray, nameListArrayKey);
                     ArrayList<String> valuesArray = loadArray(arrayList, valueArrayKey);
 
@@ -837,6 +932,23 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.settings) {
             Intent i = new Intent(this, SettingsActivity.class);
             startActivity(i);
+        }else if (id == R.id.otherroms_help){
+             Intent i = new Intent(this, InformationWebViewActivity.class);
+            i.putExtra("value", 4);
+            startActivity(i);
+        }else if(id == R.id.faq){
+            Intent i = new Intent(this, InformationWebViewActivity.class);
+            i.putExtra("value", 1);
+            startActivity(i);
+        }else if(id == R.id.qsbghelp){
+            Intent i = new Intent(this, InformationWebViewActivity.class);
+            i.putExtra("value", 2);
+            startActivity(i);
+        }else if(id == R.id.networkhelp){
+            Intent i = new Intent(this, InformationWebViewActivity.class);
+            i.putExtra("value", 3);
+            startActivity(i);
+
         }else if(id == R.id.whatIsRgb){
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.rapidtables.com/web/color/RGB_Color.htm"));
             startActivity(browserIntent);

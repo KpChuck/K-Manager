@@ -1,4 +1,4 @@
-package kpchuck.k_klock;
+package kpchuck.k_klock.Utils;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -24,33 +24,25 @@ import java.util.Set;
 public class FileHelper {
 
     private Context ctx;
-    SharedPreferences myPref;
-    SharedPreferences.Editor editor;
-    String prefFile = "prefFileName";
 
-
-    public void FileHelper(Context ctx, File file){
-        this.ctx=ctx;
-
-        installApk(file);
+    public File newFolder(String path){
+        File file = new File(path);
+        if (file.exists() && file.isDirectory()) {return  file;}
+        else{
+            file.mkdirs();
+            return file;
+        }
 
     }
 
-    public void addPrefEdit(Context ctx){
-        this.ctx = ctx;
-        SharedPreferences myPref = ctx.getSharedPreferences(prefFile, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = myPref.edit();
-        this.myPref=myPref;
-        this.editor=editor;
-    }
-
-    public void installApk(File file){
+    public void installApk(File file, Context context){
+        this.ctx=context;
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(getImageContentUri(ctx, file.getAbsolutePath() ), "application/vnd.android.package-archive");
         ctx.startActivity(intent);
     }
 
-    public static Uri getImageContentUri(Context context, String absPath) {
+    private static Uri getImageContentUri(Context context, String absPath) {
         Log.v(TAG, "getImageContentUri: " + absPath);
 
         Cursor cursor = context.getContentResolver().query(
@@ -73,50 +65,17 @@ public class FileHelper {
         }
     }
 
-
-    public void addToList(String item, String prefKey){
-
-        Set<String> set = myPref.getStringSet(prefKey, null);
-        set.add(item);
-        editor.putStringSet(prefKey, set);
-        editor.apply();
-    }
-
-    public ArrayList<String> getUpdatedList(String arrayListNameKey){
-        Set<String> set = myPref.getStringSet(arrayListNameKey, null);
-        ArrayList<String> tempList = new ArrayList<>(set);
-        return tempList;
-    }
-
     public ArrayList<String> deleteItemFromArray(String item, ArrayList<String> tempList){
-
 
         for(int i=0; i<tempList.size(); i++){
             String tempString = tempList.get(i);
             if(tempString.equals(item)) {
                 tempList.remove(i);
-                continue;
+                break;
             }
         }
         return tempList;
 
     }
 
-    public void deleteItem(String item, String arrayListNameKey){
-
-        Set<String> set = myPref.getStringSet(arrayListNameKey, null);
-        ArrayList<String> tempList = new ArrayList<>(set);
-        for(int i=0; i<tempList.size(); i++){
-            String tempString = tempList.get(i);
-            if(tempString.equals(item)) tempList.remove(i);
-        }
-        set.clear();
-        set.addAll(tempList);
-
-        editor.putStringSet(arrayListNameKey, set);
-        editor.apply();
-
-
-
-    }
 }

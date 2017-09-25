@@ -267,9 +267,31 @@
             android:layout_below="@id/noQsTilesTv"
             android:text="Rounded Recents"
             android:onClick="recentsPref"
-            android:layout_marginBottom="12dp"
             android:id="@+id/roundedRecents"/>
 
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/roundedRecents"
+            android:text="Add Custom Qs Background"
+            android:onClick="qsBgPref"
+            android:id="@+id/qsBg"/>
+         <Switch
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/qsBg"
+                android:text="Make compatible with 3Minit"
+                android:onClick="minitPref"
+                android:layout_marginBottom="12dp"
+                android:id="@+id/minitMod"/>
 
     </RelativeLayout>
 

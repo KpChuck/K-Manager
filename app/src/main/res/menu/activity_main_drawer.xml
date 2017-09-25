@@ -4,6 +4,29 @@
     <group android:checkableBehavior="single">
 
     </group>
+    <item android:title="FAQ's and Guides">
+        <menu>
+            <item
+                android:id="@+id/faq"
+                android:icon="@android:drawable/ic_menu_help"
+                android:title="FAQ's"/>
+            <item
+                android:id="@+id/otherroms_help"
+                android:icon="@android:drawable/ic_menu_help"
+                android:title="Other Roms Help"/>
+
+            <item
+                android:id="@+id/qsbghelp"
+                android:icon="@android:drawable/ic_menu_help"
+                android:title="Custom Qs Backgrounds"/>
+
+        <item
+            android:id="@+id/networkhelp"
+            android:icon="@android:drawable/ic_menu_help"
+            android:title="Left Network Indicators"/></menu>
+
+
+    </item>
 
     <item android:title="Help and Preferences">
         <menu>

@@ -49,16 +49,22 @@ public class MoveNetworkIconsLeft {
     String statusbar = "status_bar.xml";
     String prefFile = "prefFileName";
     String romName;
+    boolean toMoveLeft;
+    boolean toMinit;
 
 
     public MoveNetworkIconsLeft(Context context){
         this.context=context;
         getPref();
-        if (!romName.equals(context.getString(R.string.otherRomsBeta)))copySystemIconsAssets("systemicons", romName);
-        else copyFromUserInput();
+        if (toMoveLeft || toMinit) {
+            if (!romName.equals(context.getString(R.string.otherRomsBeta)))
+                copySystemIconsAssets("systemicons", romName);
+            else copyFromUserInput();
 
-        editSystemIcons();
-        editStatusBar();
+            //
+            editSystemIcons();
+            if (toMoveLeft)editStatusBar();
+        }
 
     }
 
@@ -154,12 +160,31 @@ public class MoveNetworkIconsLeft {
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(sysicons);
 
+            if (toMinit){
+                Element rootElement = doc.getDocumentElement();
+                NodeList list = rootElement.getElementsByTagName("com.android.systemui.BatteryMeterView");
+                Element battery = (Element) list.item(0);
+                battery.removeAttribute("android:layout_width");
+                battery.removeAttribute("android:layout_height");
+                battery.setAttribute("android:layout_width", "0.0dip");
+                battery.setAttribute("android:layout_height", "0.0dip");
 
-            Element rootElement = doc.getDocumentElement();
-            NodeList list = rootElement.getElementsByTagName("include");
-            Element includeElement = (Element) list.item(0);
+                Element minitmod = doc.createElement("com.android.systemui.statusbar.policy.MinitBattery");
+                minitmod.setAttribute("android:layout_width", "wrap_content");
+                minitmod.setAttribute("android:layout_height", "wrap_content");
+                minitmod.setAttribute("android:layout_marginEnd", "7.0dip");
 
-            rootElement.removeChild(includeElement);
+                rootElement.insertBefore(minitmod, battery);
+
+            }
+
+            if(toMoveLeft) {
+                Element rootElement = doc.getDocumentElement();
+                NodeList list = rootElement.getElementsByTagName("include");
+                Element includeElement = (Element) list.item(0);
+
+                rootElement.removeChild(includeElement);
+            }
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
@@ -218,6 +243,8 @@ public class MoveNetworkIconsLeft {
         SharedPreferences myPref = context.getSharedPreferences(prefFile, Context.MODE_PRIVATE);
         String rom = myPref.getString("selectedRom", context.getString(R.string.chooseRom));
         this.romName=rom;
+        this.toMoveLeft=myPref.getBoolean("moveLeftPref", false);
+        this.toMinit=myPref.getBoolean("minitPref", false);
     }
 
     private void copySystemIconsAssets(String assetDir, String whichString) {

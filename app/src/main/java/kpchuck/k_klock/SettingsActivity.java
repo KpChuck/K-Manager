@@ -118,49 +118,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             }
         });
 
-        Preference showVersions = (Preference) findPreference("showVersions");
-        showVersions.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
-            @Override
-
-            public boolean onPreferenceClick(Preference preference){
-
-                try {
-                    //init shell
-                    ProcessBuilder builder = new ProcessBuilder( "su" );
-                    Process p=null;
-
-                    p = builder.start();
-
-                    //get stdin of shell
-                    BufferedWriter p_stdin =
-                            new BufferedWriter(new OutputStreamWriter(p.getOutputStream()));
-
-                    p_stdin.write("getprop ro.product.name");
-                    p_stdin.newLine();
-                    p_stdin.flush();
-
-                    p_stdin.write("exit");
-                    p_stdin.newLine();
-                    p_stdin.flush();
-
-                    p.waitFor();
-                    BufferedReader buf = new BufferedReader(new InputStreamReader(
-                            p.getInputStream()));
-                    String line = "";
-                    String hal1stat = "";
-
-                    while ((line = buf.readLine()) != null) {
-                        hal1stat += line + "\n";
-                    }
-                    shortToast(hal1stat);
-                }catch(Exception e){
-
-                }
-
-                return true;
-            }
-        });
-
     }
 
     public void shortToast(String message){
