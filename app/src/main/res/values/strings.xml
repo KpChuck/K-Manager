@@ -55,8 +55,8 @@
     <string name="title_activity_settings">Settings</string>
 
     <string name="minit_disclaimer">
-        This option does NOT install 3minit battery mod. All it does is make sure that there are no conflicts between K-Klock and 3minit.\n
-        You should only have this option selected if you have 3minit already flashed.
+        This option does NOT install 3minit battery mod. All it does is make sure that there are no conflicts between K-Klock and 3 Minit.\n
+        You should only have this option selected if you have 3minit already flashed. \n\n\t<b>This will break your Rom if you don\'t have 3 Minit installed.</b>
 
     </string>
 

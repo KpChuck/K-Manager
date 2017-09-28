@@ -59,10 +59,11 @@
 
         <ul>
             <li>You will be asked to select a png image when you select this option in K-Manager</li>
-            <li>The recommended dimensions for customqs.png image are 1080*800 pixels.</li>
+            <li>The recommended dimensions for customqs.png image are 1080*800 pixels or 1080x1000 pixels. You can use <a href="https://play.google.com/store/apps/details?id=com.appbasic.imageresizer&hl=en>Image Resizer </a> for this.</li>
             <li>You can use snapseed or picsart to crop your images and jpg2png.com to convert your jpgs to pngs</li>
             <li>Remember to only use pngs. jpgs are not supported</li>
             <li>After building K-Klock simply install the SystemUI Headers overlay and you\'re done!</li>
+            <li><strong>Disclaimer: This doesn\'t work on Oos atm, I\'m hoping that that\'ll change by Oreo</strong></li>
 
         </ul>
 

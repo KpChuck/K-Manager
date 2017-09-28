@@ -269,6 +269,7 @@ public class MainActivity extends AppCompatActivity
 
 
     public String getOos(String oos){
+        if (oos.length() <8) return "thisIsNotOxygenOS";
         oos = oos.substring(0, 8);
         return oos;
     }
@@ -289,12 +290,28 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void onImagesChosen(List<ChosenImage> images) {
 
-
                     String filePath = images.get(0).getOriginalPath();
-                    editor.putString("qsBgFilePath", filePath);
-                    editor.putBoolean("qsBgPref", true);
-                    editor.apply();
 
+                    if (!filePath.substring(filePath.lastIndexOf("."), filePath.length()).equals(".png")){
+                        shortToast("The image you have chosen is not a png. Convert it to a png and try again");
+                        editor.putBoolean("qsBgPref", false);
+                        qsSwitch.setChecked(false);
+                        editor.remove("qsBgFilePath");
+                        new File(filePath).delete();
+                    }
+                    else{
+                        editor.putString("qsBgFilePath", filePath);
+                        editor.putBoolean("qsBgPref", true);
+                    }
+                    editor.apply();
+                    File dir = new File(new File(filePath).getParent());
+                    String[] files = dir.list();
+                    for (String f: files){
+                        String check = dir.getAbsolutePath() + slash + f;
+                        if (!filePath.equals(check)){
+                            new File(check).delete();
+                        }
+                    }
                 }
 
                 @Override

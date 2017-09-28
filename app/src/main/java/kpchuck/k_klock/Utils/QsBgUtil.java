@@ -33,12 +33,7 @@ public class QsBgUtil {
             buildFilePath();
            // addTyepText();
 
-        }
-        File kmanagerderp = new File(Environment.getExternalStorageDirectory() + "/K-Manager");
 
-        if (kmanagerderp.isDirectory()) {
-            try{FileUtils.deleteDirectory(kmanagerderp);}
-            catch (IOException e){}
         }
 
     }
