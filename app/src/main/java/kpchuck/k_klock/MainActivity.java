@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity
         Switch iconColors = (Switch) findViewById(R.id.colorIcons);
         Switch qsBg = (Switch) findViewById(R.id.qsBg);
         Switch minit = (Switch) findViewById(R.id.minitMod);
+        Switch title = (Switch) findViewById(R.id.qsTitle);
 
         final Switch indicatorSwitch = (Switch) findViewById(R.id.networkSignalIndicatorSwitch);
         final SharedPreferences pref = getSharedPreferences(prefFile, Context.MODE_PRIVATE);
@@ -136,6 +137,7 @@ public class MainActivity extends AppCompatActivity
         hideStatusbar.setChecked(pref.getBoolean("hideStatusbarPref", false));
         qsBg.setChecked(pref.getBoolean("qsBgPref", false));
         minit.setChecked(pref.getBoolean("minitPref", false));
+        title.setChecked(pref.getBoolean("qsTitlePref", false));
 
 
         File rootfile = new File(rootFolder);
@@ -178,6 +180,7 @@ public class MainActivity extends AppCompatActivity
                         if(pref.getBoolean("iconPref", false)) copyAssets("universal", "colorIcons.zip".trim());
 
                         if (pref.getBoolean("qsBgPref", false)) copyAssets("unviersal", "qsBgs.zip");
+                        if (pref.getBoolean("qsTitlePref", false)) copyAssets("universal", "qsTitle.zip");
 
 
                         handler.execute();
@@ -208,6 +211,8 @@ public class MainActivity extends AppCompatActivity
                     if (pref.getBoolean("hideStatusbarPref", false)) copyAssets("universal", "hideStatusbar.zip".trim());
                     if(pref.getBoolean("indicatorPref", false) && getOos(romName).equals("OxygenOS")) copyAssets("universal", "indicators.zip".trim());
                     if (pref.getBoolean("qsBgPref", false)) copyAssets("unviersal", "qsBgs.zip");
+                    if (pref.getBoolean("qsTitlePref", false)) copyAssets("universal", "qsTitle.zip");
+
 
                     ScrollView frameLayout = (ScrollView) findViewById(R.id.defaultLayout);
 
@@ -336,6 +341,11 @@ public class MainActivity extends AppCompatActivity
     public void qsPref(View v){
         Switch qsSwitch = (Switch) findViewById(R.id.noQsTilesTv);
         setSwitchPrefs(qsSwitch, "qsPref");
+    }
+
+    public void titlePref(View v){
+        Switch mswitch = (Switch) findViewById(R.id.qsTitle);
+        setSwitchPrefs(mswitch, "qsTitlePref");
     }
 
     public void hideStatusbarPref(View v){

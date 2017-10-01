@@ -265,6 +265,18 @@
             android:layout_marginRight="12dp"
             android:layout_alignParentStart="true"
             android:layout_below="@id/noQsTilesTv"
+            android:text="Hide Qs Tile Title"
+            android:onClick="titlePref"
+            android:id="@+id/qsTitle"/>
+
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/qsTitle"
             android:text="Rounded Recents"
             android:onClick="recentsPref"
             android:id="@+id/roundedRecents"/>
