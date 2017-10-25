@@ -3,6 +3,7 @@
     package="kpchuck.k_klock">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
 
     <application
         android:allowBackup="true"
@@ -24,8 +25,16 @@
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".MainActivity"></activity>
-        <activity android:name=".OtherRomsInfoActivity"></activity>
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="kpchuck.k_klock.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_path"/>
+        </provider>
         <service
             android:name=".QuickSettingsService"
             android:icon="@android:drawable/ic_menu_revert"

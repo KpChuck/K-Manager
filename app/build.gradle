@@ -7,8 +7,9 @@ android {
         applicationId "kpchuck.k_klock"
         minSdkVersion 24
         targetSdkVersion 26
-        versionCode 8
-        versionName "11.0"
+        versionCode 17
+        versionName "15"
+        setProperty("archivesBaseName", "K-Manager-v$versionName")
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

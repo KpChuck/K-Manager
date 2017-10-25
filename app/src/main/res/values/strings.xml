@@ -17,6 +17,7 @@
         <item>Electric Ultramarine Blue</item>
         <item>Golden Yellow</item>
         <item>Grey</item>
+        <item>Match System Accent</item>
         <item>Pixel Blue</item>
         <item>Red</item>
 
@@ -34,6 +35,7 @@
         <item>#ff3f00ff</item>
         <item>#ffffdf00</item>
         <item>#ff777777</item>
+        <item>#ffffffff</item>
         <item>#ff4885ed</item>
         <item>#ffbc052d</item>
     </string-array>
@@ -49,6 +51,7 @@
         <item>Full Day after Clock</item>
         <item>Month, Date, Abbreviated Day, and Seconds</item>
         <item>Normal Clock with no Am/Pm</item>
+        <item>Small Day, Big Hour</item>
 
 
     </string-array>
@@ -57,6 +60,10 @@
     <string name="minit_disclaimer">
         This option does NOT install 3minit battery mod. All it does is make sure that there are no conflicts between K-Klock and 3 Minit.\n
         You should only have this option selected if you have 3minit already flashed. \n\n\t<b>This will break your Rom if you don\'t have 3 Minit installed.</b>
+
+    </string>
+    <string name="request_install_perms">
+        \nK-Manager needs permission to install unknown apps in oreder to install K-Klock automatically from Android 8.0 onwards.
 
     </string>
 
@@ -69,20 +76,6 @@
     <string name="pref_save_colors">Remember Added Colors</string>
     <string name="pref_save_formats">Remember Added Formats</string>
 
-    <string-array name="splashImages">
-        <item>@drawable/splash1</item>
-        <item>@drawable/splash2</item>
-        <item>@drawable/splash3</item>
-        <item>@drawable/splash4</item>
-        <item>@drawable/splash5</item>
-        <item>@drawable/splash6</item>
-        <item>@drawable/splash7</item>
-        <item>@drawable/splash8</item>
-        <item>@drawable/splash9</item>
-        <item>@drawable/splash10</item>
-        <item>@drawable/splash11</item>
-        <item>@drawable/splash12</item>
-    </string-array>
 
     <string name="otherRomsBeta">Other Roms (Beta)</string>
     <string name="splash_subtitle_text">Unfortunately, K-Klock doesn\'t work with every Rom right away.
@@ -91,7 +84,7 @@
         You do need root access for this to work with my method.\n
         \nUsing Apk Editor isn\'t required, you could also use a Pc + Apktool.
     </string>
-    <string name="version">version 11</string>
+    <string name="version">version 14</string>
     <string name="apkBuilderLoading">Building Apk, Please Wait...</string>
     <string name="chooseRom">Choose your Rom</string>
     <string name="selectRomToast">Please Select Your Rom</string>

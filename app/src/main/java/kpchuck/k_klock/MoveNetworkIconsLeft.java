@@ -33,6 +33,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
+import kpchuck.k_klock.Utils.FileHelper;
+
 /**
  * Created by Karol Przestrzelski on 04/09/2017.
  */
@@ -88,6 +90,7 @@ public class MoveNetworkIconsLeft {
             }
         });
         for(File s: files){
+            if (!new File(s.getAbsolutePath() + slash + "layout").exists()) continue;
             File file = new File(s.getAbsolutePath() + slash + "layout/" +  statusbar);
             try {
                 DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -98,45 +101,55 @@ public class MoveNetworkIconsLeft {
                 NodeList list = resources.getElementsByTagName("LinearLayout");
                 Element layout = null;
                 for (int i=0;i<list.getLength();i++){
-                    layout = (Element) list.item(i);
-                    Attr attr = layout.getAttributeNode("android:id");
-                    if (attr.getValue().equals("@*com.android.systemui:id/status_bar_contents")) break;
-                    else layout = null;
-                }
-
-
-               Node childNode = layout.getFirstChild();
-                Element testElement = null;
-                boolean hasLL = false;
-                boolean tobreak = false;
-                while( !tobreak) {
-                    childNode = childNode.getNextSibling();
-                    if (childNode.getNodeType() == Node.ELEMENT_NODE) {
-                        Element childElement = (Element) childNode;
-                        if (childElement.getTagName().equals("LinearLayout") && childElement.hasChildNodes()){
-                            hasLL = true;
-                            testElement = childElement;
-                        }
-                        else {hasLL=false;}
-                        tobreak = true;
+                    Element layouttemp = (Element) list.item(i);
+                    Attr attr = layouttemp.getAttributeNode("android:id");
+                    if (attr.getValue().equals("@*com.android.systemui:id/status_bar_contents")) {
+                        Log.d("klock", "found statusbar contentd layout");
+                        layout = layouttemp;
                     }
+
+                    //  else Log.d("klock", "statusbarcontents layout was null");
                 }
 
-                if (!hasLL) {
-                    NodeList findtv = layout.getElementsByTagName("TextView");
-                    testElement = (Element) findtv.item(0);
+                Element insertBeforeElement;
+
+                Node firstNode = layout.getFirstChild();
+                while (firstNode.getNodeType() != Node.ELEMENT_NODE) firstNode = firstNode.getNextSibling();
+
+                Element firstElement = (Element) firstNode;
+                String firstTag = firstElement.getTagName();
+
+                Log.d("klock", "First Tag is "+ firstTag);
+                if (firstTag.equals("LinearLayout") || firstTag.equals("TextClock")){
+                    Node nextElement = firstElement.getNextSibling();
+                    while (nextElement.getNodeType() != Node.ELEMENT_NODE){
+                        nextElement = nextElement.getNextSibling();
+                    }
+                    insertBeforeElement = (Element) nextElement;
+                }
+                else {
+                    insertBeforeElement = firstElement;
+                }
+                //Add layout width attribute
+                if (file.getAbsolutePath().contains("Center") || file.getAbsolutePath().contains("res")) {
+
+                    if (layout.getAttributes().getNamedItem("android:paddingEnd") == null) {
+                        layout.setAttribute("android:paddingEnd", "8.5dip");
+                    } else {
+                        layout.removeAttribute("android:paddingEnd");
+                        layout.setAttribute("android:paddingEnd", "8.5dip");
+                    }
                 }
 
 
                 Element toInclude = doc.createElement("include");
                 toInclude.setAttribute("android:layout_width", "wrap_content");
                 toInclude.setAttribute("android:layout_height", "fill_parent");
-                toInclude.setAttribute("android:layout_marginStart", "@*com.android.systemui:dimen/signal_cluster_margin_start");
+                toInclude.setAttribute("android:layout_marginStart", "2.5dip");
                 toInclude.setAttribute("layout", "@*com.android.systemui:layout/signal_cluster_view");
                 toInclude.setAttribute("android:gravity", "center_vertical");
 
-                if (hasLL)testElement.appendChild(toInclude);
-                if(!hasLL)layout.insertBefore(toInclude, testElement);
+                layout.insertBefore(toInclude, insertBeforeElement);
 
                 TransformerFactory transformerFactory = TransformerFactory.newInstance();
                 Transformer transformer = transformerFactory.newTransformer();
@@ -155,6 +168,7 @@ public class MoveNetworkIconsLeft {
 
     private void editSystemIcons(){
         File sysicons = new File(rootApkPath + "/res/layout/" + systemicons);
+        sysicons.mkdirs();
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
@@ -262,6 +276,8 @@ public class MoveNetworkIconsLeft {
                 java.io.OutputStream out = null;
                 try {
                     in = assetManager.open(assetDir + slash + filename + slash + systemicons);
+                    FileHelper fileHelper = new FileHelper();
+                    fileHelper.newFolder(rootApkPath + "/res/layout");
                     File outFile = new File(rootApkPath + "/res/layout/" + systemicons);
                     out = new java.io.FileOutputStream(outFile);
                     copyFile(in, out);

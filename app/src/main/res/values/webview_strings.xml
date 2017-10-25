@@ -142,7 +142,6 @@
             <ul>
                 <li>This option modifies the xml files necessary to create K-Klock on the go</li>
                 <li>Unfortunately, these xml files are different for each Rom
-                <small>(Most of the time, some Roms very close to AOSP don\'t have unique xmls. For example: Paranoid Android and VertexOS)</small></li>
                 <li>Since I don\'t have the xml files from every Rom, you\'ll have to provide these yourself</li>
                 <li>Below is an easy step-by-step guide that anyone should be able to follow</li>
 

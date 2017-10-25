@@ -41,16 +41,20 @@ public class OtherRomsHandler extends AsyncTask<Void,Void, Void>{
     ErrorHandle err;
     public OtherRomsHandler(Context context){
         this.context=context;
-        ErrorHandle errorHandle = new ErrorHandle();
-        this.err=errorHandle;
+
     }
 
     @Override
     protected Void doInBackground(Void... voids){
-        if (err.getAsyncError(context))makeMergerFolder();
-        if (err.getAsyncError(context))new editStatusBar().Execution(context);
-        if (err.getAsyncError(context))new editKeyguard().editKeyguard(context);
+        try {
+            makeMergerFolder();
+            new editKeyguard().editKeyguard(context);
+            new editStatusBar().Execution(context);
+            writeType2Desc();
 
+        }catch (Exception e){
+            Log.e("klock", e.getMessage());
+        }
         return null;
     }
 
@@ -123,6 +127,16 @@ public class OtherRomsHandler extends AsyncTask<Void,Void, Void>{
 
         }
 
+    }
+
+    public void writeType2Desc(){
+        File file = new File(rootFolder + "/temp2/merge/assets/overlays/com.android.systemui/type2");
+        String data = "Clock Style (Clock on Lockscreen Center";
+        try {
+            FileUtils.writeStringToFile(file, data);
+        }catch (IOException e){
+            Log.e("klock", e.getMessage());
+        }
     }
 
     public File newFolder(String filePath){

@@ -206,10 +206,21 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginLeft="12dp"
-            android:onClick="iconPref"
+            android:onClick="amPref"
             android:layout_marginRight="12dp"
             android:layout_alignParentStart="true"
             android:layout_below="@id/moveNetworkLeft"
+            android:text="Show Am/Pm in Stock Clock"
+            android:id="@+id/ampm"/>
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="12dp"
+            android:onClick="iconPref"
+            android:layout_marginRight="12dp"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/ampm"
             android:text="Set StatusBar Icon Color to Match the Clock"
             android:id="@+id/colorIcons"/>
         <Switch
@@ -417,7 +428,5 @@
             android:text="Loading loading loading"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large.Inverse"/>
     </RelativeLayout>
-
-
 
 </FrameLayout>

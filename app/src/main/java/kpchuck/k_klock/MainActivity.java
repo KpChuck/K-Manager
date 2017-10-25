@@ -1,11 +1,15 @@
 package kpchuck.k_klock;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.audiofx.BassBoost;
+import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -112,6 +116,40 @@ public class MainActivity extends AppCompatActivity
             android.support.v4.app.ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
 
+
+        if(Build.VERSION.SDK_INT == 26 && !getPackageManager().canRequestPackageInstalls()){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Install Apps Permission Required");
+            TextView tv = new TextView(this);
+            tv.setText(R.string.request_install_perms);
+            builder.setView(tv);
+            builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Intent k = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
+                    Uri uri = Uri.fromParts("package", getPackageName(), null);
+                    k.setData(uri);
+                    startActivity(k);
+
+                }
+            });
+            builder.setOnCancelListener(new DialogInterface.OnCancelListener(){
+
+                @Override
+                public void onCancel(DialogInterface dialogInterface) {
+                    shortToast("You will have to install K-Klock manually from the K-Klock folder without this permission granted");
+                }
+            });
+            builder.setNegativeButton("Deny", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+            builder.show();
+
+        }
+
         Switch qsSwitch = (Switch) findViewById(R.id.noQsTilesTv);
         Switch recentsSwitch = (Switch) findViewById(R.id.roundedRecents);
         Switch moveLeftSwitch = (Switch) findViewById(R.id.moveNetworkLeft);
@@ -119,7 +157,8 @@ public class MainActivity extends AppCompatActivity
         Switch iconColors = (Switch) findViewById(R.id.colorIcons);
         Switch qsBg = (Switch) findViewById(R.id.qsBg);
         Switch minit = (Switch) findViewById(R.id.minitMod);
-        Switch title = (Switch) findViewById(R.id.qsTitle);
+        Switch qstitle = (Switch) findViewById(R.id.qsTitle);
+        Switch ampm = (Switch) findViewById(R.id.ampm);
 
         final Switch indicatorSwitch = (Switch) findViewById(R.id.networkSignalIndicatorSwitch);
         final SharedPreferences pref = getSharedPreferences(prefFile, Context.MODE_PRIVATE);
@@ -129,6 +168,7 @@ public class MainActivity extends AppCompatActivity
         final SharedPreferences myPref = getSharedPreferences(prefFile, Context.MODE_PRIVATE);
         this.editor=editor;
         this.myPref=myPref;
+        ampm.setChecked(pref.getBoolean("amPref", false));
         qsSwitch.setChecked(pref.getBoolean("qsPref", false));
         iconColors.setChecked(pref.getBoolean("iconPref", false));
         recentsSwitch.setChecked(pref.getBoolean("recentsPref", false));
@@ -137,7 +177,7 @@ public class MainActivity extends AppCompatActivity
         hideStatusbar.setChecked(pref.getBoolean("hideStatusbarPref", false));
         qsBg.setChecked(pref.getBoolean("qsBgPref", false));
         minit.setChecked(pref.getBoolean("minitPref", false));
-        title.setChecked(pref.getBoolean("qsTitlePref", false));
+        qstitle.setChecked(pref.getBoolean("qsTitlePref", false));
 
 
         File rootfile = new File(rootFolder);
@@ -167,7 +207,11 @@ public class MainActivity extends AppCompatActivity
 
                         //      XmlExtractor xmlExtractor = new XmlExtractor(getApplicationContext(), relativeLayout, textView);
                         //     xmlExtractor.throwInTheDex();
+                        try{
                        handler.execute();
+                        }catch (Exception e){
+                            Log.e("klock", e.getMessage());
+                        }
 
                         xmlBuilder();
                         copyAssets("universal", "universalFiles.zip".trim());
@@ -178,12 +222,9 @@ public class MainActivity extends AppCompatActivity
                             copyAssets("universal", "recents.zip".trim());
                         if (pref.getBoolean("hideStatusbarPref", false)) copyAssets("universal", "hideStatusbar.zip".trim());
                         if(pref.getBoolean("iconPref", false)) copyAssets("universal", "colorIcons.zip".trim());
-
+                        if (pref.getBoolean("amPref", false)) copyAssets("universal", "ampm.zip");
                         if (pref.getBoolean("qsBgPref", false)) copyAssets("unviersal", "qsBgs.zip");
                         if (pref.getBoolean("qsTitlePref", false)) copyAssets("universal", "qsTitle.zip");
-
-
-                        handler.execute();
 
 
                         String[] check = new File(rootFolder).list(fileNameFilterAPK);
@@ -194,7 +235,8 @@ public class MainActivity extends AppCompatActivity
                         new apkBuilder(getApplication(), relativeLayout, textView, frameLayout).execute(apkVersion, apkVersion, apkVersion);
                     }
                     else if (!handler.checkForXmls()){
-                        Intent i = new Intent(getApplicationContext(), OtherRomsInfoActivity.class);
+                        Intent i = new Intent(getApplicationContext(), InformationWebViewActivity.class);
+                        i.putExtra("value", 4);
                         startActivity(i);
                     }
                 }
@@ -209,9 +251,13 @@ public class MainActivity extends AppCompatActivity
                     if(pref.getBoolean("iconPref", false)) copyAssets("universal", "colorIcons.zip".trim());
                     if(pref.getBoolean("recentsPref", false)) copyAssets("universal", "recents.zip".trim());
                     if (pref.getBoolean("hideStatusbarPref", false)) copyAssets("universal", "hideStatusbar.zip".trim());
-                    if(pref.getBoolean("indicatorPref", false) && getOos(romName).equals("OxygenOS")) copyAssets("universal", "indicators.zip".trim());
                     if (pref.getBoolean("qsBgPref", false)) copyAssets("unviersal", "qsBgs.zip");
                     if (pref.getBoolean("qsTitlePref", false)) copyAssets("universal", "qsTitle.zip");
+                    if (pref.getBoolean("amPref", false)) copyAssets("universal", "ampm.zip");
+
+                    if(pref.getBoolean("indicatorPref", false) && getOos(romName).equals("OxygenOS Nougat")) copyAssets("universal", "indicatorsN.zip".trim());
+                    if(pref.getBoolean("indicatorPref", false) && getOos(romName).equals("OxygenOS Oreo")) copyAssets("universal", "indicatorsO.zip".trim());
+
 
 
                     ScrollView frameLayout = (ScrollView) findViewById(R.id.defaultLayout);
@@ -336,6 +382,11 @@ public class MainActivity extends AppCompatActivity
             editor.apply();
         }
 
+    }
+
+    public void amPref(View view){
+        Switch mswitch = (Switch) findViewById(R.id.ampm);
+        setSwitchPrefs(mswitch, "amPref");
     }
 
     public void qsPref(View v){
@@ -959,7 +1010,11 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.settings) {
             Intent i = new Intent(this, SettingsActivity.class);
             startActivity(i);
-        }else if (id == R.id.otherroms_help){
+        }else if (id == R.id.telegramJoin){
+             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/kklock"));
+            startActivity(browserIntent);
+        }
+        else if (id == R.id.otherroms_help){
              Intent i = new Intent(this, InformationWebViewActivity.class);
             i.putExtra("value", 4);
             startActivity(i);

@@ -1,7 +1,9 @@
 package kpchuck.k_klock;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -165,7 +167,7 @@ public class editStatusBar{
             StreamResult result = new StreamResult(new File(rootApk + "type2_No_Clock_on_Lockscreen_Left/layout/" + "status_bar.xml"));
             transformer.transform(source, result);
         }catch (Exception e){
-            Log.d("hi",e.getMessage());
+            Log.d("klock",e.getMessage());
         }
     }
 
@@ -179,28 +181,77 @@ public class editStatusBar{
 
 
             Element rootElement = doc.getDocumentElement();
+            //Get linear layout where the clock will be inserted before
+            NodeList list = rootElement.getElementsByTagName("LinearLayout");
+            Element layout = null;
+            for (int i=0;i<list.getLength();i++){
+                layout = (Element) list.item(i);
+                Attr attr = layout.getAttributeNode("android:id");
+                if (attr.getValue().equals("@*com.android.systemui:id/status_bar_contents")) break;
+                else layout = null;
+            }
+            if (layout == null)Log.e(tag, "LinearLayout is null");
 
+            NodeList deeplist = layout.getElementsByTagName("com.android.keyguard.AlphaOptimizedLinearLayout");
+            Element systemIconArea = null;
+            for (int i=0;i<deeplist.getLength();i++){
+                systemIconArea = (Element) deeplist.item(i);
+                Attr attr = systemIconArea.getAttributeNode("android:id");
+                if (attr.getValue().equals("@*com.android.systemui:id/system_icon_area")) break;
+                else systemIconArea = null;
+            }
+            if (systemIconArea == null)Log.e(tag, "SystemIconArea is null");
+
+            //Remove all attributes from system_icon_area
+            NamedNodeMap attibutes = systemIconArea.getAttributes();
+            for (int i = 0; i < attibutes.getLength(); i++){
+
+                systemIconArea.removeAttribute(attibutes.item(i).toString());
+            }
+            //Create new system_icon_area
+            systemIconArea.setAttribute("android:orientation", "horizontal");
+            systemIconArea.setAttribute("android:id","@*com.android.systemui:id/system_icon_area");
+            systemIconArea.setAttribute("android:layout_width", "0.0dip");
+            systemIconArea.setAttribute("android:layout_weight", "1");
+            systemIconArea.setAttribute("android:layout_height", "fill_parent");
+
+
+            //Creating textclock
             Element textClock = doc.createElement("TextClock");
             textClock.setAttribute("android:format12Hour", "@*com.android.systemui:string/keyguard_widget_12_hours_format");
             textClock.setAttribute("android:format24Hour", "@*com.android.systemui:string/keyguard_widget_24_hours_format");
             textClock.setAttribute("android:textAppearance", "@*com.android.systemui:style/TextAppearance.StatusBar.Clock");
             textClock.setAttribute("android:textColor", "@*com.android.systemui:color/status_bar_clock_color");
-            textClock.setAttribute("android:layout_width", "fill_parent");
+            textClock.setAttribute("android:layout_width", "wrap_content");
             textClock.setAttribute("android:layout_height", "fill_parent");
             textClock.setAttribute("android:gravity", "center");
             textClock.setAttribute("android:singleLine", "true");
 
-            Node firstElement = rootElement.getFirstChild();
 
+
+            //Create the view layout
+            Element view = doc.createElement("View");
+            view.setAttribute("android:visibility", "invisible");
+            view.setAttribute("android:layout_width", "0.0dip");
+            view.setAttribute("android:layout_height", "fill_parent");
+            view.setAttribute("android:layout_weight", "1.0");
+
+
+
+
+            //Adding the Linear Layout to hide the clock
             Element hideyLayout = doc.createElement("LinearLayout");
-            hideyLayout.setAttribute("android:layout_width", "fill_parent");
+            hideyLayout.setAttribute("android:layout_width", "wrap_content");
             hideyLayout.setAttribute("android:layout_height", "fill_parent");
             hideyLayout.setAttribute("android:gravity", "center");
             hideyLayout.setAttribute("android:orientation", "horizontal");
             hideyLayout.setAttribute("android:id", "@*com.android.systemui:id/system_icon_area");
+            //Add text clock into linearlayout
             hideyLayout.appendChild(textClock);
 
-            rootElement.insertBefore(hideyLayout, firstElement);
+            //Insert stuff into target element
+            layout.insertBefore(hideyLayout, systemIconArea);
+            systemIconArea.insertBefore(view, systemIconArea.getFirstChild());
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
@@ -209,7 +260,7 @@ public class editStatusBar{
             StreamResult result = new StreamResult(new File(rootApk + "type2_No_Clock_on_Lockscreen_Center/layout/" + "status_bar.xml"));
             transformer.transform(source, result);
         }catch (Exception e){
-            Log.d("hi",e.getMessage());
+            Log.e("klock",e.getMessage());
         }
     }
 
@@ -323,7 +374,7 @@ public class editStatusBar{
             StreamResult result = new StreamResult(new File(rootApk + "type2_Clock_on_Lockscreen_Left/layout/" + "status_bar.xml"));
             transformer.transform(source, result);
         }catch (Exception e){
-            Log.d("hi",e.getMessage());
+            Log.d("klock",e.getMessage());
         }
     }
 
@@ -340,28 +391,68 @@ public class editStatusBar{
                 doc = handler.replaceAt(doc);
 
                 Element rootElement = doc.getDocumentElement();
+                //Get linear layout where the clock will be inserted before
+                NodeList list = rootElement.getElementsByTagName("LinearLayout");
+                Element layout = null;
+                for (int i=0;i<list.getLength();i++){
+                    layout = (Element) list.item(i);
+                    Attr attr = layout.getAttributeNode("android:id");
+                    if (attr.getValue().equals("@*com.android.systemui:id/status_bar_contents")) break;
+                    else layout = null;
+                }
 
+                NodeList deeplist = layout.getElementsByTagName("com.android.keyguard.AlphaOptimizedLinearLayout");
+                Element systemIconArea = null;
+                for (int i=0;i<deeplist.getLength();i++){
+                    systemIconArea = (Element) deeplist.item(i);
+                    Attr attr = systemIconArea.getAttributeNode("android:id");
+                    if (attr.getValue().equals("@*com.android.systemui:id/system_icon_area")) break;
+                    else systemIconArea = null;
+                }
+                //Remove all attributes from system_icon_area
+                NamedNodeMap attibutes = systemIconArea.getAttributes();
+                for (int i = 0; i < attibutes.getLength(); i++){
+                    systemIconArea.removeAttribute(attibutes.item(i).toString());
+                }
+                //Create new system_icon_area
+                systemIconArea.setAttribute("android:orientation", "horizontal");
+                systemIconArea.setAttribute("android:id","@*com.android.systemui:id/system_icon_area");
+                systemIconArea.setAttribute("android:layout_width", "0.0dip");
+                systemIconArea.setAttribute("android:layout_weight", "1");
+                systemIconArea.setAttribute("android:layout_height", "fill_parent");
+
+                //Creating textclock
                 Element textClock = doc.createElement("TextClock");
                 textClock.setAttribute("android:format12Hour", "@*com.android.systemui:string/keyguard_widget_12_hours_format");
                 textClock.setAttribute("android:format24Hour", "@*com.android.systemui:string/keyguard_widget_24_hours_format");
                 textClock.setAttribute("android:textAppearance", "@*com.android.systemui:style/TextAppearance.StatusBar.Clock");
                 textClock.setAttribute("android:textColor", "@*com.android.systemui:color/status_bar_clock_color");
-                textClock.setAttribute("android:layout_width", "fill_parent");
+                textClock.setAttribute("android:layout_width", "wrap_content");
                 textClock.setAttribute("android:layout_height", "fill_parent");
                 textClock.setAttribute("android:gravity", "center");
                 textClock.setAttribute("android:singleLine", "true");
 
-                Node firstElement = rootElement.getFirstChild();
-                rootElement.insertBefore(textClock, firstElement);
+                //Create the view layout
+                Element view = doc.createElement("View");
+                view.setAttribute("android:visibility", "invisible");
+                view.setAttribute("android:layout_width", "0.0dip");
+                view.setAttribute("android:layout_height", "fill_parent");
+                view.setAttribute("android:layout_weight", "1.0");
 
+
+                //Adding the Linear Layout to hide the clock
                 Element hideyLayout = doc.createElement("LinearLayout");
-                hideyLayout.setAttribute("android:layout_width", "fill_parent");
+                hideyLayout.setAttribute("android:layout_width", "wrap_content");
                 hideyLayout.setAttribute("android:layout_height", "fill_parent");
                 hideyLayout.setAttribute("android:gravity", "center");
                 hideyLayout.setAttribute("android:orientation", "horizontal");
                 hideyLayout.setAttribute("android:id", "@*com.android.systemui:id/system_icon_area");
+                //Add LinearLayout to the start of rootelemnt
+                rootElement.insertBefore(hideyLayout, rootElement.getFirstChild());
 
-                rootElement.insertBefore(hideyLayout, firstElement);
+                //Insert stuff into target element
+                layout.insertBefore(textClock, systemIconArea);
+                systemIconArea.insertBefore(view, systemIconArea.getFirstChild());
 
 
                 TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -371,7 +462,7 @@ public class editStatusBar{
                 StreamResult result = new StreamResult(new File(rootApk + "res/layout/" + "status_bar.xml"));
                 transformer.transform(source, result);
             }catch (Exception e){
-                Log.d("hi",e.getMessage());
+                Log.d("klock",e.getMessage());
             }
         }
 
