@@ -1,19 +1,14 @@
 package kpchuck.k_klock;
 
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.media.audiofx.BassBoost;
 import android.os.Build;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -49,18 +44,18 @@ import com.kbeanie.multipicker.api.ImagePicker;
 import com.kbeanie.multipicker.api.Picker;
 import com.kbeanie.multipicker.api.callbacks.ImagePickerCallback;
 import com.kbeanie.multipicker.api.entity.ChosenImage;
-import com.nbsp.materialfilepicker.MaterialFilePicker;
-import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Pattern;
 
+import gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner;
+import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener;
+import kpchuck.k_klock.Adapters.SimpleListAdapter;
 import kpchuck.k_klock.Dialog.DialogHelper;
+import kpchuck.k_klock.Interfaces.BtnClickListener;
 import kpchuck.k_klock.Interfaces.PositiveClickListener;
 import kpchuck.k_klock.Utils.FileHelper;
 
@@ -293,7 +288,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-       Spinner spinner = (Spinner) findViewById(kpchuck.k_klock.R.id.romSelectionSpinner);
+       /*Spinner spinner = (Spinner) findViewById(kpchuck.k_klock.R.id.romSelectionSpinner);
         //Make array generation automatic
         getArrayForRoms();
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, roms);
@@ -316,6 +311,29 @@ public class MainActivity extends AppCompatActivity
             } // to close the onItemSelected
             public void onNothingSelected(android.widget.AdapterView<?> parent)
             {
+
+            }
+        });*/
+        getArrayForRoms();
+
+        final SearchableSpinner searchableSpinner = (SearchableSpinner) findViewById(R.id.romSelectionSpinner);
+        final SimpleListAdapter simpleListAdapter = new SimpleListAdapter(this, roms);
+        searchableSpinner.setAdapter(simpleListAdapter);
+        searchableSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(View view, int position, long id) {
+                String selectedItem = simpleListAdapter.getItem(position).toString();
+                shortToast(selectedItem);
+                meditor.putString("selectedRom", selectedItem);
+                meditor.apply();
+                if (getOos(selectedItem).equals("OxygenOS")){
+                    indicatorSwitch.setVisibility(View.VISIBLE);
+                }else indicatorSwitch.setVisibility(View.GONE);
+
+            } // to close the onItemSelected
+
+            @Override
+            public void onNothingSelected() {
 
             }
         });
@@ -955,7 +973,7 @@ public class MainActivity extends AppCompatActivity
         try {
             String[] temp = getAssets().list("romSpecific");
             Arrays.sort(temp);
-            roms.add(getResources().getString(R.string.chooseRom));
+            //roms.add(getResources().getString(R.string.chooseRom));
             for(String s:temp){
                 s = s.substring(0, s.lastIndexOf('.'));
                 roms.add(s);
