@@ -5,6 +5,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.media.audiofx.BassBoost;
 import android.os.Build;
 import android.os.Environment;
@@ -59,6 +60,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import kpchuck.k_klock.Dialog.DialogHelper;
+import kpchuck.k_klock.Interfaces.PositiveClickListener;
 import kpchuck.k_klock.Utils.FileHelper;
 
 
@@ -179,6 +182,7 @@ public class MainActivity extends AppCompatActivity
         minit.setChecked(pref.getBoolean("minitPref", false));
         qstitle.setChecked(pref.getBoolean("qsTitlePref", false));
 
+        if(myPref.getBoolean("joinTelegram", false)) promptTelegram();
 
         File rootfile = new File(rootFolder);
         if(!rootfile.exists()){
@@ -1041,6 +1045,33 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void promptTelegram(){
+        DialogHelper dialogHelper = new DialogHelper();
+        if (appInstalledOrNot("org.telegram.messenger ")){
+            PositiveClickListener positiveClickListener = new PositiveClickListener() {
+                @Override
+                public void onBtnClick() {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/kklock"));
+                    startActivity(browserIntent);
+                }
+            };
+            dialogHelper.simpleDialogText("K-Klock Telegram", getString(R.string.joinTelegram), positiveClickListener);
+        }
+        editor.putBoolean("joinTelegram", false);
+        editor.apply();
+    }
+
+    private boolean appInstalledOrNot(String uri) {
+        PackageManager pm = getPackageManager();
+        try {
+            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+        }
+
+        return false;
     }
 
     private void copyAssets(String assetDir, String whichString) {
