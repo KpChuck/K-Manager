@@ -323,7 +323,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemSelected(View view, int position, long id) {
                 String selectedItem = simpleListAdapter.getItem(position).toString();
-                shortToast(selectedItem);
                 meditor.putString("selectedRom", selectedItem);
                 meditor.apply();
                 if (getOos(selectedItem).equals("OxygenOS")){

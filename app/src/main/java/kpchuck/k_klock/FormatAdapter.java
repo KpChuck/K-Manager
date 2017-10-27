@@ -2,7 +2,6 @@ package kpchuck.k_klock;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -10,10 +9,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.ArrayList;
-import java.util.Collections;
+
+import kpchuck.k_klock.Interfaces.BtnClickListener;
 
 /**
  * Created by Karol Przestrzelski on 27/08/2017.

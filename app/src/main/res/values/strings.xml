@@ -121,5 +121,6 @@
 
     <string name="cleared_saved">Saved Values Cleared</string>
     <string name="title_activity_information_web_view">InformationWebViewActivity</string>
-
+    <string name="joinTelegram">You have telegram installed, do you want to join my telegram group?</string>
+    <string name="spinner_hint">Select your Rom</string>
 </resources>
