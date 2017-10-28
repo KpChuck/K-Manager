@@ -58,12 +58,16 @@ public class editKeyguard{
         doc = handler.replaceAt(doc);
 
         File dest = new File(rootFolder + slash + "temp2" + slash + "merge" + "/assets/overlays/com.android.systemui/type2_No_Clock_on_Lockscreen_Right"+ slash+"layout");
+        File dest2 = new File(rootFolder + slash + "temp2" + slash + "merge" + "assets/overlays/com.android.systemui/type2_Stock_Clock_Right" + slash + "layout");
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         DOMSource source = new DOMSource(doc);
 
-        StreamResult result = new StreamResult(dest);
-        transformer.transform(source, result);
+        for (File f: new File[]{dest, dest2}) {
+            StreamResult result = new StreamResult(f);
+
+            transformer.transform(source, result);
+        }
 
         }
     catch (Exception e){}

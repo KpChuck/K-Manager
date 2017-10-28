@@ -120,7 +120,8 @@ public class OtherRomsHandler extends AsyncTask<Void,Void, Void>{
         File s = newFolder(f + "/assets/overlays/com.android.systemui");
         String t = s.getAbsolutePath();
         String[] startFolder = {"res", "type2_Clock_on_Lockscreen_Right", "type2_Clock_on_Lockscreen_Left", "type2_No_Clock_on_Lockscreen_Center",
-                "type2_No_Clock_on_Lockscreen_Right", "type2_No_Clock_on_Lockscreen_Left"};
+                "type2_No_Clock_on_Lockscreen_Right", "type2_No_Clock_on_Lockscreen_Left", "type2_Stock_Clock_Center", "type2_Stock_Clock_Left",
+                "type2_Stock_Clock_Right"};
         for(String k :startFolder){
             newFolder(t + slash + k);
             newFolder(t + slash + k + "/layout") ;
