@@ -1,7 +1,6 @@
 package kpchuck.k_klock;
 
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -39,11 +38,6 @@ import android.net.Uri;
 import android.content.Intent;
 import android.widget.Toast;
 
-import com.kbeanie.multipicker.api.ImagePicker;
-import com.kbeanie.multipicker.api.Picker;
-import com.kbeanie.multipicker.api.callbacks.ImagePickerCallback;
-import com.kbeanie.multipicker.api.entity.ChosenImage;
-
 import org.apache.commons.io.FilenameUtils;
 
 import java.util.Arrays;
@@ -56,7 +50,7 @@ import kpchuck.k_klock.Adapters.ColorAdapter;
 import kpchuck.k_klock.Adapters.FormatAdapter;
 import kpchuck.k_klock.Adapters.SimpleListAdapter;
 import kpchuck.k_klock.Interfaces.BtnClickListener;
-import kpchuck.k_klock.Interfaces.PositiveClickListener;
+import kpchuck.k_klock.Interfaces.DialogClickListener;
 import kpchuck.k_klock.Utils.FileHelper;
 import kpchuck.k_klock.Utils.PrefUtils;
 
@@ -278,148 +272,6 @@ public class MainActivity extends AppCompatActivity
         if (oos.length() <8) return "thisIsNotOxygenOS";
         oos = oos.substring(0, 8);
         return oos;
-    }
-
-    public void iconPref(View v){
-        Switch qsSwitch = (Switch) findViewById(R.id.colorIcons);
-        prefUtils.setSwitchPrefs(qsSwitch, "iconPref");
-    }
-
-    private ImagePicker imagePicker;
-
-    public void qsBgPref(View v){
-        final Switch qsSwitch = (Switch) findViewById(R.id.qsBg);
-        if(qsSwitch.isChecked()) {
-
-            imagePicker = new ImagePicker(this);
-            imagePicker.setImagePickerCallback(new ImagePickerCallback(){
-                @Override
-                public void onImagesChosen(List<ChosenImage> images) {
-
-                    String filePath = images.get(0).getOriginalPath();
-
-                    if (!filePath.substring(filePath.lastIndexOf("."), filePath.length()).equals(".png")){
-                        shortToast("The image you have chosen is not a png. Convert it to a png and try again");
-                        prefUtils.putBool("qsBgPref", false);
-                        qsSwitch.setChecked(false);
-                        prefUtils.remove("qsBgFilePath");
-                        new File(filePath).delete();
-                    }
-                    else{
-                        prefUtils.putString("qsBgFilePath", filePath);
-                        prefUtils.putBool("qsBgPref", true);
-                    }
-                    File dir = new File(new File(filePath).getParent());
-                    String[] files = dir.list();
-                    for (String f: files){
-                        String check = dir.getAbsolutePath() + slash + f;
-                        if (!filePath.equals(check)){
-                            new File(check).delete();
-                        }
-                    }
-                }
-
-                @Override
-                public void onError(String message) {
-                    // Do error handling
-                    prefUtils.putBool("qsBgPref", false);
-                    prefUtils.remove("qsBgFilePath");
-                    qsSwitch.setChecked(false);
-                }}
-            );
-            imagePicker.pickImage();
-
-        }else{
-            prefUtils.putBool("qsBgPref", false);
-            prefUtils.remove("qsBgFilePath");
-        }
-
-    }
-
-    public void amPref(View view){
-        Switch mswitch = (Switch) findViewById(R.id.ampm);
-        prefUtils.setSwitchPrefs(mswitch, "amPref");
-    }
-
-    public void qsPref(View v){
-        Switch qsSwitch = (Switch) findViewById(R.id.noQsTilesTv);
-        prefUtils.setSwitchPrefs(qsSwitch, "qsPref");
-    }
-
-    public void titlePref(View v){
-        Switch mswitch = (Switch) findViewById(R.id.qsTitle);
-        prefUtils.setSwitchPrefs(mswitch, "qsTitlePref");
-    }
-
-    public void hideStatusbarPref(View v){
-        Switch mswitch = (Switch) findViewById(R.id.hideStatusbar);
-        prefUtils.setSwitchPrefs(mswitch, "hideStatusbarPref");
-    }
-
-    public void moveLeftPref(View v){
-        Switch qsSwitch = (Switch) findViewById(R.id.moveNetworkLeft);
-        prefUtils.setSwitchPrefs(qsSwitch, "moveLeftPref");
-
-    }
-
-    public void recentsPref(View v){
-
-        Switch qsSwitch = (Switch) findViewById(R.id.roundedRecents);
-        prefUtils.setSwitchPrefs(qsSwitch, "recentsPref");
-    }
-
-    public void indicatorPref(View v){
-        Switch qsSwitch = (Switch) findViewById(R.id.networkSignalIndicatorSwitch);
-        prefUtils.setSwitchPrefs(qsSwitch, "indicatorPref");
-        }
-
-
-    public void minitPref(View v){
-        final Switch mswitch = (Switch) findViewById(R.id.minitMod);
-        if(mswitch.isChecked()){
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("IMPORTANT");
-            TextView tv = new TextView(this);
-            tv.setText(R.string.minit_disclaimer);
-            builder.setView(tv);
-            builder.setPositiveButton("Enable", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    prefUtils.putBool("minitPref", true);
-                }
-            });
-            builder.setOnCancelListener(new DialogInterface.OnCancelListener(){
-
-                @Override
-                public void onCancel(DialogInterface dialogInterface) {
-                    prefUtils.putBool("minitPref", false);
-                    mswitch.setChecked(false);
-                }
-            });
-            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-            builder.show();
-        }else prefUtils.putBool("minitPref", false);
-
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == RESULT_OK) {
-            if(requestCode == Picker.PICK_IMAGE_DEVICE) {
-                imagePicker.submit(data);
-            }
-        }else{
-            Switch qsSwitch = (Switch) findViewById(R.id.qsBg);
-            prefUtils.putBool("qsBgPref", false);
-            prefUtils.remove("qsBgFilePath");
-            qsSwitch.setChecked(false);
-
-        }
     }
 
     public boolean checkQsFile(){
@@ -947,7 +799,7 @@ public class MainActivity extends AppCompatActivity
 
     private void promptTelegram(){
         if (isPackageInstalled("org.telegram.messenger", getApplicationContext().getPackageManager()) ){
-            PositiveClickListener positiveClickListener = new PositiveClickListener() {
+            DialogClickListener positiveClickListener = new DialogClickListener() {
                 @Override
                 public void onBtnClick() {
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/kklock"));
@@ -968,7 +820,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    public void simpleDialogText(String title, String message, final PositiveClickListener positiveClick){
+    public void simpleDialogText(String title, String message, final DialogClickListener positiveClick){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title);
         TextView tv = new TextView(this);
