@@ -26,8 +26,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Spinner;
-import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
 import android.content.DialogInterface;
@@ -39,6 +37,7 @@ import java.io.IOException;
 import java.io.File;
 import android.net.Uri;
 import android.content.Intent;
+import android.widget.Toast;
 
 import com.kbeanie.multipicker.api.ImagePicker;
 import com.kbeanie.multipicker.api.Picker;
@@ -53,11 +52,13 @@ import java.util.List;
 
 import gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner;
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener;
+import kpchuck.k_klock.Adapters.ColorAdapter;
+import kpchuck.k_klock.Adapters.FormatAdapter;
 import kpchuck.k_klock.Adapters.SimpleListAdapter;
-import kpchuck.k_klock.Dialog.DialogHelper;
 import kpchuck.k_klock.Interfaces.BtnClickListener;
 import kpchuck.k_klock.Interfaces.PositiveClickListener;
 import kpchuck.k_klock.Utils.FileHelper;
+import kpchuck.k_klock.Utils.PrefUtils;
 
 
 public class MainActivity extends AppCompatActivity
@@ -68,10 +69,8 @@ public class MainActivity extends AppCompatActivity
     ArrayList<String> formatsTitles = new ArrayList<String>();
     ArrayList<String> colorsValues = new ArrayList<String>();
     ArrayList<String> formatsValues = new ArrayList<String>();
-    String prefFile = "prefFileName";
     String slash = "/";
-    SharedPreferences myPref;
-    SharedPreferences.Editor editor;
+    PrefUtils prefUtils;
 
     String rootFolder = android.os.Environment.getExternalStorageDirectory() + slash + "K-Klock";
     int PERMISSION_ALL = 1;
@@ -109,6 +108,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         betaString = getResources().getString(R.string.otherRomsBeta);
+        new FileHelper().newFolder(rootFolder + "/userInput");
 
         if(!hasPermissions(this, PERMISSIONS)){
             android.support.v4.app.ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
@@ -148,6 +148,9 @@ public class MainActivity extends AppCompatActivity
 
         }
 
+        final Switch indicatorSwitch = (Switch) findViewById(R.id.networkSignalIndicatorSwitch);
+        this.prefUtils = new PrefUtils(getApplicationContext());
+
         Switch qsSwitch = (Switch) findViewById(R.id.noQsTilesTv);
         Switch recentsSwitch = (Switch) findViewById(R.id.roundedRecents);
         Switch moveLeftSwitch = (Switch) findViewById(R.id.moveNetworkLeft);
@@ -158,26 +161,20 @@ public class MainActivity extends AppCompatActivity
         Switch qstitle = (Switch) findViewById(R.id.qsTitle);
         Switch ampm = (Switch) findViewById(R.id.ampm);
 
-        final Switch indicatorSwitch = (Switch) findViewById(R.id.networkSignalIndicatorSwitch);
-        final SharedPreferences pref = getSharedPreferences(prefFile, Context.MODE_PRIVATE);
-        final SharedPreferences.Editor meditor = pref.edit();
-        SharedPreferences.Editor editor = pref.edit();
+        ampm.setChecked(prefUtils.getBool("amPref"));
+        qsSwitch.setChecked(prefUtils.getBool("qsPref"));
+        iconColors.setChecked(prefUtils.getBool("iconPref"));
+        recentsSwitch.setChecked(prefUtils.getBool("recentsPref"));
+        indicatorSwitch.setChecked(prefUtils.getBool("indicatorPref"));
+        moveLeftSwitch.setChecked(prefUtils.getBool("moveLeftPref"));
+        hideStatusbar.setChecked(prefUtils.getBool("hideStatusbarPref"));
+        qsBg.setChecked(prefUtils.getBool("qsBgPref"));
+        minit.setChecked(prefUtils.getBool("minitPref"));
+        qstitle.setChecked(prefUtils.getBool("qsTitlePref"));
 
-        final SharedPreferences myPref = getSharedPreferences(prefFile, Context.MODE_PRIVATE);
-        this.editor=editor;
-        this.myPref=myPref;
-        ampm.setChecked(pref.getBoolean("amPref", false));
-        qsSwitch.setChecked(pref.getBoolean("qsPref", false));
-        iconColors.setChecked(pref.getBoolean("iconPref", false));
-        recentsSwitch.setChecked(pref.getBoolean("recentsPref", false));
-        indicatorSwitch.setChecked(pref.getBoolean("indicatorPref", false));
-        moveLeftSwitch.setChecked(pref.getBoolean("moveLeftPref", false));
-        hideStatusbar.setChecked(pref.getBoolean("hideStatusbarPref", false));
-        qsBg.setChecked(pref.getBoolean("qsBgPref", false));
-        minit.setChecked(pref.getBoolean("minitPref", false));
-        qstitle.setChecked(pref.getBoolean("qsTitlePref", false));
+        if (!getOos(prefUtils.getString("selectedRom", getString(R.string.chooseRom))).equals("OxygenOS")) indicatorSwitch.setVisibility(View.GONE);
 
-        if(myPref.getBoolean("joinTelegram", false)) promptTelegram();
+        if(prefUtils.getBoolTrue("joinTelegram")) promptTelegram();
 
         File rootfile = new File(rootFolder);
         if(!rootfile.exists()){
@@ -188,50 +185,18 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
 
-                if (myPref.getBoolean("gsBgPref", false) && !checkQsFile()) return;
+                if (prefUtils.getBool("gsBgPref") && !checkQsFile()) return;
 
-                new ErrorHandle().resetAsyncError(getApplicationContext());
-
-                String romName = pref.getString("selectedRom", getResources().getString(R.string.chooseRom));
+                String romName = prefUtils.getString("selectedRom", getString(R.string.chooseRom));
                 if(romName.equals(getResources().getString(R.string.chooseRom))){
                     shortToast(getResources().getString(R.string.selectRomToast));
+
                 }
                 else if(romName.equals(betaString)) {
                     OtherRomsHandler handler = new OtherRomsHandler(getApplicationContext());
                     if (handler.checkForXmls()) {
-
-                        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.loadingId);
-                        TextView textView = (TextView) findViewById(R.id.loadingTextView);
-                        ScrollView frameLayout = (ScrollView) findViewById(R.id.defaultLayout);
-
-                        //      XmlExtractor xmlExtractor = new XmlExtractor(getApplicationContext(), relativeLayout, textView);
-                        //     xmlExtractor.throwInTheDex();
-                        try{
                        handler.execute();
-                        }catch (Exception e){
-                            Log.e("klock", e.getMessage());
-                        }
-
-                        xmlBuilder();
-                        copyAssets("universal", "universalFiles.zip".trim());
-
-                        if (pref.getBoolean("qsPref", false))
-                            copyAssets("universal", "qsTiles.zip".trim());
-                        if (pref.getBoolean("recentsPref", false))
-                            copyAssets("universal", "recents.zip".trim());
-                        if (pref.getBoolean("hideStatusbarPref", false)) copyAssets("universal", "hideStatusbar.zip".trim());
-                        if(pref.getBoolean("iconPref", false)) copyAssets("universal", "colorIcons.zip".trim());
-                        if (pref.getBoolean("amPref", false)) copyAssets("universal", "ampm.zip");
-                        if (pref.getBoolean("qsBgPref", false)) copyAssets("unviersal", "qsBgs.zip");
-                        if (pref.getBoolean("qsTitlePref", false)) copyAssets("universal", "qsTitle.zip");
-
-
-                        String[] check = new File(rootFolder).list(fileNameFilterAPK);
-
-                        int k = decreaseToLowest(check);
-                        String apkVersion = "K-Klock v" + k + ".apk";
-
-                        new apkBuilder(getApplication(), relativeLayout, textView, frameLayout).execute(apkVersion, apkVersion, apkVersion);
+                       buildingProcess(romName);
                     }
                     else if (!handler.checkForXmls()){
                         Intent i = new Intent(getApplicationContext(), InformationWebViewActivity.class);
@@ -242,37 +207,7 @@ public class MainActivity extends AppCompatActivity
 
                 else if(!romName.equals("") || !romName.equals(betaString)) {
                     copyAssets("romSpecific", romName+".zip".trim());
-
-                    xmlBuilder();
-                    copyAssets("universal", "universalFiles.zip".trim());
-
-                    if(pref.getBoolean("qsPref", false)) copyAssets("universal", "qsTiles.zip".trim());
-                    if(pref.getBoolean("iconPref", false)) copyAssets("universal", "colorIcons.zip".trim());
-                    if(pref.getBoolean("recentsPref", false)) copyAssets("universal", "recents.zip".trim());
-                    if (pref.getBoolean("hideStatusbarPref", false)) copyAssets("universal", "hideStatusbar.zip".trim());
-                    if (pref.getBoolean("qsBgPref", false)) copyAssets("unviersal", "qsBgs.zip");
-                    if (pref.getBoolean("qsTitlePref", false)) copyAssets("universal", "qsTitle.zip");
-                    if (pref.getBoolean("amPref", false)) copyAssets("universal", "ampm.zip");
-
-                    if(pref.getBoolean("indicatorPref", false) && getOos(romName).equals("OxygenOS Nougat")) copyAssets("universal", "indicatorsN.zip".trim());
-                    if(pref.getBoolean("indicatorPref", false) && getOos(romName).equals("OxygenOS Oreo")) copyAssets("universal", "indicatorsO.zip".trim());
-
-
-
-                    ScrollView frameLayout = (ScrollView) findViewById(R.id.defaultLayout);
-
-
-                    RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.loadingId);
-                    TextView textView = (TextView) findViewById(R.id.loadingTextView);
-
-                    String[] check = new File(rootFolder).list(fileNameFilterAPK);
-
-                    int k = decreaseToLowest(check);
-                    String apkVersion = "K-Klock v" + k + ".apk";
-
-                    new apkBuilder(getApplication(), relativeLayout, textView, frameLayout).execute(apkVersion,apkVersion,apkVersion);
-
-
+                    buildingProcess(romName);
             }}
 
 
@@ -288,43 +223,17 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-       /*Spinner spinner = (Spinner) findViewById(kpchuck.k_klock.R.id.romSelectionSpinner);
-        //Make array generation automatic
-        getArrayForRoms();
-        ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, roms);
-        spinner.setAdapter(adapter);
-        String romName = pref.getString("selectedRom", "");
-        if(!romName.equals(getResources().getString(R.string.chooseRom))){
-            spinner.setSelection(adapter.getPosition(romName));
-        }
-        spinner.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener()
-        {
-            public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id)
-            {
-                String selectedItem = parent.getItemAtPosition(position).toString();
-                meditor.putString("selectedRom", selectedItem);
-                meditor.apply();
-                if (getOos(selectedItem).equals("OxygenOS")){
-                    indicatorSwitch.setVisibility(View.VISIBLE);
-                }else indicatorSwitch.setVisibility(View.GONE);
-
-            } // to close the onItemSelected
-            public void onNothingSelected(android.widget.AdapterView<?> parent)
-            {
-
-            }
-        });*/
         getArrayForRoms();
 
         final SearchableSpinner searchableSpinner = (SearchableSpinner) findViewById(R.id.romSelectionSpinner);
         final SimpleListAdapter simpleListAdapter = new SimpleListAdapter(this, roms);
         searchableSpinner.setAdapter(simpleListAdapter);
+        searchableSpinner.setSelectedItem(prefUtils.getString("selectedRom", getString(R.string.chooseRom)));
         searchableSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
             public void onItemSelected(View view, int position, long id) {
                 String selectedItem = simpleListAdapter.getItem(position).toString();
-                meditor.putString("selectedRom", selectedItem);
-                meditor.apply();
+                prefUtils.putString("selectedRom", selectedItem);
                 if (getOos(selectedItem).equals("OxygenOS")){
                     indicatorSwitch.setVisibility(View.VISIBLE);
                 }else indicatorSwitch.setVisibility(View.GONE);
@@ -338,9 +247,34 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    private void buildingProcess(String romName) {
+        xmlBuilder();
+        copyAssets("universal", "universalFiles.zip".trim());
+
+        if(prefUtils.getBool("qsPref")) copyAssets("universal", "qsTiles.zip".trim());
+        if(prefUtils.getBool("iconPref")) copyAssets("universal", "colorIcons.zip".trim());
+        if(prefUtils.getBool("recentsPref")) copyAssets("universal", "recents.zip".trim());
+        if (prefUtils.getBool("hideStatusbarPref")) copyAssets("universal", "hideStatusbar.zip".trim());
+        if (prefUtils.getBool("qsBgPref")) copyAssets("unviersal", "qsBgs.zip");
+        if (prefUtils.getBool("qsTitlePref")) copyAssets("universal", "qsTitle.zip");
+        if (prefUtils.getBool("amPref")) copyAssets("universal", "ampm.zip");
+        if(prefUtils.getBool("indicatorPref") && getOos(romName).equals("OxygenOS Nougat")) copyAssets("universal", "indicatorsN.zip".trim());
+        if(prefUtils.getBool("indicatorPref") && getOos(romName).equals("OxygenOS Oreo")) copyAssets("universal", "indicatorsO.zip".trim());
 
 
-    public String getOos(String oos){
+        ScrollView frameLayout = (ScrollView) findViewById(R.id.defaultLayout);
+        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.loadingId);
+        TextView textView = (TextView) findViewById(R.id.loadingTextView);
+
+        String[] check = new File(rootFolder).list(fileNameFilterAPK);
+        int k = decreaseToLowest(check);
+        String apkVersion = "K-Klock v" + k + ".apk";
+
+        new apkBuilder(getApplication(), relativeLayout, textView, frameLayout).execute(apkVersion,apkVersion,apkVersion);
+    }
+
+
+    private String getOos(String oos){
         if (oos.length() <8) return "thisIsNotOxygenOS";
         oos = oos.substring(0, 8);
         return oos;
@@ -348,7 +282,7 @@ public class MainActivity extends AppCompatActivity
 
     public void iconPref(View v){
         Switch qsSwitch = (Switch) findViewById(R.id.colorIcons);
-        setSwitchPrefs(qsSwitch, "iconPref");
+        prefUtils.setSwitchPrefs(qsSwitch, "iconPref");
     }
 
     private ImagePicker imagePicker;
@@ -366,16 +300,15 @@ public class MainActivity extends AppCompatActivity
 
                     if (!filePath.substring(filePath.lastIndexOf("."), filePath.length()).equals(".png")){
                         shortToast("The image you have chosen is not a png. Convert it to a png and try again");
-                        editor.putBoolean("qsBgPref", false);
+                        prefUtils.putBool("qsBgPref", false);
                         qsSwitch.setChecked(false);
-                        editor.remove("qsBgFilePath");
+                        prefUtils.remove("qsBgFilePath");
                         new File(filePath).delete();
                     }
                     else{
-                        editor.putString("qsBgFilePath", filePath);
-                        editor.putBoolean("qsBgPref", true);
+                        prefUtils.putString("qsBgFilePath", filePath);
+                        prefUtils.putBool("qsBgPref", true);
                     }
-                    editor.apply();
                     File dir = new File(new File(filePath).getParent());
                     String[] files = dir.list();
                     for (String f: files){
@@ -389,68 +322,57 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void onError(String message) {
                     // Do error handling
-                    editor.putBoolean("qsBgPref", false);
-                    editor.remove("qsBgFilePath");
-                    editor.apply();
+                    prefUtils.putBool("qsBgPref", false);
+                    prefUtils.remove("qsBgFilePath");
                     qsSwitch.setChecked(false);
                 }}
             );
             imagePicker.pickImage();
 
         }else{
-            editor.putBoolean("qsBgPref", false);
-            editor.remove("qsBgFilePath");
-            editor.apply();
+            prefUtils.putBool("qsBgPref", false);
+            prefUtils.remove("qsBgFilePath");
         }
 
     }
 
     public void amPref(View view){
         Switch mswitch = (Switch) findViewById(R.id.ampm);
-        setSwitchPrefs(mswitch, "amPref");
+        prefUtils.setSwitchPrefs(mswitch, "amPref");
     }
 
     public void qsPref(View v){
         Switch qsSwitch = (Switch) findViewById(R.id.noQsTilesTv);
-        setSwitchPrefs(qsSwitch, "qsPref");
+        prefUtils.setSwitchPrefs(qsSwitch, "qsPref");
     }
 
     public void titlePref(View v){
         Switch mswitch = (Switch) findViewById(R.id.qsTitle);
-        setSwitchPrefs(mswitch, "qsTitlePref");
+        prefUtils.setSwitchPrefs(mswitch, "qsTitlePref");
     }
 
     public void hideStatusbarPref(View v){
         Switch mswitch = (Switch) findViewById(R.id.hideStatusbar);
-        setSwitchPrefs(mswitch, "hideStatusbarPref");
+        prefUtils.setSwitchPrefs(mswitch, "hideStatusbarPref");
     }
 
     public void moveLeftPref(View v){
         Switch qsSwitch = (Switch) findViewById(R.id.moveNetworkLeft);
-        setSwitchPrefs(qsSwitch, "moveLeftPref");
+        prefUtils.setSwitchPrefs(qsSwitch, "moveLeftPref");
 
     }
 
     public void recentsPref(View v){
 
         Switch qsSwitch = (Switch) findViewById(R.id.roundedRecents);
-        setSwitchPrefs(qsSwitch, "recentsPref");
+        prefUtils.setSwitchPrefs(qsSwitch, "recentsPref");
     }
 
     public void indicatorPref(View v){
         Switch qsSwitch = (Switch) findViewById(R.id.networkSignalIndicatorSwitch);
-        setSwitchPrefs(qsSwitch, "indicatorPref");
+        prefUtils.setSwitchPrefs(qsSwitch, "indicatorPref");
         }
 
-    public void setSwitchPrefs(Switch mswitch, String key){
-         if(mswitch.isChecked()) {
-            editor.putBoolean(key, true);
-            editor.apply();
-        }else{
-            editor.putBoolean(key, false);
-            editor.apply();
-        }
-    }
 
     public void minitPref(View v){
         final Switch mswitch = (Switch) findViewById(R.id.minitMod);
@@ -463,16 +385,14 @@ public class MainActivity extends AppCompatActivity
             builder.setPositiveButton("Enable", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    editor.putBoolean("minitPref", true);
-                    editor.apply();
+                    prefUtils.putBool("minitPref", true);
                 }
             });
             builder.setOnCancelListener(new DialogInterface.OnCancelListener(){
 
                 @Override
                 public void onCancel(DialogInterface dialogInterface) {
-                    editor.putBoolean("minitPref", false);
-                    editor.apply();
+                    prefUtils.putBool("minitPref", false);
                     mswitch.setChecked(false);
                 }
             });
@@ -483,10 +403,8 @@ public class MainActivity extends AppCompatActivity
                 }
             });
             builder.show();
-        }else {
-             editor.putBoolean("minitPref", false);
-                    editor.apply();
-        }
+        }else prefUtils.putBool("minitPref", false);
+
     }
 
     @Override
@@ -497,16 +415,15 @@ public class MainActivity extends AppCompatActivity
             }
         }else{
             Switch qsSwitch = (Switch) findViewById(R.id.qsBg);
-            editor.putBoolean("qsBgPref", false);
-            editor.remove("qsBgFilePath");
-            editor.apply();
+            prefUtils.putBool("qsBgPref", false);
+            prefUtils.remove("qsBgFilePath");
             qsSwitch.setChecked(false);
 
         }
     }
 
     public boolean checkQsFile(){
-        String path = myPref.getString("qsBgFilePath", "null");
+        String path = prefUtils.getString("qsBgFilePath", "null");
         if (path=="null") return  false;
         File file = new File(path);
         if (!file.exists()) return false;
@@ -584,12 +501,12 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences bleh = PreferenceManager.getDefaultSharedPreferences(this);
         if(bleh.getBoolean("saveColors", true)){
            try {
-               colorsTitles = loadArray(colorsTitles, "colorsTitles");
+               colorsTitles = prefUtils.loadArray(colorsTitles, "colorsTitles");
            }catch(Exception e){
                Log.d("klock", e.getMessage());
            }
             try {
-                colorsValues = loadArray(colorsValues, "colorsValues");
+                colorsValues = prefUtils.loadArray(colorsValues, "colorsValues");
             }catch(Exception e){
                 Log.d("klock", e.getMessage());
             }
@@ -669,12 +586,12 @@ public class MainActivity extends AppCompatActivity
         if(bleh.getBoolean("saveFormats", true)){
             formatsTitles.clear();
             try {
-                formatsTitles = loadArray(formatsTitles, "formatsTitles");
+                formatsTitles = prefUtils.loadArray(formatsTitles, "formatsTitles");
             }catch(Exception e){
                 Log.d("klock", e.getMessage());
             }
             try {
-                formatsValues = loadArray(formatsValues, "formatsValues");
+                formatsValues = prefUtils.loadArray(formatsValues, "formatsValues");
             }catch(Exception e){
                 Log.d("klock", e.getMessage());
             }
@@ -748,14 +665,14 @@ public class MainActivity extends AppCompatActivity
         FileHelper fileHelper = new FileHelper();
 
         if(bleh.getBoolean(toSaveBoolKey, true)){
-            titles = loadArray(titles, titleArrayKey);
-            values = loadArray(values, valueArrayKey);
+            titles = prefUtils.loadArray(titles, titleArrayKey);
+            values = prefUtils.loadArray(values, valueArrayKey);
 
             titles = fileHelper.deleteItemFromArray(title, titles);
             values = fileHelper.deleteItemFromArray(value, values);
 
-            saveArray(titles, titleArrayKey);
-            saveArray(values, valueArrayKey);
+            prefUtils.saveArray(titles, titleArrayKey);
+            prefUtils.saveArray(values, valueArrayKey);
         }else {
             fileHelper.deleteItemFromArray(title, titles);
             fileHelper.deleteItemFromArray(value, values);
@@ -784,9 +701,9 @@ public class MainActivity extends AppCompatActivity
                 SharedPreferences bleh = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 if(bleh.getBoolean(toSaveBoolKey, true)){
                    try{
-                       ArrayList<String> templist = loadArray(arrayList, arrayListNameKey);
+                       ArrayList<String> templist = prefUtils.loadArray(arrayList, arrayListNameKey);
                        templist.add(m_Text);
-                       saveArray(templist, arrayListNameKey);
+                       prefUtils.saveArray(templist, arrayListNameKey);
 
                    }catch (Exception e){
                        Log.d("klock", e.getMessage());
@@ -809,11 +726,11 @@ public class MainActivity extends AppCompatActivity
                 ArrayList<String> one;
                 ArrayList<String> two;
                 if(arrayListNameKey.equals("colorsValues")){
-                    one = loadArray(colorsTitles, "colorsTitles");
-                    two = loadArray(colorsValues, "colorsValues");
+                    one = prefUtils.loadArray(colorsTitles, "colorsTitles");
+                    two = prefUtils.loadArray(colorsValues, "colorsValues");
                 }else{
-                    one = loadArray(formatsTitles, "formatsTitles");
-                    two = loadArray(formatsValues, "formatsValues");
+                    one = prefUtils.loadArray(formatsTitles, "formatsTitles");
+                    two = prefUtils.loadArray(formatsValues, "formatsValues");
                 }
                 if(one.size() != two.size()){
                 if(!isXml){
@@ -833,12 +750,12 @@ public class MainActivity extends AppCompatActivity
                             key = null;
                             tempArray = null;
                         }
-                        tempArray = loadArray(tempArray, key);
+                        tempArray = prefUtils.loadArray(tempArray, key);
                         if(tempArray.size() != 0) {
                             int k = tempArray.size() - 1;
 
                             tempArray.remove(k);
-                            saveArray(tempArray, key);
+                            prefUtils.saveArray(tempArray, key);
                         }
                     }else{
                         if(arrayListNameKey.equals("colorsValues")){
@@ -888,8 +805,8 @@ public class MainActivity extends AppCompatActivity
 
                 SharedPreferences bleh = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 if(bleh.getBoolean(toSaveBoolKey, true)){
-                    ArrayList<String> namesArray = loadArray(nameArray, nameListArrayKey);
-                    ArrayList<String> valuesArray = loadArray(arrayList, valueArrayKey);
+                    ArrayList<String> namesArray = prefUtils.loadArray(nameArray, nameListArrayKey);
+                    ArrayList<String> valuesArray = prefUtils.loadArray(arrayList, valueArrayKey);
 
                     String k = name.replace(' ','_') + ".xml";
 
@@ -897,7 +814,7 @@ public class MainActivity extends AppCompatActivity
                     fileHelper.deleteItemFromArray(previousValue, valuesArray);
                     //Add Value
                     valuesArray.add(m_Text);
-                    saveArray(valuesArray, valueArrayKey);
+                    prefUtils.saveArray(valuesArray, valueArrayKey);
                     //Add Name
 
                     namesArray.add(k);
@@ -906,7 +823,7 @@ public class MainActivity extends AppCompatActivity
                         templist.add(namesArray.get(f));
                     }
 
-                    saveArray(templist, nameListArrayKey);
+                    prefUtils.saveArray(templist, nameListArrayKey);
                     templist.clear();
 
                 }else {
@@ -932,41 +849,6 @@ public class MainActivity extends AppCompatActivity
         builder.show();
     }
 
-    public void saveArray(ArrayList<String> arrayList, String arrayListKey)
-    {
-        //Removing old
-       int key =  myPref.getInt(arrayListKey, 0);
-        for(int i = 0; i<key; i++){
-            editor.remove(arrayListKey + i);
-        }
-        editor.remove(arrayListKey);
-        editor.commit();
-
-        //Adding new
-        editor.putInt(arrayListKey, arrayList.size());
-
-        for(int m=0;m<arrayList.size();m++)
-        {
-            editor.remove(arrayListKey + m);
-            editor.putString(arrayListKey + m, arrayList.get(m));
-        }
-
-        editor.apply();
-    }
-
-    public ArrayList<String> loadArray(ArrayList<String> arrayList, String arrayListKey)
-    {
-        arrayList.clear();
-        int size = myPref.getInt(arrayListKey, 0);
-
-        for(int i=0;i<size;i++)
-        {
-            arrayList.add(myPref.getString(arrayListKey + i, null));
-        }
-        return arrayList;
-
-    }
-
 
     public void getArrayForRoms(){
         try {
@@ -985,7 +867,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void shortToast(String message){
-        android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -1012,7 +894,6 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.me/KarolPrzes"));
             startActivity(browserIntent);
@@ -1065,30 +946,55 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void promptTelegram(){
-        DialogHelper dialogHelper = new DialogHelper();
-        if (appInstalledOrNot("org.telegram.messenger ")){
+        if (isPackageInstalled("org.telegram.messenger", getApplicationContext().getPackageManager()) ){
             PositiveClickListener positiveClickListener = new PositiveClickListener() {
                 @Override
                 public void onBtnClick() {
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/kklock"));
-                    startActivity(browserIntent);
+                    getApplicationContext().startActivity(browserIntent);
                 }
             };
-            dialogHelper.simpleDialogText("K-Klock Telegram", getString(R.string.joinTelegram), positiveClickListener);
+            simpleDialogText("K-Klock Telegram", getString(R.string.joinTelegram), positiveClickListener);
         }
-        editor.putBoolean("joinTelegram", false);
-        editor.apply();
+        prefUtils.putBool("joinTelegram", false);
     }
 
-    private boolean appInstalledOrNot(String uri) {
-        PackageManager pm = getPackageManager();
+    private boolean isPackageInstalled(String packagename, PackageManager packageManager) {
         try {
-            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            packageManager.getPackageInfo(packagename, 0);
             return true;
         } catch (PackageManager.NameNotFoundException e) {
+            return false;
         }
+    }
 
-        return false;
+    public void simpleDialogText(String title, String message, final PositiveClickListener positiveClick){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title);
+        TextView tv = new TextView(this);
+        tv.setText(message);
+        builder.setView(tv);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                positiveClick.onBtnClick();
+            }
+        });
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener(){
+
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
+
     }
 
     private void copyAssets(String assetDir, String whichString) {
@@ -1146,7 +1052,7 @@ public class MainActivity extends AppCompatActivity
         if(bleh.getBoolean("saveColors", true)){
 
             try{
-                colorsTitles = loadArray(colorsTitles, "colorsTitles");
+                colorsTitles = prefUtils.loadArray(colorsTitles, "colorsTitles");
             }catch (Exception e){
                 Log.d("klock", e.getMessage());
             }
@@ -1154,14 +1060,14 @@ public class MainActivity extends AppCompatActivity
         if(bleh.getBoolean("saveColors", true)){
 
             try{
-                colorsValues = loadArray(colorsValues, "colorsValues");
+                colorsValues = prefUtils.loadArray(colorsValues, "colorsValues");
             }catch (Exception e){
                 Log.d("klock", e.getMessage());
             }
         }
         if(bleh.getBoolean("saveFormats", true)){
             try{
-                formatsTitles = loadArray(formatsTitles, "formatsTitles");
+                formatsTitles = prefUtils.loadArray(formatsTitles, "formatsTitles");
             }catch (Exception e){
                 Log.d("klock", e.getMessage());
             }
@@ -1169,7 +1075,7 @@ public class MainActivity extends AppCompatActivity
         if(bleh.getBoolean("saveFormats", true)) {
 
             try{
-                formatsValues = loadArray(formatsValues, "formatsValues");
+                formatsValues = prefUtils.loadArray(formatsValues, "formatsValues");
             }catch (Exception e){
                 Log.d("klock", e.getMessage());
             }

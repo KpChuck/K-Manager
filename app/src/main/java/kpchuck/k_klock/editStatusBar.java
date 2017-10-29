@@ -42,14 +42,6 @@ public class editStatusBar{
 
     String rootApk = rootFolder + slash + "temp2" + slash + "merge" + "/assets/overlays/com.android.systemui/";
 
-    public File newFolder(String filePath){
-        File folder = new File(filePath);
-        if (!folder.exists() || !folder.isDirectory())folder.mkdirs();
-        return folder;
-    }
-
-
-
     public void Execution(Context context){
         this.context=context;
         editCenterNotOnLockscreen();

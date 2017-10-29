@@ -16,7 +16,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
@@ -24,6 +23,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+
+import kpchuck.k_klock.Utils.PrefUtils;
 
 /**
  * Created by Karol Przestrzelski on 17/08/2017.
@@ -38,7 +39,6 @@ public class OtherRomsHandler extends AsyncTask<Void,Void, Void>{
     private String tag = "klock";
 
     Context context;
-    ErrorHandle err;
     public OtherRomsHandler(Context context){
         this.context=context;
 
@@ -86,7 +86,7 @@ public class OtherRomsHandler extends AsyncTask<Void,Void, Void>{
         boolean test = false;
         try {
             File xmlfolder = newFolder(xmlFolder);
-            SharedPreferences myPref = context.getSharedPreferences("prefFileName", Context.MODE_PRIVATE);
+            PrefUtils prefUtils = new PrefUtils(context);
 
             boolean statusbar = FileUtils.directoryContains(xmlfolder, new File(xmlFolder + slash + "status_bar.xml"));
             boolean keyguard = FileUtils.directoryContains(xmlfolder, new File(xmlFolder + slash + "keyguard_status_bar.xml"));
@@ -96,7 +96,7 @@ public class OtherRomsHandler extends AsyncTask<Void,Void, Void>{
             if (!keyguard) shortToast("Sorry, keyguard_status_bar.xml not in /sdcard/K-Klock/userInput.");
             if (!systemicons) shortToast("Sorry, system_icons.xml not in /sdcard/K-Klock/userInput.");
 
-            String romName = myPref.getString("selectedRom", "");
+            String romName = prefUtils.getString("selectedRom", "");
             if (romName.equals(context.getString(R.string.otherRomsBeta))){
                 test = statusbar && keyguard && systemicons;
             }

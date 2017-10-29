@@ -30,10 +30,13 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 
 import kpchuck.k_klock.Utils.FileHelper;
+import kpchuck.k_klock.Utils.PrefUtils;
 
 /**
  * Created by Karol Przestrzelski on 04/09/2017.
@@ -49,7 +52,6 @@ public class MoveNetworkIconsLeft {
     String rootApkPath = mergerFolder.getAbsolutePath() + "/assets/overlays/com.android.systemui";
     String systemicons = "system_icons.xml";
     String statusbar = "status_bar.xml";
-    String prefFile = "prefFileName";
     String romName;
     boolean toMoveLeft;
     boolean toMinit;
@@ -254,11 +256,11 @@ public class MoveNetworkIconsLeft {
 
 
     private void getPref(){
-        SharedPreferences myPref = context.getSharedPreferences(prefFile, Context.MODE_PRIVATE);
-        String rom = myPref.getString("selectedRom", context.getString(R.string.chooseRom));
+        PrefUtils prefUtils = new PrefUtils(context);
+        String rom = prefUtils.getString("selectedRom", context.getString(R.string.chooseRom));
         this.romName=rom;
-        this.toMoveLeft=myPref.getBoolean("moveLeftPref", false);
-        this.toMinit=myPref.getBoolean("minitPref", false);
+        this.toMoveLeft=prefUtils.getBool("moveLeftPref");
+        this.toMinit=prefUtils.getBool("minitPref");
     }
 
     private void copySystemIconsAssets(String assetDir, String whichString) {
@@ -303,7 +305,7 @@ public class MoveNetworkIconsLeft {
         }
     }
 
-    private void copyFile(java.io.InputStream in, java.io.OutputStream out) throws java.io.IOException {
+    private void copyFile(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[1024];
         int read;
         while((read = in.read(buffer)) != -1){

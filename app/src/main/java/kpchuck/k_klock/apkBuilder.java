@@ -2,90 +2,88 @@ package kpchuck.k_klock; /**
  * Created by Karol Przestrzelski on 08/08/2017.
  */
 import org.apache.commons.io.FileUtils;
-
+import org.zeroturnaround.zip.ZipUtil;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.os.Environment;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
 
+import kellinwood.security.zipsigner.ZipSigner;
 import kpchuck.k_klock.Utils.FileHelper;
 import kpchuck.k_klock.Utils.QsBgUtil;
 
 public class apkBuilder  extends android.os.AsyncTask<String, String, String> {
 
-                String prefFile = "prefFileName";
-                String slash = "/";
-                String rootFolder = android.os.Environment.getExternalStorageDirectory() + slash + "K-Klock";
+    String slash = "/";
+    String rootFolder = Environment.getExternalStorageDirectory() + slash + "K-Klock";
 
 
 
-                java.io.FilenameFilter fileNameFilter = new java.io.FilenameFilter() {
+    java.io.FilenameFilter fileNameFilter = new java.io.FilenameFilter() {
 
-        @Override
-        public boolean accept(File dir, String name) {
-                if(name.lastIndexOf('.')>0) {
+@Override
+public boolean accept(File dir, String name) {
+        if(name.lastIndexOf('.')>0) {
 
-                // get last index for '.' char
-                int lastIndex = name.lastIndexOf('.');
+            // get last index for '.' char
+            int lastIndex = name.lastIndexOf('.');
 
-                // get extension
-                String str = name.substring(lastIndex);
+            // get extension
+            String str = name.substring(lastIndex);
 
-                // match path name extension
+            // match path name extension
                 if(str.equals(".zip")) {
-                return true;
+                     return true;
                 }
-                }
+            }
 
-                return false;
-                }
-                };
-        private android.content.Context context;
+            return false;
+        }
+        };
+    private Context context;
     private RelativeLayout relativeLayout;
     private TextView tv;
-    ErrorHandle err;
     private ScrollView frameLayout;
 
-    public apkBuilder(android.content.Context context, RelativeLayout relativeLayout, TextView tv, ScrollView frameLayout){
+    public apkBuilder(Context context, RelativeLayout relativeLayout, TextView tv, ScrollView frameLayout){
         this.context=context;
         this.relativeLayout=relativeLayout;
         this.tv=tv;
-        ErrorHandle errorHandle = new ErrorHandle();
-        this.err=errorHandle;
         this.frameLayout=frameLayout;
 
     }
 
-        public void shortToast(String message){
-                android.widget.Toast.makeText(context, message, android.widget.Toast.LENGTH_SHORT).show();
-                }
+    public void shortToast(String message){
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
 
     public void longToast(String message){
-        android.widget.Toast.makeText(context, message, android.widget.Toast.LENGTH_LONG).show();
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
     }
 
 
-        @Override
-        protected void onPreExecute() {
-                super.onPreExecute();
-            relativeLayout.setVisibility(View.VISIBLE);
-            tv.setText(R.string.apkBuilderLoading);
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        relativeLayout.setVisibility(View.VISIBLE);
+        tv.setText(R.string.apkBuilderLoading);
 
-                // Do something like display a progress bar
-                }
+            // Do something like display a progress bar
+    }
 
         public String doInBackground(String... apkVersion) {
 
-            if (err.getAsyncError(context)) {
                 File temp2 = new File(rootFolder + slash + "temp2");
                 if (!temp2.exists()) temp2.mkdirs();
                 File mergerFolder = new File(rootFolder + slash + "temp2" + slash + "merge");
@@ -97,7 +95,8 @@ public class apkBuilder  extends android.os.AsyncTask<String, String, String> {
                     File explosion = new File(rootFolder + slash + "temp" + slash + s);
                     String cool = new String(rootFolder + slash + "temp" + slash + s);
 
-                    org.zeroturnaround.zip.ZipUtil.explode(explosion);
+
+                    ZipUtil.explode(explosion);
 
                     String[] exploosionArray = explosion.list();
 
@@ -108,9 +107,9 @@ public class apkBuilder  extends android.os.AsyncTask<String, String, String> {
                         try {
                             File pathFile = new File(path);
                             if (pathFile.isDirectory()) {
-                                org.apache.commons.io.FileUtils.copyDirectoryToDirectory(pathFile, mergerFolder);
+                                FileUtils.copyDirectoryToDirectory(pathFile, mergerFolder);
                             } else {
-                                org.apache.commons.io.FileUtils.copyFileToDirectory(pathFile, mergerFolder);
+                                FileUtils.copyFileToDirectory(pathFile, mergerFolder);
                             }
                         } catch (Exception e) {
                         }
@@ -122,8 +121,8 @@ public class apkBuilder  extends android.os.AsyncTask<String, String, String> {
                 new QsBgUtil(context);
                 File xmlFolder = new File(rootFolder + slash + "temp3" + slash + "assets");
                 try {
-                    org.apache.commons.io.FileUtils.copyDirectoryToDirectory(xmlFolder, mergerFolder);
-                } catch (java.io.IOException e) {
+                    FileUtils.copyDirectoryToDirectory(xmlFolder, mergerFolder);
+                } catch (IOException e) {
                 }
 
                 new MoveNetworkIconsLeft(context);
@@ -132,9 +131,9 @@ public class apkBuilder  extends android.os.AsyncTask<String, String, String> {
                 try {
                     createApkFromDir(mergerFolder, new File(rootFolder + slash + "test"), apkVersion[0]);
                     File tempFile = new File(rootFolder + slash + "temp");
-                    org.apache.commons.io.FileUtils.deleteDirectory(tempFile);
+                    FileUtils.deleteDirectory(tempFile);
                     File temp2File = new File(rootFolder + slash + "temp2");
-                    org.apache.commons.io.FileUtils.deleteDirectory(temp2File);
+                    FileUtils.deleteDirectory(temp2File);
                     File testKey = new File(rootFolder + slash + "test");
                     testKey.delete();
                     File temp3 = new File(rootFolder + slash + "temp3");
@@ -143,7 +142,7 @@ public class apkBuilder  extends android.os.AsyncTask<String, String, String> {
 
                 } catch (Exception e) {
 
-                }
+
 
 
             }return apkVersion[0];
@@ -208,26 +207,26 @@ public class apkBuilder  extends android.os.AsyncTask<String, String, String> {
                 }
 
 
-        java.io.FilenameFilter fileNameFilterXml = new java.io.FilenameFilter() {
+        FilenameFilter fileNameFilterXml = new java.io.FilenameFilter() {
 
                 @Override
                 public boolean accept(File dir, String name) {
-                        if(name.lastIndexOf('.')>0) {
+            if(name.lastIndexOf('.')>0) {
 
-                                // get last index for '.' char
-                                int lastIndex = name.lastIndexOf('.');
-                                // get extension
-                                String str = name.substring(lastIndex);
+                    // get last index for '.' char
+                    int lastIndex = name.lastIndexOf('.');
+                    // get extension
+                    String str = name.substring(lastIndex);
 
 
-                            //    String typeCheck = name.substring(0, 5);
-                                // match path name extension
-                                if(str.equals(".xml")) {
-                                        return true;
-                                }
-                        }
+                //    String typeCheck = name.substring(0, 5);
+                    // match path name extension
+                    if(str.equals(".xml")) {
+                            return true;
+                    }
+            }
 
-                        return false;
+            return false;
                 }
         };
 
@@ -245,9 +244,9 @@ public class apkBuilder  extends android.os.AsyncTask<String, String, String> {
             for(String s : xmlArray){
                 File xml = new File(rootFolder + slash + s);
                 try {
-                    org.apache.commons.io.FileUtils.copyFileToDirectory(xml, dest_folder);
+                    FileUtils.copyFileToDirectory(xml, dest_folder);
                     xml.delete();
-                }catch(java.io.IOException e){}
+                }catch(IOException e){}
 
                 }
 
@@ -265,12 +264,12 @@ public class apkBuilder  extends android.os.AsyncTask<String, String, String> {
 
         public static void createApkFromDir(File dir, File destFile, String apkVersion) throws Exception {
 
-                org.zeroturnaround.zip.ZipUtil.pack(dir, destFile);
+                ZipUtil.pack(dir, destFile);
                 File signedApk = new File(destFile.getParent(), apkVersion);
-                kellinwood.security.zipsigner.ZipSigner zipSigner = new kellinwood.security.zipsigner.ZipSigner();
+                ZipSigner zipSigner = new ZipSigner();
                 zipSigner.setKeymode("auto-testkey");
                 zipSigner.signZip(destFile.getAbsolutePath(), signedApk.getAbsolutePath());
-                android.util.Log.d("ZipUtils", "signedZip() : file present -> " + signedApk.exists() + " at " + signedApk.getAbsolutePath());
+                Log.d("ZipUtils", "signedZip() : file present -> " + signedApk.exists() + " at " + signedApk.getAbsolutePath());
 
 
                 }

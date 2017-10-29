@@ -20,16 +20,15 @@ import java.util.regex.Pattern;
 public class QsBgUtil {
 
     Context context;
-    private String prefFile = "prefFileName";
-    SharedPreferences myPref;
-    SharedPreferences.Editor editor;
+    PrefUtils prefUtils;
+
     String slash = "/";
 
 
     public QsBgUtil(Context context){
         this.context=context;
-        myPref = context.getSharedPreferences(prefFile, Context.MODE_PRIVATE);
-        if (checkPrefs()){
+        this.prefUtils = new PrefUtils(context);
+        if (prefUtils.getBool("qsBgPref")){
             buildFilePath();
            // addTyepText();
 
@@ -53,7 +52,7 @@ public class QsBgUtil {
         File mergerFolder = new File(Environment.getExternalStorageDirectory() + "/K-Klock" + slash + "temp2" + slash + "merge");
         File destFolder = new File(mergerFolder.getAbsolutePath() + "/assets/overlays/com.android.systemui.headers/res/drawable");
 
-        String filePath = myPref.getString("qsBgFilePath", "null");
+        String filePath = prefUtils.getString("qsBgFilePath", "null");
         try{
             FileUtils.copyFileToDirectory(new File(filePath), destFolder);
             String[] files = destFolder.list();
@@ -66,10 +65,5 @@ public class QsBgUtil {
 
 
     }
-
-    private boolean checkPrefs(){
-        return myPref.getBoolean("qsBgPref", false);
-    }
-
 
 }

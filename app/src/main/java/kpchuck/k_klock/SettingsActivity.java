@@ -39,6 +39,8 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import kpchuck.k_klock.Utils.PrefUtils;
+
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
  * handset devices, settings are presented as a single list. On tablets,
@@ -66,19 +68,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                SharedPreferences haPref = getSharedPreferences(prefFile, Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = haPref.edit();
-                deleteArrayFromPref("colorsTitles");
-                deleteArrayFromPref("colorsValues");
-                deleteArrayFromPref("formatsTitles");
-                deleteArrayFromPref("formatsValues");
-                editor.remove("colorsTitles");
-                editor.remove("colorsValues");
-                editor.remove("formatsValues");
-                editor.remove("formatsValues");
-                editor.apply();
-                Toast.makeText(getApplicationContext(), getString(R.string.cleared_saved), Toast.LENGTH_SHORT).show();
-
+                PrefUtils prefUtils = new PrefUtils(getApplicationContext());
+                String[] list = {"colorsTitles", "colorsValues", "formatsTitles", "formatsValues"};
+                prefUtils.deleteArrayLists(list);
+                shortToast(getString(R.string.cleared_saved));
                 return true;
             }
         });
@@ -124,19 +117,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
 
-    public void deleteArrayFromPref(String arrayListKey)
-    {
-        SharedPreferences myPref = getSharedPreferences(prefFile, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = myPref.edit();
-        int key =  myPref.getInt(arrayListKey, 0);
-        for(int i = 0; i<key; i++){
-            editor.remove(arrayListKey + i);
-        }
-
-        editor.apply();
-    }
-
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // handle arrow click here
@@ -156,12 +136,4 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         startActivity(intent);
         finish();
     }
-
-
-
-
-
-
-
-
 }

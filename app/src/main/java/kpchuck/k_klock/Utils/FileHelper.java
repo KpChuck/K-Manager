@@ -45,14 +45,7 @@ public class FileHelper {
 
     public void installApk(File file, Context context){
         this.ctx=context;
-        /*try {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
 
-            intent.setDataAndType(getImageContentUri(ctx, file.getAbsolutePath()), "application/vnd.android.package-archive");
-            ctx.startActivity(intent);
-        }catch (Exception e){
-            Log.e("klock", e.getMessage());
-        }*/
         PackageManager packageManager = context.getPackageManager();
        try {
            if (Build.VERSION.SDK_INT == 26){
@@ -73,29 +66,6 @@ public class FileHelper {
        }catch (Exception e){
         Log.e("klock", e.getMessage());
     }
-    }
-
-    private static Uri getImageContentUri(Context context, String absPath) {
-        Log.v(TAG, "getImageContentUri: " + absPath);
-
-        Cursor cursor = context.getContentResolver().query(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-                , new String[] { MediaStore.Images.Media._ID }
-                , MediaStore.Images.Media.DATA + "=? "
-                , new String[] { absPath }, null);
-
-        if (cursor != null && cursor.moveToFirst()) {
-            int id = cursor.getInt(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
-            return Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI , Integer.toString(id));
-
-        } else if (!absPath.isEmpty()) {
-            ContentValues values = new ContentValues();
-            values.put(MediaStore.Images.Media.DATA, absPath);
-            return context.getContentResolver().insert(
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-        } else {
-            return null;
-        }
     }
 
     public ArrayList<String> deleteItemFromArray(String item, ArrayList<String> tempList){
