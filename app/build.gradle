@@ -35,19 +35,12 @@ dependencies {
     compile "org.zeroturnaround:zt-zip:${1.8}"
     compile "commons-io:commons-io:${2.5}"
 
-
-    compile 'com.chabbal:slidingdotsplash:1.0.2'
-    compile 'com.android.support:appcompat-v7:26.+'
+    compile 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.android.support:design:26.+'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.github.gabrielemariotti.cards:cardslib-core:2.1.0'
+
     compile 'com.github.ybq:Android-SpinKit:1.1.0'
     compile 'com.android.support:support-v4:26.+'
-    compile 'org.slf4j:slf4j-api:1.7.21'
-    compile 'uk.com.robust-it:cloning:1.9.2'
-    compile 'com.intellij:annotations:12.0@jar'
-    compile 'asm:asm-all:3.3.1'
-    compile 'com.nbsp:library:1.8'
+
 
     compile 'com.kbeanie:multipicker:1.1.31@aar'
     compile 'eu.chainfire:libsuperuser:1.0.0.+'
