@@ -43,6 +43,10 @@ public class PrefUtils {
         editor.apply();
     }
 
+    public int getInt(String prefName) {
+        return myPref.getInt(prefName, 0);
+    }
+
     public boolean getBool(String boolPref){
         return myPref.getBoolean(boolPref, false);
     }
@@ -76,15 +80,15 @@ public class PrefUtils {
 
         for(int m=0;m<arrayList.size();m++)
         {
-            editor.remove(arrayListKey + m);
             editor.putString(arrayListKey + m, arrayList.get(m));
         }
 
-        editor.apply();
+        editor.commit();
     }
 
-    public ArrayList<String> loadArray(ArrayList<String> arrayList, String arrayListKey)
+    public ArrayList<String> loadArray(String arrayListKey)
     {
+        ArrayList<String> arrayList = new ArrayList<>();
         arrayList.clear();
         int size = myPref.getInt(arrayListKey, 0);
 

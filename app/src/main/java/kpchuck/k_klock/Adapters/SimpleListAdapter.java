@@ -49,7 +49,7 @@ public class SimpleListAdapter extends BaseAdapter implements Filterable, ISpinn
         if (mStrings != null && position > 0)
             return mStrings.get(position - 1);
         else
-            return "Select your Rom";
+            return mContext.getResources().getString(R.string.chooseRom);
     }
 
     @Override

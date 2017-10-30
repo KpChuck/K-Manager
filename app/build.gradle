@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.0"
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "kpchuck.k_klock"
         minSdkVersion 24
@@ -11,12 +11,12 @@ android {
         versionName "15"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-    buildTypes {
-        applicationVariants.all { variant ->
-            variant.outputs.each { output ->
-                output.outputFile = file("$project.buildDir/outputs/apk/K-Manager-beta.apk")
-            }
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            outputFileName = "K-Manager-v$versionName-beta.apk"
         }
+    }
+    buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

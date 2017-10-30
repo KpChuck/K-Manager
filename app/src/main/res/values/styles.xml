@@ -20,7 +20,13 @@
     <style name="ListViewStyle">
         <item name="android:color">#000000</item>
         <item name="android:textSize">18dip</item>
-        <item name="android:fontFamily">roboto-regular</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="EditTitleText">
+        <item name="android:color">#ff000000</item>
+        <item name="android:textSize">18dip</item>
+        <item name="android:fontFamily">sans-serif-bold</item>
     </style>
 
 </resources>

@@ -1,11 +1,13 @@
 package kpchuck.k_klock.Fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,7 @@ import com.kbeanie.multipicker.api.entity.ChosenImage;
 import java.io.File;
 import java.util.List;
 
+import kpchuck.k_klock.Interfaces.DialogClickListener;
 import kpchuck.k_klock.MainActivity;
 import kpchuck.k_klock.R;
 import kpchuck.k_klock.Utils.PrefUtils;
@@ -36,6 +39,7 @@ public class Misc_Add_On_Fragment extends Fragment {
 
     PrefUtils prefUtils;
     private String slash = "/";
+    private FragmentActivity myContext;
 
     public Misc_Add_On_Fragment() {
         // Required empty public constructor
@@ -55,11 +59,11 @@ public class Misc_Add_On_Fragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_misc__add__on_, container, false);
         //Initialize Switches
-        Switch qsSwitch = (Switch) v.findViewById(R.id.noQsTilesTv);
-        Switch titleSwitch = (Switch) v.findViewById(R.id.qsTitle);
-        Switch recentsSwitch = (Switch) v.findViewById(R.id.roundedRecents);
-        Switch minitSwitch = (Switch) v.findViewById(R.id.minitMod);
-        Switch qsBgSwitch = (Switch) v.findViewById(R.id.qsBg);
+        Switch qsSwitch = v.findViewById(R.id.noQsTilesTv);
+        Switch titleSwitch = v.findViewById(R.id.qsTitle);
+        Switch recentsSwitch = v.findViewById(R.id.roundedRecents);
+        Switch minitSwitch = v.findViewById(R.id.minitMod);
+        Switch qsBgSwitch = v.findViewById(R.id.qsBg);
         //Initialize the click listeners
         qsSwitch.setOnClickListener(qsClick);
         titleSwitch.setOnClickListener(titleClick);
@@ -93,41 +97,31 @@ public class Misc_Add_On_Fragment extends Fragment {
     View.OnClickListener minitClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            final Switch mswitch = (Switch) getView().findViewById(R.id.minitMod);
+            final Switch mswitch = getView().findViewById(R.id.minitMod);
             if(mswitch.isChecked()){
-                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("IMPORTANT");
-                TextView tv = new TextView(getContext());
-                tv.setText(R.string.minit_disclaimer);
-                builder.setView(tv);
-                builder.setPositiveButton("Enable", new DialogInterface.OnClickListener() {
+                TextAlertDialogFragment alertDialogFragment = new TextAlertDialogFragment();
+                DialogClickListener listener = new DialogClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                    public void onPositiveBtnClick() {
                         prefUtils.putBool("minitPref", true);
                     }
-                });
-                builder.setOnCancelListener(new DialogInterface.OnCancelListener(){
-
                     @Override
-                    public void onCancel(DialogInterface dialogInterface) {
+                    public void onCancelBtnClick() {
                         prefUtils.putBool("minitPref", false);
                         mswitch.setChecked(false);
                     }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                builder.show();
+                };
+
+                alertDialogFragment.Instantiate("IMPORTANT", getString(R.string.minit_disclaimer), "Enable", "Cancel", listener);
+                alertDialogFragment.show(myContext.getSupportFragmentManager(), "klock");
+
             }else prefUtils.putBool("minitPref", false);
         }
     };
     View.OnClickListener qsBgClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            final Switch qsSwitch = (Switch) getView().findViewById(R.id.qsBg);
+            final Switch qsSwitch = getView().findViewById(R.id.qsBg);
             if(qsSwitch.isChecked()) {
 
                 imagePicker = new ImagePicker(getFragmentManager().findFragmentById(R.id.miscAddOnFragment));
@@ -199,5 +193,10 @@ public class Misc_Add_On_Fragment extends Fragment {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        myContext=(FragmentActivity) activity;
+        super.onAttach(activity);
+    }
 
 }

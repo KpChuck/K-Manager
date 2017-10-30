@@ -7,7 +7,9 @@
              android:id="@+id/contentMainRootLayout"
              app:layout_behavior="@string/appbar_scrolling_view_behavior"
              tools:context="kpchuck.k_klock.MainActivity"
-             tools:showIn="@layout/app_bar_main">
+    android:animateLayoutChanges="true"
+
+    tools:showIn="@layout/app_bar_main">
 
     <!-- Default Layout -->
     <ScrollView
@@ -54,7 +56,7 @@
                     app:RevealViewBackgroundColor="#ffeeeeee"
                     app:SearchViewBackgroundColor="@android:color/secondary_text_dark"
                     app:ShowBorders="true"
-                    app:RevealEmptyText="@string/spinner_hint"
+                    app:RevealEmptyText="@string/chooseRom"
                     android:layout_below="@id/romHeaderText"
                     app:SpinnerExpandHeight="400dp"/>
 
@@ -184,160 +186,26 @@
 
         </android.support.v7.widget.CardView>
 
-        <!-- Extra Add-On options -->
-    <android.support.v7.widget.CardView
-        android:id="@+id/extraAddOnCardView"
+    <fragment
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/statusBarAddOnFragment"
+        android:layout_below="@id/clockFormatCardView"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
-        android:layout_below="@id/clockFormatCardView"
-        android:layout_marginBottom="300dp"
-        android:layout_marginTop="12dp">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-        android:id="@+id/statusbarAddOnHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="12dp"
-        android:text="StatusBar Add-Ons"
-        android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+        class="kpchuck.k_klock.Fragments.StatusBar_Add_On_Fragment"/>
 
-        <Switch
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:layout_marginLeft="12dp"
-            android:onClick="moveLeftPref"
-            android:layout_marginRight="12dp"
-            android:layout_alignParentStart="true"
-            android:layout_below="@id/statusbarAddOnHeader"
-            android:text="Move Network Icons to the Left"
-            android:id="@+id/moveNetworkLeft"/>
-        <Switch
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="12dp"
-            android:onClick="amPref"
-            android:layout_marginRight="12dp"
-            android:layout_alignParentStart="true"
-            android:layout_below="@id/moveNetworkLeft"
-            android:text="Show Am/Pm in Stock Clock"
-            android:id="@+id/ampm"/>
-        <Switch
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="12dp"
-            android:onClick="iconPref"
-            android:layout_marginRight="12dp"
-            android:layout_alignParentStart="true"
-            android:layout_below="@id/ampm"
-            android:text="Set StatusBar Icon Color to Match the Clock"
-            android:id="@+id/colorIcons"/>
-        <Switch
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="12dp"
-            android:onClick="indicatorPref"
-            android:layout_marginRight="12dp"
-            android:layout_alignParentStart="true"
-            android:layout_below="@id/colorIcons"
-            android:text="Network Signal Indicators"
-            android:id="@+id/networkSignalIndicatorSwitch"/>
-        <Switch
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="12dp"
-            android:onClick="hideStatusbarPref"
-            android:layout_marginRight="12dp"
-            android:layout_alignParentStart="true"
-            android:layout_below="@id/networkSignalIndicatorSwitch"
-            android:text="Hide StatusBar on Lockscreen"
-            android:id="@+id/hideStatusbar"/>
-
-        <TextView
-            android:id="@+id/miscAddOnHeader"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="12dp"
-            android:layout_below="@id/hideStatusbar"
-            android:text="Misc. Add-Ons"
-            android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
-
-        <Switch
-            android:id="@+id/noQsTilesTv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@id/miscAddOnHeader"
-            android:layout_marginLeft="12dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginRight="12dp"
-            android:onClick="qsPref"
-            android:text="Number of Qs Tiles"/>
-
-        <Switch
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_alignParentStart="true"
-            android:layout_below="@id/noQsTilesTv"
-            android:text="Hide Qs Tile Title"
-            android:onClick="titlePref"
-            android:id="@+id/qsTitle"/>
-
-        <Switch
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_alignParentStart="true"
-            android:layout_below="@id/qsTitle"
-            android:text="Rounded Recents"
-            android:onClick="recentsPref"
-            android:id="@+id/roundedRecents"/>
-
-        <Switch
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_alignParentStart="true"
-            android:layout_below="@id/roundedRecents"
-            android:text="Add Custom Qs Background"
-            android:onClick="qsBgPref"
-            android:id="@+id/qsBg"/>
-         <Switch
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_alignParentStart="true"
-                android:layout_below="@id/qsBg"
-                android:text="Make compatible with 3 Minit"
-                android:onClick="minitPref"
-                android:layout_marginBottom="12dp"
-                android:id="@+id/minitMod"/>
-
-    </RelativeLayout>
-
-        </android.support.v7.widget.CardView>
-
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/miscAddOnFragment"
+        android:layout_below="@id/statusBarAddOnFragment"
+        class="kpchuck.k_klock.Fragments.Misc_Add_On_Fragment"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginBottom="300dp"
+        android:layout_marginTop="12dp"/>
 
     </RelativeLayout>
 </ScrollView>

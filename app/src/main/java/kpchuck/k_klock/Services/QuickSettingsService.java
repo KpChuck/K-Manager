@@ -1,4 +1,4 @@
-package kpchuck.k_klock;
+package kpchuck.k_klock.Services;
 
 import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;

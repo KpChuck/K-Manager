@@ -1,8 +1,7 @@
-package kpchuck.k_klock;
+package kpchuck.k_klock.Adapters;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -10,23 +9,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.ArrayList;
 
 import kpchuck.k_klock.Interfaces.BtnClickListener;
+import kpchuck.k_klock.R;
 
 /**
- * Created by Karol Przestrzelski on 23/08/2017.
+ * Created by Karol Przestrzelski on 27/08/2017.
  */
 
-public class ColorAdapter extends ArrayAdapter {
-
+public class FormatAdapter extends ArrayAdapter{
     Context context;
     ArrayList<String> names;
-    ArrayList<String> values;
     String prefFile = "prefFileName";
-    ImageView image;
     TextView text;
     SharedPreferences myPref;
     SharedPreferences.Editor editor;
@@ -35,14 +31,13 @@ public class ColorAdapter extends ArrayAdapter {
     private BtnClickListener kClickListener = null;
 
 
-    public ColorAdapter(Context context, ArrayList<String> names, ArrayList<String> values,
+    public FormatAdapter(Context context, ArrayList<String> names,
                         boolean Hide, BtnClickListener listener, BtnClickListener kklistenr) {
-        super(context, R.layout.color_list, R.id.colorListTextView, names);
+        super(context, R.layout.format_list, R.id.formatListTextView, names);
 
 
         this.context=context;
         this.names=names;
-        this.values=values;
         this.hide=Hide;
 
         SharedPreferences myPref = this.context.getSharedPreferences(prefFile, Context.MODE_PRIVATE);
@@ -60,28 +55,20 @@ public class ColorAdapter extends ArrayAdapter {
     public View getView(final int position, View convertView, ViewGroup parent) {
 
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View row = inflater.inflate(R.layout.color_list, parent, false);
+        View row = inflater.inflate(R.layout.format_list, parent, false);
 
-        final ImageView image = (ImageView) row.findViewById(R.id.colorImage);
-        final TextView text = (TextView) row.findViewById(R.id.colorListTextView);
-        final Button edit = (Button) row.findViewById(R.id.editOverlays);
-        final Button delete = (Button) row.findViewById(R.id.deleteOverlays);
+        final TextView text = (TextView) row.findViewById(R.id.formatListTextView);
+        final Button edit = (Button) row.findViewById(R.id.feditOverlays);
+        final Button delete = (Button) row.findViewById(R.id.fdeleteOverlays);
 
-
-        this.image=image;
         this.text=text;
 
         SharedPreferences bleh = PreferenceManager.getDefaultSharedPreferences(context);
 
         text.setText(names.get(position));
 
-        String color = values.get(position);
-        if(color.startsWith("#") && color.length() == 7 || color.length() == 9) {
-            image.setColorFilter(Color.parseColor(values.get(position)));
-        }else image.setColorFilter(Color.parseColor("#ffffff"));
 
-
-        if(!bleh.getBoolean("saveColors", true)) edit.setVisibility(View.GONE);
+        if(!bleh.getBoolean("saveFormats", true)) edit.setVisibility(View.GONE);
 
         if(hide){
             delete.setVisibility(View.GONE);
@@ -111,9 +98,6 @@ public class ColorAdapter extends ArrayAdapter {
         return row;
 
     }
-
-
-
 
 
 

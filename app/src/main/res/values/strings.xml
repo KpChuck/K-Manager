@@ -59,11 +59,11 @@
 
     <string name="minit_disclaimer">
         This option does NOT install 3minit battery mod. All it does is make sure that there are no conflicts between K-Klock and 3 Minit.\n
-        You should only have this option selected if you have 3minit already flashed. \n\n\t<b>This will break your Rom if you don\'t have 3 Minit installed.</b>
+        You should only have this option selected if you have 3minit already flashed. \n\n<b>This will break your Rom if you don\'t have 3 Minit installed.</b>
 
     </string>
     <string name="request_install_perms">
-        \nK-Manager needs permission to install unknown apps in oreder to install K-Klock automatically from Android 8.0 onwards.
+        \nK-Manager needs permission to install unknown apps in order to install K-Klock automatically from Android 8.0 onwards.
 
     </string>
 
@@ -78,15 +78,10 @@
 
 
     <string name="otherRomsBeta">Other Roms (Beta)</string>
-    <string name="splash_subtitle_text">Unfortunately, K-Klock doesn\'t work with every Rom right away.
-        \nYou are going to have to get it some files from your Rom\'s SystemUI.apk first.
-        \n\nThese slides are a step by step guide on how to go about doing this.\n\n
-        You do need root access for this to work with my method.\n
-        \nUsing Apk Editor isn\'t required, you could also use a Pc + Apktool.
-    </string>
-    <string name="version">version 14</string>
-    <string name="apkBuilderLoading">Building Apk, Please Wait...</string>
-    <string name="chooseRom">Choose your Rom</string>
+
+    <string name="version">version 15</string>
+    <string name="apkBuilderLoading">Building Apk, Please Wait&#8230;</string>
+    <string name="chooseRom">Select your Rom</string>
     <string name="selectRomToast">Please Select Your Rom</string>
     <string name="add_color_value_title">Add a Color Value</string>
     <string name="add_color_name_title">Add a Color Name</string>
@@ -103,24 +98,9 @@
     <string name="included_formats">Included Formats</string>
     <string name="added_formats">Added Formats</string>
 
-    <string name="guide_0">How to get K-Klock for any Rom</string>
-    <string name="guide_1">First Download Apk Editor from the PlayStore</string>
-    <string name="guide_2">Open Apk Editor and Select Apk from App</string>
-    <string name="guide_3">Tap the 3 dots at the top corner to search for System Apps</string>
-    <string name="guide_4">Search for System UI</string>
-    <string name="guide_5">Tap on System UI and Select Full Edit</string>
-    <string name="guide_6">Select the Files option and wait for the files to Load</string>
-    <string name="guide_7">Navigate to res/layout</string>
-    <string name="guide_8">Select keyguard_status_bar.xml and Extract</string>
-    <string name="guide_9">Navigate to K-Klock/userInput and Select Ok to Extract</string>
-    <string name="guide_10">Select status_bar.xml and Extract</string>
-    <string name="guide_11">Extract to K-Klock/userInput again.\nIf you want network indicators moved to the left you will have to repeat these steps for system_icons.xml as well.</string>
-
-    <string name="button_1">Go to Playstore</string>
-    <string name="button_11">Back to K-Klock Manager</string>
-
     <string name="cleared_saved">Saved Values Cleared</string>
     <string name="title_activity_information_web_view">InformationWebViewActivity</string>
-    <string name="joinTelegram">You have telegram installed, do you want to join my telegram group?</string>
-    <string name="spinner_hint">Select your Rom</string>
+    <string name="joinTelegram">I see you\'ve got Telegram installed. \nSo join the K-Klock Official Group for support and stuff.</string>
+
+
 </resources>

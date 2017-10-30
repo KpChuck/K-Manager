@@ -1,6 +1,7 @@
 package kpchuck.k_klock;
 
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -38,6 +39,8 @@ import android.net.Uri;
 import android.content.Intent;
 import android.widget.Toast;
 
+import com.facebook.stetho.common.ArrayListAccumulator;
+
 import org.apache.commons.io.FilenameUtils;
 
 import java.util.Arrays;
@@ -49,8 +52,11 @@ import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListe
 import kpchuck.k_klock.Adapters.ColorAdapter;
 import kpchuck.k_klock.Adapters.FormatAdapter;
 import kpchuck.k_klock.Adapters.SimpleListAdapter;
+import kpchuck.k_klock.Fragments.InputAlertDialogFragment;
+import kpchuck.k_klock.Fragments.TextAlertDialogFragment;
 import kpchuck.k_klock.Interfaces.BtnClickListener;
 import kpchuck.k_klock.Interfaces.DialogClickListener;
+import kpchuck.k_klock.Interfaces.DialogInputClickListener;
 import kpchuck.k_klock.Utils.FileHelper;
 import kpchuck.k_klock.Utils.PrefUtils;
 
@@ -96,6 +102,35 @@ public class MainActivity extends AppCompatActivity
     };
 
     @Override
+    protected void onPostResume() {
+        if(prefUtils.getBoolTrue("joinTelegram")) promptTelegram();
+
+        if(Build.VERSION.SDK_INT == 26 && !getPackageManager().canRequestPackageInstalls()){
+            TextAlertDialogFragment alertDialogFragment = new TextAlertDialogFragment();
+            DialogClickListener clickReactor = new DialogClickListener() {
+                @Override
+                public void onPositiveBtnClick() {
+                    Intent k = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
+                    Uri uri = Uri.fromParts("package", getPackageName(), null);
+                    k.setData(uri);
+                    startActivity(k);
+                }
+
+                @Override
+                public void onCancelBtnClick() {
+                    shortToast("You will have to install K-Klock manually from the K-Klock folder without this permission granted");
+
+                }
+            };
+            alertDialogFragment.Instantiate("Install Apps Permissions Required", getString(R.string.request_install_perms),
+                    "Grant", "Deny", clickReactor);
+            alertDialogFragment.show(getSupportFragmentManager(), "missiles");
+
+        }
+        super.onPostResume();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -106,40 +141,6 @@ public class MainActivity extends AppCompatActivity
 
         if(!hasPermissions(this, PERMISSIONS)){
             android.support.v4.app.ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
-        }
-
-
-        if(Build.VERSION.SDK_INT == 26 && !getPackageManager().canRequestPackageInstalls()){
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Install Apps Permission Required");
-            TextView tv = new TextView(this);
-            tv.setText(R.string.request_install_perms);
-            builder.setView(tv);
-            builder.setPositiveButton("Grant", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    Intent k = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
-                    Uri uri = Uri.fromParts("package", getPackageName(), null);
-                    k.setData(uri);
-                    startActivity(k);
-
-                }
-            });
-            builder.setOnCancelListener(new DialogInterface.OnCancelListener(){
-
-                @Override
-                public void onCancel(DialogInterface dialogInterface) {
-                    shortToast("You will have to install K-Klock manually from the K-Klock folder without this permission granted");
-                }
-            });
-            builder.setNegativeButton("Deny", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.cancel();
-                }
-            });
-            builder.show();
-
         }
 
         final Switch indicatorSwitch = (Switch) findViewById(R.id.networkSignalIndicatorSwitch);
@@ -167,8 +168,6 @@ public class MainActivity extends AppCompatActivity
         qstitle.setChecked(prefUtils.getBool("qsTitlePref"));
 
         if (!getOos(prefUtils.getString("selectedRom", getString(R.string.chooseRom))).equals("OxygenOS")) indicatorSwitch.setVisibility(View.GONE);
-
-        if(prefUtils.getBoolTrue("joinTelegram")) promptTelegram();
 
         File rootfile = new File(rootFolder);
         if(!rootfile.exists()){
@@ -206,6 +205,8 @@ public class MainActivity extends AppCompatActivity
 
 
         });
+
+
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -312,26 +313,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void addCustomColors(View v){
-        inputMenu(getString(R.string.add_color_value_title), getString(R.string.add_color_value_hint), colorsValues, getResources().getString(R.string.ok),
-                false, "saveColors", "colorsValues",
-                 false, v);
-
-        inputMenu(getString(R.string.add_color_name_title), getString(R.string.add_color_name_hint), colorsTitles,
-                getResources().getString(R.string.next), true, "saveColors", "colorsTitles",
-                false, v);
-
-
+        inputCustoms("colors", colorsTitles, colorsValues, false, v,
+                getString(R.string.add_color_name_hint), getString(R.string.add_color_value_hint), false);
     }
 
     public void addCustomFormats(View v){
-        inputMenu(getResources().getString(R.string.add_format_value_title), getResources().getString(R.string.add_format_value_hint),
-                formatsValues, getResources().getString(R.string.ok), false, "saveFormats", "formatsValues",
-                false, v);
-        inputMenu(getResources().getString(R.string.add_format_name_title), getResources().getString(R.string.add_format_name_hint),
-                formatsTitles, getString(R.string.next), true, "saveFormats", "formatsTitles",
-                false, v);
-
-
+        inputCustoms("formats", formatsTitles, formatsValues, false, v,
+                getString(R.string.add_format_name_hint), getString(R.string.add_format_value_hint), false);
     }
 
     public void hideList(View v){
@@ -353,12 +341,12 @@ public class MainActivity extends AppCompatActivity
         SharedPreferences bleh = PreferenceManager.getDefaultSharedPreferences(this);
         if(bleh.getBoolean("saveColors", true)){
            try {
-               colorsTitles = prefUtils.loadArray(colorsTitles, "colorsTitles");
+               colorsTitles = prefUtils.loadArray( "colorsTitles");
            }catch(Exception e){
                Log.d("klock", e.getMessage());
            }
             try {
-                colorsValues = prefUtils.loadArray(colorsValues, "colorsValues");
+                colorsValues = prefUtils.loadArray("colorsValues");
             }catch(Exception e){
                 Log.d("klock", e.getMessage());
             }
@@ -380,8 +368,7 @@ public class MainActivity extends AppCompatActivity
                     String name = finalColorsTitles.get(position);
                     String value = colorsValues.get(position);
 
-                    inputEditMenu(name, value, colorsValues, getResources().getString(R.string.ok), false,
-                            "saveColors", "colorsValues", name, "colorsTitles", finalColorsTitles, value, "COLOR", v);
+                    inputCustoms("colors", colorsTitles, colorsValues, true, v, name, value, true);
                 }
             };
 
@@ -405,13 +392,8 @@ public class MainActivity extends AppCompatActivity
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inputMenu(getString(R.string.add_color_value_title), getString(R.string.add_color_value_hint), colorsValues, getResources().getString(R.string.ok),
-                        false, "saveColors", "colorsValues",
-                        true, v);
-
-                inputMenu(getString(R.string.add_color_name_title), getString(R.string.add_color_name_hint), colorsTitles,
-                        getResources().getString(R.string.next), true, "saveColors", "colorsTitles",
-                        false, v);
+                inputCustoms("colors", colorsTitles, colorsValues, true, v,
+                        getString(R.string.add_color_name_hint), getString(R.string.add_color_value_hint), false);
 
             }
         });
@@ -438,12 +420,12 @@ public class MainActivity extends AppCompatActivity
         if(bleh.getBoolean("saveFormats", true)){
             formatsTitles.clear();
             try {
-                formatsTitles = prefUtils.loadArray(formatsTitles, "formatsTitles");
+                formatsTitles = prefUtils.loadArray("formatsTitles");
             }catch(Exception e){
                 Log.d("klock", e.getMessage());
             }
             try {
-                formatsValues = prefUtils.loadArray(formatsValues, "formatsValues");
+                formatsValues = prefUtils.loadArray("formatsValues");
             }catch(Exception e){
                 Log.d("klock", e.getMessage());
             }
@@ -468,8 +450,8 @@ public class MainActivity extends AppCompatActivity
                     String name = finalFormatsTitles.get(position);
                     String value = formatsValues.get(position);
 
-                    inputEditMenu(name, value, formatsValues, getResources().getString(R.string.ok), false,
-                            "saveFormats", "formatsValues", name, "formatsTitles", finalFormatsTitles, value, "FORMAT", v);
+                    inputCustoms("formats", formatsTitles, formatsValues, true, v, name, value, true);
+
                 }
             };
 
@@ -492,16 +474,12 @@ public class MainActivity extends AppCompatActivity
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inputMenu(getResources().getString(R.string.add_format_value_title), getResources().getString(R.string.add_format_value_hint),
-                        formatsValues, getResources().getString(R.string.ok), false, "saveFormats", "formatsValues",
-                        true, v);
-                inputMenu(getResources().getString(R.string.add_format_name_title), getResources().getString(R.string.add_format_name_hint),
-                        formatsTitles, getString(R.string.next), true, "saveFormats", "formatsTitles",
-                        false, v);
+                inputCustoms("formats", formatsTitles, formatsValues, true, v,
+                        getString(R.string.add_format_name_hint), getString(R.string.add_format_value_hint), false);
             }
         });
 
-        ArrayList<String> one = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.included_formats_title)));
+        ArrayList<String> one = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.included_formats_title)));
 
         FormatAdapter twoAdapter = new FormatAdapter(getApplicationContext(), one, true, null, null);
         twoLv.setAdapter(twoAdapter);
@@ -517,8 +495,8 @@ public class MainActivity extends AppCompatActivity
         FileHelper fileHelper = new FileHelper();
 
         if(bleh.getBoolean(toSaveBoolKey, true)){
-            titles = prefUtils.loadArray(titles, titleArrayKey);
-            values = prefUtils.loadArray(values, valueArrayKey);
+            titles = prefUtils.loadArray(titleArrayKey);
+            values = prefUtils.loadArray(valueArrayKey);
 
             titles = fileHelper.deleteItemFromArray(title, titles);
             values = fileHelper.deleteItemFromArray(value, values);
@@ -532,173 +510,69 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void inputMenu(String title, String hint, final ArrayList<String> arrayList, String positiveButtonText,
-                          final boolean isXml, final String toSaveBoolKey, final String arrayListNameKey,
-                          final boolean refresh, final View view){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(title);
+    public void inputCustoms (final String colorsORformats, final ArrayList<String> titles, final ArrayList<String> values, final boolean refresh, final View view,
+                              final String nameHint, final String valueHint, final boolean toEdit){
+        InputAlertDialogFragment alertDialogFragment = new InputAlertDialogFragment();
 
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        input.setHint(hint);
-        builder.setView(input);
-        builder.setPositiveButton(positiveButtonText, new DialogInterface.OnClickListener() {
+        DialogInputClickListener inputClickListener = new DialogInputClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String m_Text = input.getText().toString();
-                if(isXml){
-                    m_Text = m_Text.replace(' ','_') + ".xml";
-                }
-
-                SharedPreferences bleh = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                if(bleh.getBoolean(toSaveBoolKey, true)){
-                   try{
-                       ArrayList<String> templist = prefUtils.loadArray(arrayList, arrayListNameKey);
-                       templist.add(m_Text);
-                       prefUtils.saveArray(templist, arrayListNameKey);
-
-                   }catch (Exception e){
-                       Log.d("klock", e.getMessage());
-                   }
-                }else{
-                    arrayList.add(m_Text);
-
-                }
-                if(refresh){
-                    if(arrayListNameKey.equals("colorsValues")) showIncludedColors(view);
-                    if (arrayListNameKey.equals("formatsValues")) showIncludedFormats(view);
-                }
-
-            }
-        });
-        builder.setOnCancelListener(new DialogInterface.OnCancelListener(){
-            @Override
-            public void onCancel(DialogInterface dialogInterface) {
-
-                ArrayList<String> one;
-                ArrayList<String> two;
-                if(arrayListNameKey.equals("colorsValues")){
-                    one = prefUtils.loadArray(colorsTitles, "colorsTitles");
-                    two = prefUtils.loadArray(colorsValues, "colorsValues");
-                }else{
-                    one = prefUtils.loadArray(formatsTitles, "formatsTitles");
-                    two = prefUtils.loadArray(formatsValues, "formatsValues");
-                }
-                if(one.size() != two.size()){
-                if(!isXml){
+            public void onPositiveBtnClick(String name, String value) {
+                if (!name.equals("") && !value.equals("")) {
+                    name = name.replace(' ', '_') + ".xml";
+                    String toSaveBoolKey = "save" + colorsORformats.substring(0, 1).toUpperCase() + colorsORformats.substring(1);
+                    shortToast(toSaveBoolKey);
+                    String arrayListNameKey = colorsORformats + "Titles";
+                    String arrayListValueKey = colorsORformats + "Values";
                     SharedPreferences bleh = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                    String key;
-                    ArrayList<String> tempArray;
-                    if(bleh.getBoolean(toSaveBoolKey, true)){
 
-                        if(arrayListNameKey.equals("colorsValues")){
-                            key = "colorsTitles";
-                            tempArray = colorsTitles;
-                        }else if(arrayListNameKey.equals("formatsValues")){
-                            key = "formatsTitles";
-                            tempArray = formatsTitles;
-                        }
-                        else{
-                            key = null;
-                            tempArray = null;
-                        }
-                        tempArray = prefUtils.loadArray(tempArray, key);
-                        if(tempArray.size() != 0) {
-                            int k = tempArray.size() - 1;
+                    if (bleh.getBoolean(toSaveBoolKey, true)) {
 
-                            tempArray.remove(k);
-                            prefUtils.saveArray(tempArray, key);
+                        titles.clear();
+                        int size = prefUtils.getInt(arrayListNameKey);
+                        for(int i=0;i<size;i++) titles.add(prefUtils.getString(arrayListNameKey + i, null));
+
+                        values.clear();
+                        size = prefUtils.getInt(arrayListValueKey);
+                        for(int i=0;i<size;i++) values.add(prefUtils.getString(arrayListValueKey + i, null));
+
+                        String k = nameHint.replace(' ','_') + ".xml";
+                        if (toEdit) {
+                           for (int i=0; i<titles.size(); i++){
+                               if (titles.get(i).equals(k)){
+                                   titles.remove(i);
+                                   values.remove(i);
+                               }
+                           }
                         }
-                    }else{
-                        if(arrayListNameKey.equals("colorsValues")){
-                            tempArray = colorsTitles;
-                        }else if(arrayListNameKey.equals("formatsValues")){
-                            tempArray = formatsTitles;
-                        }
-                        else tempArray = null;
-                        if(tempArray.size() != 0) {
-                            int k = tempArray.size() - 1;
-                            tempArray.remove(k);
-                        }
+
+                        titles.add(name);
+                        values.add(value);
+
+                        prefUtils.saveArray(titles, arrayListNameKey);
+                        prefUtils.saveArray(values, arrayListValueKey);
+                    }
+                    else {
+
+                        titles.add(name);
+                        values.add(value);
+                    }
+                    if(refresh){
+                        if(arrayListValueKey.equals("colorsValues")) showIncludedColors(view);
+                        if (arrayListValueKey.equals("formatsValues")) showIncludedFormats(view);
                     }
 
                 }
-            }}
-        });
-
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                dialog.cancel();
+                else shortToast("Nothing was saved, you must have two values inputted");
             }
-        });
 
-        builder.show();
-    }
-
-    public void inputEditMenu(String title, String edit, final ArrayList<String> arrayList, String positiveButtonText,
-                              final boolean isXml, final String toSaveBoolKey, final String valueArrayKey, final String name,
-                              final String nameListArrayKey, final ArrayList<String> nameArray,
-                              final String previousValue, final String colororformat, final View view){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(title);
-
-        final EditText input = new EditText(this);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        input.setText(edit);
-        builder.setView(input);
-        builder.setPositiveButton(positiveButtonText, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                FileHelper fileHelper = new FileHelper();
-
-                String m_Text = input.getText().toString();
-
-                SharedPreferences bleh = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                if(bleh.getBoolean(toSaveBoolKey, true)){
-                    ArrayList<String> namesArray = prefUtils.loadArray(nameArray, nameListArrayKey);
-                    ArrayList<String> valuesArray = prefUtils.loadArray(arrayList, valueArrayKey);
-
-                    String k = name.replace(' ','_') + ".xml";
-
-                    fileHelper.deleteItemFromArray(k, namesArray);
-                    fileHelper.deleteItemFromArray(previousValue, valuesArray);
-                    //Add Value
-                    valuesArray.add(m_Text);
-                    prefUtils.saveArray(valuesArray, valueArrayKey);
-                    //Add Name
-
-                    namesArray.add(k);
-                    ArrayList<String> templist = new ArrayList<>();
-                    for(int f = 0; f<namesArray.size(); f++){
-                        templist.add(namesArray.get(f));
-                    }
-
-                    prefUtils.saveArray(templist, nameListArrayKey);
-                    templist.clear();
-
-                }else {
-                    arrayList.remove(previousValue);
-                    nameArray.remove(name);
-
-                    arrayList.add(m_Text);
-                    nameArray.add(name);
-
-                }
-                if (colororformat.equals("COLOR")) showIncludedColors(view);
-                if (colororformat.equals("FORMAT")) showIncludedFormats(view);
+            public void onCancelBtnClick() {
 
             }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
+        };
+        String title = "Add a Custom " + colorsORformats.substring(0,1).toUpperCase() + colorsORformats.substring(1, colorsORformats.length()-1);
+        alertDialogFragment.Instantiate(title, nameHint, valueHint, inputClickListener, toEdit);
+        alertDialogFragment.show(getSupportFragmentManager(), "klock");
     }
 
 
@@ -799,14 +673,20 @@ public class MainActivity extends AppCompatActivity
 
     private void promptTelegram(){
         if (isPackageInstalled("org.telegram.messenger", getApplicationContext().getPackageManager()) ){
-            DialogClickListener positiveClickListener = new DialogClickListener() {
+
+            TextAlertDialogFragment fragment = new TextAlertDialogFragment();
+            fragment.Instantiate("K-Klock Telegram", getString(R.string.joinTelegram), "OK", "Not Today", new DialogClickListener() {
                 @Override
-                public void onBtnClick() {
+                public void onPositiveBtnClick() {
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/kklock"));
                     getApplicationContext().startActivity(browserIntent);
                 }
-            };
-            simpleDialogText("K-Klock Telegram", getString(R.string.joinTelegram), positiveClickListener);
+                @Override
+                public void onCancelBtnClick() {
+                }
+            });
+            fragment.show(getSupportFragmentManager(), "missiles");
+
         }
         prefUtils.putBool("joinTelegram", false);
     }
@@ -818,35 +698,6 @@ public class MainActivity extends AppCompatActivity
         } catch (PackageManager.NameNotFoundException e) {
             return false;
         }
-    }
-
-    public void simpleDialogText(String title, String message, final DialogClickListener positiveClick){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(title);
-        TextView tv = new TextView(this);
-        tv.setText(message);
-        builder.setView(tv);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                positiveClick.onBtnClick();
-            }
-        });
-        builder.setOnCancelListener(new DialogInterface.OnCancelListener(){
-
-            @Override
-            public void onCancel(DialogInterface dialogInterface) {
-
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
-        });
-        builder.show();
-
     }
 
     private void copyAssets(String assetDir, String whichString) {
@@ -904,7 +755,7 @@ public class MainActivity extends AppCompatActivity
         if(bleh.getBoolean("saveColors", true)){
 
             try{
-                colorsTitles = prefUtils.loadArray(colorsTitles, "colorsTitles");
+                colorsTitles = prefUtils.loadArray("colorsTitles");
             }catch (Exception e){
                 Log.d("klock", e.getMessage());
             }
@@ -912,14 +763,14 @@ public class MainActivity extends AppCompatActivity
         if(bleh.getBoolean("saveColors", true)){
 
             try{
-                colorsValues = prefUtils.loadArray(colorsValues, "colorsValues");
+                colorsValues = prefUtils.loadArray("colorsValues");
             }catch (Exception e){
                 Log.d("klock", e.getMessage());
             }
         }
         if(bleh.getBoolean("saveFormats", true)){
             try{
-                formatsTitles = prefUtils.loadArray(formatsTitles, "formatsTitles");
+                formatsTitles = prefUtils.loadArray("formatsTitles");
             }catch (Exception e){
                 Log.d("klock", e.getMessage());
             }
@@ -927,7 +778,7 @@ public class MainActivity extends AppCompatActivity
         if(bleh.getBoolean("saveFormats", true)) {
 
             try{
-                formatsValues = prefUtils.loadArray(formatsValues, "formatsValues");
+                formatsValues = prefUtils.loadArray("formatsValues");
             }catch (Exception e){
                 Log.d("klock", e.getMessage());
             }
