@@ -5,6 +5,18 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <string-array name="included_icons_title">
+        <item>Black</item>
+        <item>Blue</item>
+        <item>Purple</item>
+    </string-array>
+
+    <string-array name="included_icons_value">
+        <item>#000000</item>
+        <item>#1E008C</item>
+        <item>#6005bc</item>
+    </string-array>
+
     <string-array name="included_colors_title">
         <item>White</item>
         <item>Apple Green</item>
@@ -83,14 +95,12 @@
     <string name="apkBuilderLoading">Building Apk, Please Wait&#8230;</string>
     <string name="chooseRom">Select your Rom</string>
     <string name="selectRomToast">Please Select Your Rom</string>
-    <string name="add_color_value_title">Add a Color Value</string>
-    <string name="add_color_name_title">Add a Color Name</string>
+    <string name="add_color_name_title">Add a Custom Color</string>
     <string name="add_color_value_hint">Enter color rgb value here. Eg. #00ff00</string>
     <string name="add_color_name_hint">Enter color name here. Eg. Dark Blue</string>
     <string name="ok">OK</string>
     <string name="next">Next</string>
-    <string name="add_format_value_title">Add a Format Value</string>
-    <string name="add_format_name_title">Add a Format Name</string>
+    <string name="add_format_name_title">Add a Custom Format</string>
     <string name="add_format_value_hint">Enter java clock format. Eg. EEE HH:mm</string>
     <string name="add_format_name_hint">Enter color format name here. Eg. Abbreviated Day</string>
     <string name="included_colors">Included Colors</string>
@@ -101,6 +111,9 @@
     <string name="cleared_saved">Saved Values Cleared</string>
     <string name="title_activity_information_web_view">InformationWebViewActivity</string>
     <string name="joinTelegram">I see you\'ve got Telegram installed. \nSo join the K-Klock Official Group for support and stuff.</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>
