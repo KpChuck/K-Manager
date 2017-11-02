@@ -15,9 +15,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import kpchuck.k_klock.Interfaces.DialogClickListener;
 import kpchuck.k_klock.Interfaces.DialogInputClickListener;
+import kpchuck.k_klock.MainActivity;
 import kpchuck.k_klock.R;
+import kpchuck.k_klock.Utils.PrefUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,20 +33,30 @@ public class InputAlertDialogFragment extends DialogFragment {
     String valueHint;
     DialogInputClickListener dialogClickListener;
     boolean toEdit;
-
+    String colorsORformats;
+    ArrayList<String> titles;
+    ArrayList<String> values;
+    boolean refresh;
+    View v;
+    PrefUtils prefUtils;
 
     public InputAlertDialogFragment() {
         // Required empty public constructor
     }
 
     public void Instantiate (String title, String nameHint, String valueHint,
-                             DialogInputClickListener dialogClickListener, boolean toEdit){
+                             boolean toEdit,
+                             String colorsORformats,boolean refresh,
+                             View v){
         this.title=title;
         this.nameHint=nameHint;
         this.valueHint=valueHint;
-
-        this.dialogClickListener=dialogClickListener;
         this.toEdit=toEdit;
+        this.refresh=refresh;
+        this.v=v;
+        this.colorsORformats=colorsORformats;
+        this.titles = new ArrayList<>();
+        this.values = new ArrayList<>();
     }
 
     @NonNull
@@ -57,6 +71,8 @@ public class InputAlertDialogFragment extends DialogFragment {
         // Pass null as the parent view because its going in the dialog layout
         View view = inflater.inflate(R.layout.input_menu_dialog, null);
         builder.setView(view);
+        this.prefUtils= new PrefUtils(getContext());
+
         TextView textView = view.findViewById(R.id.title);
         final EditText nameEdit = view.findViewById(R.id.name);
         final EditText valueEdit = view.findViewById(R.id.value);
@@ -73,9 +89,40 @@ public class InputAlertDialogFragment extends DialogFragment {
         builder
                 .setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        String nameText = nameEdit.getText().toString();
-                        String valueText = valueEdit.getText().toString();
-                        dialogClickListener.onPositiveBtnClick(nameText, valueText);
+                        String name = nameEdit.getText().toString();
+                        String value = valueEdit.getText().toString();
+                        if (!name.equals("") && !value.equals("")) {
+                            name = name.replace(' ', '_') + ".xml";
+                            String arrayListNameKey = colorsORformats + "Titles";
+                            String arrayListValueKey = colorsORformats + "Values";
+
+                            titles = prefUtils.loadArray(arrayListNameKey);
+                            values = prefUtils.loadArray(arrayListValueKey);
+
+                            String k = nameHint.replace(' ','_') + ".xml";
+                            if (toEdit) {
+                                for (int i=0; i<titles.size(); i++){
+                                    if (titles.get(i).equals(k)){
+                                        titles.remove(i);
+                                        values.remove(i);
+                                    }
+                                }
+                            }
+
+                            titles.add(name);
+                            values.add(value);
+
+                            prefUtils.saveArray(titles, arrayListNameKey);
+                            prefUtils.saveArray(values, arrayListValueKey);
+
+                            if(refresh){
+                                if(arrayListValueKey.equals("colorsValues")) ((MainActivity) getActivity()).showIncludedColors(v);
+                                if (arrayListValueKey.equals("formatsValues")) ((MainActivity) getActivity()).showIncludedFormats(v);
+                            }
+
+                        }
+                        else shortToast("Nothing was saved, you must have two values inputted");
+
 
                     }
                 })
@@ -83,17 +130,15 @@ public class InputAlertDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                         // User cancelled the dialog
                         dialog.cancel();
-                    }
-                })
-                .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialogInterface) {
-                        dialogClickListener.onCancelBtnClick();
+                    }}
 
-                    }
-                });
+                );
 
         // Create the AlertDialog object and return it
         return builder.create();
+    }
+
+    public void shortToast (String message){
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 }

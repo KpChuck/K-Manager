@@ -22,10 +22,7 @@ import kpchuck.k_klock.R;
 public class FormatAdapter extends ArrayAdapter{
     Context context;
     ArrayList<String> names;
-    String prefFile = "prefFileName";
     TextView text;
-    SharedPreferences myPref;
-    SharedPreferences.Editor editor;
     boolean hide;
     private BtnClickListener mClickListener = null;
     private BtnClickListener kClickListener = null;
@@ -39,11 +36,6 @@ public class FormatAdapter extends ArrayAdapter{
         this.context=context;
         this.names=names;
         this.hide=Hide;
-
-        SharedPreferences myPref = this.context.getSharedPreferences(prefFile, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = myPref.edit();
-        this.editor=editor;
-        this.myPref=myPref;
 
         mClickListener = listener;
         kClickListener = kklistenr;
@@ -63,12 +55,7 @@ public class FormatAdapter extends ArrayAdapter{
 
         this.text=text;
 
-        SharedPreferences bleh = PreferenceManager.getDefaultSharedPreferences(context);
-
         text.setText(names.get(position));
-
-
-        if(!bleh.getBoolean("saveFormats", true)) edit.setVisibility(View.GONE);
 
         if(hide){
             delete.setVisibility(View.GONE);

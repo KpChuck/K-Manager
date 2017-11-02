@@ -29,8 +29,6 @@ public class ColorAdapter extends ArrayAdapter {
     String prefFile = "prefFileName";
     ImageView image;
     TextView text;
-    SharedPreferences myPref;
-    SharedPreferences.Editor editor;
     boolean hide;
     private BtnClickListener mClickListener = null;
     private BtnClickListener kClickListener = null;
@@ -45,11 +43,6 @@ public class ColorAdapter extends ArrayAdapter {
         this.names=names;
         this.values=values;
         this.hide=Hide;
-
-        SharedPreferences myPref = this.context.getSharedPreferences(prefFile, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = myPref.edit();
-        this.editor=editor;
-        this.myPref=myPref;
 
         mClickListener = listener;
         kClickListener = kklistenr;
@@ -72,17 +65,12 @@ public class ColorAdapter extends ArrayAdapter {
         this.image=image;
         this.text=text;
 
-        SharedPreferences bleh = PreferenceManager.getDefaultSharedPreferences(context);
-
         text.setText(names.get(position));
 
         String color = values.get(position);
         if(color.startsWith("#") && (color.length() == 7 || color.length() == 9)) {
             image.setColorFilter(Color.parseColor(values.get(position)));
         }else image.setColorFilter(Color.parseColor("#ffffff"));
-
-
-        if(!bleh.getBoolean("saveColors", true)) edit.setVisibility(View.GONE);
 
         if(hide){
             delete.setVisibility(View.GONE);

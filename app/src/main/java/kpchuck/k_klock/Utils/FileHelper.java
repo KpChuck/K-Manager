@@ -80,5 +80,20 @@ public class FileHelper {
         return tempList;
 
     }
+    public void deleteItems(String title, String value, String titleArrayKey, String valueArrayKey, Context context){
+        PrefUtils prefUtils = new PrefUtils(context);
+        title = title.replace(" ", "_")+".xml";
+
+        ArrayList<String> titles = prefUtils.loadArray(titleArrayKey);
+        ArrayList<String> values = prefUtils.loadArray(valueArrayKey);
+
+        titles = deleteItemFromArray(title, titles);
+        values = deleteItemFromArray(value, values);
+
+        prefUtils.saveArray(titles, titleArrayKey);
+        prefUtils.saveArray(values, valueArrayKey);
+
+
+    }
 
 }

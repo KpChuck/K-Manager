@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.ListView;
@@ -53,6 +54,7 @@ import kpchuck.k_klock.Adapters.ColorAdapter;
 import kpchuck.k_klock.Adapters.FormatAdapter;
 import kpchuck.k_klock.Adapters.SimpleListAdapter;
 import kpchuck.k_klock.Fragments.InputAlertDialogFragment;
+import kpchuck.k_klock.Fragments.StatusBar_Add_On_Fragment;
 import kpchuck.k_klock.Fragments.TextAlertDialogFragment;
 import kpchuck.k_klock.Interfaces.BtnClickListener;
 import kpchuck.k_klock.Interfaces.DialogClickListener;
@@ -155,6 +157,7 @@ public class MainActivity extends AppCompatActivity
         Switch minit = (Switch) findViewById(R.id.minitMod);
         Switch qstitle = (Switch) findViewById(R.id.qsTitle);
         Switch ampm = (Switch) findViewById(R.id.ampm);
+        CardView iconView = findViewById(R.id.iconColorCardView);
 
         ampm.setChecked(prefUtils.getBool("amPref"));
         qsSwitch.setChecked(prefUtils.getBool("qsPref"));
@@ -166,6 +169,7 @@ public class MainActivity extends AppCompatActivity
         qsBg.setChecked(prefUtils.getBool("qsBgPref"));
         minit.setChecked(prefUtils.getBool("minitPref"));
         qstitle.setChecked(prefUtils.getBool("qsTitlePref"));
+        if (prefUtils.getBool("iconPref")) iconView.setVisibility(View.VISIBLE);
 
         if (!getOos(prefUtils.getString("selectedRom", getString(R.string.chooseRom))).equals("OxygenOS")) indicatorSwitch.setVisibility(View.GONE);
 
@@ -285,6 +289,81 @@ public class MainActivity extends AppCompatActivity
         return !ext.equals("png");
     }
 
+    public void ShowIncluded(final View view){
+        RelativeLayout bgLayout = findViewById(R.id.listViewLayout);
+        TextView oneTv = findViewById(R.id.firstTextView);
+        TextView twoTv = findViewById(R.id.secondTextView);
+        ListView oneLv = findViewById(R.id.firstListView);
+        ListView twoLv = findViewById(R.id.secondListView);
+        Button button = findViewById(R.id.addButton);
+
+
+        final ArrayList<String> titles = prefUtils.loadArray( "iconsTitles");
+        final ArrayList<String> values = prefUtils.loadArray("iconsValues");
+
+        if(!titles.isEmpty()) {
+            final ArrayList<String> finalTitles = new ArrayList<>();
+            for (int i = 0; i<titles.size(); i++){
+                String starting = titles.get(i);
+                String middle = starting.replace('_',' ');
+                String end = middle.substring(0, middle.lastIndexOf("."));
+                finalTitles.add(end);
+            }
+
+            BtnClickListener editListener = new BtnClickListener() {
+                @Override
+                public void onBtnClick(int position) {
+                    String name = finalTitles.get(position);
+                    String value = values.get(position);
+
+                    InputAlertDialogFragment dialogFragment = new InputAlertDialogFragment();
+                    dialogFragment.Instantiate(getString(R.string.add_color_name_title), name,
+                            value, true, "icons",
+                            true, view);
+                    dialogFragment.show(getSupportFragmentManager(), "klock");                }
+            };
+
+            BtnClickListener deleteListener = new BtnClickListener() {
+                @Override
+                public void onBtnClick(int position) {
+                    String name = finalTitles.get(position);
+                    String value = values.get(position);
+                    deleteItems(titles, values, name, value, "iconsTitles", "iconsValues", "saveIcons");
+                    showIncludedColors(view);
+                }
+            };
+
+            ColorAdapter oneAdapter = new ColorAdapter(getApplicationContext(), finalTitles, values, false, editListener, deleteListener);
+            oneLv.setAdapter(oneAdapter);
+            oneLv.setVisibility(View.VISIBLE);
+
+
+        }else{
+            oneLv.setVisibility(View.GONE);
+        }
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InputAlertDialogFragment dialogFragment = new InputAlertDialogFragment();
+                dialogFragment.Instantiate(getString(R.string.add_color_name_title), getString(R.string.add_color_name_hint),
+                        getString(R.string.add_color_value_hint), false, "icons",
+                        true, v);
+                dialogFragment.show(getSupportFragmentManager(), "klock");
+
+            }
+        });
+
+        ArrayList<String> one = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.included_icons_title)));
+        ArrayList<String> two = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.included_icons_value)));
+
+        ColorAdapter twoAdapter = new ColorAdapter(getApplicationContext(), one, two, true, null, null);
+        twoLv.setAdapter(twoAdapter);
+        twoTv.setText(getString(R.string.included_colors));
+        oneTv.setText(getString(R.string.added_colors));
+        bgLayout.setVisibility(View.VISIBLE);
+
+    }
+
 
 
     public int decreaseToLowest(String[] testStringArray){
@@ -313,22 +392,22 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void addCustomColors(View v){
-        inputCustoms("colors", colorsTitles, colorsValues, false, v,
-                getString(R.string.add_color_name_hint), getString(R.string.add_color_value_hint), false);
+        InputAlertDialogFragment dialogFragment = new InputAlertDialogFragment();
+        dialogFragment.Instantiate(getString(R.string.add_color_name_title), getString(R.string.add_color_name_hint),
+                getString(R.string.add_color_value_hint), false, "colors",
+                false, v);
+        dialogFragment.show(getSupportFragmentManager(), "klock");
     }
 
     public void addCustomFormats(View v){
-        inputCustoms("formats", formatsTitles, formatsValues, false, v,
-                getString(R.string.add_format_name_hint), getString(R.string.add_format_value_hint), false);
+        InputAlertDialogFragment fragment = new InputAlertDialogFragment();
+        fragment.Instantiate(getString(R.string.add_format_name_title), getString(R.string.add_format_name_hint),
+                getString(R.string.add_format_value_hint), false, "formats",
+                false, v);
+        fragment.show(getSupportFragmentManager(), "klock");
     }
 
-    public void hideList(View v){
-        RelativeLayout rv = (RelativeLayout) findViewById(R.id.listViewLayout);
-        if(rv.getVisibility() == View.VISIBLE){
-            RelativeLayout bgLayout = (RelativeLayout) findViewById(R.id.listViewLayout);
-            bgLayout.setVisibility(View.GONE);
-        }
-    }
+
 
     public void showIncludedColors(final View v){
         RelativeLayout bgLayout = (RelativeLayout) findViewById(R.id.listViewLayout);
@@ -338,20 +417,9 @@ public class MainActivity extends AppCompatActivity
         ListView twoLv = (ListView) findViewById(R.id.secondListView);
         Button button = (Button) findViewById(R.id.addButton);
 
-        SharedPreferences bleh = PreferenceManager.getDefaultSharedPreferences(this);
-        if(bleh.getBoolean("saveColors", true)){
-           try {
-               colorsTitles = prefUtils.loadArray( "colorsTitles");
-           }catch(Exception e){
-               Log.d("klock", e.getMessage());
-           }
-            try {
-                colorsValues = prefUtils.loadArray("colorsValues");
-            }catch(Exception e){
-                Log.d("klock", e.getMessage());
-            }
 
-        }
+        colorsTitles = prefUtils.loadArray( "colorsTitles");
+        colorsValues = prefUtils.loadArray("colorsValues");
 
         if(!colorsTitles.isEmpty()) {
             final ArrayList<String> finalColorsTitles = new ArrayList<>();
@@ -368,8 +436,11 @@ public class MainActivity extends AppCompatActivity
                     String name = finalColorsTitles.get(position);
                     String value = colorsValues.get(position);
 
-                    inputCustoms("colors", colorsTitles, colorsValues, true, v, name, value, true);
-                }
+                    InputAlertDialogFragment dialogFragment = new InputAlertDialogFragment();
+                    dialogFragment.Instantiate(getString(R.string.add_color_name_title), name,
+                            value, true, "colors",
+                            true, v);
+                    dialogFragment.show(getSupportFragmentManager(), "klock");                }
             };
 
             BtnClickListener deleteListener = new BtnClickListener() {
@@ -392,8 +463,11 @@ public class MainActivity extends AppCompatActivity
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inputCustoms("colors", colorsTitles, colorsValues, true, v,
-                        getString(R.string.add_color_name_hint), getString(R.string.add_color_value_hint), false);
+                InputAlertDialogFragment dialogFragment = new InputAlertDialogFragment();
+                dialogFragment.Instantiate(getString(R.string.add_color_name_title), getString(R.string.add_color_name_hint),
+                        getString(R.string.add_color_value_hint), false, "colors",
+                        true, v);
+                dialogFragment.show(getSupportFragmentManager(), "klock");
 
             }
         });
@@ -408,6 +482,14 @@ public class MainActivity extends AppCompatActivity
         bgLayout.setVisibility(View.VISIBLE);
 
     }
+    public void hideList(View v){
+        RelativeLayout rv = findViewById(R.id.listViewLayout);
+        if(rv.getVisibility() == View.VISIBLE){
+            rv.setVisibility(View.GONE);
+
+        }
+    }
+
     public void showIncludedFormats(final View v){
         RelativeLayout bgLayout = (RelativeLayout) findViewById(R.id.listViewLayout);
         TextView oneTv = (TextView) findViewById(R.id.firstTextView);
@@ -416,22 +498,9 @@ public class MainActivity extends AppCompatActivity
         ListView twoLv = (ListView) findViewById(R.id.secondListView);
         Button button = (Button) findViewById(R.id.addButton);
 
-        SharedPreferences bleh = PreferenceManager.getDefaultSharedPreferences(this);
-        if(bleh.getBoolean("saveFormats", true)){
-            formatsTitles.clear();
-            try {
-                formatsTitles = prefUtils.loadArray("formatsTitles");
-            }catch(Exception e){
-                Log.d("klock", e.getMessage());
-            }
-            try {
-                formatsValues = prefUtils.loadArray("formatsValues");
-            }catch(Exception e){
-                Log.d("klock", e.getMessage());
-            }
 
-        }
-
+        formatsTitles = prefUtils.loadArray("formatsTitles");
+        formatsValues = prefUtils.loadArray("formatsValues");
 
         if(!formatsTitles.isEmpty()) {
             final ArrayList<String> finalFormatsTitles = new ArrayList<>();
@@ -450,8 +519,11 @@ public class MainActivity extends AppCompatActivity
                     String name = finalFormatsTitles.get(position);
                     String value = formatsValues.get(position);
 
-                    inputCustoms("formats", formatsTitles, formatsValues, true, v, name, value, true);
-
+                    InputAlertDialogFragment fragment = new InputAlertDialogFragment();
+                    fragment.Instantiate(getString(R.string.add_format_name_title), name,
+                            value, true, "formats",
+                            true, v);
+                    fragment.show(getSupportFragmentManager(), "klock");
                 }
             };
 
@@ -474,9 +546,11 @@ public class MainActivity extends AppCompatActivity
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                inputCustoms("formats", formatsTitles, formatsValues, true, v,
-                        getString(R.string.add_format_name_hint), getString(R.string.add_format_value_hint), false);
-            }
+                InputAlertDialogFragment fragment = new InputAlertDialogFragment();
+                fragment.Instantiate(getString(R.string.add_format_name_title), getString(R.string.add_format_name_hint),
+                        getString(R.string.add_format_value_hint), false, "formats",
+                        true, v);
+                fragment.show(getSupportFragmentManager(), "klock");            }
         });
 
         ArrayList<String> one = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.included_formats_title)));
@@ -490,89 +564,19 @@ public class MainActivity extends AppCompatActivity
 
 
     public void deleteItems(ArrayList<String> titles, ArrayList<String> values, String title, String value, String titleArrayKey, String valueArrayKey, String toSaveBoolKey){
-        SharedPreferences bleh = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         title = title.replace(" ", "_")+".xml";
         FileHelper fileHelper = new FileHelper();
 
-        if(bleh.getBoolean(toSaveBoolKey, true)){
-            titles = prefUtils.loadArray(titleArrayKey);
-            values = prefUtils.loadArray(valueArrayKey);
+        titles = prefUtils.loadArray(titleArrayKey);
+        values = prefUtils.loadArray(valueArrayKey);
 
-            titles = fileHelper.deleteItemFromArray(title, titles);
-            values = fileHelper.deleteItemFromArray(value, values);
+        titles = fileHelper.deleteItemFromArray(title, titles);
+        values = fileHelper.deleteItemFromArray(value, values);
 
-            prefUtils.saveArray(titles, titleArrayKey);
-            prefUtils.saveArray(values, valueArrayKey);
-        }else {
-            fileHelper.deleteItemFromArray(title, titles);
-            fileHelper.deleteItemFromArray(value, values);
-        }
+        prefUtils.saveArray(titles, titleArrayKey);
+        prefUtils.saveArray(values, valueArrayKey);
 
-    }
 
-    public void inputCustoms (final String colorsORformats, final ArrayList<String> titles, final ArrayList<String> values, final boolean refresh, final View view,
-                              final String nameHint, final String valueHint, final boolean toEdit){
-        InputAlertDialogFragment alertDialogFragment = new InputAlertDialogFragment();
-
-        DialogInputClickListener inputClickListener = new DialogInputClickListener() {
-            @Override
-            public void onPositiveBtnClick(String name, String value) {
-                if (!name.equals("") && !value.equals("")) {
-                    name = name.replace(' ', '_') + ".xml";
-                    String toSaveBoolKey = "save" + colorsORformats.substring(0, 1).toUpperCase() + colorsORformats.substring(1);
-                    shortToast(toSaveBoolKey);
-                    String arrayListNameKey = colorsORformats + "Titles";
-                    String arrayListValueKey = colorsORformats + "Values";
-                    SharedPreferences bleh = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
-                    if (bleh.getBoolean(toSaveBoolKey, true)) {
-
-                        titles.clear();
-                        int size = prefUtils.getInt(arrayListNameKey);
-                        for(int i=0;i<size;i++) titles.add(prefUtils.getString(arrayListNameKey + i, null));
-
-                        values.clear();
-                        size = prefUtils.getInt(arrayListValueKey);
-                        for(int i=0;i<size;i++) values.add(prefUtils.getString(arrayListValueKey + i, null));
-
-                        String k = nameHint.replace(' ','_') + ".xml";
-                        if (toEdit) {
-                           for (int i=0; i<titles.size(); i++){
-                               if (titles.get(i).equals(k)){
-                                   titles.remove(i);
-                                   values.remove(i);
-                               }
-                           }
-                        }
-
-                        titles.add(name);
-                        values.add(value);
-
-                        prefUtils.saveArray(titles, arrayListNameKey);
-                        prefUtils.saveArray(values, arrayListValueKey);
-                    }
-                    else {
-
-                        titles.add(name);
-                        values.add(value);
-                    }
-                    if(refresh){
-                        if(arrayListValueKey.equals("colorsValues")) showIncludedColors(view);
-                        if (arrayListValueKey.equals("formatsValues")) showIncludedFormats(view);
-                    }
-
-                }
-                else shortToast("Nothing was saved, you must have two values inputted");
-            }
-
-            @Override
-            public void onCancelBtnClick() {
-
-            }
-        };
-        String title = "Add a Custom " + colorsORformats.substring(0,1).toUpperCase() + colorsORformats.substring(1, colorsORformats.length()-1);
-        alertDialogFragment.Instantiate(title, nameHint, valueHint, inputClickListener, toEdit);
-        alertDialogFragment.show(getSupportFragmentManager(), "klock");
     }
 
 
@@ -598,9 +602,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        RelativeLayout rv = findViewById(R.id.listViewLayout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        }else if (rv.getVisibility() == View.VISIBLE){
+            rv.setVisibility(View.GONE);
         } else {
             super.onBackPressed();
         }
@@ -751,38 +758,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void xmlBuilder(){
-        SharedPreferences bleh = PreferenceManager.getDefaultSharedPreferences(this);
-        if(bleh.getBoolean("saveColors", true)){
 
-            try{
-                colorsTitles = prefUtils.loadArray("colorsTitles");
-            }catch (Exception e){
-                Log.d("klock", e.getMessage());
-            }
-        }
-        if(bleh.getBoolean("saveColors", true)){
+            colorsTitles = prefUtils.loadArray("colorsTitles");
 
-            try{
-                colorsValues = prefUtils.loadArray("colorsValues");
-            }catch (Exception e){
-                Log.d("klock", e.getMessage());
-            }
-        }
-        if(bleh.getBoolean("saveFormats", true)){
-            try{
-                formatsTitles = prefUtils.loadArray("formatsTitles");
-            }catch (Exception e){
-                Log.d("klock", e.getMessage());
-            }
-        }
-        if(bleh.getBoolean("saveFormats", true)) {
+            colorsValues = prefUtils.loadArray("colorsValues");
 
-            try{
-                formatsValues = prefUtils.loadArray("formatsValues");
-            }catch (Exception e){
-                Log.d("klock", e.getMessage());
-            }
-            }
+            formatsTitles = prefUtils.loadArray("formatsTitles");
+
+            formatsValues = prefUtils.loadArray("formatsValues");
 
             int colorLimit = colorsTitles.size();
             for (int i = 0; i < colorLimit; i++) {
