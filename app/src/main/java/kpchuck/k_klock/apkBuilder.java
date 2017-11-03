@@ -21,6 +21,7 @@ import java.io.IOException;
 
 import kellinwood.security.zipsigner.ZipSigner;
 import kpchuck.k_klock.Utils.FileHelper;
+import kpchuck.k_klock.Utils.PrefUtils;
 import kpchuck.k_klock.Utils.QsBgUtil;
 
 public class apkBuilder  extends android.os.AsyncTask<String, String, String> {
@@ -239,11 +240,26 @@ public boolean accept(File dir, String name) {
             makeFolder(rootFolder + slash + "temp3" + slash + "assets" + slash + "overlays" + slash + "com.android.systemui");
             File dest_folder = new File(rootFolder + slash + "temp3" + slash + "assets" + slash + "overlays" + slash + "com.android.systemui");
 
+            //Make icon theming folder
+            PrefUtils prefUtils = new PrefUtils(context);
+            boolean themeIcons = prefUtils.getBool("iconPref");
+            if (themeIcons){
+                makeFolder(rootFolder + "/temp3/assets/overlays/com.android.systemui.statusbars");
+            }
+
 
 
             for(String s : xmlArray){
                 File xml = new File(rootFolder + slash + s);
                 try {
+                    if (themeIcons){
+                        File icon_dest = new File(rootFolder + "/temp3/assets/overlays/com.android.systemui.statusbars");
+                        if (s.substring(0, 6).equals("type1c")){
+                            FileUtils.copyFileToDirectory(xml, icon_dest);
+                            xml.delete();
+                        }
+                    }
+
                     FileUtils.copyFileToDirectory(xml, dest_folder);
                     xml.delete();
                 }catch(IOException e){}

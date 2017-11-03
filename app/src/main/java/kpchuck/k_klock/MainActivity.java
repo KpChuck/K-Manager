@@ -784,6 +784,18 @@ public class MainActivity extends AppCompatActivity
                 xmlCreator.putContext(getApplicationContext());
                 xmlCreator.createTypeB(formatTitle, formatValue);
             }
+
+            if (prefUtils.getBool("iconPref")){
+                ArrayList<String> titles = prefUtils.loadArray("iconsTitles");
+                ArrayList<String> values = prefUtils.loadArray("iconsValues");
+                for (int i = 0; i < titles.size(); i ++){
+                    String title = titles.get(i);
+                    String value = titles.get(i);
+                    xmlCreation xmlcreation = new xmlCreation();
+                    xmlcreation.putContext(getApplicationContext());
+                    xmlcreation.createIcons(title, value);
+                }
+            }
         }
 
 

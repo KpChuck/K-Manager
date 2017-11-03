@@ -85,4 +85,36 @@ public class xmlCreation {
 
     }
 
+    public void createIcons (String filename, String color){
+        String start = "<?xml version=\"1.0\" encoding=\"utf-8\"?><resources><color name=\"dark_mode_icon_color_single_tone\">";
+        String end = "</color> <color name=\"light_mode_icon_color_single_tone\">@*com.android.systemui:color/status_bar_clock_color</color><color name=\"light_mode_icon_color_dual_tone_fill\">@*com.android.systemui:color/status_bar_clock_color</color></resources>";
+        String middle = "</color><color name=\"dark_mode_icon_color_dual_tone_fill\">";
+
+        String fullXml = start + color + middle + color + end;
+
+        try{
+            OtherRomsHandler handler = new OtherRomsHandler(context);
+            Document doc = handler.stringToDom(fullXml);
+
+            String slash = "/";
+            String rootFolder = android.os.Environment.getExternalStorageDirectory() + slash + "K-Klock" + slash + "type1c_"+filename;
+            // write the content into xml file
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(new File(rootFolder));
+
+            // Output to console for testing
+            // StreamResult result = new StreamResult(System.out);
+
+            transformer.transform(source, result);
+
+
+        } catch (Exception pce) {
+            pce.getMessage();
+
+        }
+
+    }
+
 }
