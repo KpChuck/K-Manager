@@ -8,7 +8,6 @@
     android:layout_marginLeft="12dp"
     android:layout_marginRight="12dp"
     android:layout_marginBottom="12dp"
-    android:animateLayoutChanges="true"
     android:layout_marginTop="12dp">
 
     <RelativeLayout
@@ -88,8 +87,7 @@
             app:cardCornerRadius="2dp"
             android:visibility="gone"
             android:layout_below="@id/colorIcons"
-            android:layout_marginBottom="12dp"
-            android:layout_marginTop="12dp">
+            android:layout_marginBottom="12dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"

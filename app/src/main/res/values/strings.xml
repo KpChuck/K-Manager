@@ -5,15 +5,31 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+
     <string-array name="included_icons_title">
+        <item>Amber</item>
         <item>Black</item>
         <item>Blue</item>
+        <item>Carrot</item>
+        <item>Dodger Blue</item>
+        <item>Monza</item>
+        <item>Ocean Green</item>
         <item>Purple</item>
+        <item>Scarlet</item>
+        <item>Wisteria</item>
+
     </string-array>
 
     <string-array name="included_icons_value">
+        <item>#CA6924</item>
         <item>#000000</item>
         <item>#1E008C</item>
+        <item>#e67e22</item>
+        <item>#19B5FE</item>
+        <item>#CF000F</item>
+        <item>#4DAF7C</item>
+        <item>#6005bc</item>
+        <item>#E3000E</item>
         <item>#6005bc</item>
     </string-array>
 
