@@ -118,6 +118,7 @@ public class InputAlertDialogFragment extends DialogFragment {
                             if(refresh){
                                 if(arrayListValueKey.equals("colorsValues")) ((MainActivity) getActivity()).showIncludedColors(v);
                                 if (arrayListValueKey.equals("formatsValues")) ((MainActivity) getActivity()).showIncludedFormats(v);
+                                if (arrayListNameKey.equals("iconsTitles")) ((MainActivity) getActivity()).ShowIncluded(v);
                             }
 
                         }

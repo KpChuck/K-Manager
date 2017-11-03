@@ -329,7 +329,7 @@ public class MainActivity extends AppCompatActivity
                     String name = finalTitles.get(position);
                     String value = values.get(position);
                     deleteItems(titles, values, name, value, "iconsTitles", "iconsValues", "saveIcons");
-                    showIncludedColors(view);
+                    ShowIncluded(view);
                 }
             };
 
