@@ -790,7 +790,7 @@ public class MainActivity extends AppCompatActivity
                 ArrayList<String> values = prefUtils.loadArray("iconsValues");
                 for (int i = 0; i < titles.size(); i ++){
                     String title = titles.get(i);
-                    String value = titles.get(i);
+                    String value = values.get(i);
                     xmlCreation xmlcreation = new xmlCreation();
                     xmlcreation.putContext(getApplicationContext());
                     xmlcreation.createIcons(title, value);

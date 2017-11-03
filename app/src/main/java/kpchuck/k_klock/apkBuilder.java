@@ -123,6 +123,7 @@ public boolean accept(File dir, String name) {
                 File xmlFolder = new File(rootFolder + slash + "temp3" + slash + "assets");
                 try {
                     FileUtils.copyDirectoryToDirectory(xmlFolder, mergerFolder);
+
                 } catch (IOException e) {
                 }
 
@@ -253,15 +254,16 @@ public boolean accept(File dir, String name) {
                 File xml = new File(rootFolder + slash + s);
                 try {
                     if (themeIcons){
-                        File icon_dest = new File(rootFolder + "/temp3/assets/overlays/com.android.systemui.statusbars");
-                        if (s.substring(0, 6).equals("type1c")){
+                        File icon_dest = new File(rootFolder + "/temp3/assets/overlays/com.android.systemui.statusbars/");
+                        if (s.substring(0, 6).equals("type1c")) {
                             FileUtils.copyFileToDirectory(xml, icon_dest);
                             xml.delete();
                         }
                     }
-
-                    FileUtils.copyFileToDirectory(xml, dest_folder);
-                    xml.delete();
+                    if (xml.exists()) {
+                        FileUtils.copyFileToDirectory(xml, dest_folder);
+                        xml.delete();
+                    }
                 }catch(IOException e){}
 
                 }
