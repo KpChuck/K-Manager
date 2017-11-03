@@ -86,9 +86,9 @@ public class xmlCreation {
     }
 
     public void createIcons (String filename, String color){
-        String start = "<?xml version=\"1.0\" encoding=\"utf-8\"?><resources><color name=\"dark_mode_icon_color_single_tone\">";
-        String end = "</color> <color name=\"light_mode_icon_color_single_tone\">@*com.android.systemui:color/status_bar_clock_color</color><color name=\"light_mode_icon_color_dual_tone_fill\">@*com.android.systemui:color/status_bar_clock_color</color></resources>";
-        String middle = "</color><color name=\"dark_mode_icon_color_dual_tone_fill\">";
+        String start = "<?xml version=\"1.0\" encoding=\"utf-8\"?><resources>\n<color name=\"dark_mode_icon_color_single_tone\">";
+        String end = "</color>\n<color name=\"light_mode_icon_color_single_tone\">@*com.android.systemui:color/status_bar_clock_color</color>\n<color name=\"light_mode_icon_color_dual_tone_fill\">@*com.android.systemui:color/status_bar_clock_color</color></resources>";
+        String middle = "</color>\n<color name=\"dark_mode_icon_color_dual_tone_fill\">";
 
         String fullXml = start + color + middle + color + end;
 
