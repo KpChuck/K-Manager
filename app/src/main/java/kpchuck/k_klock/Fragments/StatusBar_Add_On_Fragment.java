@@ -1,5 +1,7 @@
 package kpchuck.k_klock.Fragments;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
@@ -83,38 +85,62 @@ public class StatusBar_Add_On_Fragment extends Fragment {
     View.OnClickListener amClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Switch mswitch = (Switch) getView().findViewById(R.id.ampm);
+            Switch mswitch = getView().findViewById(R.id.ampm);
             prefUtils.setSwitchPrefs(mswitch, "amPref");
         }
     };
     View.OnClickListener lockClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Switch mswitch = (Switch) getView().findViewById(R.id.hideStatusbar);
+            Switch mswitch = getView().findViewById(R.id.hideStatusbar);
             prefUtils.setSwitchPrefs(mswitch, "hideStatusbarPref");
         }
     };
     View.OnClickListener leftClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Switch qsSwitch = (Switch) getView().findViewById(R.id.moveNetworkLeft);
+            Switch qsSwitch = getView().findViewById(R.id.moveNetworkLeft);
             prefUtils.setSwitchPrefs(qsSwitch, "moveLeftPref");
         }
     };
     View.OnClickListener indicatorClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Switch qsSwitch = (Switch) getView().findViewById(R.id.networkSignalIndicatorSwitch);
+            Switch qsSwitch = getView().findViewById(R.id.networkSignalIndicatorSwitch);
             prefUtils.setSwitchPrefs(qsSwitch, "indicatorPref");
         }
     };
     View.OnClickListener iconClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Switch qsSwitch = (Switch) getView().findViewById(R.id.colorIcons);
+            Switch qsSwitch = getView().findViewById(R.id.colorIcons);
             prefUtils.setSwitchPrefs(qsSwitch, "iconPref");
-            if (qsSwitch.isChecked()) iconView.setVisibility(View.VISIBLE);
-            else iconView.setVisibility(View.GONE);
+            if (qsSwitch.isChecked()) {
+                iconView.setVisibility(View.INVISIBLE);
+                iconView.animate()
+                        .alpha(1.0f)
+                        .setDuration(500)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                super.onAnimationEnd(animation);
+                                iconView.setVisibility(View.VISIBLE);
+                            }
+                        });
+
+            }
+            else {
+                iconView.animate()
+                        .alpha(0.0f)
+                        .setDuration(500)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                super.onAnimationEnd(animation);
+                                iconView.setVisibility(View.GONE);
+                            }
+                        });
+            }
         }
     };
 
