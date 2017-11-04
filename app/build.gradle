@@ -3,17 +3,44 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 26
     buildToolsVersion '26.0.2'
+
+    def versionPropsFile = file('version.properties')
+    def versionBuild
+
+    /*Setting default value for versionBuild which is the last incremented value stored in the file */
+    if (versionPropsFile.canRead()) {
+        def Properties versionProps = new Properties()
+        versionProps.load(new FileInputStream(versionPropsFile))
+        versionBuild = versionProps['VERSION_BUILD'].toInteger()
+    } else {
+        throw new FileNotFoundException("Could not read version.properties!")
+    }
+
+
+    /*Wrapping inside a method avoids auto incrementing on every gradle task run. Now it runs only when we build apk*/
+    ext.autoIncrementBuildNumber = {
+
+        if (versionPropsFile.canRead()) {
+            def Properties versionProps = new Properties()
+            versionProps.load(new FileInputStream(versionPropsFile))
+            versionBuild = versionProps['VERSION_BUILD'].toInteger() + 1
+            versionProps['VERSION_BUILD'] = versionBuild.toString()
+            versionProps.store(versionPropsFile.newWriter(), null)
+        } else {
+            throw new FileNotFoundException("Could not read version.properties!")
+        }
+    }
     defaultConfig {
         applicationId "kpchuck.k_klock"
         minSdkVersion 24
         targetSdkVersion 26
-        versionCode 17
+        versionCode versionBuild
         versionName "15"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
-            outputFileName = "K-Manager-v$versionName-beta.apk"
+            outputFileName = "K-Manager-v$versionName.$versionCode-beta.apk"
         }
     }
     buildTypes {
@@ -22,30 +49,46 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    // Hook to check if the release/debug task is among the tasks to be executed.
+    //Let's make use of it
+    gradle.taskGraph.whenReady {taskGraph ->
+        if (taskGraph.hasTask(assembleDebug)) {  /* when run debug task */
+            autoIncrementBuildNumber()
+        } else if (taskGraph.hasTask(assembleRelease)) { /* when run release task */
+            autoIncrementBuildNumber()
+        }
+    }
 }
 
 
 
 dependencies {
 
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    //Ziputils
     compile "org.zeroturnaround:zt-zip:${1.8}"
+    //Commons io
     compile "commons-io:commons-io:${2.5}"
-
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    compile 'com.android.support:design:26.+'
-
+    //Loading Animation
     compile 'com.github.ybq:Android-SpinKit:1.1.0'
+    //All those com.android.s
+    compile 'com.android.support:design:26.+'
+    compile 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.android.support:support-v4:26.+'
-
-
+    //Image Picker
     compile 'com.kbeanie:multipicker:1.1.31@aar'
+    //Superuser
     compile 'eu.chainfire:libsuperuser:1.0.0.+'
-
+    //Searchable Spinner
     compile 'gr.escsoft.michaelprimez.searchablespinner:SearchableSpinner:1.0.9'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
     compile 'gr.escsoft.michaelprimez.revealedittext:RevealEditText:1.0.1'
+    //Welcome Activity
+    compile 'com.stephentuso:welcome:1.4.1'
 }
+
