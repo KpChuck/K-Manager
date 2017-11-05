@@ -25,7 +25,12 @@ android {
         if (versionPropsFile.canRead()) {
             def Properties versionProps = new Properties()
             versionProps.load(new FileInputStream(versionPropsFile))
-            versionBuild = versionProps['VERSION_BUILD'].toInteger() + 1
+            if (versionType.equals("beta")) {
+                versionBuild = versionProps['VERSION_BUILD'].toInteger() + 1
+            }
+            else{
+                versionBuild = versionProps['VERSION_BUILD'].toInteger
+            }
             versionProps['VERSION_BUILD'] = versionBuild.toString()
             versionProps.store(versionPropsFile.newWriter(), null)
         } else {
@@ -42,20 +47,25 @@ android {
     }
     applicationVariants.all { variant ->
         variant.outputs.all{ output ->
-            if (versionType.equals("beta")) {
-                outputFileName = "K-Manager-v$versionName.$versionCode-beta.apk"
-            } else if(versionType.equals("stable")) {
-                outputFileName = "K-Manager-v$versionName"+".apk"
-                if (versionPropsFile.canRead()) {
-                    def Properties versionProps = new Properties()
-                    versionProps.load(new FileInputStream(versionPropsFile))
-                    versionBuild = -1
-                    versionProps['VERSION_BUILD'] = versionBuild.toString()
-                    versionProps.store(versionPropsFile.newWriter(), null)
-                } else {
-                    throw new FileNotFoundException("Could not read version.properties!")
-                }
-        }
+                if (versionType.equals("beta")) {
+                    outputFileName = "K-Manager-v$versionName.$versionCode-beta.apk"
+                    uploadBetaWhenFinished.execute()
+                }else if (versionType.equals("debug")){
+                    outputFileName = "K-Manager-debug" + ".apk"
+                    uploadDebugWhenFinished.execute()
+                } else if(versionType.equals("stable")) {
+                    outputFileName = "K-Manager-v$versionName" + ".apk"
+                    if (versionPropsFile.canRead()) {
+                        def Properties versionProps = new Properties()
+                        versionProps.load(new FileInputStream(versionPropsFile))
+                        versionBuild = -1
+                        versionProps['VERSION_BUILD'] = versionBuild.toString()
+                        versionProps.store(versionPropsFile.newWriter(), null)
+                    } else {
+                        throw new FileNotFoundException("Could not read version.properties!")
+                    }
+            }
+
 
     }}
     buildTypes {
@@ -75,9 +85,8 @@ android {
             autoIncrementBuildNumber()
         }
     }
+
 }
-
-
 
 dependencies {
 
@@ -107,4 +116,15 @@ dependencies {
     //Welcome Activity
     compile 'com.stephentuso:welcome:1.4.1'
 }
+task uploadDebugWhenFinished {
+    doLast {
+        "python /home/karol/PycharmProjects/telegram/Debug.py".execute()
+    }
+}
 
+
+task uploadBetaWhenFinished {
+    doLast {
+        "python /home/karol/PycharmProjects/telegram/Beta.py".execute()
+    }
+}
