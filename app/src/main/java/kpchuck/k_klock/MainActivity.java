@@ -1,14 +1,13 @@
 package kpchuck.k_klock;
 
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v7.widget.CardView;
-import android.util.Log;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -29,10 +28,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.ArrayList;
-import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
-import android.widget.EditText;
-import android.text.InputType;
+
 import android.content.res.AssetManager;
 import java.io.IOException;
 import java.io.File;
@@ -40,7 +36,7 @@ import android.net.Uri;
 import android.content.Intent;
 import android.widget.Toast;
 
-import com.facebook.stetho.common.ArrayListAccumulator;
+import com.stephentuso.welcome.WelcomeHelper;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -54,11 +50,9 @@ import kpchuck.k_klock.Adapters.ColorAdapter;
 import kpchuck.k_klock.Adapters.FormatAdapter;
 import kpchuck.k_klock.Adapters.SimpleListAdapter;
 import kpchuck.k_klock.Fragments.InputAlertDialogFragment;
-import kpchuck.k_klock.Fragments.StatusBar_Add_On_Fragment;
 import kpchuck.k_klock.Fragments.TextAlertDialogFragment;
 import kpchuck.k_klock.Interfaces.BtnClickListener;
 import kpchuck.k_klock.Interfaces.DialogClickListener;
-import kpchuck.k_klock.Interfaces.DialogInputClickListener;
 import kpchuck.k_klock.Utils.FileHelper;
 import kpchuck.k_klock.Utils.PrefUtils;
 
@@ -78,6 +72,7 @@ public class MainActivity extends AppCompatActivity
     int PERMISSION_ALL = 1;
     String[] PERMISSIONS = {android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
     String betaString;
+    WelcomeHelper welcomeScreen;
 
 
     java.io.FilenameFilter fileNameFilterAPK = new java.io.FilenameFilter() {
@@ -145,18 +140,19 @@ public class MainActivity extends AppCompatActivity
             android.support.v4.app.ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
 
-        final Switch indicatorSwitch = (Switch) findViewById(R.id.networkSignalIndicatorSwitch);
+
+        final Switch indicatorSwitch = findViewById(R.id.networkSignalIndicatorSwitch);
         this.prefUtils = new PrefUtils(getApplicationContext());
 
-        Switch qsSwitch = (Switch) findViewById(R.id.noQsTilesTv);
-        Switch recentsSwitch = (Switch) findViewById(R.id.roundedRecents);
-        Switch moveLeftSwitch = (Switch) findViewById(R.id.moveNetworkLeft);
-        Switch hideStatusbar = (Switch) findViewById(R.id.hideStatusbar);
-        Switch iconColors = (Switch) findViewById(R.id.colorIcons);
-        Switch qsBg = (Switch) findViewById(R.id.qsBg);
-        Switch minit = (Switch) findViewById(R.id.minitMod);
-        Switch qstitle = (Switch) findViewById(R.id.qsTitle);
-        Switch ampm = (Switch) findViewById(R.id.ampm);
+        Switch qsSwitch = findViewById(R.id.noQsTilesTv);
+        Switch recentsSwitch = findViewById(R.id.roundedRecents);
+        Switch moveLeftSwitch = findViewById(R.id.moveNetworkLeft);
+        Switch hideStatusbar = findViewById(R.id.hideStatusbar);
+        Switch iconColors = findViewById(R.id.colorIcons);
+        Switch qsBg = findViewById(R.id.qsBg);
+        Switch minit = findViewById(R.id.minitMod);
+        Switch qstitle = findViewById(R.id.qsTitle);
+        Switch ampm = findViewById(R.id.ampm);
         CardView iconView = findViewById(R.id.iconColorCardView);
 
         ampm.setChecked(prefUtils.getBool("amPref"));
@@ -364,6 +360,36 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    public void showLayout (final RelativeLayout relativeLayout){
+        relativeLayout.setVisibility(View.INVISIBLE);
+        relativeLayout.startAnimation(AnimationUtils.loadAnimation(this, R.anim.view_show));
+        relativeLayout.animate()
+                .setStartDelay(50)
+                .alpha(1.0f)
+                .setDuration(500)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        relativeLayout.setVisibility(View.VISIBLE);
+                    }
+                });
+    }
+
+    public void hideLayout (final RelativeLayout relativeLayout){
+        relativeLayout.startAnimation(AnimationUtils.loadAnimation(this, R.anim.view_hide));
+        relativeLayout.animate()
+                .alpha(0.0f)
+                .setDuration(1000)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        relativeLayout.setVisibility(View.GONE);
+                    }
+                });
+
+    }
 
 
     public int decreaseToLowest(String[] testStringArray){
@@ -479,13 +505,13 @@ public class MainActivity extends AppCompatActivity
         twoLv.setAdapter(twoAdapter);
         twoTv.setText(getString(R.string.included_colors));
         oneTv.setText(getString(R.string.added_colors));
-        bgLayout.setVisibility(View.VISIBLE);
+        showLayout(bgLayout);
 
     }
     public void hideList(View v){
         RelativeLayout rv = findViewById(R.id.listViewLayout);
         if(rv.getVisibility() == View.VISIBLE){
-            rv.setVisibility(View.GONE);
+            hideLayout(rv);
 
         }
     }
@@ -559,7 +585,7 @@ public class MainActivity extends AppCompatActivity
         twoLv.setAdapter(twoAdapter);
         twoTv.setText(getString(R.string.included_formats));
         oneTv.setText(getString(R.string.added_formats));
-        bgLayout.setVisibility(View.VISIBLE);
+        showLayout(bgLayout);
     }
 
 
@@ -607,7 +633,7 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         }else if (rv.getVisibility() == View.VISIBLE){
-            rv.setVisibility(View.GONE);
+            hideLayout(rv);
         } else {
             super.onBackPressed();
         }
