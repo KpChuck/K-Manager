@@ -26,10 +26,7 @@ android {
             def Properties versionProps = new Properties()
             versionProps.load(new FileInputStream(versionPropsFile))
             if (versionType.equals("beta")) {
-                versionBuild = versionProps['VERSION_BUILD'].toInteger() + 1
-            }
-            else{
-                versionBuild = versionProps['VERSION_BUILD'].toInteger
+                versionBuild = versionBuild + 1
             }
             versionProps['VERSION_BUILD'] = versionBuild.toString()
             versionProps.store(versionPropsFile.newWriter(), null)
