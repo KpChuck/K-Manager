@@ -121,7 +121,6 @@ public class MoveNetworkIconsLeft {
                 Element firstElement = (Element) firstNode;
                 String firstTag = firstElement.getTagName();
 
-                Log.d("klock", "First Tag is "+ firstTag);
                 if (firstTag.equals("LinearLayout") || firstTag.equals("TextClock")){
                     Node nextElement = firstElement.getNextSibling();
                     while (nextElement.getNodeType() != Node.ELEMENT_NODE){
@@ -132,17 +131,83 @@ public class MoveNetworkIconsLeft {
                 else {
                     insertBeforeElement = firstElement;
                 }
-                //Add layout width attribute
-                if (file.getAbsolutePath().contains("Center") || file.getAbsolutePath().contains("res")) {
 
-                    if (layout.getAttributes().getNamedItem("android:paddingEnd") == null) {
-                        layout.setAttribute("android:paddingEnd", "8.5dip");
-                    } else {
-                        layout.removeAttribute("android:paddingEnd");
-                        layout.setAttribute("android:paddingEnd", "8.5dip");
+
+                // Remove center clock and Add Other StatusBarClock
+                String xmlpath = file.getAbsolutePath();
+
+                if (xmlpath.contains("Center") || xmlpath.contains("res")) {
+                    String TAG = "klock";
+                    Log.d(TAG, xmlpath);
+                    Element rootElement = doc.getDocumentElement();
+
+                    Element statusbarContents = getElementById(rootElement, "LinearLayout", "@*com.android.systemui:id/status_bar_contents");
+
+                    // Delete Remains of previous
+                    Element realSysArea = getElementById(statusbarContents, "com.android.keyguard.AlphaOptimizedLinearLayout", "@*com.android.systemui:id/system_icon_area");
+                    realSysArea.removeAttribute("android:layout_weight");
+                    realSysArea.removeAttribute("android:layout_width");
+                    realSysArea.setAttribute("android:layout_width", "wrap_content");
+
+                    Element viewElement = getElementByAttribute(realSysArea, "View", "android:layout_weight", "1.0");
+                    realSysArea.removeChild(viewElement);
+
+
+                    if (xmlpath.contains("Center")) {
+                        Element layoutWithClock = getElementById(statusbarContents, "LinearLayout", "@*com.android.systemui:id/system_icon_area");
+                        statusbarContents.removeChild(layoutWithClock);
+                    } else if (xmlpath.contains("res")) {
+                        Element clock = getElementByAttribute(statusbarContents, "TextClock", "android:format12Hour", "@*com.android.systemui:string/keyguard_widget_12_hours_format");
+                        statusbarContents.removeChild(clock);
+                        Element linearstart = getElementById(rootElement, "LinearLayout", "@*com.android.systemui:id/system_icon_area");
+                        rootElement.removeChild(linearstart);
+                    }
+
+
+                    //Make the new status bar clock
+
+
+                    Element hideyLayout = doc.createElement("LinearLayout");
+                    hideyLayout.setAttribute("android:layout_width", "fill_parent");
+                    hideyLayout.setAttribute("android:layout_height", "fill_parent");
+                    hideyLayout.setAttribute("android:gravity", "center");
+                    hideyLayout.setAttribute("android:orientation", "horizontal");
+                    hideyLayout.setAttribute("android:id", "@*com.android.systemui:id/system_icon_area");
+
+                    //Creating textclock
+                    Element textClock = doc.createElement("TextClock");
+                    textClock.setAttribute("android:format12Hour", "@*com.android.systemui:string/keyguard_widget_12_hours_format");
+                    textClock.setAttribute("android:format24Hour", "@*com.android.systemui:string/keyguard_widget_24_hours_format");
+                    textClock.setAttribute("android:textAppearance", "@*com.android.systemui:style/TextAppearance.StatusBar.Clock");
+                    textClock.setAttribute("android:textColor", "@*com.android.systemui:color/status_bar_clock_color");
+                    textClock.setAttribute("android:layout_width", "fill_parent");
+                    textClock.setAttribute("android:layout_height", "fill_parent");
+                    textClock.setAttribute("android:gravity", "center");
+                    textClock.setAttribute("android:singleLine", "true");
+
+                    rootElement.insertBefore(hideyLayout, getFirstChildElement(rootElement));
+
+                    if (xmlpath.contains("Center") && xmlpath.contains("Stock")) {
+                        //Creating textclock
+                        Element stockClock = doc.createElement("com.android.systemui.statusbar.policy.Clock");
+                        textClock.setAttribute("android:textAppearance", "@*com.android.systemui:style/TextAppearance.StatusBar.Clock");
+                        textClock.setAttribute("android:textColor", "@*com.android.systemui:color/status_bar_clock_color");
+                        textClock.setAttribute("android:layout_width", "fill_parent");
+                        textClock.setAttribute("android:layout_height", "fill_parent");
+                        textClock.setAttribute("android:gravity", "center");
+                        textClock.setAttribute("android:singleLine", "true");
+                        textClock.setAttribute("android:id", "@*com.android.systemui:id/clock");
+
+                        rootElement.insertBefore(hideyLayout, getFirstChildElement(rootElement));
+                        hideyLayout.appendChild(stockClock);
+                    } else if (xmlpath.contains("Center")) {
+
+                        hideyLayout.appendChild(textClock);
+
+                    } else if (xmlpath.contains("res")) {
+                        rootElement.insertBefore(textClock, hideyLayout);
                     }
                 }
-
 
                 Element toInclude = doc.createElement("include");
                 toInclude.setAttribute("android:layout_width", "wrap_content");
@@ -165,6 +230,45 @@ public class MoveNetworkIconsLeft {
             }
 
         }
+
+    }
+    public static Element getFirstChildElement(Node parent) {
+        Element myElement = null;
+        NodeList childs = parent.getChildNodes();
+        for (int i = 0; i < childs.getLength(); i++) {
+            Node child = childs.item(i);
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                myElement = (Element) child;
+                break;
+            }else {
+                myElement = null;
+            }
+        }
+        return myElement;
+    }
+
+
+    public Element getElementById (Element parentElement, String layoutTag, String idName){
+
+        return getElementByAttribute(parentElement, layoutTag, "android:id", idName);
+
+    }
+
+    public Element getElementByAttribute (Element parentElement, String layoutTag, String attributeName, String idName){
+
+        NodeList list = parentElement.getElementsByTagName(layoutTag);
+        Element layout = null;
+        for (int i=0; i<list.getLength(); i++){
+            layout = (Element) list.item(i);
+            Attr attr = layout.getAttributeNode(attributeName);
+            if (attr.getValue().equals(idName)) break;
+            else layout = null;
+        }
+        if (layout == null){
+            Log.e("klock", "Layout is equal to null" + layoutTag);
+            return null;
+        }
+        return layout;
 
     }
 
