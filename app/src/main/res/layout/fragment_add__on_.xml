@@ -52,7 +52,7 @@
             android:layout_marginRight="12dp"
             android:layout_alignParentStart="true"
             android:layout_below="@id/ampm"
-            android:text="Network Signal Indicators"
+            android:text="Hide Network Signal Indicators"
             android:id="@+id/networkSignalIndicatorSwitch"/>
         <Switch
             android:layout_width="match_parent"
