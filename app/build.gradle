@@ -46,10 +46,8 @@ android {
         variant.outputs.all{ output ->
                 if (versionType.equals("beta")) {
                     outputFileName = "K-Manager-v$versionName.$versionCode-beta.apk"
-                    uploadBetaWhenFinished.execute()
                 }else if (versionType.equals("debug")){
                     outputFileName = "K-Manager-debug" + ".apk"
-                    uploadDebugWhenFinished.execute()
                 } else if(versionType.equals("stable")) {
                     outputFileName = "K-Manager-v$versionName" + ".apk"
                     if (versionPropsFile.canRead()) {
@@ -77,6 +75,11 @@ android {
     //Let's make use of it
     gradle.taskGraph.whenReady {taskGraph ->
         if (taskGraph.hasTask(assembleDebug)) {  /* when run debug task */
+            if (versionType.equals("beta")) {
+                uploadBetaWhenFinished.execute()
+            }else if (versionType.equals("debug")){
+                uploadDebugWhenFinished.execute()
+            }
             autoIncrementBuildNumber()
         } else if (taskGraph.hasTask(assembleRelease)) { /* when run release task */
             autoIncrementBuildNumber()
