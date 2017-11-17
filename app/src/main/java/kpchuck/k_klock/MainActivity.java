@@ -361,10 +361,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void showLayout (final RelativeLayout relativeLayout){
-        relativeLayout.setVisibility(View.INVISIBLE);
-        relativeLayout.startAnimation(AnimationUtils.loadAnimation(this, R.anim.view_show));
         relativeLayout.animate()
-                .setStartDelay(50)
                 .alpha(1.0f)
                 .setDuration(500)
                 .setListener(new AnimatorListenerAdapter() {
@@ -380,7 +377,7 @@ public class MainActivity extends AppCompatActivity
         relativeLayout.startAnimation(AnimationUtils.loadAnimation(this, R.anim.view_hide));
         relativeLayout.animate()
                 .alpha(0.0f)
-                .setDuration(1000)
+                .setDuration(500)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
