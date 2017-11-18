@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity
         Switch moveLeftSwitch = findViewById(R.id.moveNetworkLeft);
         Switch hideStatusbar = findViewById(R.id.hideStatusbar);
         Switch iconColors = findViewById(R.id.colorIcons);
-        Switch qsBg = findViewById(R.id.qsBg);
+        final Switch qsBg = findViewById(R.id.qsBg);
         Switch minit = findViewById(R.id.minitMod);
         Switch qstitle = findViewById(R.id.qsTitle);
         Switch ampm = findViewById(R.id.ampm);
@@ -168,6 +168,8 @@ public class MainActivity extends AppCompatActivity
         if (prefUtils.getBool("iconPref")) iconView.setVisibility(View.VISIBLE);
 
         if (!getOos(prefUtils.getString("selectedRom", getString(R.string.chooseRom))).equals("OxygenOS")) indicatorSwitch.setVisibility(View.GONE);
+        if (getOos(prefUtils.getString("selectedRom", getString(R.string.chooseRom))).equals("OxygenOS")) qsBg.setVisibility(View.GONE);
+
 
         File rootfile = new File(rootFolder);
         if(!rootfile.exists()){
@@ -230,8 +232,12 @@ public class MainActivity extends AppCompatActivity
                 String selectedItem = simpleListAdapter.getItem(position).toString();
                 prefUtils.putString("selectedRom", selectedItem);
                 if (getOos(selectedItem).equals("OxygenOS")){
+                    qsBg.setVisibility(View.GONE);
                     indicatorSwitch.setVisibility(View.VISIBLE);
-                }else indicatorSwitch.setVisibility(View.GONE);
+                }else {
+                    indicatorSwitch.setVisibility(View.GONE);
+                    qsBg.setVisibility(View.VISIBLE);
+                }
 
             } // to close the onItemSelected
 
