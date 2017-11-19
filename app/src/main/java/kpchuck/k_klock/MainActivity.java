@@ -27,6 +27,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 
 import android.content.res.AssetManager;
@@ -46,6 +47,7 @@ import java.util.List;
 
 import gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner;
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener;
+import kpchuck.k_klock.Activities.MyWelcomeActivity;
 import kpchuck.k_klock.Adapters.ColorAdapter;
 import kpchuck.k_klock.Adapters.FormatAdapter;
 import kpchuck.k_klock.Adapters.SimpleListAdapter;
@@ -75,28 +77,23 @@ public class MainActivity extends AppCompatActivity
     WelcomeHelper welcomeScreen;
 
 
-    java.io.FilenameFilter fileNameFilterAPK = new java.io.FilenameFilter() {
-
+    FilenameFilter fileNameFilterAPK = new java.io.FilenameFilter() {
         @Override
         public boolean accept(File dir, String name) {
             if(name.lastIndexOf('.')>0) {
-
-                // get last index for '.' char
                 int lastIndex = name.lastIndexOf('.');
-
-                // get extension
                 String str = name.substring(lastIndex);
-
-
-                // match path name extension
                 if(str.equals(".apk")) {
                     return true;
-                }
-            }
+                }}return false;};
 
-            return false;
-        }
     };
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        welcomeScreen.onSaveInstanceState(outState);
+    }
 
     @Override
     protected void onPostResume() {
@@ -135,6 +132,12 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         betaString = getResources().getString(R.string.otherRomsBeta);
         new FileHelper().newFolder(rootFolder + "/userInput");
+
+        welcomeScreen = new WelcomeHelper(this, MyWelcomeActivity.class);
+        welcomeScreen.show(savedInstanceState);
+        welcomeScreen.forceShow();
+
+
 
         if(!hasPermissions(this, PERMISSIONS)){
             android.support.v4.app.ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
@@ -256,11 +259,11 @@ public class MainActivity extends AppCompatActivity
         if(prefUtils.getBool("iconPref")) copyAssets("universal", "colorIcons.zip".trim());
         if(prefUtils.getBool("recentsPref")) copyAssets("universal", "recents.zip".trim());
         if (prefUtils.getBool("hideStatusbarPref")) copyAssets("universal", "hideStatusbar.zip".trim());
-        if (prefUtils.getBool("qsBgPref")) copyAssets("unviersal", "qsBgs.zip");
+        if (prefUtils.getBool("qsBgPref") && !getOos(romName).equals("OxygenOS")) copyAssets("unviersal", "qsBgs.zip");
         if (prefUtils.getBool("qsTitlePref")) copyAssets("universal", "qsTitle.zip");
         if (prefUtils.getBool("amPref")) copyAssets("universal", "ampm.zip");
-        if(prefUtils.getBool("indicatorPref") && getOos(romName).equals("OxygenOS Nougat")) copyAssets("universal", "indicatorsN.zip".trim());
-        if(prefUtils.getBool("indicatorPref") && getOos(romName).equals("OxygenOS Oreo")) copyAssets("universal", "indicatorsO.zip".trim());
+        if(prefUtils.getBool("indicatorPref") && romName.equals("OxygenOS Nougat")) copyAssets("universal", "indicatorsN.zip".trim());
+        if(prefUtils.getBool("indicatorPref") && romName.equals("OxygenOS Oreo")) copyAssets("universal", "indicatorsO.zip".trim());
 
 
         ScrollView frameLayout = (ScrollView) findViewById(R.id.defaultLayout);
@@ -273,7 +276,6 @@ public class MainActivity extends AppCompatActivity
 
         new apkBuilder(getApplication(), relativeLayout, textView, frameLayout).execute(apkVersion,apkVersion,apkVersion);
     }
-
 
     private String getOos(String oos){
         if (oos.length() <8) return "thisIsNotOxygenOS";
@@ -394,7 +396,6 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
     public int decreaseToLowest(String[] testStringArray){
         int kk;
         if(testStringArray.length != 0) {
@@ -435,8 +436,6 @@ public class MainActivity extends AppCompatActivity
                 false, v);
         fragment.show(getSupportFragmentManager(), "klock");
     }
-
-
 
     public void showIncludedColors(final View v){
         RelativeLayout bgLayout = (RelativeLayout) findViewById(R.id.listViewLayout);
@@ -511,6 +510,7 @@ public class MainActivity extends AppCompatActivity
         showLayout(bgLayout);
 
     }
+
     public void hideList(View v){
         RelativeLayout rv = findViewById(R.id.listViewLayout);
         if(rv.getVisibility() == View.VISIBLE){
@@ -591,7 +591,6 @@ public class MainActivity extends AppCompatActivity
         showLayout(bgLayout);
     }
 
-
     public void deleteItems(ArrayList<String> titles, ArrayList<String> values, String title, String value, String titleArrayKey, String valueArrayKey, String toSaveBoolKey){
         title = title.replace(" ", "_")+".xml";
         FileHelper fileHelper = new FileHelper();
@@ -607,7 +606,6 @@ public class MainActivity extends AppCompatActivity
 
 
     }
-
 
     public void getArrayForRoms(){
         try {
@@ -826,8 +824,6 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         }
-
-
 
     public static boolean hasPermissions(android.content.Context context, String... permissions) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M && context != null && permissions != null) {
