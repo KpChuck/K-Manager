@@ -135,9 +135,6 @@ public class MainActivity extends AppCompatActivity
 
         welcomeScreen = new WelcomeHelper(this, MyWelcomeActivity.class);
         welcomeScreen.show(savedInstanceState);
-        welcomeScreen.forceShow();
-
-
 
         if(!hasPermissions(this, PERMISSIONS)){
             android.support.v4.app.ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
