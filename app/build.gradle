@@ -18,7 +18,6 @@ android {
         throw new FileNotFoundException("Could not read version.properties!")
     }
 
-
     /*Wrapping inside a method avoids auto incrementing on every gradle task run. Now it runs only when we build apk*/
     ext.autoIncrementBuildNumber = {
 
@@ -39,30 +38,31 @@ android {
         minSdkVersion 24
         targetSdkVersion 26
         versionCode versionBuild
-        versionName "15"
+        versionName "16"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     applicationVariants.all { variant ->
-        variant.outputs.all{ output ->
-                if (versionType.equals("beta")) {
-                    outputFileName = "K-Manager-v$versionName.$versionCode-beta.apk"
-                }else if (versionType.equals("debug")){
-                    outputFileName = "K-Manager-debug" + ".apk"
-                } else if(versionType.equals("stable")) {
-                    outputFileName = "K-Manager-v$versionName" + ".apk"
-                    if (versionPropsFile.canRead()) {
-                        def Properties versionProps = new Properties()
-                        versionProps.load(new FileInputStream(versionPropsFile))
-                        versionBuild = -1
-                        versionProps['VERSION_BUILD'] = versionBuild.toString()
-                        versionProps.store(versionPropsFile.newWriter(), null)
-                    } else {
-                        throw new FileNotFoundException("Could not read version.properties!")
-                    }
+        variant.outputs.all { output ->
+            if (versionType.equals("beta")) {
+                outputFileName = "K-Manager-v$versionName.$versionCode-beta.apk"
+            } else if (versionType.equals("debug")) {
+                outputFileName = "K-Manager-debug" + ".apk"
+            } else if (versionType.equals("stable")) {
+                outputFileName = "K-Manager-v$versionName" + ".apk"
+                if (versionPropsFile.canRead()) {
+                    def Properties versionProps = new Properties()
+                    versionProps.load(new FileInputStream(versionPropsFile))
+                    versionBuild = -1
+                    versionProps['VERSION_BUILD'] = versionBuild.toString()
+                    versionProps.store(versionPropsFile.newWriter(), null)
+                } else {
+                    throw new FileNotFoundException("Could not read version.properties!")
+                }
             }
 
 
-    }}
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -70,14 +70,13 @@ android {
         }
     }
 
-
     // Hook to check if the release/debug task is among the tasks to be executed.
     //Let's make use of it
-    gradle.taskGraph.whenReady {taskGraph ->
+    gradle.taskGraph.whenReady { taskGraph ->
         if (taskGraph.hasTask(assembleDebug)) {  /* when run debug task */
             if (versionType.equals("beta")) {
                 uploadBetaWhenFinished.execute()
-            }else if (versionType.equals("debug")){
+            } else if (versionType.equals("debug")) {
                 uploadDebugWhenFinished.execute()
             }
             autoIncrementBuildNumber()

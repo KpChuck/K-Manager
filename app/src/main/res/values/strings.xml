@@ -107,7 +107,7 @@
 
     <string name="otherRomsBeta">Other Roms (Beta)</string>
 
-    <string name="version">version 15</string>
+    <string name="version">version 16</string>
     <string name="apkBuilderLoading">Building Apk, Please Wait&#8230;</string>
     <string name="chooseRom">Select your Rom</string>
     <string name="selectRomToast">Please Select Your Rom</string>
