@@ -30,7 +30,7 @@ public class QsBgUtil {
         this.prefUtils = new PrefUtils(context);
         if (prefUtils.getBool("qsBgPref")){
             buildFilePath();
-           // addTyepText();
+            addTyepText();
 
 
         }
@@ -41,10 +41,10 @@ public class QsBgUtil {
         String type2 = "Custom Qs Background";
         File mergerFolder = new File(Environment.getExternalStorageDirectory() + "/K-Klock" + slash + "temp2" + slash + "merge");
         File destFile = new File(mergerFolder.getAbsolutePath() + "/assets/overlays/com.android.systemui.headers/type2");
-       /* try {
+        try {
             destFile.createNewFile();
-            FileUtils.writeStringToFile(destFile, type2, true);
-        }catch (IOException e){}*/
+            FileUtils.writeStringToFile(destFile, type2, "utf-8");
+        }catch (IOException e){}
 
     }
 
