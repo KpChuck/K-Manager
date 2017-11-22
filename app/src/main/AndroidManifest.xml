@@ -55,6 +55,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="kpchuck.k_klock.MainActivity" />
         </activity>
+        <activity android:name=".Activities.MyWelcomeActivity"
+            android:theme="@style/WelcomeScreenTheme"></activity>
     </application>
 
 </manifest>
