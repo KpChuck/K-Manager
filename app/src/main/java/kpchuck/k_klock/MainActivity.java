@@ -4,9 +4,12 @@ package kpchuck.k_klock;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.Settings;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ListView;
@@ -39,6 +42,7 @@ import android.widget.Toast;
 
 import com.stephentuso.welcome.WelcomeHelper;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.util.Arrays;
@@ -169,6 +173,10 @@ public class MainActivity extends AppCompatActivity
 
         if (!getOos(prefUtils.getString("selectedRom", getString(R.string.chooseRom))).equals("OxygenOS")) indicatorSwitch.setVisibility(View.GONE);
         if (getOos(prefUtils.getString("selectedRom", getString(R.string.chooseRom))).equals("OxygenOS")) qsBg.setVisibility(View.GONE);
+
+        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.loadingId);
+        TextView textView = (TextView) findViewById(R.id.loadingTextView);
+        new CleanupFiles(relativeLayout, textView).execute();
 
 
         File rootfile = new File(rootFolder);
@@ -404,9 +412,11 @@ public class MainActivity extends AppCompatActivity
             ArrayList<Integer> listOfVersions = new ArrayList<>();
 
             for(String s : testStringArray){
-                String toInt = s.substring(s.indexOf("v")+1, s.lastIndexOf("."));
-                int bleh = Integer.parseInt(toInt);
-                listOfVersions.add(bleh);
+                if (s.substring(0, 7).equals("K-Klock")) {
+                    String toInt = s.substring(s.indexOf("v") + 1, s.lastIndexOf("."));
+                    int bleh = Integer.parseInt(toInt);
+                    listOfVersions.add(bleh);
+                }
             }
             Integer[] intArray = listOfVersions.toArray(new Integer[listOfVersions.size()]);
             Arrays.sort(intArray);
@@ -832,3 +842,47 @@ public class MainActivity extends AppCompatActivity
         }
         return true;
     }}
+
+class CleanupFiles extends AsyncTask<Void, Void, Void>{
+
+    RelativeLayout relativeLayout;
+    TextView tv;
+
+    public CleanupFiles(RelativeLayout relativeLayout, TextView tv){
+        this.relativeLayout = relativeLayout;
+        this.tv = tv;
+    }
+
+    private void cleanDir (File file){
+        if (file.exists()){
+            try{
+                FileUtils.deleteDirectory(file);
+            }catch (IOException e){
+                Log.e("klock", e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        relativeLayout.setVisibility(View.VISIBLE);
+        tv.setText("Cleaning residual files...");
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
+        relativeLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected Void doInBackground(Void... voids) {
+        String rootDir = Environment.getExternalStorageDirectory() + "/K-Klock/";
+        String[] temps = new String[]{"temp", "temp2", "temp3"};
+        for (String temp : temps) cleanDir(new File(rootDir + temp));
+        File testKey = new File(rootDir + "test");
+        if (testKey.exists()) testKey.delete();
+        return null;
+    }
+}
