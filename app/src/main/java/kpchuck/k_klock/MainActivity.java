@@ -66,11 +66,11 @@ import kpchuck.k_klock.Utils.PrefUtils;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    ArrayList<String> roms = new ArrayList<String>();
-    ArrayList<String> colorsTitles = new ArrayList<String>();
-    ArrayList<String> formatsTitles = new ArrayList<String>();
-    ArrayList<String> colorsValues = new ArrayList<String>();
-    ArrayList<String> formatsValues = new ArrayList<String>();
+    ArrayList<String> roms = new ArrayList<>();
+    ArrayList<String> colorsTitles = new ArrayList<>();
+    ArrayList<String> formatsTitles = new ArrayList<>();
+    ArrayList<String> colorsValues = new ArrayList<>();
+    ArrayList<String> formatsValues = new ArrayList<>();
     String slash = "/";
     PrefUtils prefUtils;
 
@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity
                 String str = name.substring(lastIndex);
                 if(str.equals(".apk")) {
                     return true;
-                }}return false;};
+                }}return false;}
 
     };
 
@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity
     protected void onPostResume() {
         if(prefUtils.getBoolTrue("joinTelegram")) promptTelegram();
 
-        if(Build.VERSION.SDK_INT == 26 && !getPackageManager().canRequestPackageInstalls()){
+        if(Build.VERSION.SDK_INT >= 26 && !getPackageManager().canRequestPackageInstalls()){
             TextAlertDialogFragment alertDialogFragment = new TextAlertDialogFragment();
             DialogClickListener clickReactor = new DialogClickListener() {
                 @Override
@@ -174,8 +174,8 @@ public class MainActivity extends AppCompatActivity
         if (!getOos(prefUtils.getString("selectedRom", getString(R.string.chooseRom))).equals("OxygenOS")) indicatorSwitch.setVisibility(View.GONE);
         if (getOos(prefUtils.getString("selectedRom", getString(R.string.chooseRom))).equals("OxygenOS")) qsBg.setVisibility(View.GONE);
 
-        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.loadingId);
-        TextView textView = (TextView) findViewById(R.id.loadingTextView);
+        RelativeLayout relativeLayout = findViewById(R.id.loadingId);
+        TextView textView = findViewById(R.id.loadingTextView);
         new CleanupFiles(relativeLayout, textView).execute();
 
 
@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity
         if(!rootfile.exists()){
             rootfile.mkdirs();
         }if(!rootfile.isDirectory()) rootfile.mkdirs();
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity
 
         String[] check = new File(rootFolder).list(fileNameFilterAPK);
         int k = decreaseToLowest(check);
-        String apkVersion = "K-Klock v" + k + ".apk";
+        String apkVersion = "K-Klock_v" + k + ".apk";
 
         new apkBuilder(getApplication(), relativeLayout, textView, frameLayout).execute(apkVersion,apkVersion,apkVersion);
     }
@@ -412,11 +412,9 @@ public class MainActivity extends AppCompatActivity
         for (String s: list) if (s.substring(0, 7).equals("K-Klock")) klockArray.add(s);
 
         if(klockArray.size() != 0) {
-            testStringArray = (String[]) klockArray.toArray();
-
             ArrayList<Integer> listOfVersions = new ArrayList<>();
 
-            for(String s : testStringArray){
+            for(String s : klockArray){
                     String toInt = s.substring(s.indexOf("v") + 1, s.lastIndexOf("."));
                     int bleh = Integer.parseInt(toInt);
                     listOfVersions.add(bleh);
