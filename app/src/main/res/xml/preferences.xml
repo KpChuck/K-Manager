@@ -1,20 +1,21 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
     <PreferenceCategory
-        android:title="@string/pref_title_save_additions"
-        android:defaultValue="true"
-        android:key="pref_save_title">
+        android:title="General">
+
+        <SwitchPreference
+            android:key="installSilently"
+            android:defaultValue="true"
+            android:title="Install K-Klock Apk's Silently after building"/>
+
         <Preference
             android:key="deleteSaved"
             android:title="Delete Saved Clock Formats and Colors"/>
-    </PreferenceCategory>
 
-    <PreferenceCategory
-        android:title="Cleanup">
         <Preference
-            android:key="deleteApks"
-            android:title="Delete all K-Klock Apks">
-
-        </Preference>
+        android:key="deleteApks"
+        android:title="Delete all K-Klock Apks"/>
 
     </PreferenceCategory>
 

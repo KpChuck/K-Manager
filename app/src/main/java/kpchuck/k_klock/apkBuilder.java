@@ -6,7 +6,9 @@ import org.zeroturnaround.zip.ZipUtil;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
@@ -18,7 +20,9 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.List;
 
+import eu.chainfire.libsuperuser.Shell;
 import kellinwood.security.zipsigner.ZipSigner;
 import kpchuck.k_klock.Utils.FileHelper;
 import kpchuck.k_klock.Utils.PrefUtils;
@@ -163,53 +167,57 @@ public boolean accept(File dir, String name) {
         protected void onPostExecute(String result) {
                 super.onPostExecute(result);
 
-                String apkVersion = result;
+            String apkVersion = result;
            File apk = new File(rootFolder + slash + apkVersion);
-            FileHelper fh = new FileHelper();
-            fh.installApk(apk, context);
 
-
-
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            if (!prefs.getBoolean("installSilently", true) || !Shell.SU.available()) {
+                FileHelper fh = new FileHelper();
+                showSnackbar();
+                fh.installApk(apk, context);
+            }else {
+                String install = "pm install -r /sdcard/K-Klock/" + apkVersion;
+                String output = Shell.SU.run(install).toString();
+                if (output.contains("Success")) showSnackbar();
+            }
             relativeLayout.setVisibility(View.GONE);
             tv.setText("");
+        }
 
-            try {
-                Snackbar snackbar = Snackbar.make(frameLayout, "Open K-Klock in Substratum", Snackbar.LENGTH_INDEFINITE)
-                        .setAction("Open", new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
+    private void showSnackbar() {
+        try {
+            Snackbar snackbar = Snackbar.make(frameLayout, "Open K-Klock in Substratum", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("Open", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
 
-                                final String SUBSTRATUM_PACKAGE_NAME = "projekt.substratum";
-                                final String THEME_PACKAGE_NAME = "com.kpchuck.kklock";
+                            final String SUBSTRATUM_PACKAGE_NAME = "projekt.substratum";
+                            final String THEME_PACKAGE_NAME = "com.kpchuck.kklock";
 
-                                Intent intent = new Intent();
-                                intent = intent.setClassName(SUBSTRATUM_PACKAGE_NAME, "projekt.substratum.activities.launch.ThemeLaunchActivity");
-                                intent.putExtra("package_name", THEME_PACKAGE_NAME);
-                                intent.setAction("projekt.substratum.THEME");
-                                intent.setPackage(THEME_PACKAGE_NAME);
-                                intent.putExtra("calling_package_name", THEME_PACKAGE_NAME);
-                                intent.putExtra("oms_check", false);
-                                intent.putExtra("theme_mode", (String) null);
-                                intent.putExtra("notification", false);
-                                intent.putExtra("hash_passthrough", true);
-                                intent.putExtra("certified", false);
-                                context.startActivity(intent);
-                            }
-                        });
+                            Intent intent = new Intent();
+                            intent = intent.setClassName(SUBSTRATUM_PACKAGE_NAME, "projekt.substratum.activities.launch.ThemeLaunchActivity");
+                            intent.putExtra("package_name", THEME_PACKAGE_NAME);
+                            intent.setAction("projekt.substratum.THEME");
+                            intent.setPackage(THEME_PACKAGE_NAME);
+                            intent.putExtra("calling_package_name", THEME_PACKAGE_NAME);
+                            intent.putExtra("oms_check", false);
+                            intent.putExtra("theme_mode", (String) null);
+                            intent.putExtra("notification", false);
+                            intent.putExtra("hash_passthrough", true);
+                            intent.putExtra("certified", false);
+                            context.startActivity(intent);
+                        }
+                    });
 
-                snackbar.show();
-            }catch (Exception e){
-                Log.e("klock", e.getMessage());
-                shortToast(e.getMessage());
-            }
-
-
-
-            // Do things like hide the progress bar or change a TextView
-                }
+            snackbar.show();
+        }catch (Exception e){
+            Log.e("klock", e.getMessage());
+            shortToast(e.getMessage());
+        }
+    }
 
 
-        FilenameFilter fileNameFilterXml = new java.io.FilenameFilter() {
+    FilenameFilter fileNameFilterXml = new java.io.FilenameFilter() {
 
                 @Override
                 public boolean accept(File dir, String name) {
