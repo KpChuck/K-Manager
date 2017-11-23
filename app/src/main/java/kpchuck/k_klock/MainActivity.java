@@ -403,20 +403,24 @@ public class MainActivity extends AppCompatActivity
 
     public int decreaseToLowest(String[] testStringArray){
         int kk;
-        if(testStringArray.length != 0) {
-            java.util.Arrays.sort(testStringArray);
-            java.util.List<String> list = java.util.Arrays.asList(testStringArray);
-            java.util.Collections.reverse(list);
-            testStringArray = (String[]) list.toArray();
+
+        Arrays.sort(testStringArray);
+        List<String> list = Arrays.asList(testStringArray);
+        Collections.reverse(list);
+
+        ArrayList<String> klockArray = new ArrayList<>();
+        for (String s: list) if (s.substring(0, 7).equals("K-Klock")) klockArray.add(s);
+
+        if(klockArray.size() != 0) {
+            testStringArray = (String[]) klockArray.toArray();
 
             ArrayList<Integer> listOfVersions = new ArrayList<>();
 
             for(String s : testStringArray){
-                if (s.substring(0, 7).equals("K-Klock")) {
                     String toInt = s.substring(s.indexOf("v") + 1, s.lastIndexOf("."));
                     int bleh = Integer.parseInt(toInt);
                     listOfVersions.add(bleh);
-                }
+
             }
             Integer[] intArray = listOfVersions.toArray(new Integer[listOfVersions.size()]);
             Arrays.sort(intArray);
