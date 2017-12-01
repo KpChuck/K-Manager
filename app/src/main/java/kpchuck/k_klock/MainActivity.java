@@ -3,6 +3,7 @@ package kpchuck.k_klock;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -40,6 +41,15 @@ import android.net.Uri;
 import android.content.Intent;
 import android.widget.Toast;
 
+import com.mikepenz.materialdrawer.AccountHeader;
+import com.mikepenz.materialdrawer.AccountHeaderBuilder;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.ExpandableDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.stephentuso.welcome.WelcomeHelper;
 
 import org.apache.commons.io.FileUtils;
@@ -49,8 +59,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.BindView;
 import gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner;
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener;
+import kpchuck.k_klock.Activities.InformationWebViewActivity;
 import kpchuck.k_klock.Activities.MyWelcomeActivity;
 import kpchuck.k_klock.Adapters.ColorAdapter;
 import kpchuck.k_klock.Adapters.FormatAdapter;
@@ -63,8 +75,25 @@ import kpchuck.k_klock.Utils.FileHelper;
 import kpchuck.k_klock.Utils.PrefUtils;
 
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity {
+
+    /*
+     Switch qsSwitch = findViewById(R.id.noQsTilesTv);
+        Switch recentsSwitch = findViewById(R.id.roundedRecents);
+        Switch moveLeftSwitch = findViewById(R.id.moveNetworkLeft);
+        Switch hideStatusbar = findViewById(R.id.hideStatusbar);
+        Switch iconColors = findViewById(R.id.colorIcons);
+        final Switch qsBg = findViewById(R.id.qsBg);
+        Switch minit = findViewById(R.id.minitMod);
+        Switch qstitle = findViewById(R.id.qsTitle);
+        Switch ampm = findViewById(R.id.ampm);
+        CardView iconView = findViewById(R.id.iconColorCardView);
+     */
+    @BindView(R.id.noQsTilesTv) Switch qsSwitch;
+    @BindView(R.id.roundedRecents) Switch
+
+
+
 
     ArrayList<String> roms = new ArrayList<>();
     ArrayList<String> colorsTitles = new ArrayList<>();
@@ -73,12 +102,14 @@ public class MainActivity extends AppCompatActivity
     ArrayList<String> formatsValues = new ArrayList<>();
     String slash = "/";
     PrefUtils prefUtils;
+    private Context context;
 
     String rootFolder = android.os.Environment.getExternalStorageDirectory() + slash + "K-Klock";
     int PERMISSION_ALL = 1;
     String[] PERMISSIONS = {android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
     String betaString;
     WelcomeHelper welcomeScreen;
+    Drawer drawer;
 
 
     FilenameFilter fileNameFilterAPK = new java.io.FilenameFilter() {
@@ -134,6 +165,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        this.context = getApplicationContext();
         betaString = getResources().getString(R.string.otherRomsBeta);
         new FileHelper().newFolder(rootFolder + "/userInput");
 
@@ -143,6 +175,112 @@ public class MainActivity extends AppCompatActivity
         if(!hasPermissions(this, PERMISSIONS)){
             android.support.v4.app.ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
+
+        // Create the material drawer
+        AccountHeader header = new AccountHeaderBuilder()
+                .withActivity(this)
+                .withHeaderBackground(R.color.primary_dark)
+                .withProfileImagesVisible(false)
+                .withSelectionListEnabledForSingleProfile(false)
+                .addProfiles(
+                        new ProfileDrawerItem()
+                                .withName(getString(R.string.app_name))
+                                .withEmail(R.string.version))
+                .withCurrentProfileHiddenInList(true)
+                .build();
+
+        DrawerBuilder builder = new DrawerBuilder();
+
+        builder.withActivity(this);
+        builder.withToolbar(toolbar);
+        builder.withAccountHeader(header);
+
+        PrimaryDrawerItem telegramItem = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.telegramItem)
+                .withIcon(android.R.drawable.sym_action_chat);
+
+        PrimaryDrawerItem settingsItem = new PrimaryDrawerItem().withIdentifier(2).withName(R.string.settings)
+                .withIcon(android.R.drawable.ic_menu_preferences);
+
+        ExpandableDrawerItem faqsItem = new ExpandableDrawerItem()
+                .withName(R.string.faqsTitle)
+                .withIcon(android.R.drawable.ic_menu_help)
+                .withSelectable(false).withSubItems(
+                        new SecondaryDrawerItem().withName(R.string.faqsItem)
+                                .withLevel(2)
+                                .withIdentifier(3),
+                        new SecondaryDrawerItem().withName(R.string.otherromsItem)
+                                .withLevel(2)
+                                .withIdentifier(4),
+                        new SecondaryDrawerItem().withName(R.string.qsbgItem)
+                                .withLevel(2)
+                                .withIdentifier(5),
+                        new SecondaryDrawerItem().withName(R.string.leftnetworkItem)
+                                .withLevel(2)
+                                .withIdentifier(6));
+
+        ExpandableDrawerItem linksItem = new ExpandableDrawerItem()
+                .withName(R.string.usefullLinksTitle)
+                .withIcon(R.drawable.link_image)
+                .withSelectable(false).withSubItems(
+                        new SecondaryDrawerItem().withName(R.string.rgbItem)
+                            .withLevel(2)
+                            .withIdentifier(7),
+                        new SecondaryDrawerItem().withName(R.string.formatsItem)
+                            .withLevel(2)
+                            .withIdentifier(8)
+                );
+
+        builder.addDrawerItems(telegramItem, settingsItem, faqsItem, linksItem);
+
+
+        builder.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+            @Override
+            public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                if (drawerItem != null) {
+                    switch ((int) drawerItem.getIdentifier()) {
+                        case 1:
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/kklock"));
+                            startActivity(browserIntent);
+                            break;
+                        case 2:
+                            Intent i = new Intent(context, SettingsActivity.class);
+                            startActivity(i);
+                            break;
+                        case 3:
+                            Intent faq = new Intent(context, InformationWebViewActivity.class);
+                            faq.putExtra("value", 1);
+                            startActivity(faq);
+                            break;
+                        case 4:
+                            Intent rom = new Intent(context, InformationWebViewActivity.class);
+                            rom.putExtra("value", 4);
+                            startActivity(rom);
+                            break;
+                        case 5:
+                            Intent qsbg = new Intent(context, InformationWebViewActivity.class);
+                            qsbg.putExtra("value", 2);
+                            startActivity(qsbg);
+                            break;
+                        case 6:
+                            Intent left = new Intent(context, InformationWebViewActivity.class);
+                            left.putExtra("value", 3);
+                            startActivity(left);
+                            break;
+                        case 7:
+                            Intent rgb = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.rapidtables.com/web/color/RGB_Color.htm"));
+                            startActivity(rgb);
+                            break;
+                        case 8:
+                            Intent formatIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://forum.xda-developers.com/showthread.php?t=2713812"));
+                            startActivity(formatIntent);
+                            break;
+                    }
+                }
+                return false;
+            }});
+
+        drawer = builder.build();
+
 
 
         final Switch indicatorSwitch = findViewById(R.id.networkSignalIndicatorSwitch);
@@ -216,17 +354,6 @@ public class MainActivity extends AppCompatActivity
 
         });
 
-
-
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
         getArrayForRoms();
 
@@ -638,11 +765,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         RelativeLayout rv = findViewById(R.id.listViewLayout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        }else if (rv.getVisibility() == View.VISIBLE){
+        if (rv.getVisibility() == View.VISIBLE){
             hideLayout(rv);
         } else {
             super.onBackPressed();
@@ -672,47 +796,6 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.settings) {
-            Intent i = new Intent(this, SettingsActivity.class);
-            startActivity(i);
-        }else if (id == R.id.telegramJoin){
-             Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/kklock"));
-            startActivity(browserIntent);
-        }
-        else if (id == R.id.otherroms_help){
-             Intent i = new Intent(this, InformationWebViewActivity.class);
-            i.putExtra("value", 4);
-            startActivity(i);
-        }else if(id == R.id.faq){
-            Intent i = new Intent(this, InformationWebViewActivity.class);
-            i.putExtra("value", 1);
-            startActivity(i);
-        }else if(id == R.id.qsbghelp){
-            Intent i = new Intent(this, InformationWebViewActivity.class);
-            i.putExtra("value", 2);
-            startActivity(i);
-        }else if(id == R.id.networkhelp){
-            Intent i = new Intent(this, InformationWebViewActivity.class);
-            i.putExtra("value", 3);
-            startActivity(i);
-
-        }else if(id == R.id.whatIsRgb){
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.rapidtables.com/web/color/RGB_Color.htm"));
-            startActivity(browserIntent);
-        }else if(id == R.id.clockFormatsHelp){
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://forum.xda-developers.com/showthread.php?t=2713812"));
-            startActivity(browserIntent);
-        }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
 
     private void promptTelegram(){
         if (isPackageInstalled("org.telegram.messenger", getApplicationContext().getPackageManager()) ){
