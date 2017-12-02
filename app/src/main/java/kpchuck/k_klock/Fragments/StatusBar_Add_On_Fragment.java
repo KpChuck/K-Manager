@@ -3,28 +3,24 @@ package kpchuck.k_klock.Fragments;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
+
 import android.widget.Switch;
-import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import kpchuck.k_klock.Adapters.ColorAdapter;
-import kpchuck.k_klock.Interfaces.BtnClickListener;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 import kpchuck.k_klock.MainActivity;
 import kpchuck.k_klock.R;
+import kpchuck.k_klock.Utils.FileHelper;
 import kpchuck.k_klock.Utils.PrefUtils;
 
 /**
@@ -33,10 +29,20 @@ import kpchuck.k_klock.Utils.PrefUtils;
  */
 public class StatusBar_Add_On_Fragment extends Fragment {
 
-    // TODO: Rename and change types of parameters
     private PrefUtils prefUtils;
-    CardView iconView;
     private FragmentActivity myContext;
+    private Unbinder unbinder;
+    FileHelper fileHelper;
+
+    // Bind Everything
+    @BindView(R.id.ampm) Switch amSwitch;
+    @BindView(R.id.iconColorCardView) CardView iconView;
+    @BindView (R.id.hideStatusbar) Switch lockSwitch;
+    @BindView (R.id.moveNetworkLeft) Switch leftSwitch;
+    @BindView (R.id.networkSignalIndicatorSwitch) Switch indicatorSwitch;
+    @BindView (R.id.colorIcons) Switch iconSwitch;
+    @BindView (R.id.includedIconsButton) Button showIncluded;
+    @BindView (R.id.addIconButton) Button addColors;
 
     public StatusBar_Add_On_Fragment() {
         // Required empty public constructor
@@ -53,6 +59,7 @@ public class StatusBar_Add_On_Fragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.prefUtils = new PrefUtils(getContext());
+        this.fileHelper=new FileHelper();
 
     }
 
@@ -61,106 +68,114 @@ public class StatusBar_Add_On_Fragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_add__on_, container, false);
-        //Initialize the switches
-        Switch amSwitch = (Switch) v.findViewById(R.id.ampm);
-        Switch lockSwitch = (Switch) v.findViewById(R.id.hideStatusbar);
-        Switch leftSwitch = (Switch) v.findViewById(R.id.moveNetworkLeft);
-        Switch indicatorSwitch = (Switch) v.findViewById(R.id.networkSignalIndicatorSwitch);
-        Switch iconSwitch = (Switch) v.findViewById(R.id.colorIcons);
-        //Setup the add icons cardview
-        Button showIncluded = v.findViewById(R.id.includedIconsButton);
-        Button addColors = v.findViewById(R.id.addIconButton);
-        addColors.setOnClickListener(addColorListener);
-        this.iconView = v.findViewById(R.id.iconColorCardView);
-        showIncluded.setOnClickListener(showColorListener);
-        //Initialize the click listeners
-        amSwitch.setOnClickListener(amClick);
-        lockSwitch.setOnClickListener(lockClick);
-        leftSwitch.setOnClickListener(leftClick);
-        indicatorSwitch.setOnClickListener(indicatorClick);
-        iconSwitch.setOnClickListener(iconClick);
+
+        unbinder = ButterKnife.bind(this, v);
+        //Set position and visibility of switches
+        ButterKnife.apply(amSwitch, ENABLED, prefUtils.getBool("amPref"));
+        ButterKnife.apply(iconSwitch, ENABLED, prefUtils.getBool("iconPref"));
+        ButterKnife.apply(indicatorSwitch, ENABLED, prefUtils.getBool("indicatorPref"));
+        ButterKnife.apply(leftSwitch, ENABLED, prefUtils.getBool("moveLeftPref"));
+        ButterKnife.apply(lockSwitch, ENABLED, prefUtils.getBool("hideStatusBarPref"));
+
+
+        if (prefUtils.getBool("iconPref")) ButterKnife.apply(iconView, SetVisibility, View.VISIBLE);
+        if (!fileHelper.getOos(prefUtils.getString("selectedRom", getString(R.string.chooseRom))).equals("OxygenOS"))
+            ButterKnife.apply(indicatorSwitch, SetVisibility, View.GONE);
+
         return v;
     }
 
-    View.OnClickListener amClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Switch mswitch = getView().findViewById(R.id.ampm);
-            prefUtils.setSwitchPrefs(mswitch, "amPref");
-        }
-    };
-    View.OnClickListener lockClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Switch mswitch = getView().findViewById(R.id.hideStatusbar);
-            prefUtils.setSwitchPrefs(mswitch, "hideStatusbarPref");
-        }
-    };
-    View.OnClickListener leftClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Switch qsSwitch = getView().findViewById(R.id.moveNetworkLeft);
-            prefUtils.setSwitchPrefs(qsSwitch, "moveLeftPref");
-        }
-    };
-    View.OnClickListener indicatorClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Switch qsSwitch = getView().findViewById(R.id.networkSignalIndicatorSwitch);
-            prefUtils.setSwitchPrefs(qsSwitch, "indicatorPref");
-        }
-    };
-    View.OnClickListener iconClick = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Switch qsSwitch = getView().findViewById(R.id.colorIcons);
-            prefUtils.setSwitchPrefs(qsSwitch, "iconPref");
-            if (qsSwitch.isChecked()) {
-                iconView.setVisibility(View.INVISIBLE);
-                iconView.animate()
-                        .alpha(1.0f)
-                        .setDuration(500)
-                        .setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                super.onAnimationEnd(animation);
-                                iconView.setVisibility(View.VISIBLE);
-                            }
-                        });
-
-            }
-            else {
-                iconView.animate()
-                        .alpha(0.0f)
-                        .setDuration(500)
-                        .setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                super.onAnimationEnd(animation);
-                                iconView.setVisibility(View.GONE);
-                            }
-                        });
-            }
+    // Butterknife Apply Methods
+    static final ButterKnife.Setter<Switch, Boolean> ENABLED = new ButterKnife.Setter<Switch, Boolean>() {
+        @Override public void set(Switch view, Boolean value, int index) {
+            view.setChecked(value);
         }
     };
 
-    View.OnClickListener addColorListener = new View.OnClickListener() {
+    static final ButterKnife.Setter<View, Integer> SetVisibility = new ButterKnife.Setter<View, Integer>() {
         @Override
-        public void onClick(View view) {
-            InputAlertDialogFragment dialogFragment = new InputAlertDialogFragment();
-            dialogFragment.Instantiate(getString(R.string.add_color_name_title), getString(R.string.add_color_name_hint),
-                    getString(R.string.add_color_value_hint), false, "icons",
-                    false, view);
-            dialogFragment.show(myContext.getSupportFragmentManager(), "klock");
+        public void set(View view, Integer value, int index) {
+            view.setVisibility(value);
         }
     };
 
-    View.OnClickListener showColorListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            ((MainActivity) getActivity()).ShowIncluded(view);
-        }
 
-    };
+    @Override public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+
+    // Handle Clicks for Switches
+    @OnClick(R.id.ampm)
+    public void amClick(){
+        prefUtils.setSwitchPrefs(amSwitch, "amPref");
+
+    }
+
+    @OnClick(R.id.hideStatusbar)
+    public void lockClick(){
+        prefUtils.setSwitchPrefs(lockSwitch, "hideStatusbarPref");
+
+    }
+
+    @OnClick(R.id.moveNetworkLeft)
+    public void leftClock(){
+        prefUtils.setSwitchPrefs(leftSwitch, "moveLeftPref");
+
+    }
+
+    @OnClick(R.id.networkSignalIndicatorSwitch)
+    public void indicatorClick(){
+        prefUtils.setSwitchPrefs(indicatorSwitch, "indicatorPref");
+
+    }
+
+    @OnClick(R.id.colorIcons)
+    public void iconClick(){
+        prefUtils.setSwitchPrefs(iconSwitch, "iconPref");
+        if (iconSwitch.isChecked()) {
+            ButterKnife.apply(iconView, SetVisibility, View.INVISIBLE);
+            iconView.animate()
+                    .alpha(1.0f)
+                    .setDuration(500)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            ButterKnife.apply(iconView, SetVisibility, View.VISIBLE);
+                        }
+                    });
+
+        }
+        else {
+            iconView.animate()
+                    .alpha(0.0f)
+                    .setDuration(500)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            ButterKnife.apply(iconView, SetVisibility, View.GONE);
+                        }
+                    });
+        }
+    }
+
+    // Handle Clicks for Icon View
+    @OnClick(R.id.addIconButton)
+    public void addColorListener(View view){
+        InputAlertDialogFragment dialogFragment = new InputAlertDialogFragment();
+        dialogFragment.Instantiate(getString(R.string.add_color_name_title), getString(R.string.add_color_name_hint),
+                getString(R.string.add_color_value_hint), false, "icons",
+                false, view);
+        dialogFragment.show(myContext.getSupportFragmentManager(), "klock");
+    }
+
+    @OnClick(R.id.includedIconsButton)
+    public void showColors(View view){
+        ((MainActivity) getActivity()).ShowIncluded(view);
+
+    }
 
 }

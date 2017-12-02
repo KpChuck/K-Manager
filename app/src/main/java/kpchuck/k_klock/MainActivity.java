@@ -22,16 +22,11 @@ import android.widget.TextView;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 
 import android.content.res.AssetManager;
@@ -53,13 +48,14 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.stephentuso.welcome.WelcomeHelper;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
+import butterknife.BindString;
 import butterknife.BindView;
+import butterknife.BindViews;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner;
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener;
 import kpchuck.k_klock.Activities.InformationWebViewActivity;
@@ -77,24 +73,26 @@ import kpchuck.k_klock.Utils.PrefUtils;
 
 public class MainActivity extends AppCompatActivity {
 
-    /*
-     Switch qsSwitch = findViewById(R.id.noQsTilesTv);
-        Switch recentsSwitch = findViewById(R.id.roundedRecents);
-        Switch moveLeftSwitch = findViewById(R.id.moveNetworkLeft);
-        Switch hideStatusbar = findViewById(R.id.hideStatusbar);
-        Switch iconColors = findViewById(R.id.colorIcons);
-        final Switch qsBg = findViewById(R.id.qsBg);
-        Switch minit = findViewById(R.id.minitMod);
-        Switch qstitle = findViewById(R.id.qsTitle);
-        Switch ampm = findViewById(R.id.ampm);
-        CardView iconView = findViewById(R.id.iconColorCardView);
-     */
-    @BindView(R.id.noQsTilesTv) Switch qsSwitch;
-    @BindView(R.id.roundedRecents) Switch
+    // Bind Switches and things to do with switches
+    @BindView (R.id.networkSignalIndicatorSwitch) Switch indicatorSwitch;
+    @BindView (R.id.noQsTilesTv) Switch qsSwitch;
+    @BindView (R.id.roundedRecents) Switch recentsSwitch;
+    @BindView (R.id.moveNetworkLeft) Switch moveLeftSwitch;
+    @BindView (R.id.hideStatusbar) Switch hideStatusbar;
+    @BindView (R.id.colorIcons) Switch iconColors;
+    @BindView (R.id.qsBg) Switch qsBg;
+    @BindView (R.id.minitMod) Switch minit;
+    @BindView (R.id.qsTitle) Switch qstitle;
+    @BindView (R.id.ampm) Switch ampm;
+    @BindView (R.id.iconColorCardView) CardView iconView;
 
+    // Bind layouts, spinner
+    @BindView (R.id.loadingId) RelativeLayout loadingLayout;
+    @BindView (R.id.loadingTextView) TextView loadingTextView;
+    @BindView (R.id.romSelectionSpinner) SearchableSpinner searchableSpinner;
+    @BindView (R.id.defaultLayout) ScrollView scrollView;
 
-
-
+    // Call Strings, Arraylists and Classes for later use
     ArrayList<String> roms = new ArrayList<>();
     ArrayList<String> colorsTitles = new ArrayList<>();
     ArrayList<String> formatsTitles = new ArrayList<>();
@@ -103,26 +101,14 @@ public class MainActivity extends AppCompatActivity {
     String slash = "/";
     PrefUtils prefUtils;
     private Context context;
-
+    FileHelper fileHelper;
     String rootFolder = android.os.Environment.getExternalStorageDirectory() + slash + "K-Klock";
     int PERMISSION_ALL = 1;
     String[] PERMISSIONS = {android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    String betaString;
     WelcomeHelper welcomeScreen;
     Drawer drawer;
+    @BindString (R.string.otherRomsBeta) String betaString;
 
-
-    FilenameFilter fileNameFilterAPK = new java.io.FilenameFilter() {
-        @Override
-        public boolean accept(File dir, String name) {
-            if(name.lastIndexOf('.')>0) {
-                int lastIndex = name.lastIndexOf('.');
-                String str = name.substring(lastIndex);
-                if(str.equals(".apk")) {
-                    return true;
-                }}return false;}
-
-    };
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -159,15 +145,54 @@ public class MainActivity extends AppCompatActivity {
         super.onPostResume();
     }
 
+    @OnClick(R.id.fab)
+    public void startBuilding() {
+
+        if (prefUtils.getBool("gsBgPref") && !fileHelper.checkQsFile(prefUtils)) return;
+
+        String romName = prefUtils.getString("selectedRom", getString(R.string.chooseRom));
+        if(romName.equals(getResources().getString(R.string.chooseRom))){
+            shortToast(getResources().getString(R.string.selectRomToast));
+
+        }
+        else if(romName.equals(betaString)) {
+            OtherRomsHandler handler = new OtherRomsHandler(getApplicationContext());
+
+            if (handler.checkForXmls()) {
+                handler.execute();
+                buildingProcess(romName);
+            }
+            else if (!handler.checkForXmls()){
+                Intent i = new Intent(getApplicationContext(), InformationWebViewActivity.class);
+                i.putExtra("value", 4);
+                startActivity(i);
+            }
+        }
+
+        else if(!romName.equals("") || !romName.equals(betaString)) {
+            copyAssets("romSpecific", romName+".zip".trim());
+            buildingProcess(romName);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        ButterKnife.setDebug(true);
+        ButterKnife.bind(this);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         this.context = getApplicationContext();
+        this.fileHelper = new FileHelper();
+        this.prefUtils = new PrefUtils(getApplicationContext());
+
         betaString = getResources().getString(R.string.otherRomsBeta);
-        new FileHelper().newFolder(rootFolder + "/userInput");
+        fileHelper.newFolder(rootFolder);
+        fileHelper.newFolder(rootFolder + "/userInput");
+
 
         welcomeScreen = new WelcomeHelper(this, MyWelcomeActivity.class);
         welcomeScreen.show(savedInstanceState);
@@ -281,83 +306,11 @@ public class MainActivity extends AppCompatActivity {
 
         drawer = builder.build();
 
-
-
-        final Switch indicatorSwitch = findViewById(R.id.networkSignalIndicatorSwitch);
-        this.prefUtils = new PrefUtils(getApplicationContext());
-
-        Switch qsSwitch = findViewById(R.id.noQsTilesTv);
-        Switch recentsSwitch = findViewById(R.id.roundedRecents);
-        Switch moveLeftSwitch = findViewById(R.id.moveNetworkLeft);
-        Switch hideStatusbar = findViewById(R.id.hideStatusbar);
-        Switch iconColors = findViewById(R.id.colorIcons);
-        final Switch qsBg = findViewById(R.id.qsBg);
-        Switch minit = findViewById(R.id.minitMod);
-        Switch qstitle = findViewById(R.id.qsTitle);
-        Switch ampm = findViewById(R.id.ampm);
-        CardView iconView = findViewById(R.id.iconColorCardView);
-
-        ampm.setChecked(prefUtils.getBool("amPref"));
-        qsSwitch.setChecked(prefUtils.getBool("qsPref"));
-        iconColors.setChecked(prefUtils.getBool("iconPref"));
-        recentsSwitch.setChecked(prefUtils.getBool("recentsPref"));
-        indicatorSwitch.setChecked(prefUtils.getBool("indicatorPref"));
-        moveLeftSwitch.setChecked(prefUtils.getBool("moveLeftPref"));
-        hideStatusbar.setChecked(prefUtils.getBool("hideStatusbarPref"));
-        qsBg.setChecked(prefUtils.getBool("qsBgPref"));
-        minit.setChecked(prefUtils.getBool("minitPref"));
-        qstitle.setChecked(prefUtils.getBool("qsTitlePref"));
-        if (prefUtils.getBool("iconPref")) iconView.setVisibility(View.VISIBLE);
-
-        if (!getOos(prefUtils.getString("selectedRom", getString(R.string.chooseRom))).equals("OxygenOS")) indicatorSwitch.setVisibility(View.GONE);
-        if (getOos(prefUtils.getString("selectedRom", getString(R.string.chooseRom))).equals("OxygenOS")) qsBg.setVisibility(View.GONE);
-
-        RelativeLayout relativeLayout = findViewById(R.id.loadingId);
-        TextView textView = findViewById(R.id.loadingTextView);
-        new CleanupFiles(relativeLayout, textView).execute();
-
-
-        File rootfile = new File(rootFolder);
-        if(!rootfile.exists()){
-            rootfile.mkdirs();
-        }if(!rootfile.isDirectory()) rootfile.mkdirs();
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (prefUtils.getBool("gsBgPref") && !checkQsFile()) return;
-
-                String romName = prefUtils.getString("selectedRom", getString(R.string.chooseRom));
-                if(romName.equals(getResources().getString(R.string.chooseRom))){
-                    shortToast(getResources().getString(R.string.selectRomToast));
-
-                }
-                else if(romName.equals(betaString)) {
-                    OtherRomsHandler handler = new OtherRomsHandler(getApplicationContext());
-                    if (handler.checkForXmls()) {
-                       handler.execute();
-                       buildingProcess(romName);
-                    }
-                    else if (!handler.checkForXmls()){
-                        Intent i = new Intent(getApplicationContext(), InformationWebViewActivity.class);
-                        i.putExtra("value", 4);
-                        startActivity(i);
-                    }
-                }
-
-                else if(!romName.equals("") || !romName.equals(betaString)) {
-                    copyAssets("romSpecific", romName+".zip".trim());
-                    buildingProcess(romName);
-            }}
-
-
-        });
-
+        new CleanupFiles(loadingLayout, loadingTextView).execute();
 
         getArrayForRoms();
 
-        final SearchableSpinner searchableSpinner = (SearchableSpinner) findViewById(R.id.romSelectionSpinner);
+        // Initialize the spinner
         final SimpleListAdapter simpleListAdapter = new SimpleListAdapter(this, roms);
         searchableSpinner.setAdapter(simpleListAdapter);
         searchableSpinner.setSelectedItem(prefUtils.getString("selectedRom", getString(R.string.chooseRom)));
@@ -366,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(View view, int position, long id) {
                 String selectedItem = simpleListAdapter.getItem(position).toString();
                 prefUtils.putString("selectedRom", selectedItem);
-                if (getOos(selectedItem).equals("OxygenOS")){
+                if (fileHelper.getOos(selectedItem).equals("OxygenOS")){
                     qsBg.setVisibility(View.GONE);
                     indicatorSwitch.setVisibility(View.VISIBLE);
                 }else {
@@ -391,38 +344,17 @@ public class MainActivity extends AppCompatActivity {
         if(prefUtils.getBool("iconPref")) copyAssets("universal", "colorIcons.zip".trim());
         if(prefUtils.getBool("recentsPref")) copyAssets("universal", "recents.zip".trim());
         if (prefUtils.getBool("hideStatusbarPref")) copyAssets("universal", "hideStatusbar.zip".trim());
-        if (prefUtils.getBool("qsBgPref") && !getOos(romName).equals("OxygenOS")) copyAssets("unviersal", "qsBgs.zip");
+        if (prefUtils.getBool("qsBgPref") && !fileHelper.getOos(romName).equals("OxygenOS")) copyAssets("unviersal", "qsBgs.zip");
         if (prefUtils.getBool("qsTitlePref")) copyAssets("universal", "qsTitle.zip");
         if (prefUtils.getBool("amPref")) copyAssets("universal", "ampm.zip");
         if(prefUtils.getBool("indicatorPref") && romName.equals("OxygenOS Nougat")) copyAssets("universal", "indicatorsN.zip".trim());
         if(prefUtils.getBool("indicatorPref") && romName.equals("OxygenOS Oreo")) copyAssets("universal", "indicatorsO.zip".trim());
 
-
-        ScrollView frameLayout = (ScrollView) findViewById(R.id.defaultLayout);
-        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.loadingId);
-        TextView textView = (TextView) findViewById(R.id.loadingTextView);
-
-        String[] check = new File(rootFolder).list(fileNameFilterAPK);
-        int k = decreaseToLowest(check);
+        String[] check = new File(rootFolder).list(fileHelper.APK);
+        int k = fileHelper.decreaseToLowest(check);
         String apkVersion = "K-Klock_v" + k + ".apk";
 
-        new apkBuilder(getApplication(), relativeLayout, textView, frameLayout).execute(apkVersion,apkVersion,apkVersion);
-    }
-
-    private String getOos(String oos){
-        if (oos.length() <8) return "thisIsNotOxygenOS";
-        oos = oos.substring(0, 8);
-        return oos;
-    }
-
-    public boolean checkQsFile(){
-        String path = prefUtils.getString("qsBgFilePath", "null");
-        if (path=="null") return  false;
-        File file = new File(path);
-        if (!file.exists()) return false;
-        String ext = FilenameUtils.getExtension(file.getName());
-        shortToast(ext);
-        return !ext.equals("png");
+        new apkBuilder(getApplication(), loadingLayout, loadingTextView, scrollView).execute(apkVersion,apkVersion,apkVersion);
     }
 
     public void ShowIncluded(final View view){
@@ -526,35 +458,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-    }
-
-    public int decreaseToLowest(String[] testStringArray){
-        int kk;
-
-        Arrays.sort(testStringArray);
-        List<String> list = Arrays.asList(testStringArray);
-        Collections.reverse(list);
-
-        ArrayList<String> klockArray = new ArrayList<>();
-        for (String s: list) if (s.substring(0, 7).equals("K-Klock")) klockArray.add(s);
-
-        if(klockArray.size() != 0) {
-            ArrayList<Integer> listOfVersions = new ArrayList<>();
-
-            for(String s : klockArray){
-                    String toInt = s.substring(s.indexOf("v") + 1, s.lastIndexOf("."));
-                    int bleh = Integer.parseInt(toInt);
-                    listOfVersions.add(bleh);
-
-            }
-            Integer[] intArray = listOfVersions.toArray(new Integer[listOfVersions.size()]);
-            Arrays.sort(intArray);
-            List<Integer> li = Arrays.asList(intArray);
-            Collections.reverse(li);
-            intArray = (Integer[]) li.toArray();
-            kk = intArray[0]+1;
-        }else{ kk = 1; }
-        return kk;
     }
 
     public void addCustomColors(View v){
@@ -747,7 +650,6 @@ public class MainActivity extends AppCompatActivity {
         try {
             String[] temp = getAssets().list("romSpecific");
             Arrays.sort(temp);
-            //roms.add(getResources().getString(R.string.chooseRom));
             for(String s:temp){
                 s = s.substring(0, s.lastIndexOf('.'));
                 roms.add(s);
@@ -930,8 +832,8 @@ public class MainActivity extends AppCompatActivity {
 
 class CleanupFiles extends AsyncTask<Void, Void, Void>{
 
-    RelativeLayout relativeLayout;
-    TextView tv;
+    private RelativeLayout relativeLayout;
+    private TextView tv;
 
     public CleanupFiles(RelativeLayout relativeLayout, TextView tv){
         this.relativeLayout = relativeLayout;

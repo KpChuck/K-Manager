@@ -19,11 +19,19 @@ import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
+
+import org.apache.commons.io.FilenameUtils;
+
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import eu.chainfire.libsuperuser.Shell;
+import kpchuck.k_klock.MainActivity;
 
 /**
  * Created by Karol Przestrzelski on 11/08/2017.
@@ -96,4 +104,62 @@ public class FileHelper {
 
     }
 
+    public FilenameFilter APK = new java.io.FilenameFilter() {
+        @Override
+        public boolean accept(File dir, String name) {
+            if (name.lastIndexOf('.') > 0) {
+                int lastIndex = name.lastIndexOf('.');
+                String str = name.substring(lastIndex);
+                if (str.equals(".apk")) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+    };
+
+    public String getOos(String oos){
+        if (oos.length() < 8) return "thisIsNotOxygenOS";
+        oos = oos.substring(0, 8);
+        return oos;
+    }
+
+    public int decreaseToLowest(String[] testStringArray){
+        int kk;
+
+        Arrays.sort(testStringArray);
+        List<String> list = Arrays.asList(testStringArray);
+        Collections.reverse(list);
+
+        ArrayList<String> klockArray = new ArrayList<>();
+        for (String s: list) if (s.substring(0, 7).equals("K-Klock")) klockArray.add(s);
+
+        if(klockArray.size() != 0) {
+            ArrayList<Integer> listOfVersions = new ArrayList<>();
+
+            for(String s : klockArray){
+                    String toInt = s.substring(s.indexOf("v") + 1, s.lastIndexOf("."));
+                    int bleh = Integer.parseInt(toInt);
+                    listOfVersions.add(bleh);
+
+            }
+            Integer[] intArray = listOfVersions.toArray(new Integer[listOfVersions.size()]);
+            Arrays.sort(intArray);
+            List<Integer> li = Arrays.asList(intArray);
+            Collections.reverse(li);
+            intArray = (Integer[]) li.toArray();
+            kk = intArray[0]+1;
+        }else{ kk = 1; }
+        return kk;
+    }
+
+    public boolean checkQsFile(PrefUtils prefUtils){
+        String path = prefUtils.getString("qsBgFilePath", "null");
+        if (path == null) return  false;
+        File file = new File(path);
+        if (!file.exists()) return false;
+        String ext = FilenameUtils.getExtension(file.getName());
+        return !ext.equals("png");
+    }
 }
