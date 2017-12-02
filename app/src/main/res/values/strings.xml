@@ -107,7 +107,7 @@
 
     <string name="otherRomsBeta">Other Roms (Beta)</string>
 
-    <string name="version">version 16</string>
+    <string name="version">version 17</string>
     <string name="apkBuilderLoading">Building Apk, Please Wait&#8230;</string>
     <string name="chooseRom">Select your Rom</string>
     <string name="selectRomToast">Please Select Your Rom</string>
@@ -128,8 +128,16 @@
     <string name="title_activity_information_web_view">InformationWebViewActivity</string>
     <string name="joinTelegram">I see you\'ve got Telegram installed. \nSo join the K-Klock Official Group for support and stuff.</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
+    <!-- Drawer Strings -->
+    <string name="telegramItem">Telegram Group</string>
+    <string name="faqsTitle">Help and FAQ\'s</string>
+    <string name="faqsItem">FAQ\'s</string>
+    <string name="otherromsItem">Other Rom\'s Help</string>
+    <string name="qsbgItem">Custom Qs Backgrounds</string>
+    <string name="leftnetworkItem">Left Network Indicators</string>
+    <string name="usefullLinksTitle">Useful Links</string>
+    <string name="rgbItem">RGB Colors Chart</string>
+    <string name="formatsItem">Clock Formats Guide</string>
+    <string name="settings">Settings</string>
 
 </resources>

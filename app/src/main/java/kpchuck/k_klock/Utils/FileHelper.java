@@ -119,6 +119,51 @@ public class FileHelper {
 
     };
 
+    public FilenameFilter ZIP = new java.io.FilenameFilter() {
+
+        @Override
+        public boolean accept(File dir, String name) {
+            if(name.lastIndexOf('.')>0) {
+
+                // get last index for '.' char
+                int lastIndex = name.lastIndexOf('.');
+
+                // get extension
+                String str = name.substring(lastIndex);
+
+                // match path name extension
+                if(str.equals(".zip")) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    };
+
+    public FilenameFilter XML = new java.io.FilenameFilter() {
+
+        @Override
+        public boolean accept(File dir, String name) {
+            if(name.lastIndexOf('.')>0) {
+
+                // get last index for '.' char
+                int lastIndex = name.lastIndexOf('.');
+                // get extension
+                String str = name.substring(lastIndex);
+
+
+                //    String typeCheck = name.substring(0, 5);
+                // match path name extension
+                if(str.equals(".xml")) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    };
+
     public String getOos(String oos){
         if (oos.length() < 8) return "thisIsNotOxygenOS";
         oos = oos.substring(0, 8);
