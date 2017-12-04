@@ -104,7 +104,7 @@ public class apkBuilder  extends AsyncTask<String, String, String> {
                 }
 
                 findAndCopyXml();
-                new QsBgUtil(context);
+                new QsBgUtil(context, mergerFolder);
 
                 File xmlFolder = new File(rootFolder + slash + "temp3" + slash + "assets");
                 try {
@@ -114,7 +114,7 @@ public class apkBuilder  extends AsyncTask<String, String, String> {
                     Log.e("klock", e.getMessage());
                 }
 
-                new MoveNetworkIconsLeft(context);
+                new MoveNetworkIconsLeft(context, mergerFolder);
 
                 try {
                     createApkFromDir(mergerFolder, new File(rootFolder + slash + "test"), apkVersion[0]);

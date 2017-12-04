@@ -37,7 +37,7 @@ public class editKeyguard{
     String xmlFolder = rootFolder + slash + "userInput/";
     String tag = "klock";
 
-    String rootApk = rootFolder + slash + "temp2" + slash + "merge" + "/assets/overlays/com.android.systemui/";
+    String rootApk = rootFolder + slash + "tempF" + "/Rom.zip" + "/assets/overlays/com.android.systemui/";
 
     Context context;
     OtherRomsHandler handler = new OtherRomsHandler(context);
@@ -57,8 +57,8 @@ public class editKeyguard{
         Document doc = documentBuilder.parse(original);
         doc = handler.replaceAt(doc);
 
-        File dest = new File(rootFolder + slash + "temp2" + slash + "merge" + "/assets/overlays/com.android.systemui/type2_No_Clock_on_Lockscreen_Right"+ slash+"layout");
-        File dest2 = new File(rootFolder + slash + "temp2" + slash + "merge" + "assets/overlays/com.android.systemui/type2_Stock_Clock_Right" + slash + "layout");
+        File dest = new File(rootApk + "type2_No_Clock_on_Lockscreen_Right"+ slash + "layout");
+        File dest2 = new File(rootApk + "type2_Stock_Clock_Right" + slash + "layout");
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         DOMSource source = new DOMSource(doc);

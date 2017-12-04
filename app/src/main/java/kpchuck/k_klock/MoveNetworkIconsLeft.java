@@ -48,17 +48,21 @@ public class MoveNetworkIconsLeft {
 
     String rootFolder = Environment.getExternalStorageDirectory() + "/K-Klock";
     String slash = "/";
-    File mergerFolder = new File(rootFolder + slash + "temp2" + slash + "merge");
-    String rootApkPath = mergerFolder.getAbsolutePath() + "/assets/overlays/com.android.systemui";
+   // File mergerFolder = new File(rootFolder + slash + "temp2" + slash + "merge");
+    //String rootApkPath = mergerFolder.getAbsolutePath() + "/assets/overlays/com.android.systemui";
     String systemicons = "system_icons.xml";
     String statusbar = "status_bar.xml";
     String romName;
     boolean toMoveLeft;
     boolean toMinit;
+    File tempFolder;
+    String layoutPath;
 
 
-    public MoveNetworkIconsLeft(Context context){
+    public MoveNetworkIconsLeft(Context context, File romFolder){
         this.context=context;
+        this.tempFolder=romFolder;
+        this.layoutPath = tempFolder.getAbsolutePath() + "/assets/overlays/com.android.systemui";
         getPref();
         if (toMoveLeft || toMinit) {
             if (!romName.equals(context.getString(R.string.otherRomsBeta)))
@@ -68,6 +72,7 @@ public class MoveNetworkIconsLeft {
             //
             editSystemIcons();
             if (toMoveLeft)editStatusBar();
+
         }
 
     }
@@ -76,7 +81,7 @@ public class MoveNetworkIconsLeft {
         try{
             String userInputPath = rootFolder + "/userInput/";
             File file = new File(userInputPath + systemicons);
-            FileUtils.copyFileToDirectory(file, new File(rootApkPath + "/res/layout"));
+            FileUtils.copyFileToDirectory(file, new File(layoutPath + "/res/layout"));
 
         }catch (IOException e){
             Log.e("klock", e.getMessage());
@@ -84,7 +89,7 @@ public class MoveNetworkIconsLeft {
     }
 
     private void editStatusBar(){
-        File rootFile = new File(rootApkPath);
+        File rootFile = new File(layoutPath);
         File[] files = rootFile.listFiles(new FileFilter() {
             @Override
             public boolean accept(File file) {
@@ -273,7 +278,7 @@ public class MoveNetworkIconsLeft {
     }
 
     private void editSystemIcons(){
-        File sysicons = new File(rootApkPath + "/res/layout/" + systemicons);
+        File sysicons = new File(layoutPath + "/res/layout/" + systemicons);
         sysicons.mkdirs();
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -383,8 +388,8 @@ public class MoveNetworkIconsLeft {
                 try {
                     in = assetManager.open(assetDir + slash + filename + slash + systemicons);
                     FileHelper fileHelper = new FileHelper();
-                    fileHelper.newFolder(rootApkPath + "/res/layout");
-                    File outFile = new File(rootApkPath + "/res/layout/" + systemicons);
+                    fileHelper.newFolder(layoutPath + "/res/layout");
+                    File outFile = new File(layoutPath + "/res/layout/" + systemicons);
                     out = new java.io.FileOutputStream(outFile);
                     copyFile(in, out);
                 } catch(IOException e) {

@@ -40,7 +40,7 @@ public class editStatusBar{
     String tag = "klock";
 
 
-    String rootApk = rootFolder + slash + "temp2" + slash + "merge" + "/assets/overlays/com.android.systemui/";
+    String rootApk = rootFolder + slash + "tempF" + "/Rom.zip" + "/assets/overlays/com.android.systemui/";
 
     public void Execution(Context context){
         this.context=context;

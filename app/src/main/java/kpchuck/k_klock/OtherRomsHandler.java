@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.zeroturnaround.zip.ZipUtil;
 
 
 import javax.xml.parsers.DocumentBuilder;
@@ -35,6 +36,8 @@ public class OtherRomsHandler extends AsyncTask<Void,Void, Void>{
     private String slash = "/";
 
     private String rootFolder = android.os.Environment.getExternalStorageDirectory() + slash + "K-Klock";
+    File topA = newFolder(rootFolder + slash + "tempF");
+    File topF = newFolder(topA.getAbsolutePath() + "/Rom.zip");
     private String xmlFolder = rootFolder + slash + "userInput";
     private String tag = "klock";
 
@@ -51,6 +54,7 @@ public class OtherRomsHandler extends AsyncTask<Void,Void, Void>{
             new editKeyguard().editKeyguard(context);
             new editStatusBar().Execution(context);
             writeType2Desc();
+            ZipUtil.unexplode(topF);
 
         }catch (Exception e){
             Log.e("klock", e.getMessage());
@@ -71,10 +75,6 @@ public class OtherRomsHandler extends AsyncTask<Void,Void, Void>{
 
     @Override
     protected void onProgressUpdate(Void... values) {
-    }
-
-    public void decode(){
-
     }
 
 
@@ -111,13 +111,14 @@ public class OtherRomsHandler extends AsyncTask<Void,Void, Void>{
     }
 
     public void makeMergerFolder(){
-        newFolder(rootFolder + slash + "temp2");
-        File mergerFolder = newFolder(rootFolder + slash + "temp2" + slash+ "merge");
-        String f = mergerFolder.getAbsolutePath();
+        File topA = newFolder(rootFolder + slash + "tempF");
+        File topF = newFolder(topA.getAbsolutePath() + "/Rom.zip");
+       // File mergerFolder = newFolder(rootFolder + slash + "temp2" + slash+ "merge");
+     //   String f = mergerFolder.getAbsolutePath();
 
-        newFolder(f + slash + "assets");
-        newFolder(f + "/assets/overlays");
-        File s = newFolder(f + "/assets/overlays/com.android.systemui");
+        newFolder(topF + slash + "assets");
+        newFolder(topF + "/assets/overlays");
+        File s = newFolder(topF + "/assets/overlays/com.android.systemui");
         String t = s.getAbsolutePath();
         String[] startFolder = {"res", "type2_Clock_on_Lockscreen_Right", "type2_Clock_on_Lockscreen_Left", "type2_No_Clock_on_Lockscreen_Center",
                 "type2_No_Clock_on_Lockscreen_Right", "type2_No_Clock_on_Lockscreen_Left", "type2_Stock_Clock_Center", "type2_Stock_Clock_Left",
@@ -131,7 +132,7 @@ public class OtherRomsHandler extends AsyncTask<Void,Void, Void>{
     }
 
     public void writeType2Desc(){
-        File file = new File(rootFolder + "/temp2/merge/assets/overlays/com.android.systemui/type2");
+        File file = new File(topF + "/assets/overlays/com.android.systemui/type2");
         String data = "Clock Style (Clock on Lockscreen Center";
         try {
             FileUtils.writeStringToFile(file, data);

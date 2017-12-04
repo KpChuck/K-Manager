@@ -67,6 +67,7 @@ import kpchuck.k_klock.Fragments.InputAlertDialogFragment;
 import kpchuck.k_klock.Fragments.TextAlertDialogFragment;
 import kpchuck.k_klock.Interfaces.BtnClickListener;
 import kpchuck.k_klock.Interfaces.DialogClickListener;
+import kpchuck.k_klock.Utils.ApkBuilder;
 import kpchuck.k_klock.Utils.FileHelper;
 import kpchuck.k_klock.Utils.PrefUtils;
 
@@ -160,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (handler.checkForXmls()) {
                 handler.execute();
-                buildingProcess(romName);
+                buildingProcess();
             }
             else if (!handler.checkForXmls()){
                 Intent i = new Intent(getApplicationContext(), InformationWebViewActivity.class);
@@ -170,8 +171,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         else if(!romName.equals("") || !romName.equals(betaString)) {
-            copyAssets("romSpecific", romName+".zip".trim());
-            buildingProcess(romName);
+            buildingProcess();
         }
     }
 
@@ -336,7 +336,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void buildingProcess(String romName) {
+    private void buildingProcess() {
+
+        String[] check = new File(rootFolder).list(fileHelper.APK);
+        int k = fileHelper.decreaseToLowest(check);
+        String apkVersion = "K-Klock_v" + k + ".apk";
+
+        new ApkBuilder(context, loadingLayout, loadingTextView, scrollView).execute(apkVersion, apkVersion, apkVersion);
+        /*
         xmlBuilder();
         copyAssets("universal", "universalFiles.zip".trim());
 
@@ -355,6 +362,8 @@ public class MainActivity extends AppCompatActivity {
         String apkVersion = "K-Klock_v" + k + ".apk";
 
         new apkBuilder(getApplication(), loadingLayout, loadingTextView, scrollView).execute(apkVersion,apkVersion,apkVersion);
+        */
+
     }
 
     public void ShowIncluded(final View view){

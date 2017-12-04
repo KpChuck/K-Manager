@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
@@ -20,10 +21,12 @@ import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -41,6 +44,10 @@ public class FileHelper {
 
     private Context ctx;
 
+    public File newFolder(File file){
+        return newFolder(file.getAbsolutePath());
+    }
+
     public File newFolder(String path){
         File file = new File(path);
         if (file.exists() && file.isDirectory()) {return  file;}
@@ -48,7 +55,6 @@ public class FileHelper {
             file.mkdirs();
             return file;
         }
-
     }
 
     public void installApk(File file, Context context){
@@ -206,5 +212,80 @@ public class FileHelper {
         if (!file.exists()) return false;
         String ext = FilenameUtils.getExtension(file.getName());
         return !ext.equals("png");
+    }
+
+    public void copyFromAssets(String assetDir, String whichString, File outDir, Context context) {
+        String slash = "/";
+        AssetManager assetManager = context.getAssets();
+        String[] files = null;
+        try {
+            files = assetManager.list(assetDir);
+        } catch (IOException e) {
+            android.util.Log.e("tag", "Failed to get asset file list.", e);
+
+        }
+        if (files != null) for (String filename : files) {
+            if(filename.equals(whichString)){
+                java.io.InputStream in = null;
+                java.io.OutputStream out = null;
+                try {
+                    in = assetManager.open(assetDir + slash + filename);
+                    out = new java.io.FileOutputStream(new File(outDir, whichString));
+                    copyFile(in, out);
+                } catch(IOException e) {
+                    android.util.Log.e("tag", "Failed to copy asset file: " + filename, e);
+                }
+                finally {
+                    if (in != null) {
+                        try {
+                            in.close();
+                        } catch (IOException e) {
+                            // NOOP
+                        }
+                    }
+                    if (out != null) {
+                        try {
+                            out.close();
+                        } catch (IOException e) {
+                            // NOOP
+                        }
+                    }}
+            }
+        }
+    }
+
+    private void copyFile(java.io.InputStream in, java.io.OutputStream out) throws java.io.IOException {
+        byte[] buffer = new byte[1024];
+        int read;
+        while((read = in.read(buffer)) != -1){
+            out.write(buffer, 0, read);
+        }
+    }
+
+    public ArrayList<String[]> walk( String path ) {
+
+        ArrayList<String[]> filePathList = new ArrayList<>();
+
+        File root = new File( path );
+        File[] list = root.listFiles();
+
+        for ( File f : list ) {
+
+            if ( f.isDirectory() ) {
+                ArrayList<String[]> t = walk( f.getAbsolutePath() );
+                for (String[] s: t) filePathList.add(s);
+            }
+            else {
+                String fab = f.getAbsolutePath();
+                String fpath = fab.substring(fab.indexOf("assets"), fab.indexOf(f.getName()));
+
+                String[] myInfo = new String[]{
+                        f.getName(),
+                        fpath
+                };
+                filePathList.add(myInfo);
+            }
+        }
+        return filePathList;
     }
 }

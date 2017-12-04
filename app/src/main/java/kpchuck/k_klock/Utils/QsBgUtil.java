@@ -8,6 +8,7 @@ import android.util.Log;
 
 
 import org.apache.commons.io.FileUtils;
+import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,26 +22,40 @@ public class QsBgUtil {
 
     Context context;
     PrefUtils prefUtils;
+    File tempFolder;
+    File dir;
+    FileHelper fileHelper;
 
     String slash = "/";
 
 
-    public QsBgUtil(Context context){
+    public QsBgUtil(Context context, File tempFolder){
         this.context=context;
+        this.tempFolder = tempFolder;
+        this.fileHelper = new FileHelper();
         this.prefUtils = new PrefUtils(context);
         if (prefUtils.getBool("qsBgPref")){
+            buildDirs();
             buildFilePath();
             addTyepText();
-
-
+            ZipUtil.unexplode(dir);
         }
 
     }
 
+    private void buildDirs(){
+        File myDir = fileHelper.newFolder(new File(tempFolder, "backgrounds.zip"));
+        this.dir = myDir;
+        fileHelper.newFolder(new File(myDir, "assets"));
+        fileHelper.newFolder(myDir.getAbsolutePath() + "/assets/overlays");
+        String t = fileHelper.newFolder(myDir.getAbsolutePath() + "assets/overlays/com.android.systemui.headers").getAbsolutePath();
+        fileHelper.newFolder(t + "/res");
+        fileHelper.newFolder(t + "/res/drawable");
+    }
+
     private void addTyepText(){
         String type2 = "Custom Qs Background";
-        File mergerFolder = new File(Environment.getExternalStorageDirectory() + "/K-Klock" + slash + "temp2" + slash + "merge");
-        File destFile = new File(mergerFolder.getAbsolutePath() + "/assets/overlays/com.android.systemui.headers/type2");
+        File destFile = new File(dir.getAbsolutePath() + "/assets/overlays/com.android.systemui.headers/type2");
         try {
             destFile.createNewFile();
             FileUtils.writeStringToFile(destFile, type2, "utf-8");
@@ -49,8 +64,7 @@ public class QsBgUtil {
     }
 
     private void buildFilePath(){
-        File mergerFolder = new File(Environment.getExternalStorageDirectory() + "/K-Klock" + slash + "temp2" + slash + "merge");
-        File destFolder = new File(mergerFolder.getAbsolutePath() + "/assets/overlays/com.android.systemui.headers/res/drawable");
+        File destFolder = new File(dir.getAbsolutePath() + "/assets/overlays/com.android.systemui.headers/res/drawable");
 
         String filePath = prefUtils.getString("qsBgFilePath", "null");
         try{
