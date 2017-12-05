@@ -36,6 +36,7 @@ import android.net.Uri;
 import android.content.Intent;
 import android.widget.Toast;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -109,6 +110,9 @@ public class MainActivity extends AppCompatActivity {
     WelcomeHelper welcomeScreen;
     Drawer drawer;
     @BindString (R.string.otherRomsBeta) String betaString;
+
+    private FirebaseAnalytics mFirebaseAnalytics;
+
 
 
     @Override
@@ -188,6 +192,8 @@ public class MainActivity extends AppCompatActivity {
         this.context = getApplicationContext();
         this.fileHelper = new FileHelper();
         this.prefUtils = new PrefUtils(getApplicationContext());
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
 
         betaString = getResources().getString(R.string.otherRomsBeta);
         fileHelper.newFolder(rootFolder);

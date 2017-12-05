@@ -125,6 +125,9 @@ dependencies {
     //required support lib modules
     implementation 'com.android.support:recyclerview-v7:26.1.0'
     implementation 'com.android.support:support-annotations:26.1.0'
+    // Firebase
+    compile 'com.google.firebase:firebase-core:11.6.0'
+
 }
 task uploadDebugWhenFinished {
     doLast {
@@ -138,3 +141,6 @@ task uploadBetaWhenFinished {
         "python /home/karol/PycharmProjects/telegram/Beta.py".execute()
     }
 }
+
+apply plugin: 'com.google.gms.google-services'
+
