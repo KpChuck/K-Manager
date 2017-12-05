@@ -28,6 +28,7 @@ import android.util.Log;
 import android.widget.Toast;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,10 +70,9 @@ public class MoveNetworkIconsLeft {
                 copySystemIconsAssets("systemicons", romName);
             else copyFromUserInput();
 
-            //
+
             editSystemIcons();
             if (toMoveLeft)editStatusBar();
-
         }
 
     }
@@ -227,7 +227,7 @@ public class MoveNetworkIconsLeft {
                 Transformer transformer = transformerFactory.newTransformer();
                 DOMSource source = new DOMSource(doc);
 
-                StreamResult result = new StreamResult(file);
+                StreamResult result = new StreamResult(new FileOutputStream(file));
                 transformer.transform(source, result);
             }catch (Exception e){
                 Log.e("klock", e.getMessage());
@@ -315,7 +315,7 @@ public class MoveNetworkIconsLeft {
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(doc);
 
-            StreamResult result = new StreamResult(sysicons);
+            StreamResult result = new StreamResult(new FileOutputStream(sysicons));
             transformer.transform(source, result);
 
             replaceStuffInXml(sysicons.getAbsolutePath(), "@", "@*com.android.systemui:");
@@ -348,7 +348,7 @@ public class MoveNetworkIconsLeft {
 
             if (file.exists()) FileUtils.forceDelete(file);
 
-            StreamResult result = new StreamResult(file);
+            StreamResult result = new StreamResult(new FileOutputStream(file));
             transformer.transform(source, result);
 
         }catch (Exception e){Log.e("klock", e.getMessage());

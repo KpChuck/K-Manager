@@ -54,7 +54,6 @@ public class OtherRomsHandler extends AsyncTask<Void,Void, Void>{
             new editKeyguard().editKeyguard(context);
             new editStatusBar().Execution(context);
             writeType2Desc();
-            ZipUtil.unexplode(topF);
 
         }catch (Exception e){
             Log.e("klock", e.getMessage());
