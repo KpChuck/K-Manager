@@ -38,7 +38,6 @@ public class QsBgUtil {
             buildDirs();
             buildFilePath();
             addTyepText();
-            ZipUtil.unexplode(dir);
         }
 
     }

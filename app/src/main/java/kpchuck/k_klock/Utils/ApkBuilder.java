@@ -63,6 +63,10 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
     }
 
 
+    public long time(){
+        return System.currentTimeMillis();
+    }
+
 
     @Override
     protected String doInBackground(String... apkVersion) {
@@ -71,7 +75,8 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         ExtractAssets();
         insertCustomXmls();
         dealWivQsBg();
-        appendOptionsZip();
+        appendOptionsZip();// Takes long about 10s
+        // Takes long about 5s
         try {
             createApkFromDir(new File(mergerFolder, "universalFiles.zip"), apkVersion[0]);
         }catch (Exception e){
@@ -146,20 +151,23 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
     public void ExtractAssets (){
         String romName = prefUtils.getString("selectedRom", context.getString(R.string.chooseRom));
         // Copy files used for every apk first
-        fileHelper.copyFromAssets(univ, "universalFiles.zip", mergerFolder, context);
+        fileHelper.copyFromAssets(univ, "universalFiles.zip", mergerFolder, context, false);
         // Copy optional files into the tempfolder
-        if(prefUtils.getBool("qsPref")) fileHelper.copyFromAssets(univ, "qsTiles.zip".trim(), tempFolder, context);
-        if(prefUtils.getBool("iconPref")) fileHelper.copyFromAssets(univ, "colorIcons.zip".trim(), tempFolder, context);
-        if(prefUtils.getBool("recentsPref")) fileHelper.copyFromAssets(univ, "recents.zip".trim(), tempFolder, context);
-        if (prefUtils.getBool("hideStatusbarPref")) fileHelper.copyFromAssets(univ, "hideStatusbar.zip".trim(), tempFolder, context);
-        if (prefUtils.getBool("qsBgPref") && !fileHelper.getOos(romName).equals("OxygenOS")) fileHelper.copyFromAssets(univ, "qsBgs.zip", tempFolder, context);
-        if (prefUtils.getBool("qsTitlePref")) fileHelper.copyFromAssets(univ, "qsTitle.zip", tempFolder, context);
-        if (prefUtils.getBool("amPref")) fileHelper.copyFromAssets(univ, "ampm.zip", tempFolder, context);
-        if(prefUtils.getBool("indicatorPref") && romName.equals("OxygenOS Nougat")) fileHelper.copyFromAssets(univ, "indicatorsN.zip".trim(), tempFolder, context);
-        if(prefUtils.getBool("indicatorPref") && romName.equals("OxygenOS Oreo")) fileHelper.copyFromAssets(univ, "indicatorsO.zip".trim(), tempFolder, context);
+        if(prefUtils.getBool("qsPref")) fileHelper.copyFromAssets(univ, "qsTiles.zip".trim(), tempFolder, context, true);
+        if(prefUtils.getBool("iconPref")) fileHelper.copyFromAssets(univ, "colorIcons.zip".trim(), tempFolder, context, true);
+        if(prefUtils.getBool("recentsPref")) fileHelper.copyFromAssets(univ, "recents.zip".trim(), tempFolder, context, true);
+        if (prefUtils.getBool("hideStatusbarPref")) fileHelper.copyFromAssets(univ, "hideStatusbar.zip".trim(), tempFolder, context, true);
+        if (prefUtils.getBool("qsBgPref") && !fileHelper.getOos(romName).equals("OxygenOS"))
+            fileHelper.copyFromAssets(univ, "qsBgs.zip", tempFolder, context, true);
+        if (prefUtils.getBool("qsTitlePref")) fileHelper.copyFromAssets(univ, "qsTitle.zip", tempFolder, context, true);
+        if (prefUtils.getBool("amPref")) fileHelper.copyFromAssets(univ, "ampm.zip", tempFolder, context, true);
+        if(prefUtils.getBool("indicatorPref") && romName.equals("OxygenOS Nougat"))
+            fileHelper.copyFromAssets(univ, "indicatorsN.zip".trim(), tempFolder, context, true);
+        if(prefUtils.getBool("indicatorPref") && romName.equals("OxygenOS Oreo"))
+            fileHelper.copyFromAssets(univ, "indicatorsO.zip".trim(), tempFolder, context, true);
         // Copy the rom specific file if a rom was selected
         if (!romName.equals(context.getString(R.string.otherRomsBeta)) || !romName.equals(""))
-            fileHelper.copyFromAssets("romSpecific", romName+".zip".trim(), tempFolder, context);
+            fileHelper.copyFromAssets("romSpecific", romName+".zip".trim(), tempFolder, context, true);
     }
 
     public void insertCustomXmls(){
@@ -193,7 +201,6 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
                 Log.e("klock", e.getMessage());
             }
         }
-        ZipUtil.unexplode(dir);
     }
 
     public void dealWivQsBg(){
@@ -203,13 +210,29 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
     public void appendOptionsZip (){
 
         File[] zipFiles = tempFolder.listFiles(fileHelper.ZIP);
+
+        ArrayList<String> fileNames = new ArrayList<>();
+        ArrayList<File> pathsToFile = new ArrayList<>();
+
         for (File z: zipFiles) {
-            ZipUtil.explode(z);
-            if (z.toString().contains(prefUtils.getString("selectedRom", context.getString(R.string.chooseRom))))
+          //  ZipUtil.explode(z);
+            if (z.toString().contains(prefUtils.getString("selectedRom", context.getString(R.string.chooseRom))) || z.toString().contains("Rom.zip"))
                 new MoveNetworkIconsLeft(context, z);
             String filePath = z.getAbsolutePath();
-            appendToUniversal(filePath);
+            ArrayList<String[]> filePaths = fileHelper.walk(filePath);
+
+            for (String[] aFile: filePaths) {
+                String fileName = (aFile[0]); //Filename
+                String path = (aFile[1]); //Path from zip ie. assets/overlays/com.android.systemui/
+                String absFilePath = aFile[2]; //Absolute path to file
+
+                pathsToFile.add(new File(absFilePath));
+                fileNames.add(path + fileName);
+            }
         }
+        ZipUtil.addOrReplaceEntries(
+                new File(mergerFolder, "universalFiles.zip"),
+                FileSource.pair(pathsToFile.toArray(new File[pathsToFile.size()]), fileNames.toArray(new String[fileNames.size()])));
     }
 
 
@@ -226,9 +249,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             paths.add(new File(filePath + slash + path + fileName));
             fileNames.add(path + fileName);
         }
-        ZipUtil.addOrReplaceEntries(
-                new File(mergerFolder, "universalFiles.zip"),
-                FileSource.pair(paths.toArray(new File[paths.size()]), fileNames.toArray(new String[fileNames.size()])));
+
     }
 
     public void createApkFromDir(File universalZip, String apkVersion) throws Exception {

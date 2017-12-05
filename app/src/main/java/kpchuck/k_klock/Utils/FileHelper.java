@@ -23,10 +23,14 @@ import android.util.Log;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -170,6 +174,14 @@ public class FileHelper {
         }
     };
 
+    public FilenameFilter DIRECTORY = new FilenameFilter() {
+
+        @Override
+        public boolean accept(File dir, String name) {
+            return dir.isDirectory();
+        }
+    };
+
     public String getOos(String oos){
         if (oos.length() < 8) return "thisIsNotOxygenOS";
         oos = oos.substring(0, 8);
@@ -214,51 +226,38 @@ public class FileHelper {
         return !ext.equals("png");
     }
 
-    public void copyFromAssets(String assetDir, String whichString, File outDir, Context context) {
+    public void copyFromAssets(String assetDir, String whichString, File outDir, Context context, boolean unzipExtracted) {
         String slash = "/";
         AssetManager assetManager = context.getAssets();
         String[] files = null;
         try {
             files = assetManager.list(assetDir);
         } catch (IOException e) {
-            android.util.Log.e("tag", "Failed to get asset file list.", e);
+            Log.e("tag", "Failed to get asset file list.", e);
 
         }
         if (files != null) for (String filename : files) {
             if(filename.equals(whichString)){
-                java.io.InputStream in = null;
-                java.io.OutputStream out = null;
+                InputStream in = null;
                 try {
                     in = assetManager.open(assetDir + slash + filename);
-                    out = new java.io.FileOutputStream(new File(outDir, whichString));
-                    copyFile(in, out);
+                    File outFile = new File(outDir, whichString);
+                    if (unzipExtracted) ZipUtil.unpack(in, outFile);
+                    else FileUtils.copyInputStreamToFile(in, outFile);
+
                 } catch(IOException e) {
-                    android.util.Log.e("tag", "Failed to copy asset file: " + filename, e);
+                    Log.e("tag", "Failed to copy asset file: " + filename, e);
                 }
                 finally {
                     if (in != null) {
                         try {
                             in.close();
                         } catch (IOException e) {
-                            // NOOP
+                            Log.e("klock", e.getMessage());
                         }
                     }
-                    if (out != null) {
-                        try {
-                            out.close();
-                        } catch (IOException e) {
-                            // NOOP
-                        }
-                    }}
+                }
             }
-        }
-    }
-
-    private void copyFile(java.io.InputStream in, java.io.OutputStream out) throws java.io.IOException {
-        byte[] buffer = new byte[1024];
-        int read;
-        while((read = in.read(buffer)) != -1){
-            out.write(buffer, 0, read);
         }
     }
 
@@ -281,7 +280,8 @@ public class FileHelper {
 
                 String[] myInfo = new String[]{
                         f.getName(),
-                        fpath
+                        fpath,
+                        fab
                 };
                 filePathList.add(myInfo);
             }
