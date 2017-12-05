@@ -875,7 +875,7 @@ class CleanupFiles extends AsyncTask<Void, Void, Void>{
     @Override
     protected Void doInBackground(Void... voids) {
         String rootDir = Environment.getExternalStorageDirectory() + "/K-Klock/";
-        String[] temps = new String[]{"temp", "temp2", "temp3"};
+        String[] temps = new String[]{"temp", "temp2", "temp3", "tempF", "merger"};
         for (String temp : temps) cleanDir(new File(rootDir + temp));
         File testKey = new File(rootDir + "test");
         if (testKey.exists()) testKey.delete();
