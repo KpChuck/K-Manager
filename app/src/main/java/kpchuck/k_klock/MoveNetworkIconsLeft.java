@@ -195,13 +195,13 @@ public class MoveNetworkIconsLeft {
                     if (xmlpath.contains("Center") && xmlpath.contains("Stock")) {
                         //Creating textclock
                         Element stockClock = doc.createElement("com.android.systemui.statusbar.policy.Clock");
-                        textClock.setAttribute("android:textAppearance", "@*com.android.systemui:style/TextAppearance.StatusBar.Clock");
-                        textClock.setAttribute("android:textColor", "@*com.android.systemui:color/status_bar_clock_color");
-                        textClock.setAttribute("android:layout_width", "fill_parent");
-                        textClock.setAttribute("android:layout_height", "fill_parent");
-                        textClock.setAttribute("android:gravity", "center");
-                        textClock.setAttribute("android:singleLine", "true");
-                        textClock.setAttribute("android:id", "@*com.android.systemui:id/clock");
+                        stockClock.setAttribute("android:textAppearance", "@*com.android.systemui:style/TextAppearance.StatusBar.Clock");
+                        stockClock.setAttribute("android:textColor", "@*com.android.systemui:color/status_bar_clock_color");
+                        stockClock.setAttribute("android:layout_width", "fill_parent");
+                        stockClock.setAttribute("android:layout_height", "fill_parent");
+                        stockClock.setAttribute("android:gravity", "center");
+                        stockClock.setAttribute("android:singleLine", "true");
+                        stockClock.setAttribute("android:id", "@*com.android.systemui:id/clock");
 
                         rootElement.insertBefore(hideyLayout, getFirstChildElement(rootElement));
                         hideyLayout.appendChild(stockClock);
