@@ -1,9 +1,6 @@
 package kpchuck.k_klock.Utils;
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import static android.content.ContentValues.TAG;
-import static android.os.Build.VERSION.SDK;
+import static kpchuck.k_klock.Constants.PrefConstants.*;
 import static android.support.v4.content.FileProvider.getUriForFile;
 
 import android.content.Context;
@@ -38,6 +35,7 @@ import java.util.List;
 import java.util.Set;
 
 import eu.chainfire.libsuperuser.Shell;
+import kpchuck.k_klock.BuildConfig;
 import kpchuck.k_klock.MainActivity;
 
 /**
@@ -287,5 +285,19 @@ public class FileHelper {
             }
         }
         return filePathList;
+    }
+
+    /*
+    Checks if the version code of the last checked github apk is the same as the version code
+     */
+    public boolean newVersion(Context context){
+        PrefUtils prefUtils = new PrefUtils(context);
+        String name = prefUtils.getString(LATEST_GITHUB_VERSION_NAME, "");
+        if (name.equals("")) return false;
+        String versionName = name.substring(11, name.lastIndexOf(".apk"));
+        Log.d("klock", "Current version number is " + versionName);
+
+        return Integer.valueOf(versionName) > Integer.valueOf(BuildConfig.VERSION_NAME);
+
     }
 }

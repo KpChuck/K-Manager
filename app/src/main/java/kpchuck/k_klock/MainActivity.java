@@ -3,12 +3,20 @@ package kpchuck.k_klock;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.animation.AnimationUtils;
@@ -68,9 +76,11 @@ import kpchuck.k_klock.Fragments.InputAlertDialogFragment;
 import kpchuck.k_klock.Fragments.TextAlertDialogFragment;
 import kpchuck.k_klock.Interfaces.BtnClickListener;
 import kpchuck.k_klock.Interfaces.DialogClickListener;
+import kpchuck.k_klock.Services.CheckforUpdatesService;
 import kpchuck.k_klock.Utils.ApkBuilder;
 import kpchuck.k_klock.Utils.FileHelper;
 import kpchuck.k_klock.Utils.PrefUtils;
+import static kpchuck.k_klock.Constants.PrefConstants.*;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -94,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
     @BindView (R.id.romSelectionSpinner) SearchableSpinner searchableSpinner;
     @BindView (R.id.defaultLayout) ScrollView scrollView;
 
+
+
     // Call Strings, Arraylists and Classes for later use
     ArrayList<String> roms = new ArrayList<>();
     ArrayList<String> colorsTitles = new ArrayList<>();
@@ -111,8 +123,8 @@ public class MainActivity extends AppCompatActivity {
     Drawer drawer;
     @BindString (R.string.otherRomsBeta) String betaString;
 
-    private FirebaseAnalytics mFirebaseAnalytics;
-
+    PrimaryDrawerItem updateNotif;
+    DrawerBuilder builder;
 
 
     @Override
@@ -192,7 +204,15 @@ public class MainActivity extends AppCompatActivity {
         this.context = getApplicationContext();
         this.fileHelper = new FileHelper();
         this.prefUtils = new PrefUtils(getApplicationContext());
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+
+        // Check for updates
+        // use this to start and trigger a service
+        Intent i = new Intent(context, CheckforUpdatesService.class);
+        // potentially add data to the intent
+        i.putExtra("action", 1);
+        context.startService(i);
+
 
 
         betaString = getResources().getString(R.string.otherRomsBeta);
@@ -220,11 +240,15 @@ public class MainActivity extends AppCompatActivity {
                 .withCurrentProfileHiddenInList(true)
                 .build();
 
-        DrawerBuilder builder = new DrawerBuilder();
+        builder = new DrawerBuilder();
 
         builder.withActivity(this);
         builder.withToolbar(toolbar);
         builder.withAccountHeader(header);
+
+        updateNotif = new PrimaryDrawerItem().withIdentifier(99).withName(getString(R.string.updateItem))
+                .withIcon(android.R.drawable.stat_sys_download)
+                .withDescription(R.string.updateDesc);
 
         PrimaryDrawerItem telegramItem = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.telegramItem)
                 .withIcon(android.R.drawable.sym_action_chat);
@@ -261,6 +285,7 @@ public class MainActivity extends AppCompatActivity {
                             .withIdentifier(8)
                 );
 
+        if (fileHelper.newVersion(context)) builder.addDrawerItems(updateNotif);
         builder.addDrawerItems(telegramItem, settingsItem, faqsItem, linksItem);
 
 
@@ -305,12 +330,21 @@ public class MainActivity extends AppCompatActivity {
                             Intent formatIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://forum.xda-developers.com/showthread.php?t=2713812"));
                             startActivity(formatIntent);
                             break;
+                        case 99:
+                            Intent download= new Intent(context, CheckforUpdatesService.class);
+                            // potentially add data to the intent
+                            download.putExtra("action", 2);
+                            context.startService(download);
+                            break;
                     }
                 }
                 return false;
             }});
 
         drawer = builder.build();
+
+        shortToast("Drawer item that isnt there is = " + drawer.getDrawerItem(99));
+
 
         new CleanupFiles(loadingLayout, loadingTextView).execute();
 
@@ -342,6 +376,72 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void notifyOnUpdate(){
+        Log.d("klock", "Sending notification...");
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        String NOTIFICATION_CHANNEL_ID = "my_channel_id_01";
+        Intent intent = new Intent(context, CheckforUpdatesService.class);
+        intent.putExtra("action", 2);
+
+        PendingIntent pIntent = PendingIntent.getService(context, 0, intent, 0);
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, getString(R.string.app_name), NotificationManager.IMPORTANCE_HIGH);
+
+            // Configure the notification channel.
+            notificationChannel.setDescription("Update notifcation");
+            notificationChannel.enableLights(false);
+            notificationChannel.setVibrationPattern(new long[]{500});
+            notificationChannel.enableVibration(true);
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID);
+        String name = prefUtils.getString(LATEST_GITHUB_VERSION_NAME, null);
+
+        notificationBuilder.setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setTicker("Update Available")
+                //     .setPriority(Notification.PRIORITY_MAX)
+                .setContentTitle("Update " + name + " available")
+                .setContentText("Tap here to download")
+                .setContentIntent(pIntent)
+                .setContentInfo("Update");
+
+        notificationManager.notify(/*notification id*/1, notificationBuilder.build());
+
+    }
+
+    private BroadcastReceiver  BReceiver = new BroadcastReceiver(){
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            boolean newVersion = fileHelper.newVersion(context);
+            if (newVersion && drawer.getDrawerItem(99) == null){
+                notifyOnUpdate();
+                drawer.addItemAtPosition(updateNotif, 1);
+            }
+
+            else if (!newVersion){
+                drawer.removeItem(99);
+            }
+        }
+    };
+
+    protected void onResume(){
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(BReceiver, new IntentFilter("message"));
+    }
+
+    protected void onPause (){
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(BReceiver);
+    }
+
     private void buildingProcess() {
 
         String[] check = new File(rootFolder).list(fileHelper.APK);
@@ -349,26 +449,6 @@ public class MainActivity extends AppCompatActivity {
         String apkVersion = "K-Klock_v" + k + ".apk";
 
         new ApkBuilder(context, loadingLayout, loadingTextView, scrollView).execute(apkVersion, apkVersion, apkVersion);
-        /*
-        xmlBuilder();
-        copyAssets("universal", "universalFiles.zip".trim());
-
-        if(prefUtils.getBool("qsPref")) copyAssets("universal", "qsTiles.zip".trim());
-        if(prefUtils.getBool("iconPref")) copyAssets("universal", "colorIcons.zip".trim());
-        if(prefUtils.getBool("recentsPref")) copyAssets("universal", "recents.zip".trim());
-        if (prefUtils.getBool("hideStatusbarPref")) copyAssets("universal", "hideStatusbar.zip".trim());
-        if (prefUtils.getBool("qsBgPref") && !fileHelper.getOos(romName).equals("OxygenOS")) copyAssets("unviersal", "qsBgs.zip");
-        if (prefUtils.getBool("qsTitlePref")) copyAssets("universal", "qsTitle.zip");
-        if (prefUtils.getBool("amPref")) copyAssets("universal", "ampm.zip");
-        if(prefUtils.getBool("indicatorPref") && romName.equals("OxygenOS Nougat")) copyAssets("universal", "indicatorsN.zip".trim());
-        if(prefUtils.getBool("indicatorPref") && romName.equals("OxygenOS Oreo")) copyAssets("universal", "indicatorsO.zip".trim());
-
-        String[] check = new File(rootFolder).list(fileHelper.APK);
-        int k = fileHelper.decreaseToLowest(check);
-        String apkVersion = "K-Klock_v" + k + ".apk";
-
-        new apkBuilder(getApplication(), loadingLayout, loadingTextView, scrollView).execute(apkVersion,apkVersion,apkVersion);
-        */
 
     }
 

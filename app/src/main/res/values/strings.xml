@@ -139,5 +139,7 @@
     <string name="rgbItem">RGB Colors Chart</string>
     <string name="formatsItem">Clock Formats Guide</string>
     <string name="settings">Settings</string>
+    <string name="updateItem">New Version Available</string>
+    <string name="updateDesc">Tap to Install</string>
 
 </resources>
