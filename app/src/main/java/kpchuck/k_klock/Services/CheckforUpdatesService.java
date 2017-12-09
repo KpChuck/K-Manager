@@ -184,7 +184,7 @@ public class CheckforUpdatesService extends Service {
 
             try {
                 Document doc = Jsoup.connect(url).get();
-                Element newsetVersion = doc.selectFirst(".release-downloads a strong");
+                Element newsetVersion = doc.selectFirst(".my-4 a strong");
                 if (newsetVersion == null){
                     Log.d("klock", "Newset version is null");
                     name = "";
@@ -195,7 +195,7 @@ public class CheckforUpdatesService extends Service {
 
                     name = newsetVersion.ownText();
 
-                    downloadUrl = "http://github.com/" + doc.selectFirst(".release-downloads a").attr("href");
+                    downloadUrl = "http://github.com/" + doc.selectFirst(".my-4 a").attr("href");
 
                     prefUtils.putString(LATEST_GITHUB_VERSION_NAME, name);
                     prefUtils.putString(LATEST_GITHUB_VERSION_URL, downloadUrl);
