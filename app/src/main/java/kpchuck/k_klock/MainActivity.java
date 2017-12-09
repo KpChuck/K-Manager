@@ -343,9 +343,6 @@ public class MainActivity extends AppCompatActivity {
 
         drawer = builder.build();
 
-        shortToast("Drawer item that isnt there is = " + drawer.getDrawerItem(99));
-
-
         new CleanupFiles(loadingLayout, loadingTextView).execute();
 
         getArrayForRoms();
