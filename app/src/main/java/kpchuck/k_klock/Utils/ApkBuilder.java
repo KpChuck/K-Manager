@@ -153,6 +153,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         // Copy files used for every apk first
         fileHelper.copyFromAssets(univ, "universalFiles.zip", mergerFolder, context, false);
         // Copy optional files into the tempfolder
+        if (prefUtils.getBool("recentsPref")) fileHelper.copyFromAssets(univ, "recents.zip", tempFolder, context, true);
         if(prefUtils.getBool("qsPref")) fileHelper.copyFromAssets(univ, "qsTiles.zip".trim(), tempFolder, context, true);
         if(prefUtils.getBool("iconPref")) fileHelper.copyFromAssets(univ, "colorIcons.zip".trim(), tempFolder, context, true);
         if(prefUtils.getBool("recentsPref")) fileHelper.copyFromAssets(univ, "recents.zip".trim(), tempFolder, context, true);

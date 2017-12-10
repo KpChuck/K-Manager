@@ -126,7 +126,7 @@ public class Misc_Add_On_Fragment extends Fragment {
 
     @OnClick(R.id.roundedRecents)
     public void recentsClick(){
-        prefUtils.setSwitchPrefs(qsSwitch, "recentsPref");
+        prefUtils.setSwitchPrefs(recentsSwitch, "recentsPref");
     }
     @OnClick(R.id.minitMod)
     public void minitClick(){
