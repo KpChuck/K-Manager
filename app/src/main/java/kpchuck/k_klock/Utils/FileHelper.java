@@ -295,7 +295,7 @@ public class FileHelper {
         String name = prefUtils.getString(LATEST_GITHUB_VERSION_NAME, "");
         if (name.equals("")) return false;
         String versionName = name.substring(11, name.lastIndexOf(".apk"));
-        Log.d("klock", "Current version number is " + versionName);
+        Log.d("klock", "Current version number is " + Integer.valueOf(versionName));
 
         return Integer.valueOf(versionName) > Integer.valueOf(BuildConfig.VERSION_NAME);
 

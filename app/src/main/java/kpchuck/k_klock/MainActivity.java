@@ -204,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
         this.context = getApplicationContext();
         this.fileHelper = new FileHelper();
         this.prefUtils = new PrefUtils(getApplicationContext());
+        LocalBroadcastManager.getInstance(this).registerReceiver(BReceiver, new IntentFilter("message"));
 
 
         // Check for updates
@@ -347,6 +348,8 @@ public class MainActivity extends AppCompatActivity {
 
         getArrayForRoms();
 
+
+
         // Initialize the spinner
         final SimpleListAdapter simpleListAdapter = new SimpleListAdapter(this, roms);
         searchableSpinner.setAdapter(simpleListAdapter);
@@ -418,6 +421,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             boolean newVersion = fileHelper.newVersion(context);
+            Log.d("klock", "Is update available boolean is " + newVersion);
             if (newVersion && drawer.getDrawerItem(99) == null){
                 notifyOnUpdate();
                 drawer.addItemAtPosition(updateNotif, 1);
