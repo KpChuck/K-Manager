@@ -26,6 +26,7 @@ import eu.chainfire.libsuperuser.Shell;
 import kellinwood.security.zipsigner.ZipSigner;
 import kpchuck.k_klock.MoveNetworkIconsLeft;
 import kpchuck.k_klock.R;
+import kpchuck.k_klock.xmlCreation;
 
 /**
  * Created by karol on 04/12/17.
@@ -171,12 +172,53 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             fileHelper.copyFromAssets("romSpecific", romName+".zip".trim(), tempFolder, context, true);
     }
 
+    public void xmlBuilder(){
+
+        ArrayList<String> colorsTitles = prefUtils.loadArray("colorsTitles");
+        ArrayList<String> colorsValues = prefUtils.loadArray("colorsValues");
+        ArrayList<String> formatsTitles = prefUtils.loadArray("formatsTitles");
+        ArrayList<String> formatsValues = prefUtils.loadArray("formatsValues");
+
+        int colorLimit = colorsTitles.size();
+        for (int i = 0; i < colorLimit; i++) {
+            String colorTitle = colorsTitles.get(i);
+            String colorValue = colorsValues.get(i);
+            xmlCreation xmlCreator = new xmlCreation();
+            xmlCreator.putContext(context);
+            xmlCreator.createTypeA(colorTitle, colorValue);
+        }
+
+        int formatLimit = formatsTitles.size();
+        for (int i = 0; i < formatLimit; i++) {
+            String formatTitle = formatsTitles.get(i);
+            String formatValue = formatsValues.get(i);
+            xmlCreation xmlCreator = new xmlCreation();
+            xmlCreator.putContext(context);
+            xmlCreator.createTypeB(formatTitle, formatValue);
+        }
+
+        if (prefUtils.getBool("iconPref")){
+            ArrayList<String> titles = prefUtils.loadArray("iconsTitles");
+            ArrayList<String> values = prefUtils.loadArray("iconsValues");
+            for (int i = 0; i < titles.size(); i ++){
+                String title = titles.get(i);
+                String value = values.get(i);
+                xmlCreation xmlcreation = new xmlCreation();
+                xmlcreation.putContext(context);
+                xmlcreation.createIcons(title, value);
+            }
+        }
+    }
+
     public void insertCustomXmls(){
+
+        xmlBuilder();
 
         boolean themeIcons = prefUtils.getBool("iconPref");
 
         File dir = fileHelper.newFolder(new File(tempFolder, "xmls.zip"));
-        String[] xmlArray = dir.list(fileHelper.XML);
+        File root = new File(rootFolder);
+        String[] xmlArray = root.list(fileHelper.XML);
 
         fileHelper.newFolder(new File(dir, "assets"));
         fileHelper.newFolder(dir.getAbsolutePath() + slash + "assets" + slash + "overlays");
@@ -236,22 +278,6 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
                 FileSource.pair(pathsToFile.toArray(new File[pathsToFile.size()]), fileNames.toArray(new String[fileNames.size()])));
     }
 
-
-
-    public void appendToUniversal(String filePath){
-        ArrayList<String[]> filePaths = fileHelper.walk(filePath);
-        ArrayList<File> paths = new ArrayList<>();
-        ArrayList<String> fileNames = new ArrayList<>();
-
-        for (String[] aFile: filePaths) {
-            String fileName = (aFile[0]);
-            String path = (aFile[1]);
-
-            paths.add(new File(filePath + slash + path + fileName));
-            fileNames.add(path + fileName);
-        }
-
-    }
 
     public void createApkFromDir(File universalZip, String apkVersion) throws Exception {
 
