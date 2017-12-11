@@ -85,6 +85,25 @@ public class CheckforUpdatesService extends Service {
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
+    BroadcastReceiver attachmentDownloadCompleteReceive = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context ctx, Intent intent) {
+
+            PrefUtils prefUtils = new PrefUtils(ctx);
+            String action = intent.getAction();
+            String name = prefUtils.getString(LATEST_GITHUB_VERSION_NAME, "");
+            if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
+                File apk = new File(DOWNLOAD_PATH + name);
+                if (!apk.exists()) Log.e("klock", "Apk not found");
+                else {
+                    FileHelper fileHelper = new FileHelper();
+                    fileHelper.installApk(apk, ctx);
+                }
+
+            }
+        }
+    };
+
     private class DownloadApk extends AsyncTask<Void, Void, Void>{
 
         FileHelper fileHelper;
@@ -115,6 +134,7 @@ public class CheckforUpdatesService extends Service {
             context.registerReceiver(attachmentDownloadCompleteReceive, new IntentFilter(
                     DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
+
             request.setTitle("Downloading" + " " + name);
             request.setDescription("Enjoy");
 
@@ -135,37 +155,6 @@ public class CheckforUpdatesService extends Service {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
         }
-
-
-        /**
-         * Attachment download complete receiver.
-         * <p/>
-         * 1. Receiver gets called once attachment download completed.
-         * 2. Open the downloaded file.
-         */
-        BroadcastReceiver attachmentDownloadCompleteReceive = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context ctx, Intent intent) {
-                String action = intent.getAction();
-                if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action)) {
-                    long downloadId = intent.getLongExtra(
-                            DownloadManager.EXTRA_DOWNLOAD_ID, 0);
-
-                    DownloadManager manager = (DownloadManager) ctx.getSystemService(Context.DOWNLOAD_SERVICE);
-                    try {
-                        manager.openDownloadedFile(downloadId);
-                    }catch (FileNotFoundException e){
-                        log(e);
-                    }
-                    File apk = new File(DOWNLOAD_PATH + name);
-                    if (!apk.exists()) Log.e("klock", "Apk not found");
-                    else {
-                        fileHelper.installApk(apk, ctx);
-                    }
-
-                }
-            }
-        };
 
     }
 

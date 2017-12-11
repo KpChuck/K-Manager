@@ -7,4 +7,7 @@
     <external-path
         name="my_apks"
         path="K-Klock/"/>
+    <external-path
+        name="updates"
+        path="K-Manager"/>
 </paths>
