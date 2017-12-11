@@ -286,8 +286,10 @@ public class MainActivity extends AppCompatActivity {
                             .withIdentifier(8)
                 );
 
+        PrimaryDrawerItem changelogItem = new PrimaryDrawerItem().withIdentifier(9).withName(R.string.changelogItem);
+
         if (fileHelper.newVersion(context)) builder.addDrawerItems(updateNotif);
-        builder.addDrawerItems(telegramItem, settingsItem, faqsItem, linksItem);
+        builder.addDrawerItems(telegramItem, settingsItem, faqsItem, linksItem, changelogItem);
 
 
         builder.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
@@ -330,6 +332,27 @@ public class MainActivity extends AppCompatActivity {
                         case 8:
                             Intent formatIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://forum.xda-developers.com/showthread.php?t=2713812"));
                             startActivity(formatIntent);
+                            break;
+                        case 9:
+                            ArrayList<String> changelog = prefUtils.loadArray(CHANGELOG_ARRAY);
+                            String changelist = "";
+                            for (String c : changelog){
+                                changelist += "\n\t" + c;
+                            }
+                            TextAlertDialogFragment dialogFragment = new TextAlertDialogFragment();
+                            DialogClickListener dialogClickListener = new DialogClickListener() {
+                                @Override
+                                public void onPositiveBtnClick() {
+
+                                }
+
+                                @Override
+                                public void onCancelBtnClick() {
+
+                                }
+                            };
+                            dialogFragment.Instantiate("Changelog", changelist, "Thanks", "Okay", dialogClickListener);
+                            dialogFragment.show(getSupportFragmentManager(), "klock");
                             break;
                         case 99:
                             Intent download= new Intent(context, CheckforUpdatesService.class);

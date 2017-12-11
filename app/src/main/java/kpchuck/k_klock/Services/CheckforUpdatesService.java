@@ -26,6 +26,7 @@ import org.apache.commons.io.IOUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -37,6 +38,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 
 import kpchuck.k_klock.BuildConfig;
 import kpchuck.k_klock.MainActivity;
@@ -177,6 +179,12 @@ public class CheckforUpdatesService extends Service {
         String name;
 
         @Override
+        protected void onPostExecute(Void aVoid) {
+            stopSelf();
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
         protected Void doInBackground(Void... voids) {
 
             context = getApplicationContext();
@@ -185,17 +193,19 @@ public class CheckforUpdatesService extends Service {
             try {
                 Document doc = Jsoup.connect(url).get();
                 Element newsetVersion = doc.selectFirst(".my-4 a strong");
+                Element changelog = doc.selectFirst(".markdown-body p");
+                ArrayList<String> change = parseChangelog(changelog);
+                prefUtils.saveArray(change, CHANGELOG_ARRAY);
                 if (newsetVersion == null){
                     Log.d("klock", "Newset version is null");
                     name = "";
                 }
                 else {
-
                     Log.d("klock", newsetVersion.ownText());
 
                     name = newsetVersion.ownText();
-
                     downloadUrl = "http://github.com/" + doc.selectFirst(".my-4 a").attr("href");
+
 
                     prefUtils.putString(LATEST_GITHUB_VERSION_NAME, name);
                     prefUtils.putString(LATEST_GITHUB_VERSION_URL, downloadUrl);
@@ -211,5 +221,22 @@ public class CheckforUpdatesService extends Service {
 
             return null;
         }
+
+        public ArrayList<String> parseChangelog(Element changelog){
+
+            ArrayList<String> c = new ArrayList<>();
+            String change = changelog.ownText();
+            if (!change.contains("<br>")) {
+                c.add(change);
+            }
+            else {
+                String[] t = change.split("<br>");
+                for (String s : t) c.add(s);
+
+            }
+            return c;
+
+        }
     }
+
 }

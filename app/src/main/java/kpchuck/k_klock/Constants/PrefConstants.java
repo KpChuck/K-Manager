@@ -9,4 +9,6 @@ public class PrefConstants {
     public static final String LATEST_GITHUB_VERSION_NAME = "newVersion";
     public static final String LATEST_GITHUB_VERSION_URL = "newVersionUrl";
 
+    public static final String CHANGELOG_ARRAY = "changelogArray";
+
 }
