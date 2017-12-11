@@ -138,7 +138,7 @@ public class SimpleListAdapter extends BaseAdapter implements Filterable, ISpinn
             }
             final ArrayList<String> filterStrings = new ArrayList<>();
             for (String text : mBackupStrings) {
-                if (text.toLowerCase().contains(constraint)) {
+                if (text.contains(constraint)) {
                     filterStrings.add(text);
                 }
             }
@@ -152,14 +152,5 @@ public class SimpleListAdapter extends BaseAdapter implements Filterable, ISpinn
             mStrings = (ArrayList) results.values;
             notifyDataSetChanged();
         }
-    }
-
-    private class ItemView {
-        public ImageView mImageView;
-        public TextView mTextView;
-    }
-
-    public enum ItemViewType {
-        ITEM, NO_SELECTION_ITEM;
     }
 }
