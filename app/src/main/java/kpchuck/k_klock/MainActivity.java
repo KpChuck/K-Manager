@@ -16,6 +16,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.CardView;
@@ -142,28 +143,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onPostResume() {
         if(prefUtils.getBoolTrue("joinTelegram")) promptTelegram();
 
-        if(Build.VERSION.SDK_INT >= 26 && !getPackageManager().canRequestPackageInstalls()){
-            TextAlertDialogFragment alertDialogFragment = new TextAlertDialogFragment();
-            DialogClickListener clickReactor = new DialogClickListener() {
-                @Override
-                public void onPositiveBtnClick() {
-                    Intent k = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
-                    Uri uri = Uri.fromParts("package", getPackageName(), null);
-                    k.setData(uri);
-                    startActivity(k);
-                }
 
-                @Override
-                public void onCancelBtnClick() {
-                    shortToast("You will have to install K-Klock manually from the K-Klock folder without this permission granted");
-
-                }
-            };
-            alertDialogFragment.Instantiate("Install Apps Permissions Required", getString(R.string.request_install_perms),
-                    "Grant", "Deny", clickReactor);
-            alertDialogFragment.show(getSupportFragmentManager(), "missiles");
-
-        }
         super.onPostResume();
     }
 
@@ -211,6 +191,29 @@ public class MainActivity extends AppCompatActivity {
         this.prefUtils = new PrefUtils(getApplicationContext());
         LocalBroadcastManager.getInstance(this).registerReceiver(BReceiver, new IntentFilter("message"));
 
+        // Ask for Install Unknown Apps Permissions
+        if(Build.VERSION.SDK_INT >= 26 && !getPackageManager().canRequestPackageInstalls()){
+            TextAlertDialogFragment alertDialogFragment = new TextAlertDialogFragment();
+            DialogClickListener clickReactor = new DialogClickListener() {
+                @Override
+                public void onPositiveBtnClick() {
+                    Intent k = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
+                    Uri uri = Uri.fromParts("package", getPackageName(), null);
+                    k.setData(uri);
+                    startActivity(k);
+                }
+
+                @Override
+                public void onCancelBtnClick() {
+                    shortToast("You will have to install K-Klock manually from the K-Klock folder without this permission granted");
+
+                }
+            };
+            alertDialogFragment.Instantiate("Install Apps Permissions Required", getString(R.string.request_install_perms),
+                    "Grant", "Deny", clickReactor);
+            alertDialogFragment.show(getSupportFragmentManager(), "missiles");
+
+        }
 
         // Check for updates
         // use this to start and trigger a service
@@ -230,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
         welcomeScreen.show(savedInstanceState);
 
         if(!hasPermissions(this, PERMISSIONS)){
-            android.support.v4.app.ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
 
         // Create the material drawer
