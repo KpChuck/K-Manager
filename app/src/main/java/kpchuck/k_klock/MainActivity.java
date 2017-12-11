@@ -3,6 +3,7 @@ package kpchuck.k_klock;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.DownloadManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -19,6 +20,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ListView;
@@ -35,6 +37,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import android.content.res.AssetManager;
@@ -66,6 +69,7 @@ import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner;
+import gr.escsoft.michaelprimez.searchablespinner.interfaces.IStatusListener;
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener;
 import kpchuck.k_klock.Activities.InformationWebViewActivity;
 import kpchuck.k_klock.Activities.MyWelcomeActivity;
@@ -125,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
     PrimaryDrawerItem updateNotif;
     DrawerBuilder builder;
+    private boolean spinnerOpen = false;
 
 
     @Override
@@ -377,6 +382,17 @@ public class MainActivity extends AppCompatActivity {
         final SimpleListAdapter simpleListAdapter = new SimpleListAdapter(this, roms);
         searchableSpinner.setAdapter(simpleListAdapter);
         searchableSpinner.setSelectedItem(prefUtils.getString("selectedRom", getString(R.string.chooseRom)));
+        searchableSpinner.setStatusListener(new IStatusListener() {
+            @Override
+            public void spinnerIsOpening() {
+                spinnerOpen = true;
+            }
+
+            @Override
+            public void spinnerIsClosing() {
+                spinnerOpen = false;
+            }
+        });
         searchableSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
             public void onItemSelected(View view, int position, long id) {
@@ -789,7 +805,11 @@ public class MainActivity extends AppCompatActivity {
         RelativeLayout rv = findViewById(R.id.listViewLayout);
         if (rv.getVisibility() == View.VISIBLE){
             hideLayout(rv);
-        } else {
+        }
+        else if (spinnerOpen){
+            searchableSpinner.hideEdit();
+        }
+        else {
             super.onBackPressed();
         }
     }
