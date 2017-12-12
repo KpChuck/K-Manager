@@ -181,7 +181,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        ButterKnife.setDebug(true);
         ButterKnife.bind(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -222,12 +221,8 @@ public class MainActivity extends AppCompatActivity {
         i.putExtra("action", 1);
         context.startService(i);
 
-
-
-        betaString = getResources().getString(R.string.otherRomsBeta);
         fileHelper.newFolder(rootFolder);
         fileHelper.newFolder(rootFolder + "/userInput");
-
 
         welcomeScreen = new WelcomeHelper(this, MyWelcomeActivity.class);
         welcomeScreen.show(savedInstanceState);
@@ -474,6 +469,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (!searchableSpinner.isInsideSearchEditText(ev)) {
+            searchableSpinner.hideEdit();
+        }
+        return super.dispatchTouchEvent(ev);
+    }
 
     protected void onResume(){
         super.onResume();
