@@ -11,4 +11,8 @@ public class PrefConstants {
 
     public static final String CHANGELOG_ARRAY = "changelogArray";
 
+    // SharedPreferences Keys
+    public static final String PREF_CARRIER_TEXT = "customCarrierTextPref";
+    public static final String PREF_CARRIER_CUSTOM_TEXT = "inputtedCarrierText";
+
 }

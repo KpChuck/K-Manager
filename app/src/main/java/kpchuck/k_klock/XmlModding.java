@@ -4,7 +4,6 @@ import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -21,29 +20,29 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 
+import kpchuck.k_klock.Constants.PrefConstants;
 import kpchuck.k_klock.Utils.FileHelper;
 import kpchuck.k_klock.Utils.PrefUtils;
+import static kpchuck.k_klock.Constants.PrefConstants.*;
+import static kpchuck.k_klock.Constants.XmlConstants.*;
 
 /**
  * Created by Karol Przestrzelski on 04/09/2017.
  */
 
-public class MoveNetworkIconsLeft {
+public class XmlModding {
 
     private Context context;
 
@@ -56,25 +55,80 @@ public class MoveNetworkIconsLeft {
     String romName;
     boolean toMoveLeft;
     boolean toMinit;
-    File tempFolder;
+    boolean customCarrierText;
+    File romFolder;
     String layoutPath;
 
 
-    public MoveNetworkIconsLeft(Context context, File romFolder){
+    public XmlModding(Context context, File romFolder){
         this.context=context;
-        this.tempFolder=romFolder;
-        this.layoutPath = tempFolder.getAbsolutePath() + "/assets/overlays/com.android.systemui";
+        this.romFolder=romFolder;
+        this.layoutPath = romFolder.getAbsolutePath() + "/assets/overlays/com.android.systemui";
         getPref();
         if (toMoveLeft || toMinit) {
             if (!romName.equals(context.getString(R.string.otherRomsBeta)))
                 copySystemIconsAssets("systemicons", romName);
             else copyFromUserInput();
 
-
             editSystemIcons();
-            if (toMoveLeft)editStatusBar();
+            if (toMoveLeft) editStatusBar();
         }
+        if (customCarrierText) addCustomCarrierText();
 
+
+    }
+
+    private void addCustomCarrierText(){
+        File rootRom = new File(layoutPath);
+        FileHelper fileHelper = new FileHelper();
+        PrefUtils prefUtils = new PrefUtils(context);
+        for (File dir : rootRom.listFiles(fileHelper.DIRECTORY)){
+            File keyguard = new File(dir.getAbsolutePath() + "/layout/keyguard_status_bar.xml");
+            if (keyguard.exists()) {
+                try {
+                    DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder db = dbf.newDocumentBuilder();
+                    Document doc = db.parse(keyguard);
+
+                    Element rootElement = doc.getDocumentElement();
+                    Element carrierTextElement = getElementById(rootElement, "com.android.keyguard.CarrierText",
+                            "@*com.android.systemui:id/keyguard_carrier_text");
+                    Element customTextElement = doc.createElement("TextView");
+
+                    // Hide the carrier text
+                    carrierTextElement.removeAttribute(X_LAYOUT_WIDTH);
+                    carrierTextElement.setAttribute(X_LAYOUT_WIDTH, "0dp");
+
+                    // Create custom textView
+                    customTextElement.setAttribute("android:textAppearance", "?android:textAppearanceSmall");
+                    customTextElement.setAttribute("android:textColor", "@*com.android.systemui:color/status_bar_clock_color");
+                    customTextElement.setAttribute("android:ellipsize", "marquee");
+                    customTextElement.setAttribute(X_GRAVITY, X_GRAVITY_CENTER_VERTICAL);
+                    customTextElement.setAttribute("android:singleLine", "true");
+                    customTextElement.setAttribute("android:layout_toStartOf", "@*com.android.systemui:id/system_icons_super_container");
+                    customTextElement.setAttribute("android:fontFamily", "roboto-regular");
+                    customTextElement.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
+                    customTextElement.setAttribute(X_LAYOUT_WIDTH, X_FILL_PARENT);
+                    customTextElement.setAttribute("android:text", prefUtils.getString(PREF_CARRIER_CUSTOM_TEXT, ""));
+
+                    //Insert TextView
+                    rootElement.insertBefore(customTextElement, carrierTextElement);
+
+                    // Write to file
+                    TransformerFactory transformerFactory = TransformerFactory.newInstance();
+                    Transformer transformer = transformerFactory.newTransformer();
+                    DOMSource source = new DOMSource(doc);
+
+                    StreamResult result = new StreamResult(new FileOutputStream(keyguard));
+                    transformer.transform(source, result);
+
+
+                } catch (Exception e) {
+
+                    Log.e("klock", e.getMessage());
+                }
+            }
+        }
     }
 
     private void copyFromUserInput(){
@@ -237,6 +291,7 @@ public class MoveNetworkIconsLeft {
         }
 
     }
+
     public static Element getFirstChildElement(Node parent) {
         Element myElement = null;
         NodeList childs = parent.getChildNodes();
@@ -251,7 +306,6 @@ public class MoveNetworkIconsLeft {
         }
         return myElement;
     }
-
 
     public Element getElementById (Element parentElement, String layoutTag, String idName){
 
@@ -370,6 +424,7 @@ public class MoveNetworkIconsLeft {
         this.romName=rom;
         this.toMoveLeft=prefUtils.getBool("moveLeftPref");
         this.toMinit=prefUtils.getBool("minitPref");
+        this.customCarrierText = prefUtils.getBool(PREF_CARRIER_TEXT);
     }
 
     private void copySystemIconsAssets(String assetDir, String whichString) {

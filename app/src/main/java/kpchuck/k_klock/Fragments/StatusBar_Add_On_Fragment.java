@@ -12,16 +12,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import android.widget.EditText;
 import android.widget.Switch;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import butterknife.Unbinder;
 import kpchuck.k_klock.MainActivity;
 import kpchuck.k_klock.R;
 import kpchuck.k_klock.Utils.FileHelper;
 import kpchuck.k_klock.Utils.PrefUtils;
+import static kpchuck.k_klock.Constants.PrefConstants.*;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -43,6 +46,9 @@ public class StatusBar_Add_On_Fragment extends Fragment {
     @BindView (R.id.colorIcons) Switch iconSwitch;
     @BindView (R.id.includedIconsButton) Button showIncluded;
     @BindView (R.id.addIconButton) Button addColors;
+    @BindView (R.id.carrierText) Switch carrierSwitch;
+    @BindView (R.id.carrierCardView) CardView carrierView;
+    @BindView (R.id.editCarrierText) EditText carrierEditText;
 
     public StatusBar_Add_On_Fragment() {
         // Required empty public constructor
@@ -76,16 +82,31 @@ public class StatusBar_Add_On_Fragment extends Fragment {
         ButterKnife.apply(indicatorSwitch, ENABLED, prefUtils.getBool("indicatorPref"));
         ButterKnife.apply(leftSwitch, ENABLED, prefUtils.getBool("moveLeftPref"));
         ButterKnife.apply(lockSwitch, ENABLED, prefUtils.getBool("hideStatusBarPref"));
+        ButterKnife.apply(carrierSwitch, ENABLED, prefUtils.getBool(PREF_CARRIER_TEXT));
 
-
+        if (prefUtils.getBool(PREF_CARRIER_TEXT)) ButterKnife.apply(carrierView, SetVisibility, View.VISIBLE);
         if (prefUtils.getBool("iconPref")) ButterKnife.apply(iconView, SetVisibility, View.VISIBLE);
         if (!fileHelper.getOos(prefUtils.getString("selectedRom", getString(R.string.chooseRom))).equals("OxygenOS"))
             ButterKnife.apply(indicatorSwitch, SetVisibility, View.GONE);
 
+        ButterKnife.apply(carrierEditText, SetText, prefUtils.getString(PREF_CARRIER_CUSTOM_TEXT, ""));
+
         return v;
     }
 
+    @OnTextChanged (R.id.editCarrierText)
+    public void saveEditText(CharSequence s){
+        prefUtils.putString(PREF_CARRIER_CUSTOM_TEXT, s.toString());
+    }
+
+
     // Butterknife Apply Methods
+    static final ButterKnife.Setter<EditText, String> SetText = new ButterKnife.Setter<EditText, String>() {
+        @Override public void set(EditText view, String value, int index) {
+            view.setText(value);
+        }
+    };
+
     static final ButterKnife.Setter<Switch, Boolean> ENABLED = new ButterKnife.Setter<Switch, Boolean>() {
         @Override public void set(Switch view, Boolean value, int index) {
             view.setChecked(value);
@@ -129,6 +150,37 @@ public class StatusBar_Add_On_Fragment extends Fragment {
     public void indicatorClick(){
         prefUtils.setSwitchPrefs(indicatorSwitch, "indicatorPref");
 
+    }
+
+    @OnClick (R.id.carrierText)
+    public void carrierSwitch(){
+        prefUtils.setSwitchPrefs(carrierSwitch, PREF_CARRIER_TEXT);
+        if (carrierSwitch.isChecked()) {
+            ButterKnife.apply(carrierView, SetVisibility, View.INVISIBLE);
+            carrierView.animate()
+                    .alpha(1.0f)
+                    .setDuration(500)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            ButterKnife.apply(carrierView, SetVisibility, View.VISIBLE);
+                        }
+                    });
+
+        }
+        else {
+            carrierView.animate()
+                    .alpha(0.0f)
+                    .setDuration(500)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            ButterKnife.apply(carrierView, SetVisibility, View.GONE);
+                        }
+                    });
+        }
     }
 
     @OnClick(R.id.colorIcons)
