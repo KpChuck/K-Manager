@@ -110,6 +110,7 @@ public class XmlModding {
                     customTextElement.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
                     customTextElement.setAttribute(X_LAYOUT_WIDTH, X_FILL_PARENT);
                     customTextElement.setAttribute("android:text", prefUtils.getString(PREF_CARRIER_CUSTOM_TEXT, ""));
+                    customTextElement.setAttribute("android:layout_marginStart", "@*com.android.systemui:dimen/keyguard_carrier_text_margin");
 
                     //Insert TextView
                     rootElement.insertBefore(customTextElement, carrierTextElement);
