@@ -62,7 +62,7 @@
             android:layout_marginRight="12dp"
             android:layout_alignParentStart="true"
             android:layout_below="@id/networkSignalIndicatorSwitch"
-            android:text="Hide StatusBar on Lockscreen"
+            android:text="Lockscreen StatusBar Height"
             android:id="@+id/hideStatusbar"/>
 
         <Switch
