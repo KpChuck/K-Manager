@@ -73,16 +73,90 @@ public class XmlModding {
             editSystemIcons();
             if (toMoveLeft) editStatusBar();
         }
-        if (customCarrierText) addCustomCarrierText();
+        if (customCarrierText) addCustomCarrierTextToLockscreen();
 
 
     }
 
-    private void addCustomCarrierText(){
+    private Element createCustomTextElement(Element customTextElement, String width, String margin){
+        PrefUtils prefUtils = new PrefUtils(context);
+        customTextElement.setAttribute("android:textAppearance", "@*com.android.systemui:style/TextAppearance.StatusBar.Clock");
+        customTextElement.setAttribute("android:textColor", "@*com.android.systemui:color/status_bar_clock_color");
+        customTextElement.setAttribute("android:ellipsize", "end");
+        customTextElement.setAttribute(X_GRAVITY, X_GRAVITY_CENTER_VERTICAL);
+        customTextElement.setAttribute("android:singleLine", "true");
+        customTextElement.setAttribute("android:layout_toStartOf", "@*com.android.systemui:id/system_icons_super_container");
+        customTextElement.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
+        customTextElement.setAttribute(X_LAYOUT_WIDTH, width);
+        customTextElement.setAttribute("android:text", prefUtils.getString(PREF_CARRIER_CUSTOM_TEXT, ""));
+        customTextElement.setAttribute("android:layout_marginStart", margin);
+
+        return customTextElement;
+    }
+
+    private void addCarrierTextToStatusBar(File dir){
+        editStatusBar();
+        File statusbar = new File(dir.getAbsolutePath() + "/layout/status_bar.xml");
+        if (!statusbar.exists()) return;
+
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(statusbar);
+
+            Element rootElement = doc.getDocumentElement();
+            Element statusBarContents = getElementById(rootElement, "LinearLayout", "@*com.android.systemui:id/status_bar_contents");
+            Element notificationArea = getElementById(statusBarContents, "com.android.systemui.statusbar.AlphaOptimizedFrameLayout", "@*com.android.systemui:id/notification_icon_area");
+            Element customTextElement = doc.createElement("TextView");
+            customTextElement = createCustomTextElement(customTextElement, X_WRAP_CONTENT, "0dp");
+
+            Element hideNotificationLayout = doc.createElement("LinearLayout");
+            hideNotificationLayout.setAttribute(X_LAYOUT_WIDTH, "0dp");
+            hideNotificationLayout.setAttribute(X_LAYOUT_HEIGHT, "0dp");
+            hideNotificationLayout.setAttribute("android:layout_weight", "1.0");
+
+            // Hide the notification Icons
+            statusBarContents.insertBefore(hideNotificationLayout, notificationArea);
+            statusBarContents.removeChild(notificationArea);
+            hideNotificationLayout.appendChild(notificationArea);
+
+            // Insert TextView
+            // Check to see if it's a left clock
+            Element insertBeforeElement;
+
+            Node firstNode = statusBarContents.getFirstChild();
+            while (firstNode.getNodeType() != Node.ELEMENT_NODE) firstNode = firstNode.getNextSibling();
+            Element firstElement = (Element) firstNode;
+            String firstTag = firstElement.getTagName();
+
+            if (firstTag.equals("LinearLayout") || firstTag.equals("TextClock")){
+                insertBeforeElement = firstElement;
+            }
+            else {
+                insertBeforeElement = hideNotificationLayout;
+            }
+            statusBarContents.insertBefore(customTextElement, insertBeforeElement);
+
+            // Write to file
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+
+            StreamResult result = new StreamResult(new FileOutputStream(statusbar));
+            transformer.transform(source, result);
+
+
+        }catch (Exception e){
+            Log.e("klock", e.getMessage());
+        }
+    }
+
+    private void addCustomCarrierTextToLockscreen(){
         File rootRom = new File(layoutPath);
         FileHelper fileHelper = new FileHelper();
         PrefUtils prefUtils = new PrefUtils(context);
         for (File dir : rootRom.listFiles(fileHelper.DIRECTORY)){
+            if (prefUtils.getBool(PREF_CARRIER_EVERYWHERE)) addCarrierTextToStatusBar(dir);
             File keyguard = new File(dir.getAbsolutePath() + "/layout/keyguard_status_bar.xml");
             if (keyguard.exists()) {
                 try {
@@ -95,25 +169,20 @@ public class XmlModding {
                             "@*com.android.systemui:id/keyguard_carrier_text");
                     Element customTextElement = doc.createElement("TextView");
 
-                    // Hide the carrier text
-                    carrierTextElement.removeAttribute(X_LAYOUT_WIDTH);
-                    carrierTextElement.setAttribute(X_LAYOUT_WIDTH, "0dp");
+                    if (prefUtils.getBool(PREF_CARRIER_HIDE_NOTIFICATIONS)) {
+                        // Hide the carrier text
+                        carrierTextElement.removeAttribute(X_LAYOUT_WIDTH);
+                        carrierTextElement.setAttribute(X_LAYOUT_WIDTH, "0dp");
+                    }
 
-                    // Create custom textView
-                    customTextElement.setAttribute("android:textAppearance", "?android:textAppearanceSmall");
-                    customTextElement.setAttribute("android:textColor", "@*com.android.systemui:color/status_bar_clock_color");
-                    customTextElement.setAttribute("android:ellipsize", "marquee");
-                    customTextElement.setAttribute(X_GRAVITY, X_GRAVITY_CENTER_VERTICAL);
-                    customTextElement.setAttribute("android:singleLine", "true");
-                    customTextElement.setAttribute("android:layout_toStartOf", "@*com.android.systemui:id/system_icons_super_container");
-                    customTextElement.setAttribute("android:fontFamily", "roboto-regular");
-                    customTextElement.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
-                    customTextElement.setAttribute(X_LAYOUT_WIDTH, X_FILL_PARENT);
-                    customTextElement.setAttribute("android:text", prefUtils.getString(PREF_CARRIER_CUSTOM_TEXT, ""));
-                    customTextElement.setAttribute("android:layout_marginStart", "@*com.android.systemui:dimen/@*com.android.systemui:dimen/status_bar_clock_end_padding");
+                    if (!prefUtils.getBool(PREF_CARRIER_EVERYWHERE)) {
 
-                    //Insert TextView
-                    rootElement.insertBefore(customTextElement, carrierTextElement);
+                        // Create custom textView
+                        customTextElement = createCustomTextElement(customTextElement, X_FILL_PARENT, "@*com.android.systemui:dimen/keyguard_carrier_text_margin");
+
+                        //Insert TextView
+                        rootElement.insertBefore(customTextElement, carrierTextElement);
+                    }
 
                     // Write to file
                     TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -128,6 +197,7 @@ public class XmlModding {
 
                     Log.e("klock", e.getMessage());
                 }
+
             }
         }
     }
@@ -269,14 +339,16 @@ public class XmlModding {
                     }
                 }
 
-                Element toInclude = doc.createElement("include");
-                toInclude.setAttribute("android:layout_width", "wrap_content");
-                toInclude.setAttribute("android:layout_height", "fill_parent");
-                toInclude.setAttribute("android:layout_marginStart", "2.5dip");
-                toInclude.setAttribute("layout", "@*com.android.systemui:layout/signal_cluster_view");
-                toInclude.setAttribute("android:gravity", "center_vertical");
+                if (toMoveLeft) {
+                    Element toInclude = doc.createElement("include");
+                    toInclude.setAttribute("android:layout_width", "wrap_content");
+                    toInclude.setAttribute("android:layout_height", "fill_parent");
+                    toInclude.setAttribute("android:layout_marginStart", "2.5dip");
+                    toInclude.setAttribute("layout", "@*com.android.systemui:layout/signal_cluster_view");
+                    toInclude.setAttribute("android:gravity", "center_vertical");
 
-                layout.insertBefore(toInclude, insertBeforeElement);
+                    layout.insertBefore(toInclude, insertBeforeElement);
+                }
 
                 TransformerFactory transformerFactory = TransformerFactory.newInstance();
                 Transformer transformer = transformerFactory.newTransformer();

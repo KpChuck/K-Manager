@@ -2,6 +2,7 @@ package kpchuck.k_klock.Utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.widget.CheckBox;
 import android.widget.Switch;
 
 import java.util.ArrayList;
@@ -56,6 +57,16 @@ public class PrefUtils {
     }
 
     public void setSwitchPrefs(Switch mswitch, String key){
+        if(mswitch.isChecked()) {
+            editor.putBoolean(key, true);
+            editor.apply();
+        }else{
+            editor.putBoolean(key, false);
+            editor.apply();
+        }
+    }
+
+    public void setCheckboxPrefs(CheckBox mswitch, String key){
         if(mswitch.isChecked()) {
             editor.putBoolean(key, true);
             editor.apply();

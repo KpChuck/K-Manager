@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
         this.prefUtils = new PrefUtils(getApplicationContext());
         LocalBroadcastManager.getInstance(this).registerReceiver(BReceiver, new IntentFilter("message"));
 
-        // Ask for Install Unknown Apps Permissions
+        // Ask for Permissions
         if(Build.VERSION.SDK_INT >= 26 && !getPackageManager().canRequestPackageInstalls()){
             TextAlertDialogFragment alertDialogFragment = new TextAlertDialogFragment();
             DialogClickListener clickReactor = new DialogClickListener() {
@@ -212,12 +212,13 @@ public class MainActivity extends AppCompatActivity {
                     "Grant", "Deny", clickReactor);
             alertDialogFragment.show(getSupportFragmentManager(), "missiles");
 
+            if(!hasPermissions(this, PERMISSIONS)){
+                ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+            }
         }
 
         // Check for updates
-        // use this to start and trigger a service
         Intent i = new Intent(context, CheckforUpdatesService.class);
-        // potentially add data to the intent
         i.putExtra("action", 1);
         context.startService(i);
 
@@ -227,9 +228,7 @@ public class MainActivity extends AppCompatActivity {
         welcomeScreen = new WelcomeHelper(this, MyWelcomeActivity.class);
         welcomeScreen.show(savedInstanceState);
 
-        if(!hasPermissions(this, PERMISSIONS)){
-            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
-        }
+
 
         // Create the material drawer
         AccountHeader header = new AccountHeaderBuilder()

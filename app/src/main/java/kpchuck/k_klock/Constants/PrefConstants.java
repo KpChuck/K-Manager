@@ -14,5 +14,7 @@ public class PrefConstants {
     // SharedPreferences Keys
     public static final String PREF_CARRIER_TEXT = "customCarrierTextPref";
     public static final String PREF_CARRIER_CUSTOM_TEXT = "inputtedCarrierText";
+    public static final String PREF_CARRIER_EVERYWHERE = "showCarrierEverywhereNotJustOnLockscren";
+    public static final String PREF_CARRIER_HIDE_NOTIFICATIONS = "hideNotificationIconsEverywhere";
 
 }

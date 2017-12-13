@@ -12,8 +12,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,6 +51,8 @@ public class StatusBar_Add_On_Fragment extends Fragment {
     @BindView (R.id.carrierText) Switch carrierSwitch;
     @BindView (R.id.carrierCardView) CardView carrierView;
     @BindView (R.id.editCarrierText) EditText carrierEditText;
+    @BindView (R.id.showEverywhereCarrier) CheckBox carrierEveryheckbox;
+    @BindView(R.id.hideNotificationIcons) CheckBox hideNotifs;
 
     public StatusBar_Add_On_Fragment() {
         // Required empty public constructor
@@ -83,6 +87,9 @@ public class StatusBar_Add_On_Fragment extends Fragment {
         ButterKnife.apply(leftSwitch, ENABLED, prefUtils.getBool("moveLeftPref"));
         ButterKnife.apply(lockSwitch, ENABLED, prefUtils.getBool("hideStatusBarPref"));
         ButterKnife.apply(carrierSwitch, ENABLED, prefUtils.getBool(PREF_CARRIER_TEXT));
+        ButterKnife.apply(carrierEveryheckbox, ENABLEDCheckBox, prefUtils.getBoolTrue(PREF_CARRIER_EVERYWHERE));
+        ButterKnife.apply(hideNotifs, ENABLEDCheckBox, prefUtils.getBoolTrue(PREF_CARRIER_HIDE_NOTIFICATIONS));
+
 
         if (prefUtils.getBool(PREF_CARRIER_TEXT)) ButterKnife.apply(carrierView, SetVisibility, View.VISIBLE);
         if (prefUtils.getBool("iconPref")) ButterKnife.apply(iconView, SetVisibility, View.VISIBLE);
@@ -107,6 +114,11 @@ public class StatusBar_Add_On_Fragment extends Fragment {
         }
     };
 
+    static final ButterKnife.Setter<CheckBox, Boolean> ENABLEDCheckBox = new ButterKnife.Setter<CheckBox, Boolean>() {
+        @Override public void set(CheckBox view, Boolean value, int index) {
+            view.setChecked(value);
+        }
+    };
     static final ButterKnife.Setter<Switch, Boolean> ENABLED = new ButterKnife.Setter<Switch, Boolean>() {
         @Override public void set(Switch view, Boolean value, int index) {
             view.setChecked(value);
@@ -128,6 +140,16 @@ public class StatusBar_Add_On_Fragment extends Fragment {
 
 
     // Handle Clicks for Switches
+    @OnClick (R.id.showEverywhereCarrier)
+    public void checkClick(){
+        prefUtils.setCheckboxPrefs(carrierEveryheckbox, PREF_CARRIER_EVERYWHERE);
+    }
+
+    @OnClick (R.id.hideNotificationIcons)
+    public void hideChecked(){
+        prefUtils.setCheckboxPrefs(hideNotifs, PREF_CARRIER_HIDE_NOTIFICATIONS);
+    }
+
     @OnClick(R.id.ampm)
     public void amClick(){
         prefUtils.setSwitchPrefs(amSwitch, "amPref");

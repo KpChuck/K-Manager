@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import org.apache.commons.io.FileUtils;
 import org.zeroturnaround.zip.FileSource;
-import org.zeroturnaround.zip.ZipEntrySource;
 import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
@@ -24,7 +23,7 @@ import java.util.ArrayList;
 
 import eu.chainfire.libsuperuser.Shell;
 import kellinwood.security.zipsigner.ZipSigner;
-import kpchuck.k_klock.MoveNetworkIconsLeft;
+import kpchuck.k_klock.XmlModding;
 import kpchuck.k_klock.R;
 import kpchuck.k_klock.xmlCreation;
 
@@ -260,7 +259,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         for (File z: zipFiles) {
           //  ZipUtil.explode(z);
             if (z.toString().contains(prefUtils.getString("selectedRom", context.getString(R.string.chooseRom))) || z.toString().contains("Rom.zip"))
-                new MoveNetworkIconsLeft(context, z);
+                new XmlModding(context, z);
             String filePath = z.getAbsolutePath();
             ArrayList<String[]> filePaths = fileHelper.walk(filePath);
 
