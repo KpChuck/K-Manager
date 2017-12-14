@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(BReceiver, new IntentFilter("message"));
 
         // Ask for Permissions
-        if(Build.VERSION.SDK_INT >= 26 && !getPackageManager().canRequestPackageInstalls()){
+        if(Build.VERSION.SDK_INT >= 26 && !getPackageManager().canRequestPackageInstalls()) {
             TextAlertDialogFragment alertDialogFragment = new TextAlertDialogFragment();
             DialogClickListener clickReactor = new DialogClickListener() {
                 @Override
@@ -211,11 +211,12 @@ public class MainActivity extends AppCompatActivity {
             alertDialogFragment.Instantiate("Install Apps Permissions Required", getString(R.string.request_install_perms),
                     "Grant", "Deny", clickReactor);
             alertDialogFragment.show(getSupportFragmentManager(), "missiles");
-
-            if(!hasPermissions(this, PERMISSIONS)){
-                ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
-            }
         }
+
+        if(!hasPermissions(this, PERMISSIONS)){
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        }
+
 
         // Check for updates
         Intent i = new Intent(context, CheckforUpdatesService.class);
