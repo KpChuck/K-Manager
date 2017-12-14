@@ -87,8 +87,8 @@ public class StatusBar_Add_On_Fragment extends Fragment {
         ButterKnife.apply(leftSwitch, ENABLED, prefUtils.getBool("moveLeftPref"));
         ButterKnife.apply(lockSwitch, ENABLED, prefUtils.getBool("hideStatusBarPref"));
         ButterKnife.apply(carrierSwitch, ENABLED, prefUtils.getBool(PREF_CARRIER_TEXT));
-        ButterKnife.apply(carrierEveryheckbox, ENABLEDCheckBox, prefUtils.getBoolTrue(PREF_CARRIER_EVERYWHERE));
-        ButterKnife.apply(hideNotifs, ENABLEDCheckBox, prefUtils.getBoolTrue(PREF_CARRIER_HIDE_NOTIFICATIONS));
+        ButterKnife.apply(carrierEveryheckbox, ENABLEDCheckBox, prefUtils.getBool(PREF_CARRIER_EVERYWHERE));
+        ButterKnife.apply(hideNotifs, ENABLEDCheckBox, prefUtils.getBool(PREF_CARRIER_HIDE_NOTIFICATIONS));
 
 
         if (prefUtils.getBool(PREF_CARRIER_TEXT)) ButterKnife.apply(carrierView, SetVisibility, View.VISIBLE);

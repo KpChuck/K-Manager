@@ -115,10 +115,13 @@ public class XmlModding {
             hideNotificationLayout.setAttribute(X_LAYOUT_HEIGHT, "0dp");
             hideNotificationLayout.setAttribute("android:layout_weight", "1.0");
 
-            // Hide the notification Icons
-            statusBarContents.insertBefore(hideNotificationLayout, notificationArea);
-            statusBarContents.removeChild(notificationArea);
-            hideNotificationLayout.appendChild(notificationArea);
+            PrefUtils prefUtils = new PrefUtils(context);
+            if (prefUtils.getBool(PREF_CARRIER_HIDE_NOTIFICATIONS)) {
+                // Hide the notification Icons
+                statusBarContents.insertBefore(hideNotificationLayout, notificationArea);
+                statusBarContents.removeChild(notificationArea);
+                hideNotificationLayout.appendChild(notificationArea);
+            }
 
             // Insert TextView
             // Check to see if it's a left clock
@@ -132,7 +135,11 @@ public class XmlModding {
             if (firstTag.equals("LinearLayout") || firstTag.equals("TextClock")){
                 insertBeforeElement = firstElement;
             }
-            else {
+            else if (prefUtils.getBool(PREF_CARRIER_HIDE_NOTIFICATIONS)){
+                insertBeforeElement = notificationArea;
+            }
+            else
+            {
                 insertBeforeElement = hideNotificationLayout;
             }
             statusBarContents.insertBefore(customTextElement, insertBeforeElement);
@@ -169,11 +176,11 @@ public class XmlModding {
                             "@*com.android.systemui:id/keyguard_carrier_text");
                     Element customTextElement = doc.createElement("TextView");
 
-                    if (prefUtils.getBool(PREF_CARRIER_HIDE_NOTIFICATIONS)) {
-                        // Hide the carrier text
-                        carrierTextElement.removeAttribute(X_LAYOUT_WIDTH);
-                        carrierTextElement.setAttribute(X_LAYOUT_WIDTH, "0dp");
-                    }
+
+                    // Hide the carrier text
+                    carrierTextElement.removeAttribute(X_LAYOUT_WIDTH);
+                    carrierTextElement.setAttribute(X_LAYOUT_WIDTH, "0dp");
+
 
                     if (!prefUtils.getBool(PREF_CARRIER_EVERYWHERE)) {
 
