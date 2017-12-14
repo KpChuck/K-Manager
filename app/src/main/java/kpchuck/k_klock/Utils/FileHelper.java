@@ -189,7 +189,7 @@ public class FileHelper {
     public int decreaseToLowest(String[] testStringArray){
         int kk;
 
-        if (testStringArray.length == 0) return 1;
+        if (testStringArray == null || testStringArray.length == 0) return 1;
         Arrays.sort(testStringArray);
         List<String> list = Arrays.asList(testStringArray);
         Collections.reverse(list);
