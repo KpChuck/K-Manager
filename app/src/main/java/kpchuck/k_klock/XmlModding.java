@@ -56,6 +56,7 @@ public class XmlModding {
     boolean toMoveLeft;
     boolean toMinit;
     boolean customCarrierText;
+    boolean showCarrierTextEverywhere;
     File romFolder;
     String layoutPath;
 
@@ -71,8 +72,8 @@ public class XmlModding {
             else copyFromUserInput();
 
             editSystemIcons();
-            if (toMoveLeft) editStatusBar();
         }
+        if (toMoveLeft || showCarrierTextEverywhere) editStatusBar();
         if (customCarrierText) addCustomCarrierTextToLockscreen();
 
 
@@ -95,7 +96,6 @@ public class XmlModding {
     }
 
     private void addCarrierTextToStatusBar(File dir){
-        editStatusBar();
         File statusbar = new File(dir.getAbsolutePath() + "/layout/status_bar.xml");
         if (!statusbar.exists()) return;
 
@@ -127,15 +127,12 @@ public class XmlModding {
             // Check to see if it's a left clock
             Element insertBeforeElement;
 
-            Node firstNode = statusBarContents.getFirstChild();
-            while (firstNode.getNodeType() != Node.ELEMENT_NODE) firstNode = firstNode.getNextSibling();
-            Element firstElement = (Element) firstNode;
-            String firstTag = firstElement.getTagName();
+            Element firstElement = getFirstChildElement(statusBarContents);
 
-            if (firstTag.equals("LinearLayout") || firstTag.equals("TextClock")){
+            if (statusbar.getAbsolutePath().contains("Left")){
                 insertBeforeElement = firstElement;
             }
-            else if (prefUtils.getBool(PREF_CARRIER_HIDE_NOTIFICATIONS)){
+            else if (!prefUtils.getBool(PREF_CARRIER_HIDE_NOTIFICATIONS)){
                 insertBeforeElement = notificationArea;
             }
             else
@@ -505,6 +502,7 @@ public class XmlModding {
         this.toMoveLeft=prefUtils.getBool("moveLeftPref");
         this.toMinit=prefUtils.getBool("minitPref");
         this.customCarrierText = prefUtils.getBool(PREF_CARRIER_TEXT);
+        this.showCarrierTextEverywhere = prefUtils.getBool(PREF_CARRIER_EVERYWHERE);
     }
 
     private void copySystemIconsAssets(String assetDir, String whichString) {
