@@ -79,18 +79,23 @@ public class XmlModding {
 
     }
 
-    private Element createCustomTextElement(Element customTextElement, String width, String margin){
+    private Element createCustomTextElement(Element customTextElement){
         PrefUtils prefUtils = new PrefUtils(context);
         customTextElement.setAttribute("android:textAppearance", "@*com.android.systemui:style/TextAppearance.StatusBar.Clock");
         customTextElement.setAttribute("android:textColor", "@*com.android.systemui:color/status_bar_clock_color");
-        customTextElement.setAttribute("android:ellipsize", "end");
         customTextElement.setAttribute(X_GRAVITY, X_GRAVITY_CENTER_VERTICAL);
         customTextElement.setAttribute("android:singleLine", "true");
-        customTextElement.setAttribute("android:layout_toStartOf", "@*com.android.systemui:id/system_icons_super_container");
         customTextElement.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
-        customTextElement.setAttribute(X_LAYOUT_WIDTH, width);
         customTextElement.setAttribute("android:text", prefUtils.getString(PREF_CARRIER_CUSTOM_TEXT, ""));
-        customTextElement.setAttribute("android:layout_marginStart", margin);
+
+        if (showCarrierTextEverywhere) {
+            customTextElement.setAttribute(X_LAYOUT_WIDTH, X_WRAP_CONTENT);
+        }
+        else {
+            customTextElement.setAttribute("android:layout_toStartOf", "@*com.android.systemui:id/system_icons_super_container");
+            customTextElement.setAttribute("android:layout_marginStart", "@*com.android.systemui:dimen/keyguard_carrier_text_margin");
+            customTextElement.setAttribute(X_LAYOUT_WIDTH, X_FILL_PARENT);
+        }
 
         return customTextElement;
     }
@@ -108,11 +113,11 @@ public class XmlModding {
             Element statusBarContents = getElementById(rootElement, "LinearLayout", "@*com.android.systemui:id/status_bar_contents");
             Element notificationArea = getElementById(statusBarContents, "com.android.systemui.statusbar.AlphaOptimizedFrameLayout", "@*com.android.systemui:id/notification_icon_area");
             Element customTextElement = doc.createElement("TextView");
-            customTextElement = createCustomTextElement(customTextElement, X_WRAP_CONTENT, "0dp");
+            customTextElement = createCustomTextElement(customTextElement);
 
             Element hideNotificationLayout = doc.createElement("LinearLayout");
-            hideNotificationLayout.setAttribute(X_LAYOUT_WIDTH, "0dp");
-            hideNotificationLayout.setAttribute(X_LAYOUT_HEIGHT, "0dp");
+            hideNotificationLayout.setAttribute(X_LAYOUT_WIDTH, "0dip");
+            hideNotificationLayout.setAttribute(X_LAYOUT_HEIGHT, "0dip");
             hideNotificationLayout.setAttribute("android:layout_weight", "1.0");
 
             PrefUtils prefUtils = new PrefUtils(context);
@@ -125,20 +130,10 @@ public class XmlModding {
 
             // Insert TextView
             // Check to see if it's a left clock
-            Element insertBeforeElement;
 
             Element firstElement = getFirstChildElement(statusBarContents);
+            Element insertBeforeElement = firstElement;
 
-            if (statusbar.getAbsolutePath().contains("Left")){
-                insertBeforeElement = firstElement;
-            }
-            else if (!prefUtils.getBool(PREF_CARRIER_HIDE_NOTIFICATIONS)){
-                insertBeforeElement = notificationArea;
-            }
-            else
-            {
-                insertBeforeElement = hideNotificationLayout;
-            }
             statusBarContents.insertBefore(customTextElement, insertBeforeElement);
 
             // Write to file
@@ -182,7 +177,7 @@ public class XmlModding {
                     if (!prefUtils.getBool(PREF_CARRIER_EVERYWHERE)) {
 
                         // Create custom textView
-                        customTextElement = createCustomTextElement(customTextElement, X_FILL_PARENT, "@*com.android.systemui:dimen/keyguard_carrier_text_margin");
+                        customTextElement = createCustomTextElement(customTextElement);
 
                         //Insert TextView
                         rootElement.insertBefore(customTextElement, carrierTextElement);
@@ -318,6 +313,7 @@ public class XmlModding {
                     textClock.setAttribute("android:layout_height", "fill_parent");
                     textClock.setAttribute("android:gravity", "center");
                     textClock.setAttribute("android:singleLine", "true");
+                    if (xmlpath.contains("Dynamic") && xmlpath.contains("Center")) textClock.setAttribute("android:id", "@*com.android.systemui:id/clock");
 
                     rootElement.insertBefore(hideyLayout, getFirstChildElement(rootElement));
 
