@@ -12,6 +12,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
@@ -24,6 +25,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -109,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView (R.id.loadingTextView) TextView loadingTextView;
     @BindView (R.id.romSelectionSpinner) SearchableSpinner searchableSpinner;
     @BindView (R.id.defaultLayout) ScrollView scrollView;
+    @BindView (R.id.spinnerLinearLayout) LinearLayout SpinnerLayout;
 
 
 
@@ -382,17 +385,6 @@ public class MainActivity extends AppCompatActivity {
         final SimpleListAdapter simpleListAdapter = new SimpleListAdapter(this, roms);
         searchableSpinner.setAdapter(simpleListAdapter);
         searchableSpinner.setSelectedItem(prefUtils.getString("selectedRom", getString(R.string.chooseRom)));
-        searchableSpinner.setStatusListener(new IStatusListener() {
-            @Override
-            public void spinnerIsOpening() {
-                spinnerOpen = true;
-            }
-
-            @Override
-            public void spinnerIsClosing() {
-                spinnerOpen = false;
-            }
-        });
         searchableSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
             public void onItemSelected(View view, int position, long id) {
@@ -413,7 +405,17 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        searchableSpinner.setStatusListener(new IStatusListener() {
+            @Override
+            public void spinnerIsOpening() {
+                spinnerOpen = true;
+            }
 
+            @Override
+            public void spinnerIsClosing() {
+                spinnerOpen = false;
+            }
+        });
     }
 
     private void notifyOnUpdate(){
@@ -461,17 +463,31 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             boolean newVersion = fileHelper.newVersion(context);
-            Log.d("klock", "Is update available boolean is " + newVersion);
             if (newVersion && drawer.getDrawerItem(99) == null){
                 notifyOnUpdate();
                 drawer.addItemAtPosition(updateNotif, 1);
             }
-
-            else if (!newVersion){
-                drawer.removeItem(99);
-            }
+            else if (!newVersion) drawer.removeItem(99);
         }
     };
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (touchEventInsideEditText(ev))
+            searchableSpinner.hideEdit();
+        return super.dispatchTouchEvent(ev);
+    }
+
+    public boolean touchEventInsideEditText(MotionEvent event){
+        Rect editTextRect = new Rect();
+        SpinnerLayout.getHitRect(editTextRect);
+
+        if (editTextRect.contains((int)event.getX(), (int)event.getY())) {
+            return true;
+        }
+        return false;
+    }
+
 
     protected void onResume(){
         super.onResume();
