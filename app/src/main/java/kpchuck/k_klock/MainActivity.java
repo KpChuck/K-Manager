@@ -69,6 +69,7 @@ import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTouch;
 import gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner;
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.IStatusListener;
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener;
@@ -131,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
     PrimaryDrawerItem updateNotif;
     DrawerBuilder builder;
     private boolean spinnerOpen = false;
+    private boolean pressed = false;
 
 
     @Override
@@ -411,6 +413,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
     private void notifyOnUpdate(){
@@ -469,14 +472,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (!searchableSpinner.isInsideSearchEditText(ev)) {
-            searchableSpinner.hideEdit();
-        }
-        return super.dispatchTouchEvent(ev);
-    }
 
     protected void onResume(){
         super.onResume();
