@@ -103,6 +103,7 @@ public class XmlModding {
     private void addCarrierTextToStatusBar(File dir){
         File statusbar = new File(dir.getAbsolutePath() + "/layout/status_bar.xml");
         if (!statusbar.exists()) return;
+        PrefUtils prefUtils = new PrefUtils(context);
 
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -113,28 +114,30 @@ public class XmlModding {
             Element statusBarContents = getElementById(rootElement, "LinearLayout", "@*com.android.systemui:id/status_bar_contents");
             Element notificationArea = getElementById(statusBarContents, "com.android.systemui.statusbar.AlphaOptimizedFrameLayout", "@*com.android.systemui:id/notification_icon_area");
             Element customTextElement = doc.createElement("TextView");
-            customTextElement = createCustomTextElement(customTextElement);
 
-            Element hideNotificationLayout = doc.createElement("LinearLayout");
-            hideNotificationLayout.setAttribute(X_LAYOUT_WIDTH, "0dip");
-            hideNotificationLayout.setAttribute(X_LAYOUT_HEIGHT, "0dip");
-            hideNotificationLayout.setAttribute("android:layout_weight", "1.0");
-
-            PrefUtils prefUtils = new PrefUtils(context);
             if (prefUtils.getBool(PREF_CARRIER_HIDE_NOTIFICATIONS)) {
                 // Hide the notification Icons
+                Element hideNotificationLayout = doc.createElement("LinearLayout");
+                hideNotificationLayout.setAttribute(X_LAYOUT_WIDTH, "0dip");
+                hideNotificationLayout.setAttribute(X_LAYOUT_HEIGHT, "0dip");
+                hideNotificationLayout.setAttribute("android:layout_weight", "1.0");
                 statusBarContents.insertBefore(hideNotificationLayout, notificationArea);
                 statusBarContents.removeChild(notificationArea);
                 hideNotificationLayout.appendChild(notificationArea);
             }
 
-            // Insert TextView
-            // Check to see if it's a left clock
+            if (prefUtils.getBool(PREF_CARRIER_EVERYWHERE)) {
+                customTextElement = createCustomTextElement(customTextElement);
 
-            Element firstElement = getFirstChildElement(statusBarContents);
-            Element insertBeforeElement = firstElement;
+                // Insert TextView
+                Element firstElement = getFirstChildElement(statusBarContents);
+                Element insertBeforeElement = firstElement;
 
-            statusBarContents.insertBefore(customTextElement, insertBeforeElement);
+                statusBarContents.insertBefore(customTextElement, insertBeforeElement);
+            }
+
+
+
 
             // Write to file
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -154,8 +157,7 @@ public class XmlModding {
         File rootRom = new File(layoutPath);
         FileHelper fileHelper = new FileHelper();
         PrefUtils prefUtils = new PrefUtils(context);
-        for (File dir : rootRom.listFiles(fileHelper.DIRECTORY)){
-            if (prefUtils.getBool(PREF_CARRIER_EVERYWHERE)) addCarrierTextToStatusBar(dir);
+        for (File dir : rootRom.listFiles(fileHelper.DIRECTORY)){addCarrierTextToStatusBar(dir);
             File keyguard = new File(dir.getAbsolutePath() + "/layout/keyguard_status_bar.xml");
             if (keyguard.exists()) {
                 try {
