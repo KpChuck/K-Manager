@@ -26,6 +26,7 @@ import kellinwood.security.zipsigner.ZipSigner;
 import kpchuck.k_klock.XmlModding;
 import kpchuck.k_klock.R;
 import kpchuck.k_klock.xmlCreation;
+import static kpchuck.k_klock.Constants.PrefConstants.*;
 
 /**
  * Created by karol on 04/12/17.
@@ -162,6 +163,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             fileHelper.copyFromAssets(univ, "qsBgs.zip", tempFolder, context, true);
         if (prefUtils.getBool("qsTitlePref")) fileHelper.copyFromAssets(univ, "qsTitle.zip", tempFolder, context, true);
         if (prefUtils.getBool("amPref")) fileHelper.copyFromAssets(univ, "ampm.zip", tempFolder, context, true);
+        if (prefUtils.getBool(PREF_STATUSBAR_CLOCK_SIZE)) fileHelper.copyFromAssets(univ, "clockSize.zip", tempFolder, context, true);
         if(prefUtils.getBool("indicatorPref") && romName.equals("OxygenOS Nougat"))
             fileHelper.copyFromAssets(univ, "indicatorsN.zip".trim(), tempFolder, context, true);
         if(prefUtils.getBool("indicatorPref") && romName.equals("OxygenOS Oreo"))

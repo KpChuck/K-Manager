@@ -53,6 +53,7 @@ public class StatusBar_Add_On_Fragment extends Fragment {
     @BindView (R.id.editCarrierText) EditText carrierEditText;
     @BindView (R.id.showEverywhereCarrier) CheckBox carrierEveryheckbox;
     @BindView(R.id.hideNotificationIcons) CheckBox hideNotifs;
+    @BindView(R.id.clockSize) Switch clockSizeSwitch;
 
     public StatusBar_Add_On_Fragment() {
         // Required empty public constructor
@@ -81,6 +82,7 @@ public class StatusBar_Add_On_Fragment extends Fragment {
 
         unbinder = ButterKnife.bind(this, v);
         //Set position and visibility of switches
+        ButterKnife.apply(clockSizeSwitch, ENABLED, prefUtils.getBool(PREF_STATUSBAR_CLOCK_SIZE));
         ButterKnife.apply(amSwitch, ENABLED, prefUtils.getBool("amPref"));
         ButterKnife.apply(iconSwitch, ENABLED, prefUtils.getBool("iconPref"));
         ButterKnife.apply(indicatorSwitch, ENABLED, prefUtils.getBool("indicatorPref"));
@@ -140,101 +142,106 @@ public class StatusBar_Add_On_Fragment extends Fragment {
 
 
     // Handle Clicks for Switches
-    @OnClick (R.id.showEverywhereCarrier)
-    public void checkClick(){
-        prefUtils.setCheckboxPrefs(carrierEveryheckbox, PREF_CARRIER_EVERYWHERE);
-    }
+        @OnClick (R.id.showEverywhereCarrier)
+        public void checkClick(){
+            prefUtils.setCheckboxPrefs(carrierEveryheckbox, PREF_CARRIER_EVERYWHERE);
+        }
 
-    @OnClick (R.id.hideNotificationIcons)
-    public void hideChecked(){
-        prefUtils.setCheckboxPrefs(hideNotifs, PREF_CARRIER_HIDE_NOTIFICATIONS);
-    }
+        @OnClick (R.id.hideNotificationIcons)
+        public void hideChecked(){
+            prefUtils.setCheckboxPrefs(hideNotifs, PREF_CARRIER_HIDE_NOTIFICATIONS);
+        }
 
-    @OnClick(R.id.ampm)
-    public void amClick(){
-        prefUtils.setSwitchPrefs(amSwitch, "amPref");
+        @OnClick(R.id.clockSize)
+        public void click(){
+            prefUtils.setSwitchPrefs(clockSizeSwitch, PREF_STATUSBAR_CLOCK_SIZE);
+        }
 
-    }
-
-    @OnClick(R.id.hideStatusbar)
-    public void lockClick(){
-        prefUtils.setSwitchPrefs(lockSwitch, "hideStatusbarPref");
-
-    }
-
-    @OnClick(R.id.moveNetworkLeft)
-    public void leftClock(){
-        prefUtils.setSwitchPrefs(leftSwitch, "moveLeftPref");
-
-    }
-
-    @OnClick(R.id.networkSignalIndicatorSwitch)
-    public void indicatorClick(){
-        prefUtils.setSwitchPrefs(indicatorSwitch, "indicatorPref");
-
-    }
-
-    @OnClick (R.id.carrierText)
-    public void carrierSwitch(){
-        prefUtils.setSwitchPrefs(carrierSwitch, PREF_CARRIER_TEXT);
-        if (carrierSwitch.isChecked()) {
-            ButterKnife.apply(carrierView, SetVisibility, View.INVISIBLE);
-            carrierView.animate()
-                    .alpha(1.0f)
-                    .setDuration(500)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            ButterKnife.apply(carrierView, SetVisibility, View.VISIBLE);
-                        }
-                    });
+        @OnClick(R.id.ampm)
+        public void amClick(){
+            prefUtils.setSwitchPrefs(amSwitch, "amPref");
 
         }
-        else {
-            carrierView.animate()
-                    .alpha(0.0f)
-                    .setDuration(500)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            ButterKnife.apply(carrierView, SetVisibility, View.GONE);
-                        }
-                    });
-        }
-    }
 
-    @OnClick(R.id.colorIcons)
-    public void iconClick(){
-        prefUtils.setSwitchPrefs(iconSwitch, "iconPref");
-        if (iconSwitch.isChecked()) {
-            ButterKnife.apply(iconView, SetVisibility, View.INVISIBLE);
-            iconView.animate()
-                    .alpha(1.0f)
-                    .setDuration(500)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            ButterKnife.apply(iconView, SetVisibility, View.VISIBLE);
-                        }
-                    });
+        @OnClick(R.id.hideStatusbar)
+        public void lockClick(){
+            prefUtils.setSwitchPrefs(lockSwitch, "hideStatusbarPref");
 
         }
-        else {
-            iconView.animate()
-                    .alpha(0.0f)
-                    .setDuration(500)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            ButterKnife.apply(iconView, SetVisibility, View.GONE);
-                        }
-                    });
+
+        @OnClick(R.id.moveNetworkLeft)
+        public void leftClock(){
+            prefUtils.setSwitchPrefs(leftSwitch, "moveLeftPref");
+
         }
-    }
+
+        @OnClick(R.id.networkSignalIndicatorSwitch)
+        public void indicatorClick(){
+            prefUtils.setSwitchPrefs(indicatorSwitch, "indicatorPref");
+
+        }
+
+        @OnClick (R.id.carrierText)
+        public void carrierSwitch(){
+            prefUtils.setSwitchPrefs(carrierSwitch, PREF_CARRIER_TEXT);
+            if (carrierSwitch.isChecked()) {
+                ButterKnife.apply(carrierView, SetVisibility, View.INVISIBLE);
+                carrierView.animate()
+                        .alpha(1.0f)
+                        .setDuration(500)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                super.onAnimationEnd(animation);
+                                ButterKnife.apply(carrierView, SetVisibility, View.VISIBLE);
+                            }
+                        });
+
+            }
+            else {
+                carrierView.animate()
+                        .alpha(0.0f)
+                        .setDuration(500)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                super.onAnimationEnd(animation);
+                                ButterKnife.apply(carrierView, SetVisibility, View.GONE);
+                            }
+                        });
+            }
+        }
+
+        @OnClick(R.id.colorIcons)
+        public void iconClick(){
+            prefUtils.setSwitchPrefs(iconSwitch, "iconPref");
+            if (iconSwitch.isChecked()) {
+                ButterKnife.apply(iconView, SetVisibility, View.INVISIBLE);
+                iconView.animate()
+                        .alpha(1.0f)
+                        .setDuration(500)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                super.onAnimationEnd(animation);
+                                ButterKnife.apply(iconView, SetVisibility, View.VISIBLE);
+                            }
+                        });
+
+            }
+            else {
+                iconView.animate()
+                        .alpha(0.0f)
+                        .setDuration(500)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                super.onAnimationEnd(animation);
+                                ButterKnife.apply(iconView, SetVisibility, View.GONE);
+                            }
+                        });
+            }
+        }
 
     // Handle Clicks for Icon View
     @OnClick(R.id.addIconButton)
