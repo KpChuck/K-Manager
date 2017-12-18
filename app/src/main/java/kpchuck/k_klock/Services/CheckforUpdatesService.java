@@ -184,7 +184,7 @@ public class CheckforUpdatesService extends Service {
                 Element newsetVersion = doc.selectFirst(".my-4 a strong");
                 Element changelog = doc.selectFirst(".markdown-body p");
                 ArrayList<String> change = parseChangelog(changelog);
-                prefUtils.saveArray(change, CHANGELOG_ARRAY);
+                    prefUtils.saveArray(change, CHANGELOG_ARRAY);
                 if (newsetVersion == null){
                     Log.d("klock", "Newset version is null");
                     name = "";
@@ -194,7 +194,6 @@ public class CheckforUpdatesService extends Service {
 
                     name = newsetVersion.ownText();
                     downloadUrl = "http://github.com/" + doc.selectFirst(".my-4 a").attr("href");
-
 
                     prefUtils.putString(LATEST_GITHUB_VERSION_NAME, name);
                     prefUtils.putString(LATEST_GITHUB_VERSION_URL, downloadUrl);
@@ -215,14 +214,10 @@ public class CheckforUpdatesService extends Service {
 
             ArrayList<String> c = new ArrayList<>();
             String change = changelog.ownText();
-            if (!change.contains("<br>")) {
-                c.add(change);
-            }
-            else {
-                String[] t = change.split("<br>");
+            change = change.substring(1);
+                String[] t = change.split("-");
                 for (String s : t) c.add(s);
 
-            }
             return c;
 
         }

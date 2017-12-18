@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
                 .addProfiles(
                         new ProfileDrawerItem()
                                 .withName(getString(R.string.app_name))
-                                .withEmail(R.string.version))
+                                .withEmail("version " + BuildConfig.VERSION_NAME))
                 .withCurrentProfileHiddenInList(true)
                 .build();
 
@@ -345,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
                             ArrayList<String> changelog = prefUtils.loadArray(CHANGELOG_ARRAY);
                             String changelist = "";
                             for (String c : changelog){
-                                changelist += "\n\t" + c;
+                                changelist += "\n\t-" + c;
                             }
                             TextAlertDialogFragment dialogFragment = new TextAlertDialogFragment();
                             DialogClickListener dialogClickListener = new DialogClickListener() {
@@ -473,7 +473,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (touchEventInsideEditText(ev))
+        if (!touchEventInsideEditText(ev))
             searchableSpinner.hideEdit();
         return super.dispatchTouchEvent(ev);
     }
