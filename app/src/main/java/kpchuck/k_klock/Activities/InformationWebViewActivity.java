@@ -40,19 +40,19 @@ public class InformationWebViewActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-       // this.webPath = getApplicationContext().getFilesDir().getPath() + "html";
+        // this.webPath = getApplicationContext().getFilesDir().getPath() + "html";
         //this.webPath = Environment.getExternalStorageDirectory() + "/K-Manager/html";
 
         int data = 0;
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
 
-        if(bundle != null){
+        if (bundle != null) {
             data = bundle.getInt("value");
         }
         WebView aboutWebView = findViewById(R.id.webViewInfo);
         aboutWebView.setBackgroundColor(Color.WHITE);
-        aboutWebView.setWebViewClient(new WebViewClient(){
+        aboutWebView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
@@ -64,48 +64,28 @@ public class InformationWebViewActivity extends AppCompatActivity {
             }
         });
 
-
-        if (data== 1) {
-
-            aboutWebView.loadUrl("file:///android_asset/html/index.html");
-            //aboutWebView.loadData(styleHtml(this, R.string.general_faq), "text/html", "UTF-8");
-        }else if(data== 2){
-            aboutWebView.loadUrl("file:///anroid_asset/html/qsbg.html");
-            //aboutWebView.loadData(styleHtml(this, R.string.qs_bg), "text/html", "UTF-8");
-        }else if(data == 3) {
-            aboutWebView.loadUrl("file:///android_asset/html/left.html");
-            //aboutWebView.loadData(styleHtml(this, R.string.left_network_indicators), "text/html", "UTF-8");
-        }else if(data == 4){
-            aboutWebView.loadUrl("file:///android_asset/html/otherroms.html");
-            //aboutWebView.loadData(styleHtml(this, R.string.about_other_roms), "text/html", "UTF-8");
-        }else{
-            finish();
-            Intent i = new Intent(this, MainActivity.class);
-            startActivity(i);
+        switch (data) {
+            case 1:
+                aboutWebView.loadUrl("file:///android_asset/html/index.html");
+                break;
+            case 2:
+                aboutWebView.loadUrl("file:///android_asset/html/qsbg.html");
+                break;
+            case 3:
+                aboutWebView.loadUrl("file:///android_asset/html/left.html");
+                break;
+            case 4:
+                aboutWebView.loadUrl("file:///android_asset/html/otherroms.html");
+                break;
+            default:
+                finish();
+                Intent i = new Intent(this, MainActivity.class);
+                startActivity(i);
         }
-
-
     }
 
     public void shortToast (String message){
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    public static String styleHtml(Context context, @StringRes int resourceId) {
-        TypedArray ta = context.obtainStyledAttributes(new int[] {
-                android.R.attr.textColorPrimary,
-                android.R.attr.colorAccent,
-               }
-        );
-        String textColorPrimary = String.format("#%06X", (0xFFFFFF & ta.getColor(0, Color.BLACK)));
-        String accentColor = String.format("#%06X", (0xFFFFFF & ta.getColor(1, Color.CYAN)));
-
-        ta.recycle();
-        String html = context.getString(resourceId);
-        html = html.replaceAll("\\?android:attr/textColorPrimary", textColorPrimary);
-        html = html.replaceAll("\\?android:attr/colorAccent", accentColor);
-
-        return html;
     }
 
     @Override
