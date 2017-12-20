@@ -158,7 +158,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         if(prefUtils.getBool("qsPref")) fileHelper.copyFromAssets(univ, "qsTiles.zip".trim(), tempFolder, context, true);
         if(prefUtils.getBool("iconPref")) fileHelper.copyFromAssets(univ, "colorIcons.zip".trim(), tempFolder, context, true);
         if(prefUtils.getBool("recentsPref")) fileHelper.copyFromAssets(univ, "recents.zip".trim(), tempFolder, context, true);
-        if (prefUtils.getBool("hideStatusbarPref")) fileHelper.copyFromAssets(univ, "hideStatusbar.zip".trim(), tempFolder, context, true);
+        if (prefUtils.getBool(PREF_LOCKSCREEN_STATUSBAR_SIZE)) fileHelper.copyFromAssets(univ, "hideStatusbar.zip".trim(), tempFolder, context, true);
         if (prefUtils.getBool("qsBgPref") && !fileHelper.getOos(romName).equals("OxygenOS"))
             fileHelper.copyFromAssets(univ, "qsBgs.zip", tempFolder, context, true);
         if (prefUtils.getBool("qsTitlePref")) fileHelper.copyFromAssets(univ, "qsTitle.zip", tempFolder, context, true);

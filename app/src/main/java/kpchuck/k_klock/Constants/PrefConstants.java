@@ -18,5 +18,6 @@ public class PrefConstants {
     public static final String PREF_CARRIER_HIDE_NOTIFICATIONS = "hideNotificationIconsEverywhere";
 
     public static final String PREF_STATUSBAR_CLOCK_SIZE = "statusBarClockSizePref";
+    public static final String PREF_LOCKSCREEN_STATUSBAR_SIZE = "hideStatusBarPref";
 
 }

@@ -87,7 +87,7 @@ public class StatusBar_Add_On_Fragment extends Fragment {
         ButterKnife.apply(iconSwitch, ENABLED, prefUtils.getBool("iconPref"));
         ButterKnife.apply(indicatorSwitch, ENABLED, prefUtils.getBool("indicatorPref"));
         ButterKnife.apply(leftSwitch, ENABLED, prefUtils.getBool("moveLeftPref"));
-        ButterKnife.apply(lockSwitch, ENABLED, prefUtils.getBool("hideStatusBarPref"));
+        ButterKnife.apply(lockSwitch, ENABLED, prefUtils.getBool(PREF_LOCKSCREEN_STATUSBAR_SIZE));
         ButterKnife.apply(carrierSwitch, ENABLED, prefUtils.getBool(PREF_CARRIER_TEXT));
         ButterKnife.apply(carrierEveryheckbox, ENABLEDCheckBox, prefUtils.getBool(PREF_CARRIER_EVERYWHERE));
         ButterKnife.apply(hideNotifs, ENABLEDCheckBox, prefUtils.getBool(PREF_CARRIER_HIDE_NOTIFICATIONS));
@@ -165,7 +165,7 @@ public class StatusBar_Add_On_Fragment extends Fragment {
 
         @OnClick(R.id.hideStatusbar)
         public void lockClick(){
-            prefUtils.setSwitchPrefs(lockSwitch, "hideStatusbarPref");
+            prefUtils.setSwitchPrefs(lockSwitch, PREF_LOCKSCREEN_STATUSBAR_SIZE);
 
         }
 
