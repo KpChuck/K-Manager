@@ -23,6 +23,8 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.StringWriter;
 
+import kpchuck.k_klock.Utils.XmlUtils;
+
 /**
  * Created by Karol Przestrzelski on 15/08/2017.
  */
@@ -32,18 +34,21 @@ public class editStatusBar{
 
     Context context;
     OtherRomsHandler handler = new OtherRomsHandler(context);
+    XmlUtils xmlUtils = new XmlUtils();
 
     String slash = "/";
 
     String rootFolder = android.os.Environment.getExternalStorageDirectory() + slash + "K-Klock";
     String xmlFolder = rootFolder + slash + "userInput/";
     String tag = "klock";
+    private boolean hasAttrs = false;
 
 
     String rootApk = rootFolder + slash + "tempF" + "/Rom.zip" + "/assets/overlays/com.android.systemui/";
 
-    public void Execution(Context context){
+    public void Execution(Context context, boolean hasAttrs){
         this.context=context;
+        this.hasAttrs=hasAttrs;
         editCenterNotOnLockscreen();
         editCenterOnLockscreen();
         editLeftNotOnLockscreen();
@@ -58,6 +63,19 @@ public class editStatusBar{
 
     }
 
+    public void fixUpForAttrs(Document document){
+        if (hasAttrs){
+            Element rootElement = document.getDocumentElement();
+            try{
+                rootElement.removeAttribute("xmlns:systemui");
+                rootElement.setAttribute("xmlns:systemui", "http://schemas.android.com/apk/res-auto");
+            }
+            catch (Exception e){
+                Log.d("klock", "Couldn't set res-auto attribute for xmlns:systemui");
+            }
+        }
+    }
+
     public void editRightNotOnLockscreen(){
 
         try {
@@ -65,6 +83,7 @@ public class editStatusBar{
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(new File(xmlFolder + "status_bar.xml"));
             doc = handler.replaceAt(doc);
+            fixUpForAttrs(doc);
 
             Element rootElement = doc.getDocumentElement();
 
@@ -108,6 +127,8 @@ public class editStatusBar{
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
             DOMSource source = new DOMSource(doc);
 
             StreamResult result = new StreamResult(new File(rootApk + "type2_No_Clock_on_Lockscreen_Right/layout/" + "status_bar.xml"));
@@ -126,6 +147,7 @@ public class editStatusBar{
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(new File(xmlFolder + "status_bar.xml"));
             doc = handler.replaceAt(doc);
+            fixUpForAttrs(doc);
 
             Element rootElement = doc.getDocumentElement();
 
@@ -176,7 +198,7 @@ public class editStatusBar{
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(new File(xmlFolder + "status_bar.xml"));
             doc = handler.replaceAt(doc);
-
+            fixUpForAttrs(doc);
 
             Element rootElement = doc.getDocumentElement();
             //Get linear layout where the clock will be inserted before
@@ -270,7 +292,7 @@ public class editStatusBar{
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(new File(xmlFolder + "status_bar.xml"));
             doc = handler.replaceAt(doc);
-
+            fixUpForAttrs(doc);
 
             Element rootElement = doc.getDocumentElement();
 
@@ -333,6 +355,7 @@ public class editStatusBar{
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(new File(xmlFolder + "status_bar.xml"));
             doc = handler.replaceAt(doc);
+            fixUpForAttrs(doc);
 
             Element rootElement = doc.getDocumentElement();
 
@@ -387,6 +410,7 @@ public class editStatusBar{
                 DocumentBuilder db = dbf.newDocumentBuilder();
                 Document doc = db.parse(new File(xmlFolder + "status_bar.xml"));
                 doc = handler.replaceAt(doc);
+                fixUpForAttrs(doc);
 
                 Element rootElement = doc.getDocumentElement();
                 //Get linear layout where the clock will be inserted before
@@ -471,6 +495,7 @@ public class editStatusBar{
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(new File(xmlFolder + "status_bar.xml"));
             doc = handler.replaceAt(doc);
+            fixUpForAttrs(doc);
 
             Element rootElement = doc.getDocumentElement();
 
@@ -529,6 +554,7 @@ public class editStatusBar{
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(new File(xmlFolder + "status_bar.xml"));
             doc = handler.replaceAt(doc);
+            fixUpForAttrs(doc);
 
             Element rootElement = doc.getDocumentElement();
 
@@ -603,6 +629,7 @@ public class editStatusBar{
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(new File(xmlFolder + "status_bar.xml"));
             doc = handler.replaceAt(doc);
+            fixUpForAttrs(doc);
 
 
             Element rootElement = doc.getDocumentElement();
