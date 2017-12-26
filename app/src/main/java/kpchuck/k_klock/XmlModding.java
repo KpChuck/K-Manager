@@ -130,14 +130,10 @@ public class XmlModding {
                 customTextElement = createCustomTextElement(customTextElement);
 
                 // Insert TextView
-                Element firstElement = getFirstChildElement(statusBarContents);
-                Element insertBeforeElement = firstElement;
+                Element insertBeforeElement = getFirstChildElement(statusBarContents);
 
                 statusBarContents.insertBefore(customTextElement, insertBeforeElement);
             }
-
-
-
 
             // Write to file
             TransformerFactory transformerFactory = TransformerFactory.newInstance();

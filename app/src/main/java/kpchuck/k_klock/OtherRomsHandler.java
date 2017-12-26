@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 
+import kpchuck.k_klock.Utils.FileHelper;
 import kpchuck.k_klock.Utils.PrefUtils;
 
 /**
@@ -40,8 +41,9 @@ public class OtherRomsHandler extends AsyncTask<Void,Void, Void>{
     File topF = newFolder(topA.getAbsolutePath() + "/Rom.zip");
     private String xmlFolder = rootFolder + slash + "userInput";
     private String tag = "klock";
+    private boolean hasAttrs = false;
 
-    Context context;
+    private Context context;
     public OtherRomsHandler(Context context){
         this.context=context;
 
@@ -51,8 +53,9 @@ public class OtherRomsHandler extends AsyncTask<Void,Void, Void>{
     protected Void doInBackground(Void... voids){
         try {
             makeMergerFolder();
+            moveAttrsIfPresent();
             new editKeyguard().editKeyguard(context);
-            new editStatusBar().Execution(context);
+            new editStatusBar().Execution(context, hasAttrs);
             writeType2Desc();
 
         }catch (Exception e){
@@ -61,24 +64,24 @@ public class OtherRomsHandler extends AsyncTask<Void,Void, Void>{
         return null;
     }
 
-    @Override
-    protected void onPostExecute(Void result) {
-        super.onPostExecute(result);
-    }
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-
-    }
-
-    @Override
-    protected void onProgressUpdate(Void... values) {
-    }
-
 
     public void shortToast(String message){
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+    }
+
+    public void moveAttrsIfPresent(){
+        File attrs = new File(xmlFolder + "/attrs.xml");
+        if (attrs.exists()){
+            hasAttrs = true;
+            Log.d("klock", "Moving attrs.xml to rom.zip");
+            FileHelper fileHelper = new FileHelper();
+            File a = fileHelper.newFolder(topF + "/assets/overlays/com.android.systemui/res/values");
+            try{
+                FileUtils.copyFileToDirectory(attrs, a);
+            }catch (IOException e){
+                Log.e("klock", e.getMessage());
+            }
+        }
     }
 
     public boolean checkForXmls(){
