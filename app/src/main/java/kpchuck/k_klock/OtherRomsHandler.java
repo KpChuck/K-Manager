@@ -39,7 +39,7 @@ public class OtherRomsHandler extends AsyncTask<Void,Void, Void>{
 
     private String rootFolder = android.os.Environment.getExternalStorageDirectory() + slash + "K-Klock";
     File topA = newFolder(rootFolder + slash + "tempF");
-    File topF = newFolder(topA.getAbsolutePath() + "/Rom.zip");
+    File topF = new File(topA.getAbsolutePath() + "/Rom.zip");
     private String xmlFolder = rootFolder + slash + "userInput";
     private String tag = "klock";
     private boolean hasAttrs = false;
