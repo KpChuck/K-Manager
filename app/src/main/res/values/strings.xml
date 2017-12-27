@@ -105,9 +105,8 @@
     <string name="pref_save_formats">Remember Added Formats</string>
 
 
-    <string name="otherRomsBeta">Other Roms (Beta)</string>
+    <string name="otherRomsBeta">Other Roms</string>
 
-    <string name="version">version 19</string>
     <string name="apkBuilderLoading">Building Apk, Please Wait&#8230;</string>
     <string name="chooseRom">Select your Rom</string>
     <string name="selectRomToast">Please Select Your Rom</string>
@@ -141,5 +140,6 @@
     <string name="settings">Settings</string>
     <string name="updateItem">New Version Available</string>
     <string name="updateDesc">Tap to Install</string>
+    <string name="changelogItem">View Changelog</string>
 
 </resources>
