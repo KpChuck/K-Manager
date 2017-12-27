@@ -2,6 +2,7 @@ package kpchuck.k_klock;
 
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.zeroturnaround.zip.ZipUtil;
@@ -55,7 +56,7 @@ public class OtherRomsHandler extends AsyncTask<Void,Void, Void>{
             makeMergerFolder();
             moveAttrsIfPresent();
             new editKeyguard().editKeyguard(context);
-            new editStatusBar().Execution(context, hasAttrs);
+            new editStatusBar().Execution(context);
             writeType2Desc();
 
         }catch (Exception e){
@@ -80,6 +81,19 @@ public class OtherRomsHandler extends AsyncTask<Void,Void, Void>{
                 FileUtils.copyFileToDirectory(attrs, a);
             }catch (IOException e){
                 Log.e("klock", e.getMessage());
+            }
+        }
+    }
+
+    public void fixUpForAttrs(Document document){
+        if (hasAttrs){
+            Element rootElement = document.getDocumentElement();
+            try{
+                rootElement.removeAttribute("xmlns:systemui");
+                rootElement.setAttribute("xmlns:systemui", "http://schemas.android.com/apk/res-auto");
+            }
+            catch (Exception e){
+                Log.d("klock", "Couldn't set res-auto attribute for xmlns:systemui");
             }
         }
     }

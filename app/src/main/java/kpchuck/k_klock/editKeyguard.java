@@ -56,6 +56,8 @@ public class editKeyguard{
         DocumentBuilder documentBuilder = factory.newDocumentBuilder();
         Document doc = documentBuilder.parse(original);
         doc = handler.replaceAt(doc);
+        handler.fixUpForAttrs(doc);
+
 
         File dest = new File(rootApk + "type2_No_Clock_on_Lockscreen_Right"+ slash + "layout");
         File dest2 = new File(rootApk + "type2_Stock_Clock_Right" + slash + "layout");
@@ -94,6 +96,8 @@ public class editKeyguard{
             Document doc = documentBuilder.parse(new File(xmlFolder  + "keyguard_status_bar.xml"));
             doc.normalizeDocument();
             doc = handler.replaceAt(doc);
+            handler.fixUpForAttrs(doc);
+
 
 
             Element docEl = doc.getDocumentElement();
