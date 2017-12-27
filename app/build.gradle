@@ -37,14 +37,14 @@ android {
         applicationId "kpchuck.k_klock"
         minSdkVersion 24
         targetSdkVersion 27
-        versionCode versionBuild
-        versionName "19"
+        versionCode 1
+        versionName "20"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
             if (versionType.equals("beta")) {
-                outputFileName = "K-Manager-v$versionName.$versionCode-beta.apk"
+                outputFileName = "K-Manager-v$versionName.$versionBuild-beta.apk"
             } else if (versionType.equals("debug")) {
                 outputFileName = "K-Manager-debug" + ".apk"
             } else if (versionType.equals("stable")) {
@@ -94,6 +94,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+
     //Ziputils
     compile "org.zeroturnaround:zt-zip:${1.8}"
     //Commons io

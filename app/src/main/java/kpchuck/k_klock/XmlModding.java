@@ -153,7 +153,8 @@ public class XmlModding {
         File rootRom = new File(layoutPath);
         FileHelper fileHelper = new FileHelper();
         PrefUtils prefUtils = new PrefUtils(context);
-        for (File dir : rootRom.listFiles(fileHelper.DIRECTORY)){addCarrierTextToStatusBar(dir);
+        for (File dir : rootRom.listFiles(fileHelper.DIRECTORY)){
+            addCarrierTextToStatusBar(dir);
             File keyguard = new File(dir.getAbsolutePath() + "/layout/keyguard_status_bar.xml");
             if (keyguard.exists()) {
                 try {

@@ -26,15 +26,19 @@ import java.io.OutputStream;
 
 import kpchuck.k_klock.MainActivity;
 import kpchuck.k_klock.R;
+import kpchuck.k_klock.Utils.PrefUtils;
+
+import static kpchuck.k_klock.Constants.PrefConstants.PREF_BLACK_THEME;
 
 public class InformationWebViewActivity extends AppCompatActivity {
 
-    String slash ="/";
-    String webPath;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_information_web_view);
+        PrefUtils prefUtils = new PrefUtils(getApplicationContext());
+        setTheme(prefUtils.getBool(PREF_BLACK_THEME) ? R.style.AppTheme_Dark : R.style.AppTheme);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

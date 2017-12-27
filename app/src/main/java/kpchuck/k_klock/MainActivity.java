@@ -12,16 +12,19 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
+import android.support.annotation.ColorInt;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -75,6 +78,7 @@ import butterknife.OnTouch;
 import gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner;
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.IStatusListener;
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener;
+
 import kpchuck.k_klock.Activities.InformationWebViewActivity;
 import kpchuck.k_klock.Activities.MyWelcomeActivity;
 import kpchuck.k_klock.Adapters.ColorAdapter;
@@ -113,8 +117,6 @@ public class MainActivity extends AppCompatActivity {
     @BindView (R.id.defaultLayout) ScrollView scrollView;
     @BindView (R.id.spinnerLinearLayout) LinearLayout SpinnerLayout;
 
-
-
     // Call Strings, Arraylists and Classes for later use
     ArrayList<String> roms = new ArrayList<>();
     ArrayList<String> colorsTitles = new ArrayList<>();
@@ -135,8 +137,6 @@ public class MainActivity extends AppCompatActivity {
     PrimaryDrawerItem updateNotif;
     DrawerBuilder builder;
     private boolean spinnerOpen = false;
-    private boolean pressed = false;
-
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -183,16 +183,21 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        this.context = this;
+        this.fileHelper = new FileHelper();
+        this.prefUtils = new PrefUtils(context);
+
         super.onCreate(savedInstanceState);
+
+        setTheme(prefUtils.getBool(PREF_BLACK_THEME) ? R.style.AppTheme_Dark : R.style.AppTheme);
 
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        this.context = getApplicationContext();
-        this.fileHelper = new FileHelper();
-        this.prefUtils = new PrefUtils(getApplicationContext());
+
         LocalBroadcastManager.getInstance(this).registerReceiver(BReceiver, new IntentFilter("message"));
 
         // Ask for Permissions
@@ -227,6 +232,8 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(context, CheckforUpdatesService.class);
         i.putExtra("action", 1);
         context.startService(i);
+
+
 
         fileHelper.newFolder(rootFolder);
         fileHelper.newFolder(rootFolder + "/userInput");
@@ -375,16 +382,18 @@ public class MainActivity extends AppCompatActivity {
 
         drawer = builder.build();
 
+
+
         new CleanupFiles(loadingLayout, loadingTextView).execute();
 
         getArrayForRoms();
-
-
 
         // Initialize the spinner
         final SimpleListAdapter simpleListAdapter = new SimpleListAdapter(this, roms);
         searchableSpinner.setAdapter(simpleListAdapter);
         searchableSpinner.setSelectedItem(prefUtils.getString("selectedRom", getString(R.string.chooseRom)));
+
+
         searchableSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
             public void onItemSelected(View view, int position, long id) {
@@ -416,6 +425,7 @@ public class MainActivity extends AppCompatActivity {
                 spinnerOpen = false;
             }
         });
+
     }
 
     private void notifyOnUpdate(){
@@ -473,7 +483,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (!touchEventInsideEditText(ev))
+        if (touchEventInsideEditText(ev))
             searchableSpinner.hideEdit();
         return super.dispatchTouchEvent(ev);
     }
@@ -482,16 +492,15 @@ public class MainActivity extends AppCompatActivity {
         Rect editTextRect = new Rect();
         SpinnerLayout.getHitRect(editTextRect);
 
-        if (editTextRect.contains((int)event.getX(), (int)event.getY())) {
-            return true;
-        }
-        return false;
+        return  (editTextRect.contains((int)event.getX(), (int)event.getY()));
     }
 
 
     protected void onResume(){
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(BReceiver, new IntentFilter("message"));
+        setTheme(prefUtils.getBool(PREF_BLACK_THEME) ? R.style.AppTheme_Dark : R.style.AppTheme);
+
     }
 
     protected void onPause (){
@@ -553,7 +562,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
 
-            ColorAdapter oneAdapter = new ColorAdapter(getApplicationContext(), finalTitles, values, false, editListener, deleteListener);
+            ColorAdapter oneAdapter = new ColorAdapter(context, finalTitles, values, false, editListener, deleteListener);
             oneLv.setAdapter(oneAdapter);
             oneLv.setVisibility(View.VISIBLE);
 
@@ -576,7 +585,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String> one = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.included_icons_title)));
         ArrayList<String> two = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.included_icons_value)));
 
-        ColorAdapter twoAdapter = new ColorAdapter(getApplicationContext(), one, two, true, null, null);
+        ColorAdapter twoAdapter = new ColorAdapter(context, one, two, true, null, null);
         twoLv.setAdapter(twoAdapter);
         twoTv.setText(getString(R.string.included_colors));
         oneTv.setText(getString(R.string.added_colors));
@@ -672,7 +681,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
 
-            ColorAdapter oneAdapter = new ColorAdapter(getApplicationContext(), finalColorsTitles, colorsValues, false, editListener, deleteListener);
+            ColorAdapter oneAdapter = new ColorAdapter(context, finalColorsTitles, colorsValues, false, editListener, deleteListener);
             oneLv.setAdapter(oneAdapter);
             oneLv.setVisibility(View.VISIBLE);
 
@@ -694,7 +703,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String> one = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.included_colors_title)));
         ArrayList<String> two = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.included_colors_value)));
 
-        ColorAdapter twoAdapter = new ColorAdapter(getApplicationContext(), one, two, true, null, null);
+        ColorAdapter twoAdapter = new ColorAdapter(context, one, two, true, null, null);
         twoLv.setAdapter(twoAdapter);
         twoTv.setText(getString(R.string.included_colors));
         oneTv.setText(getString(R.string.added_colors));
@@ -757,7 +766,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
 
-            FormatAdapter oneAdapter = new FormatAdapter(getApplicationContext(), finalFormatsTitles,  false, editListener, deleteListener);
+            FormatAdapter oneAdapter = new FormatAdapter(context, finalFormatsTitles,  false, editListener, deleteListener);
             oneLv.setAdapter(oneAdapter);
             oneLv.setVisibility(View.VISIBLE);
         }else{
@@ -775,7 +784,7 @@ public class MainActivity extends AppCompatActivity {
 
         ArrayList<String> one = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.included_formats_title)));
 
-        FormatAdapter twoAdapter = new FormatAdapter(getApplicationContext(), one, true, null, null);
+        FormatAdapter twoAdapter = new FormatAdapter(context, one, true, null, null);
         twoLv.setAdapter(twoAdapter);
         twoTv.setText(getString(R.string.included_formats));
         oneTv.setText(getString(R.string.added_formats));
@@ -856,14 +865,14 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void promptTelegram(){
-        if (isPackageInstalled("org.telegram.messenger", getApplicationContext().getPackageManager()) ){
+        if (isPackageInstalled("org.telegram.messenger", context.getPackageManager()) ){
 
             TextAlertDialogFragment fragment = new TextAlertDialogFragment();
             fragment.Instantiate("K-Klock Telegram", getString(R.string.joinTelegram), "OK", "Not Today", new DialogClickListener() {
                 @Override
                 public void onPositiveBtnClick() {
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/kklock"));
-                    getApplicationContext().startActivity(browserIntent);
+                    context.startActivity(browserIntent);
                 }
                 @Override
                 public void onCancelBtnClick() {

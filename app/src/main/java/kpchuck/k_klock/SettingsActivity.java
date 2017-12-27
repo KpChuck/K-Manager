@@ -1,6 +1,6 @@
 package kpchuck.k_klock;
 
-
+import static kpchuck.k_klock.Constants.PrefConstants.*;
 import org.apache.commons.io.FileUtils;
 
 
@@ -9,6 +9,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.graphics.Color;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -18,6 +20,8 @@ import android.os.Environment;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.SwitchPreference;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.preference.PreferenceFragment;
@@ -26,8 +30,11 @@ import android.preference.RingtonePreference;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.support.v4.app.NavUtils;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -41,6 +48,8 @@ import java.util.List;
 
 import kpchuck.k_klock.Utils.PrefUtils;
 
+import static kpchuck.k_klock.Constants.PrefConstants.PREF_BLACK_THEME;
+
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
  * handset devices, settings are presented as a single list. On tablets,
@@ -53,22 +62,50 @@ import kpchuck.k_klock.Utils.PrefUtils;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends AppCompatPreferenceActivity {
-    String prefFile = "prefFileName";
+
+    PrefUtils prefUtils;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+        prefUtils = new PrefUtils(getApplicationContext());
+        setTheme(prefUtils.getBool(PREF_BLACK_THEME) ? R.style.AppTheme_Dark : R.style.AppTheme);
+
+        setupActionBar();
+
+        getListView().setBackgroundColor(Color.TRANSPARENT);
+
+        getListView().setCacheColorHint(Color.TRANSPARENT);
+
+        TypedValue typedValue = new TypedValue();
+        Resources.Theme theme = this.getTheme();
+        theme.resolveAttribute(R.attr.secondaryBackgroundColor, typedValue, true);
+        @ColorInt int color = typedValue.data;
+        getListView().setBackgroundColor(color);
+
         addPreferencesFromResource(R.xml.preferences);
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         final SharedPreferences myPref = PreferenceManager.getDefaultSharedPreferences(this);
+
+        final SwitchPreference changeTheme = (SwitchPreference) findPreference(PREF_BLACK_THEME);
+
+        changeTheme.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object o) {
+                prefUtils.putBool(PREF_BLACK_THEME, !changeTheme.isChecked());
+                finish();
+                startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                return true;
+            }
+        });
 
         Preference deletePref = (Preference) findPreference("deleteSaved");
         deletePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                PrefUtils prefUtils = new PrefUtils(getApplicationContext());
                 String[] list = {"colorsTitles", "colorsValues", "formatsTitles", "formatsValues"};
                 prefUtils.deleteArrayLists(list);
                 shortToast(getString(R.string.cleared_saved));
@@ -111,6 +148,25 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             }
         });
 
+    }
+
+
+    private void setupActionBar() {
+        ViewGroup rootView = (ViewGroup)findViewById(R.id.action_bar_root); //id from appcompat
+
+        if (rootView != null) {
+            View view = getLayoutInflater().inflate(R.layout.app_bar_layout, rootView, false);
+            rootView.addView(view, 0);
+
+            Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+        }
+
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            // Show the Up button in the action bar.
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     public void shortToast(String message){

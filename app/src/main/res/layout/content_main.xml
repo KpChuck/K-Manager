@@ -6,8 +6,7 @@
              android:layout_height="match_parent"
              android:id="@+id/contentMainRootLayout"
              app:layout_behavior="@string/appbar_scrolling_view_behavior"
-             tools:context="kpchuck.k_klock.MainActivity"
-    tools:showIn="@layout/app_bar_main">
+             tools:context="kpchuck.k_klock.MainActivity">
 
     <!-- Default Layout -->
     <ScrollView
@@ -40,12 +39,13 @@
                     android:text="Rom Manager"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
 
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/romHeaderText"
-
                     android:id="@+id/spinnerLinearLayout">
+
                     <gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner
                         android:id="@+id/romSelectionSpinner"
                         android:layout_width="wrap_content"
@@ -54,15 +54,18 @@
                         android:layout_marginStart="12dp"
                         android:layout_marginEnd="12dp"
                         android:layout_marginBottom="16dp"
-                        android:layout_centerHorizontal="true"
-                        app:StartSearchTintColor="#ffffff"
-                        app:DoneSearchTintColor="@color/colorPrimary"
-                        app:RevealViewBackgroundColor="#ffeeeeee"
-                        app:SearchViewBackgroundColor="@android:color/secondary_text_dark"
+                        app:StartSearchTintColor="?textColorInverse"
+                        app:DoneSearchTintColor="?colorPrimary"
+                        app:RevealViewBackgroundColor="?secondaryBackgroundColor"
+                        app:SearchViewBackgroundColor="?secondaryBackgroundColor"
+                        app:SearchViewTextColor="?textColor"
                         app:ShowBorders="true"
+                        app:BoarderColor="?colorPrimary"
                         app:RevealEmptyText="@string/chooseRom"
                         app:SpinnerExpandHeight="400dp"/>
+
                 </LinearLayout>
+
              </RelativeLayout>
 
         </android.support.v7.widget.CardView>
@@ -208,7 +211,7 @@
     <!-- List Views -->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:background="#bf808080"
+        android:background="?transparentBackgroundColor"
         android:id="@+id/listViewLayout"
         android:visibility="gone"
         android:onClick="hideList"
@@ -216,7 +219,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ffeeeeee"
+        android:background="?secondaryBackgroundColor"
         android:layout_margin="60dp"
         android:layout_centerInParent="true"
         android:orientation="vertical"
@@ -224,7 +227,6 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_marginTop="10dp"
-
             android:layout_height="wrap_content">
 
         <TextView
@@ -234,6 +236,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sample Text"
+            android:textColor="?textColor"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"/>
 
             <Button
@@ -242,7 +245,7 @@
                 android:layout_height="30dp"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="10dp"
-                android:backgroundTint="#000000"
+                android:backgroundTint="?textColor"
                 android:background="@android:drawable/ic_input_add"/>
         </RelativeLayout>
 
@@ -260,6 +263,7 @@
             android:layout_width="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
+            android:textColor="?textColor"
 
             android:id="@+id/secondTextView"
             android:text="Sample Text"
@@ -307,6 +311,7 @@
             android:layout_centerInParent="true"
             android:layout_marginTop="10dp"
             android:text="Loading loading loading"
+            android:textColor="?textColor"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large.Inverse"/>
     </RelativeLayout>
 

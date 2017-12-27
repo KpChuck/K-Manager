@@ -11,6 +11,8 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="10dp"
         android:layout_alignParentStart="true"
+        android:singleLine="false"
+        android:textColor="?textColor"
         android:textAppearance="@style/ListViewStyle"/>
 
     <Button

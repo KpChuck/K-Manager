@@ -3,13 +3,16 @@ package kpchuck.k_klock.Adapters;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.support.annotation.ColorInt;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
@@ -18,6 +21,7 @@ import com.amulyakhare.textdrawable.util.ColorGenerator;
 import java.util.ArrayList;
 
 import gr.escsoft.michaelprimez.revealedittext.tools.UITools;
+import gr.escsoft.michaelprimez.searchablespinner.SelectedView;
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.ISpinnerSelectedView;
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener;
 import kpchuck.k_klock.R;
@@ -71,6 +75,12 @@ public class SimpleListAdapter extends BaseAdapter implements Filterable, ISpinn
             TextView dispalyName = (TextView) view.findViewById(R.id.TxtVw_DisplayName);
             letters.setImageDrawable(getTextDrawable(mStrings.get(position-1)));
             dispalyName.setText(mStrings.get(position-1));
+
+            TypedValue typedValue = new TypedValue();
+            Resources.Theme theme = mContext.getTheme();
+            theme.resolveAttribute(R.attr.secondaryBackgroundColor, typedValue, true);
+            @ColorInt int color = typedValue.data;
+            view.setBackgroundColor(color);
         }
         return view;
     }
@@ -86,6 +96,12 @@ public class SimpleListAdapter extends BaseAdapter implements Filterable, ISpinn
             TextView dispalyName = (TextView) view.findViewById(R.id.TxtVw_DisplayName);
             letters.setImageDrawable(getTextDrawable(mStrings.get(position-1)));
             dispalyName.setText(mStrings.get(position-1));
+
+            TypedValue typedValue = new TypedValue();
+            Resources.Theme theme = mContext.getTheme();
+            theme.resolveAttribute(R.attr.secondaryBackgroundColor, typedValue, true);
+            @ColorInt int color = typedValue.data;
+            view.setBackgroundColor(color);
         }
         return view;
     }
@@ -153,4 +169,5 @@ public class SimpleListAdapter extends BaseAdapter implements Filterable, ISpinn
             notifyDataSetChanged();
         }
     }
+
 }

@@ -12,7 +12,7 @@
         android:padding="8dp"
         style="@style/EditTitleText"
         android:id="@+id/title"
-        android:background="#ffeeeeee" />
+        android:background="?secondaryBackgroundColor" />
     <EditText
         android:id="@+id/name"
         android:layout_width="match_parent"

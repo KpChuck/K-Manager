@@ -20,4 +20,7 @@ public class PrefConstants {
     public static final String PREF_STATUSBAR_CLOCK_SIZE = "statusBarClockSizePref";
     public static final String PREF_LOCKSCREEN_STATUSBAR_SIZE = "hideStatusBarPref";
 
+    // Theme Selection
+    public static final String PREF_BLACK_THEME = "chooseredthemewhite";
+
 }

@@ -20,6 +20,7 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="10dp"
         android:layout_toEndOf="@id/colorImage"
+        android:textColor="?textColor"
         android:textAppearance="@style/ListViewStyle"/>
 
     <Button

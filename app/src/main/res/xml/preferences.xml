@@ -9,6 +9,11 @@
             android:defaultValue="true"
             android:title="Install K-Klock Apk's Silently after building"/>
 
+        <SwitchPreference
+            android:key="chooseredthemewhite"
+            android:defaultValue="false"
+            android:title="Set Dark Theme"/>
+
         <Preference
             android:key="deleteSaved"
             android:title="Delete Saved Clock Formats and Colors"/>
