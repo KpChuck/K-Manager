@@ -77,6 +77,8 @@ import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTouch;
+import cat.ereza.customactivityoncrash.activity.DefaultErrorActivity;
+import cat.ereza.customactivityoncrash.config.CaocConfig;
 import gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner;
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.IStatusListener;
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener;
@@ -200,6 +202,14 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Setup Custom Crash Activity
+        CaocConfig.Builder.create()
+                .backgroundMode(CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM) //default: CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM
+                .trackActivities(true) //default: false
+                .restartActivity(MainActivity.class) //default: null (your app's launch activity)
+                .apply();
+
+
         LocalBroadcastManager.getInstance(this).registerReceiver(BReceiver, new IntentFilter("message"));
 
         // Ask for Permissions
@@ -234,8 +244,6 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(context, CheckforUpdatesService.class);
         i.putExtra("action", 1);
         context.startService(i);
-
-
 
         fileHelper.newFolder(rootFolder);
         fileHelper.newFolder(rootFolder + "/userInput");
@@ -322,9 +330,11 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(browserIntent);
                             break;
                         case 2:
-                            Intent i = new Intent(context, SettingsActivity.class);
-                            startActivity(i);
-                            break;
+                            throw new RuntimeException("Boom!");
+
+                            //Intent i = new Intent(context, SettingsActivity.class);
+                           // startActivity(i);
+                           // break;
                         case 3:
                             Intent faq = new Intent(context, InformationWebViewActivity.class);
                             faq.putExtra("value", 1);
