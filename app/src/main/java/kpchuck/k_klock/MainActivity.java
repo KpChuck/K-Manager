@@ -508,6 +508,13 @@ public class MainActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(BReceiver);
     }
 
+    @BindView(R.id.listViewLayout) RelativeLayout bgLayout;
+    @BindView(R.id.firstTextView) TextView oneTv;
+    @BindView(R.id.secondTextView) TextView twoTv;
+    @BindView(R.id.firstListView) ListView oneLv;
+    @BindView(R.id.secondListView) ListView twoLv;
+    @BindView(R.id.addButton) Button button;
+
     private void buildingProcess() {
 
         String[] check = new File(rootFolder).list(fileHelper.APK);
@@ -519,13 +526,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void ShowIncluded(final View view){
-        RelativeLayout bgLayout = findViewById(R.id.listViewLayout);
-        TextView oneTv = findViewById(R.id.firstTextView);
-        TextView twoTv = findViewById(R.id.secondTextView);
-        ListView oneLv = findViewById(R.id.firstListView);
-        ListView twoLv = findViewById(R.id.secondListView);
-        Button button = findViewById(R.id.addButton);
-
 
         final ArrayList<String> titles = prefUtils.loadArray( "iconsTitles");
         final ArrayList<String> values = prefUtils.loadArray("iconsValues");
@@ -589,7 +589,7 @@ public class MainActivity extends AppCompatActivity {
         twoLv.setAdapter(twoAdapter);
         twoTv.setText(getString(R.string.included_colors));
         oneTv.setText(getString(R.string.added_colors));
-        bgLayout.setVisibility(View.VISIBLE);
+        showLayout(bgLayout);
 
     }
 
@@ -638,13 +638,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showIncludedColors(final View v){
-        RelativeLayout bgLayout = (RelativeLayout) findViewById(R.id.listViewLayout);
-        TextView oneTv = (TextView) findViewById(R.id.firstTextView);
-        TextView twoTv = (TextView) findViewById(R.id.secondTextView);
-        ListView oneLv = (ListView) findViewById(R.id.firstListView);
-        ListView twoLv = (ListView) findViewById(R.id.secondListView);
-        Button button = (Button) findViewById(R.id.addButton);
-
 
         colorsTitles = prefUtils.loadArray( "colorsTitles");
         colorsValues = prefUtils.loadArray("colorsValues");
