@@ -57,6 +57,13 @@ public class FormatAdapter extends ArrayAdapter{
 
         text.setText(names.get(position));
 
+        row.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                text.setSelected(!text.isSelected());
+            }
+        });
+
         if(hide){
             delete.setVisibility(View.GONE);
             edit.setVisibility(View.GONE);

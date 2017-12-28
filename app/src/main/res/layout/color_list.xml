@@ -19,6 +19,11 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginStart="10dp"
+        android:singleLine="true"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="1"
+        android:fadingEdge="horizontal"
+        android:scrollHorizontally="true"
         android:layout_toEndOf="@id/colorImage"
         android:textColor="?textColor"
         android:textAppearance="@style/ListViewStyle"/>

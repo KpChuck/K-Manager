@@ -67,6 +67,14 @@ public class ColorAdapter extends ArrayAdapter {
 
         text.setText(names.get(position));
 
+        row.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                text.setSelected(!text.isSelected());
+            }
+        });
+
+
         String color = values.get(position);
         if(color.startsWith("#") && (color.length() == 7 || color.length() == 9)) {
             image.setColorFilter(Color.parseColor(values.get(position)));
