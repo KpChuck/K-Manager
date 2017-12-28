@@ -330,11 +330,9 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(browserIntent);
                             break;
                         case 2:
-                            throw new RuntimeException("Boom!");
-
-                            //Intent i = new Intent(context, SettingsActivity.class);
-                           // startActivity(i);
-                           // break;
+                            Intent i = new Intent(context, SettingsActivity.class);
+                            startActivity(i);
+                            break;
                         case 3:
                             Intent faq = new Intent(context, InformationWebViewActivity.class);
                             faq.putExtra("value", 1);
@@ -388,7 +386,15 @@ public class MainActivity extends AppCompatActivity {
                             new LibsBuilder()
                                     //provide a style (optional) (LIGHT, DARK, LIGHT_DARK_TOOLBAR)
                                     .withActivityStyle(prefUtils.getBool(PREF_BLACK_THEME) ? Libs.ActivityStyle.DARK : Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
-
+                                    .withAboutIconShown(true)
+                                    .withAboutVersionShown(true)
+                                    .withAboutDescription("K-Manager builds the substratum app - K-Klock. <br />\n" +
+                                            "            You can customize your statusbar clock as well as other UI elements in your phone!<br /><br />\n" +
+                                            "\n" +
+                                            "            Special mention <a href=\"https://play.google.com/store/apps/details?id=projekt.substratum&amp;hl=en\">Substratum</a>,\n" +
+                                            "                            <a href=\"https://play.google.com/store/apps/details?id=com.zacharee1.systemuituner&amp;hl=en\">SystemUI Tuner</a>, and\n" +
+                                            "                            <a href=\"https://play.google.com/store/apps/details?id=com.pddstudio.otgsubs&amp;hl=en\">OTG Subs</a>.\n" +
+                                            "            They helped to with learning to use different libraries and making an android app.")
                                     //start the activity
                                     .start(context);
                             break;
