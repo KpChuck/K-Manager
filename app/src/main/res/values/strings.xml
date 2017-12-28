@@ -141,5 +141,19 @@
     <string name="updateItem">New Version Available</string>
     <string name="updateDesc">Tap to Install</string>
     <string name="changelogItem">View Changelog</string>
+    <string name="aboutItem">About</string>
+
+    <!-- Aboutlibraries description -->
+    <string name="aboutLibraries_description_showIcon">true</string>
+    <string name="aboutLibraries_description_showVersion">true</string>
+    <string name="aboutLibraries_description_text">K-Manager builds the substratum app - K-Klock. <br></br>
+            You can customize your statusbar clock as well as other UI elements in your phone!<br></br><br></br>
+
+            Special mention <a href="https://play.google.com/store/apps/details?id=projekt.substratum&amp;hl=en">Substratum</a>,
+                            <a href="https://play.google.com/store/apps/details?id=com.zacharee1.systemuituner&amp;hl=en">SystemUI Tuner</a>, and
+                            <a href="https://play.google.com/store/apps/details?id=com.pddstudio.otgsubs&amp;hl=en">OTG Subs</a>.
+            They helped to with learning to use different libraries and making an android app.
+    </string>
+
 
 </resources>

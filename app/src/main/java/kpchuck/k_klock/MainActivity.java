@@ -54,6 +54,8 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.mikepenz.aboutlibraries.Libs;
+import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -298,7 +300,10 @@ public class MainActivity extends AppCompatActivity {
                             .withIdentifier(7),
                         new SecondaryDrawerItem().withName(R.string.formatsItem)
                             .withLevel(2)
-                            .withIdentifier(8)
+                            .withIdentifier(8),
+                        new SecondaryDrawerItem().withName(R.string.aboutItem)
+                            .withLevel(2)
+                            .withIdentifier(10)
                 );
 
         PrimaryDrawerItem changelogItem = new PrimaryDrawerItem().withIdentifier(9).withName(R.string.changelogItem);
@@ -368,6 +373,14 @@ public class MainActivity extends AppCompatActivity {
                             };
                             dialogFragment.Instantiate("Changelog", changelist, "Thanks", "Okay", dialogClickListener);
                             dialogFragment.show(getSupportFragmentManager(), "klock");
+                            break;
+                        case 10:
+                            new LibsBuilder()
+                                    //provide a style (optional) (LIGHT, DARK, LIGHT_DARK_TOOLBAR)
+                                    .withActivityStyle(prefUtils.getBool(PREF_BLACK_THEME) ? Libs.ActivityStyle.DARK : Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
+
+                                    //start the activity
+                                    .start(context);
                             break;
                         case 99:
                             Intent download= new Intent(context, CheckforUpdatesService.class);
