@@ -141,7 +141,7 @@
     <string name="updateItem">New Version Available</string>
     <string name="updateDesc">Tap to Install</string>
     <string name="changelogItem">View Changelog</string>
-    <string name="aboutItem">About</string>
+    <string name="aboutItem">About &amp; Licenses</string>
 
 
 </resources>

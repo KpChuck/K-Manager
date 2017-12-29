@@ -3,7 +3,6 @@ package kpchuck.k_klock;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.DownloadManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -12,19 +11,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
-import android.support.annotation.ColorInt;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.CardView;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -36,24 +32,20 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
-import android.content.res.AssetManager;
 import java.io.IOException;
 import java.io.File;
 import android.net.Uri;
 import android.content.Intent;
 import android.widget.Toast;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -73,11 +65,8 @@ import java.util.Arrays;
 
 import butterknife.BindString;
 import butterknife.BindView;
-import butterknife.BindViews;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnTouch;
-import cat.ereza.customactivityoncrash.activity.DefaultErrorActivity;
 import cat.ereza.customactivityoncrash.config.CaocConfig;
 import gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner;
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.IStatusListener;
@@ -85,6 +74,7 @@ import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListe
 
 import kpchuck.k_klock.Activities.InformationWebViewActivity;
 import kpchuck.k_klock.Activities.MyWelcomeActivity;
+import kpchuck.k_klock.Activities.SettingsActivity;
 import kpchuck.k_klock.Adapters.ColorAdapter;
 import kpchuck.k_klock.Adapters.FormatAdapter;
 import kpchuck.k_klock.Adapters.SimpleListAdapter;
@@ -308,16 +298,15 @@ public class MainActivity extends AppCompatActivity {
                             .withIdentifier(7),
                         new SecondaryDrawerItem().withName(R.string.formatsItem)
                             .withLevel(2)
-                            .withIdentifier(8),
-                        new SecondaryDrawerItem().withName(R.string.aboutItem)
-                            .withLevel(2)
-                            .withIdentifier(10)
+                            .withIdentifier(8)
                 );
 
         PrimaryDrawerItem changelogItem = new PrimaryDrawerItem().withIdentifier(9).withName(R.string.changelogItem);
 
+        PrimaryDrawerItem aboutItem = new PrimaryDrawerItem().withIdentifier(10).withName(R.string.aboutItem).withIcon(R.drawable.about_24dp);
+
         if (fileHelper.newVersion(context)) builder.addDrawerItems(updateNotif);
-        builder.addDrawerItems(telegramItem, settingsItem, faqsItem, linksItem, changelogItem);
+        builder.addDrawerItems(telegramItem, settingsItem, faqsItem, linksItem, aboutItem, changelogItem);
 
 
         builder.withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
@@ -388,14 +377,13 @@ public class MainActivity extends AppCompatActivity {
                                     .withActivityStyle(prefUtils.getBool(PREF_BLACK_THEME) ? Libs.ActivityStyle.DARK : Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
                                     .withAboutIconShown(true)
                                     .withAboutVersionShown(true)
-                                    .withAboutDescription("K-Manager builds the substratum app - K-Klock. <br />\n" +
-                                            "            You can customize your statusbar clock as well as other UI elements in your phone!<br /><br />\n" +
-                                            "\n" +
-                                            "            Special mention <a href=\"https://play.google.com/store/apps/details?id=projekt.substratum&amp;hl=en\">Substratum</a>,\n" +
-                                            "                            <a href=\"https://play.google.com/store/apps/details?id=com.zacharee1.systemuituner&amp;hl=en\">SystemUI Tuner</a>, and\n" +
-                                            "                            <a href=\"https://play.google.com/store/apps/details?id=com.pddstudio.otgsubs&amp;hl=en\">OTG Subs</a>.\n" +
-                                            "            They helped to with learning to use different libraries and making an android app.")
+                                    .withAboutDescription("K-Manager builds the substratum app - K-Klock. <br />" +
+                                            " You can customize your statusbar clock as well as other UI elements in your phone!<br /><br />" +
+                                            "Github Sources:" +
+                                            "<ul><li><a href=\"http://github.com/KpChuck/K-Manager\">K-Manager</a></li>" +
+                                            "<li><a href=\"http:github.com/KpChuck/K-Klock\">K-Klock</a></li></ul>")
                                     //start the activity
+                                    .withActivityTitle("PlumpAss")
                                     .start(context);
                             break;
                         case 99:
