@@ -383,7 +383,7 @@ public class MainActivity extends AppCompatActivity {
                                             "<ul><li><a href=\"http://github.com/KpChuck/K-Manager\">K-Manager</a></li>" +
                                             "<li><a href=\"http:github.com/KpChuck/K-Klock\">K-Klock</a></li></ul>")
                                     //start the activity
-                                    .withActivityTitle("PlumpAss")
+                                    .withActivityTitle(getString(R.string.app_name))
                                     .start(context);
                             break;
                         case 99:
@@ -396,8 +396,9 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return false;
             }});
-
+        builder.withSelectedItem(99);
         drawer = builder.build();
+
 
 
 
