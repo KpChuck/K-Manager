@@ -40,11 +40,14 @@ public class editKeyguard{
     String rootApk = rootFolder + slash + "tempF" + "/Rom.zip" + "/assets/overlays/com.android.systemui/";
 
     Context context;
-    OtherRomsHandler handler = new OtherRomsHandler(context);
+    private boolean hasAttrs;
+    OtherRomsHandler handler;
 
 
-    public void editKeyguard(Context context){
+    public void editKeyguard(Context context, boolean hasAttrs){
         this.context=context;
+        this.hasAttrs = hasAttrs;
+        handler = new OtherRomsHandler(context, hasAttrs);
         moveOriginal();
         moveEdited();
     }
@@ -56,7 +59,7 @@ public class editKeyguard{
         DocumentBuilder documentBuilder = factory.newDocumentBuilder();
         Document doc = documentBuilder.parse(original);
         doc = handler.replaceAt(doc);
-        handler.fixUpForAttrs(doc);
+        doc = handler.fixUpForAttrs(doc);
 
 
         File dest = new File(rootApk + "type2_No_Clock_on_Lockscreen_Right"+ slash + "layout");
@@ -96,7 +99,7 @@ public class editKeyguard{
             Document doc = documentBuilder.parse(new File(xmlFolder  + "keyguard_status_bar.xml"));
             doc.normalizeDocument();
             doc = handler.replaceAt(doc);
-            handler.fixUpForAttrs(doc);
+            doc = handler.fixUpForAttrs(doc);
 
 
 

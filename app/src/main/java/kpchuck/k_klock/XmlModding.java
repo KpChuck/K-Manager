@@ -410,7 +410,7 @@ public class XmlModding {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(sysicons);
-            replaceStuffInXml(sysicons.getAbsolutePath(), "@", "@*com.android.systemui:");
+            doc = new OtherRomsHandler(context, false).replaceAt(doc);
 
             if (toMinit){
                 Element rootElement = doc.getDocumentElement();

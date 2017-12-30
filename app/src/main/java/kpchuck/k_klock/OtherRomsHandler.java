@@ -45,8 +45,9 @@ public class OtherRomsHandler extends AsyncTask<Void,Void, Void>{
     private boolean hasAttrs = false;
 
     private Context context;
-    public OtherRomsHandler(Context context){
+    public OtherRomsHandler(Context context, boolean hasAttrs){
         this.context=context;
+        this.hasAttrs = hasAttrs;
 
     }
 
@@ -55,8 +56,8 @@ public class OtherRomsHandler extends AsyncTask<Void,Void, Void>{
         try {
             makeMergerFolder();
             moveAttrsIfPresent();
-            new editKeyguard().editKeyguard(context);
-            new editStatusBar().Execution(context);
+            new editKeyguard().editKeyguard(context, hasAttrs);
+            new editStatusBar().Execution(context, hasAttrs);
             writeType2Desc();
 
         }catch (Exception e){
@@ -87,11 +88,11 @@ public class OtherRomsHandler extends AsyncTask<Void,Void, Void>{
 
     public Document fixUpForAttrs(Document document){
         if (hasAttrs){
+            Log.d("klock", "trying to fix up res-auto");
             Element rootElement = document.getDocumentElement();
             try{
                 rootElement.removeAttribute("xmlns:systemui");
                 rootElement.setAttribute("xmlns:systemui", "http://schemas.android.com/apk/res-auto");
-                return document;
             }
             catch (Exception e){
                 Log.d("klock", "Couldn't set res-auto attribute for xmlns:systemui");

@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
         else if(romName.equals(betaString)) {
-            OtherRomsHandler handler = new OtherRomsHandler(getApplicationContext());
+            OtherRomsHandler handler = new OtherRomsHandler(getApplicationContext(), false);
 
             if (handler.checkForXmls()) {
                 handler.execute();

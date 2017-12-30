@@ -31,7 +31,7 @@ public class xmlCreation {
            String start = "<?xml version=\"1.0\" encoding=\"utf-8\"?><resources><color name=\"status_bar_clock_color\">";
             String end = "</color></resources>";
             String fullColorXml = start + colorCode + end;
-            OtherRomsHandler handler = new OtherRomsHandler(context);
+            OtherRomsHandler handler = new OtherRomsHandler(context, false);
 
             Document doc = handler.stringToDom(fullColorXml);
 
@@ -62,7 +62,7 @@ public class xmlCreation {
             String end = " </string></resources>";
             String fullXmlString = start + formatCode + middle + formatCode + end;
 
-            OtherRomsHandler handler = new OtherRomsHandler(context);
+            OtherRomsHandler handler = new OtherRomsHandler(context, false);
             Document doc = handler.stringToDom(fullXmlString);
 
             String slash = "/";
@@ -93,7 +93,7 @@ public class xmlCreation {
         String fullXml = start + color + middle + color + end;
 
         try{
-            OtherRomsHandler handler = new OtherRomsHandler(context);
+            OtherRomsHandler handler = new OtherRomsHandler(context, false);
             Document doc = handler.stringToDom(fullXml);
 
             String slash = "/";

@@ -33,7 +33,8 @@ public class editStatusBar{
 
 
     Context context;
-    OtherRomsHandler handler = new OtherRomsHandler(context);
+    boolean hasAttrs;
+    OtherRomsHandler handler;
     XmlUtils xmlUtils = new XmlUtils();
 
     String slash = "/";
@@ -45,8 +46,10 @@ public class editStatusBar{
 
     String rootApk = rootFolder + slash + "tempF" + "/Rom.zip" + "/assets/overlays/com.android.systemui/";
 
-    public void Execution(Context context){
+    public void Execution(Context context, boolean hasAttrs){
         this.context=context;
+        this.hasAttrs=hasAttrs;
+        handler = new OtherRomsHandler(context, hasAttrs);
         editCenterNotOnLockscreen();
         editCenterOnLockscreen();
         editLeftNotOnLockscreen();
@@ -69,7 +72,7 @@ public class editStatusBar{
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(new File(xmlFolder + "status_bar.xml"));
             doc = handler.replaceAt(doc);
-            handler.fixUpForAttrs(doc);
+            doc = handler.fixUpForAttrs(doc);
 
             Element rootElement = doc.getDocumentElement();
 
@@ -133,7 +136,7 @@ public class editStatusBar{
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(new File(xmlFolder + "status_bar.xml"));
             doc = handler.replaceAt(doc);
-            handler.fixUpForAttrs(doc);
+            doc = handler.fixUpForAttrs(doc);
 
             Element rootElement = doc.getDocumentElement();
 
@@ -184,7 +187,7 @@ public class editStatusBar{
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(new File(xmlFolder + "status_bar.xml"));
             doc = handler.replaceAt(doc);
-            handler.fixUpForAttrs(doc);
+            doc = handler.fixUpForAttrs(doc);
 
             Element rootElement = doc.getDocumentElement();
             //Get linear layout where the clock will be inserted before
@@ -278,7 +281,7 @@ public class editStatusBar{
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(new File(xmlFolder + "status_bar.xml"));
             doc = handler.replaceAt(doc);
-            handler.fixUpForAttrs(doc);
+            doc = handler.fixUpForAttrs(doc);
 
             Element rootElement = doc.getDocumentElement();
 
@@ -341,7 +344,7 @@ public class editStatusBar{
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(new File(xmlFolder + "status_bar.xml"));
             doc = handler.replaceAt(doc);
-            handler.fixUpForAttrs(doc);
+            doc = handler.fixUpForAttrs(doc);
 
             Element rootElement = doc.getDocumentElement();
 
@@ -396,7 +399,7 @@ public class editStatusBar{
                 DocumentBuilder db = dbf.newDocumentBuilder();
                 Document doc = db.parse(new File(xmlFolder + "status_bar.xml"));
                 doc = handler.replaceAt(doc);
-                handler.fixUpForAttrs(doc);
+                doc = handler.fixUpForAttrs(doc);
 
                 Element rootElement = doc.getDocumentElement();
                 //Get linear layout where the clock will be inserted before
@@ -481,7 +484,7 @@ public class editStatusBar{
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(new File(xmlFolder + "status_bar.xml"));
             doc = handler.replaceAt(doc);
-            handler.fixUpForAttrs(doc);
+            doc = handler.fixUpForAttrs(doc);
 
             Element rootElement = doc.getDocumentElement();
 
@@ -540,7 +543,7 @@ public class editStatusBar{
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(new File(xmlFolder + "status_bar.xml"));
             doc = handler.replaceAt(doc);
-            handler.fixUpForAttrs(doc);
+            doc = handler.fixUpForAttrs(doc);
 
             Element rootElement = doc.getDocumentElement();
 
@@ -615,7 +618,7 @@ public class editStatusBar{
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(new File(xmlFolder + "status_bar.xml"));
             doc = handler.replaceAt(doc);
-            handler.fixUpForAttrs(doc);
+            doc = handler.fixUpForAttrs(doc);
 
 
             Element rootElement = doc.getDocumentElement();
