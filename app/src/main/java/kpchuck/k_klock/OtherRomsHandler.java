@@ -73,7 +73,7 @@ public class OtherRomsHandler extends AsyncTask<Void,Void, Void>{
     public void moveAttrsIfPresent(){
         File attrs = new File(xmlFolder + "/attrs.xml");
         if (attrs.exists()){
-            hasAttrs = true;
+            this.hasAttrs = true;
             Log.d("klock", "Moving attrs.xml to rom.zip");
             FileHelper fileHelper = new FileHelper();
             File a = fileHelper.newFolder(topF + "/assets/overlays/com.android.systemui/res/values");
@@ -85,17 +85,19 @@ public class OtherRomsHandler extends AsyncTask<Void,Void, Void>{
         }
     }
 
-    public void fixUpForAttrs(Document document){
+    public Document fixUpForAttrs(Document document){
         if (hasAttrs){
             Element rootElement = document.getDocumentElement();
             try{
                 rootElement.removeAttribute("xmlns:systemui");
                 rootElement.setAttribute("xmlns:systemui", "http://schemas.android.com/apk/res-auto");
+                return document;
             }
             catch (Exception e){
                 Log.d("klock", "Couldn't set res-auto attribute for xmlns:systemui");
             }
         }
+        return document;
     }
 
     public boolean checkForXmls(){
