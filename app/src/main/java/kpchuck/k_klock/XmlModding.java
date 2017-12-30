@@ -410,6 +410,7 @@ public class XmlModding {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document doc = db.parse(sysicons);
+            replaceStuffInXml(sysicons.getAbsolutePath(), "@", "@*com.android.systemui:");
 
             if (toMinit){
                 Element rootElement = doc.getDocumentElement();
@@ -444,7 +445,6 @@ public class XmlModding {
             StreamResult result = new StreamResult(new FileOutputStream(sysicons));
             transformer.transform(source, result);
 
-            replaceStuffInXml(sysicons.getAbsolutePath(), "@", "@*com.android.systemui:");
         }catch (Exception e){
             Log.e("klock", e.getMessage());
 
