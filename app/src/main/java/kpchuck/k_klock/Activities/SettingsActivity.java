@@ -1,51 +1,35 @@
-package kpchuck.k_klock;
+package kpchuck.k_klock.Activities;
 
-import static kpchuck.k_klock.Constants.PrefConstants.*;
 import org.apache.commons.io.FileUtils;
 
 
-import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.SwitchPreference;
 import android.support.annotation.ColorInt;
-import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
-import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.MenuItem;
-import android.support.v4.app.NavUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.List;
 
+import kpchuck.k_klock.AppCompatPreferenceActivity;
+import kpchuck.k_klock.MainActivity;
+import kpchuck.k_klock.R;
 import kpchuck.k_klock.Utils.PrefUtils;
 
 import static kpchuck.k_klock.Constants.PrefConstants.PREF_BLACK_THEME;
