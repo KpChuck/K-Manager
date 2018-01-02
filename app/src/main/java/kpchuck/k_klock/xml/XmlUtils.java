@@ -165,27 +165,28 @@ public class XmlUtils {
         }
     }
 
-    boolean hasAttrs = false;
     String pathToMerger = Environment.getExternalStorageDirectory() + "/K-Klock/tempF";
 
-    public void moveAttrsIfPresent(String xmlFolder){
+    public boolean moveAttrsIfPresent(String xmlFolder){
         File attrs = new File(xmlFolder + "/attrs.xml");
         if (attrs.exists()){
-            this.hasAttrs = true;
             Log.d("klock", "Moving attrs.xml to rom.zip");
             FileHelper fileHelper = new FileHelper();
             fileHelper.newFolder(pathToMerger + "/Rom.zip/assets/overlays/com.android.systemui/res/");
             fileHelper.newFolder(pathToMerger + "/Rom.zip/assets/overlays/com.android.systemui/res/values");
             File a = fileHelper.newFolder(pathToMerger + "/Rom.zip/assets/overlays/com.android.systemui/res/values");
+
             try{
                 FileUtils.copyFileToDirectory(attrs, a);
             }catch (IOException e){
                 Log.e("klock", e.getMessage());
             }
+            return true;
         }
+        return false;
     }
 
-    public Document fixUpForAttrs(Document document){
+    public Document fixUpForAttrs(Document document, boolean hasAttrs){
         if (hasAttrs){
             Log.d("klock", "trying to fix up res-auto");
             Element rootElement = document.getDocumentElement();

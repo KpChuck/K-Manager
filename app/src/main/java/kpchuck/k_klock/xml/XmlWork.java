@@ -43,6 +43,7 @@ public class XmlWork {
     private String keyguardx = "keyguard_status_bar.xml";
     private String statusbar = "status_bar.xml";
     private String systemicons = "system_icons.xml";
+    private boolean hasAttrs = false;
 
     public XmlWork(Context context, String srcFolder, boolean removeClock, boolean makeDynamic){
 
@@ -56,7 +57,7 @@ public class XmlWork {
 
         // Start Modding
         makeFolders();
-        utils.moveAttrsIfPresent(srcFolder);
+        this.hasAttrs = utils.moveAttrsIfPresent(this.srcFolder);
         modController();
 
     }
@@ -73,7 +74,7 @@ public class XmlWork {
         if (prefUtils.getBool(PREF_CARRIER_TEXT) && !prefUtils.getBool(PREF_CARRIER_EVERYWHERE)) {
             keyguard = addCustomTextToLockscreen(keyguard, hideCarrierText(keyguard));
         }
-        keyguard = utils.fixUpForAttrs(keyguard);
+        keyguard = utils.fixUpForAttrs(keyguard, hasAttrs);
 
         String[] modPlaces = {"type2_No_Clock_on_Lockscreen_Right", "type2_Dynamic_Clock_Right", "type2_Stock_Clock_Right"};
         // Write unmodified keyguard
@@ -302,7 +303,7 @@ public class XmlWork {
     private Document setupStatusBar() {
         Document status = getDocument(new File(srcFolder + "/" + statusbar));
         status = utils.replaceAt(status);
-        status = utils.fixUpForAttrs(status);
+        status = utils.fixUpForAttrs(status, hasAttrs);
 
         if (prefUtils.getBool(PREF_MOVE_LEFT)){
             status = moveLeft(status);
