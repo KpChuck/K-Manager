@@ -20,6 +20,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import kpchuck.k_klock.R;
 import kpchuck.k_klock.utils.FileHelper;
 import kpchuck.k_klock.utils.PrefUtils;
 import static kpchuck.k_klock.constants.PrefConstants.*;
@@ -76,13 +77,18 @@ public class XmlWork {
         }
         keyguard = utils.fixUpForAttrs(keyguard, hasAttrs);
 
+        Element carrierText = utils.findElementInDoc(keyguard, "com.android.keyguard.CarrierText",
+                "@*com.android.systemui:id/keyguard_carrier_text");
+        carrierText = utils.changeAttribute(carrierText, "android:textColor", "#ffffffff");
+
         String[] modPlaces = {"type2_No_Clock_on_Lockscreen_Right", "type2_Dynamic_Clock_Right", "type2_Stock_Clock_Right"};
         // Write unmodified keyguard
         for (String s: modPlaces){
             writeDocToFile(keyguard, new File(baseFolders, s + "/layout/keyguard_status_bar.xml"));
         }
         // Write modified keyguard
-        Element superContainer = utils.findElementInDoc(keyguard, "LinearLayout", "@*com.android.systemui:id/system_icons_super_container");
+        Element superContainer = utils.findElementInDoc(keyguard, "LinearLayout",
+                "@*com.android.systemui:id/system_icons_super_container");
         superContainer = utils.changeAttribute(superContainer, X_LAYOUT_WIDTH, "0dip");
         superContainer.setAttribute("android:visibility", "gone");
         if (!leaveResBlank()) writeDocToFile(keyguard, new File(baseFolders, "res/layout/" + keyguardx));
