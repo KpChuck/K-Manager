@@ -331,6 +331,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         try{
             FileUtils.deleteDirectory(tempFolder);
             FileUtils.deleteDirectory(mergerFolder);
+            FileUtils.deleteDirectory(new File(rootFolder + "/customInput"));
         }catch (IOException e){
             Log.e("klock", e.getMessage());
         }

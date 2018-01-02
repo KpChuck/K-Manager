@@ -77,16 +77,19 @@ public class XmlWork {
 
         String[] modPlaces = {"type2_No_Clock_on_Lockscreen_Right", "type2_Dynamic_Clock_Right", "type2_Stock_Clock_Right"};
         // Write unmodified keyguard
+        for (String s: modPlaces){
+            writeDocToFile(keyguard, new File(baseFolders, s + "/layout/keyguard_status_bar.xml"));
+        }
+        // Write modified keyguard
+        Element superContainer = utils.findElementInDoc(keyguard, "LinearLayout", "@*com.android.systemui:id/system_icons_super_container");
+        superContainer = utils.changeAttribute(superContainer, X_LAYOUT_WIDTH, "0dip");
+        superContainer.setAttribute("android:visibility", "gone");
         if (!leaveResBlank()) writeDocToFile(keyguard, new File(baseFolders, "res/layout/" + keyguardx));
         else {
             for (File file : folders){
                 if (!Arrays.asList(modPlaces).contains(file.getName()) && !file.getName().equals("res"))
                     writeDocToFile(keyguard, new File(file, "layout/" + keyguardx));
             }
-        }
-        // Write modified keyguard
-        for (String s: modPlaces){
-            writeDocToFile(keyguard, new File(baseFolders, s + "/layout/keyguard_status_bar.xml"));
         }
 
         // Continue with System_icons
@@ -104,7 +107,7 @@ public class XmlWork {
 
             fileHelper.newFolder(baseFolders, "res/");
             File lay = fileHelper.newFolder(baseFolders, "/res/layout");
-            writeDocToFile(sysicons, lay);
+            writeDocToFile(sysicons, new File(lay, systemicons));
         }
 
         // Finish with status_bar
@@ -246,7 +249,8 @@ public class XmlWork {
 
 
 
-        utils.writeType2Desc(leaveResBlank() ? "Clock Style (Default NONE)" : "Clock Style (Default Clock on Lockscreen Center", baseFolders.getAbsolutePath());
+        utils.writeType2Desc(leaveResBlank() ? "Clock Style (Default NONE)" : "Clock Style (Default Clock on Lockscreen Center",
+                baseFolders.getAbsolutePath() + "/type2");
 
     }
 
