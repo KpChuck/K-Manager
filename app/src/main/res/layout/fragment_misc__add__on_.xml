@@ -1,7 +1,7 @@
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="kpchuck.k_klock.Fragments.Misc_Add_On_Fragment"
+    tools:context="kpchuck.k_klock.fragments.Misc_Add_On_Fragment"
     android:id="@+id/miscAddOnFragmentView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"

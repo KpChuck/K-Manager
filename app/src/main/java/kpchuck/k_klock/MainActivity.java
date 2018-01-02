@@ -72,21 +72,23 @@ import gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner;
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.IStatusListener;
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener;
 
-import kpchuck.k_klock.Activities.InformationWebViewActivity;
-import kpchuck.k_klock.Activities.MyWelcomeActivity;
-import kpchuck.k_klock.Activities.SettingsActivity;
-import kpchuck.k_klock.Adapters.ColorAdapter;
-import kpchuck.k_klock.Adapters.FormatAdapter;
-import kpchuck.k_klock.Adapters.SimpleListAdapter;
-import kpchuck.k_klock.Fragments.InputAlertDialogFragment;
-import kpchuck.k_klock.Fragments.TextAlertDialogFragment;
-import kpchuck.k_klock.Interfaces.BtnClickListener;
-import kpchuck.k_klock.Interfaces.DialogClickListener;
-import kpchuck.k_klock.Services.CheckforUpdatesService;
-import kpchuck.k_klock.Utils.ApkBuilder;
-import kpchuck.k_klock.Utils.FileHelper;
-import kpchuck.k_klock.Utils.PrefUtils;
-import static kpchuck.k_klock.Constants.PrefConstants.*;
+import kpchuck.k_klock.activities.InformationWebViewActivity;
+import kpchuck.k_klock.activities.MyWelcomeActivity;
+import kpchuck.k_klock.activities.SettingsActivity;
+import kpchuck.k_klock.adapters.ColorAdapter;
+import kpchuck.k_klock.adapters.FormatAdapter;
+import kpchuck.k_klock.adapters.SimpleListAdapter;
+import kpchuck.k_klock.fragments.InputAlertDialogFragment;
+import kpchuck.k_klock.fragments.TextAlertDialogFragment;
+import kpchuck.k_klock.interfaces.BtnClickListener;
+import kpchuck.k_klock.interfaces.DialogClickListener;
+import kpchuck.k_klock.services.CheckforUpdatesService;
+import kpchuck.k_klock.utils.ApkBuilder;
+import kpchuck.k_klock.utils.FileHelper;
+import kpchuck.k_klock.utils.PrefUtils;
+import kpchuck.k_klock.xml.OtherRomsHandler;
+
+import static kpchuck.k_klock.constants.PrefConstants.*;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -148,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.fab)
     public void startBuilding() {
+        OtherRomsHandler handler = new OtherRomsHandler(getApplicationContext(), false);
 
         if (prefUtils.getBool("gsBgPref") && !fileHelper.checkQsFile(prefUtils)) return;
 
@@ -156,10 +159,10 @@ public class MainActivity extends AppCompatActivity {
             shortToast(getResources().getString(R.string.selectRomToast));
 
         }
-        else if(romName.equals(betaString)) {
-            OtherRomsHandler handler = new OtherRomsHandler(getApplicationContext(), false);
 
-            if (handler.checkForXmls()) {
+        else if(romName.equals(betaString) && !handler.checkForXmls()) {
+
+           /* if (handler.checkForXmls()) {
                 handler.execute();
                 buildingProcess();
             }
@@ -167,10 +170,13 @@ public class MainActivity extends AppCompatActivity {
                 Intent i = new Intent(getApplicationContext(), InformationWebViewActivity.class);
                 i.putExtra("value", 4);
                 startActivity(i);
-            }
+            }*/
+                Intent i = new Intent(getApplicationContext(), InformationWebViewActivity.class);
+                i.putExtra("value", 4);
+                startActivity(i);
         }
 
-        else if(!romName.equals("") || !romName.equals(betaString)) {
+        else if(!romName.equals("")) {
             buildingProcess();
         }
     }

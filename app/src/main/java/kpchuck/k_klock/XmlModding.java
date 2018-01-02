@@ -32,11 +32,12 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 
-import kpchuck.k_klock.Constants.PrefConstants;
-import kpchuck.k_klock.Utils.FileHelper;
-import kpchuck.k_klock.Utils.PrefUtils;
-import static kpchuck.k_klock.Constants.PrefConstants.*;
-import static kpchuck.k_klock.Constants.XmlConstants.*;
+import kpchuck.k_klock.utils.FileHelper;
+import kpchuck.k_klock.utils.PrefUtils;
+import kpchuck.k_klock.xml.OtherRomsHandler;
+
+import static kpchuck.k_klock.constants.PrefConstants.*;
+import static kpchuck.k_klock.constants.XmlConstants.*;
 
 /**
  * Created by Karol Przestrzelski on 04/09/2017.

@@ -192,14 +192,14 @@
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
         android:layout_marginTop="12dp"
-        class="kpchuck.k_klock.Fragments.StatusBar_Add_On_Fragment"/>
+        class="kpchuck.k_klock.fragments.StatusBar_Add_On_Fragment"/>
 
     <fragment
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/miscAddOnFragment"
         android:layout_below="@id/statusBarAddOnFragment"
-        class="kpchuck.k_klock.Fragments.Misc_Add_On_Fragment"
+        class="kpchuck.k_klock.fragments.Misc_Add_On_Fragment"
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
         android:layout_marginBottom="300dp"

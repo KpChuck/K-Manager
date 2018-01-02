@@ -25,7 +25,7 @@
         </activity>
 
         <activity
-            android:name=".Activities.SettingsActivity"
+            android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:theme="@style/AppTheme"
             android:parentActivityName=".MainActivity" />
@@ -41,7 +41,7 @@
         </provider>
 
         <service
-            android:name=".Services.QuickSettingsService"
+            android:name=".services.QuickSettingsService"
             android:icon="@android:drawable/ic_menu_revert"
             android:label="Restart SystemUI"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
@@ -51,14 +51,14 @@
         </service>
 
         <service
-            android:name=".Services.CheckforUpdatesService"
+            android:name=".services.CheckforUpdatesService"
             android:icon="@android:drawable/arrow_up_float"
             android:label="Check for Updates Service"
             >
         </service>
 
         <activity
-            android:name=".Activities.InformationWebViewActivity"
+            android:name=".activities.InformationWebViewActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:parentActivityName=".MainActivity">
@@ -68,7 +68,7 @@
         </activity>
 
 
-        <activity android:name=".Activities.MyWelcomeActivity"
+        <activity android:name=".activities.MyWelcomeActivity"
             android:theme="@style/WelcomeScreenTheme"/>
         <activity
             android:name="cat.ereza.customactivityoncrash.activity.DefaultErrorActivity"

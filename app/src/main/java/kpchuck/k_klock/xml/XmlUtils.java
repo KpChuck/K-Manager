@@ -1,0 +1,204 @@
+package kpchuck.k_klock.xml;
+
+import android.os.Environment;
+import android.util.Log;
+
+import org.apache.commons.io.FileUtils;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.ArrayList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import kpchuck.k_klock.utils.FileHelper;
+
+import static kpchuck.k_klock.constants.XmlConstants.*;
+
+/**
+ * Created by karol on 26/12/17.
+ */
+
+public class XmlUtils {
+
+    public Element getFirstChildElement(Node parent) {
+        Element myElement = null;
+        NodeList childs = parent.getChildNodes();
+        for (int i = 0; i < childs.getLength(); i++) {
+            Node child = childs.item(i);
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                myElement = (Element) child;
+                break;
+            }else {
+                myElement = null;
+            }
+        }
+        return myElement;
+    }
+
+    public Element findElementInDoc(Document doc, String layoutTag, String idName){
+
+        Element myElement = null;
+
+        Element rootElement = doc.getDocumentElement();
+        if (isTheElement(rootElement, layoutTag, idName)) return rootElement;
+
+        myElement = getElementById(rootElement, layoutTag, idName);
+        if (myElement != null) return myElement;
+
+        return null;
+    }
+
+    private boolean isTheElement(Element element, String layoutTag, String idName){
+        return isTheElement(element, layoutTag, idName, X_ID);
+    }
+
+    private boolean isTheElement(Element element, String layoutTag, String idName, String attributeName){
+        if (!element.getTagName().equals(layoutTag)) return false;
+
+        Attr attr = element.getAttributeNode(attributeName);
+        if (attr.getValue().equals(idName))return true;
+        else return false;
+    }
+
+    public Element changeAttribute(Element element, String attribute, String value){
+        element.removeAttribute(attribute);
+        element.setAttribute(attribute, value);
+        return element;
+    }
+
+    private ArrayList<Element> getChildElements(Element element){
+
+        ArrayList<Element> elements = new ArrayList<>();
+
+        NodeList childs = element.getChildNodes();
+        for (int i = 0; i < childs.getLength(); i++) {
+            Node child = childs.item(i);
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                Element childElement = (Element) child;
+                elements.add(childElement);
+            }
+        }
+
+        return elements;
+
+    }
+
+    public Element getElementById (Element parentElement, String layoutTag, String idName){
+
+        return getElementByAttribute(parentElement, layoutTag, "android:id", idName);
+
+    }
+
+    public Element getElementByAttribute (Element parentElement, String layoutTag, String attributeName, String idName){
+
+        NodeList list = parentElement.getElementsByTagName(layoutTag);
+        Element layout = null;
+        for (int i=0; i<list.getLength(); i++){
+            layout = (Element) list.item(i);
+            Attr attr = layout.getAttributeNode(attributeName);
+            if (attr.getValue().equals(idName)) break;
+            else layout = null;
+        }
+        if (layout == null){
+            Log.e("klock", "Layout is equal to null" + layoutTag);
+            return null;
+        }
+        return layout;
+
+    }
+
+    public Document replaceAt(Document doc){
+        return replaceStuffInXml(doc, "@", "@*com.android.systemui:");
+    }
+
+    public Document replaceStuffInXml(Document doc, String old, String news){
+        try {
+            TransformerFactory tf = TransformerFactory.newInstance();
+            Transformer transformer = tf.newTransformer();
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            StringWriter writer = new StringWriter();
+            transformer.transform(new DOMSource(doc), new StreamResult(writer));
+            String output = writer.getBuffer().toString();
+            output = output.replace(old, news);
+            doc = stringToDom(output);
+            doc.normalizeDocument();
+
+
+        }catch (Exception e){Log.e("klock", e.getMessage());
+
+        }
+        return doc;
+    }
+
+    public static Document stringToDom(String xmlSource)
+            throws SAXException, ParserConfigurationException, IOException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        return builder.parse(new InputSource(new StringReader(xmlSource)));
+    }
+
+    public void writeType2Desc(String desc, String path){
+        File file = new File(path);
+      //  String data = "Clock Style (Clock on Lockscreen Center";
+        try {
+            FileUtils.writeStringToFile(file, desc, "utf-8", false);
+        }catch (IOException e){
+            Log.e("klock", e.getMessage());
+        }
+    }
+
+    boolean hasAttrs = false;
+    String pathToMerger = Environment.getExternalStorageDirectory() + "/K-Klock/tempF";
+
+    public void moveAttrsIfPresent(String xmlFolder){
+        File attrs = new File(xmlFolder + "/attrs.xml");
+        if (attrs.exists()){
+            this.hasAttrs = true;
+            Log.d("klock", "Moving attrs.xml to rom.zip");
+            FileHelper fileHelper = new FileHelper();
+            fileHelper.newFolder(pathToMerger + "/Rom.zip/assets/overlays/com.android.systemui/res/");
+            fileHelper.newFolder(pathToMerger + "/Rom.zip/assets/overlays/com.android.systemui/res/values");
+            File a = fileHelper.newFolder(pathToMerger + "/Rom.zip/assets/overlays/com.android.systemui/res/values");
+            try{
+                FileUtils.copyFileToDirectory(attrs, a);
+            }catch (IOException e){
+                Log.e("klock", e.getMessage());
+            }
+        }
+    }
+
+    public Document fixUpForAttrs(Document document){
+        if (hasAttrs){
+            Log.d("klock", "trying to fix up res-auto");
+            Element rootElement = document.getDocumentElement();
+            try{
+                rootElement.removeAttribute("xmlns:systemui");
+                rootElement.setAttribute("xmlns:systemui", "http://schemas.android.com/apk/res-auto");
+            }
+            catch (Exception e){
+                Log.d("klock", "Couldn't set res-auto attribute for xmlns:systemui");
+            }
+        }
+        return document;
+    }
+
+
+}

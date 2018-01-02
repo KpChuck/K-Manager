@@ -17,13 +17,12 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import android.content.Context;
-import android.os.Environment;
 import android.util.Log;
-import android.widget.Toast;
-import java.io.File;
-import java.io.StringWriter;
 
-import kpchuck.k_klock.Utils.XmlUtils;
+import java.io.File;
+
+import kpchuck.k_klock.xml.OtherRomsHandler;
+import kpchuck.k_klock.xml.XmlUtils;
 
 /**
  * Created by Karol Przestrzelski on 15/08/2017.

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <string-array name="dynamic_clocks">
+
+        <item>JDC Nougat</item>
+        <item>Omni Nougat</item>
+        <item>OxygenOS Nougat</item>
+        <item>Paranoid Android</item>
+        <item>Slim</item>
+
+
+    </string-array>
+
+    <string-array name="hide_clock">
+
+        <item>JDC Nougat</item>
+        <item>LineageOS Nougat</item>
+        <item>Liquid Remix Oreo</item>
+        <item>NitrogenOS Oreo</item>
+        <item>Omni Oreo</item>
+        <item>OxygenOS Nougat</item>
+        <item>OxygenOS Oreo</item>
+        <item>Paranoid Android</item>
+        <item>Pure Fusion OS</item>
+        <item>Slim</item>
+        <item>Validus Oreo</item>
+
+    </string-array>
+
+
+</resources>
