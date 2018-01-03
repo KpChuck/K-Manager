@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!--
+        Add your Rom name here if the Dynamic Clock option works.
+        It usually only works on Nougat roms that aren't based off LineageOS
 
+    -->
     <string-array name="dynamic_clocks">
 
         <item>JDC Nougat</item>
@@ -12,6 +16,11 @@
 
 
     </string-array>
+
+    <!--
+        Add your Rom name here to hide the stock clock in Substratum
+        This works on most Roms
+    -->
 
     <string-array name="hide_clock">
 
