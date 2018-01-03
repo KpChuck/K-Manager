@@ -24,4 +24,33 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="Developer Options"
+        >
+
+        <SwitchPreference
+            android:key="devOptionsEnabled"
+            android:defaultValue="false"
+            android:title="Enable Dev Options for Other Roms"
+            android:summary="These options may lead to your phone not booting.
+                            Only enable these if you know how to escape a substratum bootloop."/>
+
+        <SwitchPreference
+            android:key="devHideStockClock"
+            android:defaultValue="false"
+            android:title="Hide the Stock Clock"
+            android:dependency="devOptionsEnabled"/>
+
+        <SwitchPreference
+            android:key="devMakeDynamicClock"
+            android:defaultValue="false"
+            android:title="Create a Dynamic Clock"
+            android:summary="This only works on some Nougat Roms"
+            android:dependency="devOptionsEnabled"/>
+
+
+
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

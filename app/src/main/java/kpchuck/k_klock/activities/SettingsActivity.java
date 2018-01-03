@@ -32,7 +32,7 @@ import kpchuck.k_klock.MainActivity;
 import kpchuck.k_klock.R;
 import kpchuck.k_klock.utils.PrefUtils;
 
-import static kpchuck.k_klock.constants.PrefConstants.PREF_BLACK_THEME;
+import static kpchuck.k_klock.constants.PrefConstants.*;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -93,6 +93,28 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 String[] list = {"colorsTitles", "colorsValues", "formatsTitles", "formatsValues"};
                 prefUtils.deleteArrayLists(list);
                 shortToast(getString(R.string.cleared_saved));
+                return true;
+            }
+        });
+
+        final SwitchPreference enableDevOptions = (SwitchPreference) findPreference(DEV_ENABLED);
+        enableDevOptions.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object o) {
+
+                SharedPreferences.Editor editor = myPref.edit();
+                editor.remove(DEV_HIDE_CLOCK);
+                editor.remove(DEV_MAKE_DYNAMIC);
+                editor.apply();
+                SwitchPreference devDynamic = (SwitchPreference) findPreference(DEV_MAKE_DYNAMIC);
+                SwitchPreference devClock = (SwitchPreference) findPreference(DEV_HIDE_CLOCK);
+
+                if (enableDevOptions.isChecked()) {
+
+                    devDynamic.setChecked(false);
+                    devClock.setChecked(false);
+                }
+
                 return true;
             }
         });

@@ -173,7 +173,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         if(prefUtils.getBool(PREF_INDICATORS) && romName.equals("OxygenOS Oreo"))
             fileHelper.copyFromAssets(univ, "indicatorsO.zip".trim(), tempFolder, context, true);
         // Copy the rom specific file if a rom was selected
-        if (!romName.equals(context.getString(R.string.otherRomsBeta)) || !romName.equals("")) {
+        if (!romName.equals(context.getString(R.string.otherRomsBeta))) {
             fileHelper.copyFromAssets("romSpecific", romName + ".zip".trim(), customInput, context, true);
             File zip = new File(customInput, romName + ".zip");
             for (File x : zip.listFiles()){
@@ -199,14 +199,16 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
     }
 
     private boolean shouldBeDynamic(String rom){
+        SharedPreferences defPref = PreferenceManager.getDefaultSharedPreferences(context);
         boolean inWhitelist = Arrays.asList(context.getResources().getStringArray(R.array.dynamic_clocks)).contains(rom);
-        boolean enabledInSettings = prefUtils.getBool(DEV_MAKE_DYNAMIC) && isOtherRoms(rom);
+        boolean enabledInSettings = defPref.getBoolean(DEV_MAKE_DYNAMIC, false) && isOtherRoms(rom);
         return inWhitelist || enabledInSettings;
     }
 
     private boolean hideClock(String rom){
+        SharedPreferences defPref = PreferenceManager.getDefaultSharedPreferences(context);
         boolean inWhitelist = Arrays.asList(context.getResources().getStringArray(R.array.hide_clock)).contains(rom);
-        boolean enabledInSettings = prefUtils.getBool(DEV_HIDE_CLOCK) && isOtherRoms(rom);
+        boolean enabledInSettings = defPref.getBoolean(DEV_HIDE_CLOCK, false) && isOtherRoms(rom);
         return inWhitelist || enabledInSettings;
     }
 
