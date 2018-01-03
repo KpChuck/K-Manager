@@ -26,6 +26,7 @@ public class PrefConstants {
     public static final String PREF_INDICATORS = "indicatorPref";
     public static final String PREF_MINIT = "minitPref";
     public static final String PREF_MOVE_LEFT = "moveLeftPref";
+    public static final String PREF_MOVE_NOTIFICATIONS_RIGHT = "moveNotificationsRightPref";
 
     public static final String PREF_CARRIER_TEXT = "customCarrierTextPref";
     public static final String PREF_CARRIER_CUSTOM_TEXT = "inputtedCarrierText";

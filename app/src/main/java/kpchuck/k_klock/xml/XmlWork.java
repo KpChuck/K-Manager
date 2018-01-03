@@ -100,7 +100,7 @@ public class XmlWork {
         }
 
         // Continue with System_icons
-        if (prefUtils.getBool(PREF_MOVE_LEFT) || prefUtils.getBool(PREF_MINIT)){
+        if (prefUtils.getBool(PREF_MOVE_LEFT) || prefUtils.getBool(PREF_MINIT) || prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT)){
             Document sysicons = getDocument(new File(srcFolder + "/" + systemicons));
             sysicons = utils.replaceAt(sysicons);
             Element rootElement = sysicons.getDocumentElement();
@@ -110,6 +110,17 @@ public class XmlWork {
                 NodeList list = rootElement.getElementsByTagName("include");
                 Element includeElement = (Element) list.item(0);
                 rootElement.removeChild(includeElement);
+            }
+
+            if (prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT)){
+                Element notificationArea = sysicons.createElement("com.android.systemui.statusbar.AlphaOptimizedFrameLayout");
+                notificationArea.setAttribute("android:orientation", "horizontal");
+                notificationArea.setAttribute(X_ID, "@*com.android.systemui:id/notification_icon_area");
+                notificationArea.setAttribute(X_LAYOUT_WIDTH, "0.0dip");
+                notificationArea.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
+                notificationArea.setAttribute(X_WEIGHT, "1.0");
+
+                rootElement.insertBefore(notificationArea, utils.getFirstChildElement(rootElement));
             }
 
             fileHelper.newFolder(baseFolders, "res/");
@@ -322,6 +333,19 @@ public class XmlWork {
                 status = hideNotifications(status);
             }
         }
+        if (prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT) ){
+            Element statusBarContents = utils.findElementInDoc(status,
+                    "LinearLayout",
+                    "@*com.android.systemui:id/status_bar_contents");
+            Element notification = utils.findElementInDoc(status, "com.android.systemui.statusbar.AlphaOptimizedFrameLayout",
+                    "@*com.android.systemui:id/notification_icon_area");
+            Element view = createViewElement(status);
+            statusBarContents.insertBefore(view, notification);
+
+
+            statusBarContents.removeChild(notification);
+        }
+
         if (removeClock){
             Element stockClock = utils.findElementInDoc(status,
                     "com.android.systemui.statusbar.policy.Clock",
@@ -330,6 +354,8 @@ public class XmlWork {
         }
         return status;
     }
+
+
 
     private Document hideNotifications(Document doc){
         Element statusBarContents = utils.findElementInDoc(doc, "LinearLayout", "@*com.android.systemui:id/status_bar_contents");

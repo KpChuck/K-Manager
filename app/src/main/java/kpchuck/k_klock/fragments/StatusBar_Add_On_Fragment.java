@@ -53,6 +53,7 @@ public class StatusBar_Add_On_Fragment extends Fragment {
     @BindView (R.id.showEverywhereCarrier) CheckBox carrierEveryheckbox;
     @BindView(R.id.hideNotificationIcons) CheckBox hideNotifs;
     @BindView(R.id.clockSize) Switch clockSizeSwitch;
+    @BindView(R.id.notifsRight) Switch notifsRightSwitch;
 
     public StatusBar_Add_On_Fragment() {
         // Required empty public constructor
@@ -90,6 +91,7 @@ public class StatusBar_Add_On_Fragment extends Fragment {
         ButterKnife.apply(carrierSwitch, ENABLED, prefUtils.getBool(PREF_CARRIER_TEXT));
         ButterKnife.apply(carrierEveryheckbox, ENABLEDCheckBox, prefUtils.getBool(PREF_CARRIER_EVERYWHERE));
         ButterKnife.apply(hideNotifs, ENABLEDCheckBox, prefUtils.getBool(PREF_CARRIER_HIDE_NOTIFICATIONS));
+        ButterKnife.apply(notifsRightSwitch, ENABLED, prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT));
 
 
         if (prefUtils.getBool(PREF_CARRIER_TEXT)) ButterKnife.apply(carrierView, SetVisibility, View.VISIBLE);
@@ -144,6 +146,11 @@ public class StatusBar_Add_On_Fragment extends Fragment {
         @OnClick (R.id.showEverywhereCarrier)
         public void checkClick(){
             prefUtils.setCheckboxPrefs(carrierEveryheckbox, PREF_CARRIER_EVERYWHERE);
+        }
+
+        @OnClick (R.id.notifsRight)
+        public void onClick(){
+            prefUtils.setSwitchPrefs(notifsRightSwitch, PREF_MOVE_NOTIFICATIONS_RIGHT);
         }
 
         @OnClick (R.id.hideNotificationIcons)
