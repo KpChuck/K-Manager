@@ -357,11 +357,7 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(formatIntent);
                             break;
                         case 9:
-                            ArrayList<String> changelog = prefUtils.loadArray(CHANGELOG_ARRAY);
-                            String changelist = "";
-                            for (String c : changelog){
-                                changelist += "\n\t-" + c;
-                            }
+                            String changelist = prefUtils.getString(CHANGELOG_ARRAY, "No changelog available ¯\\_(ツ)_/¯");
                             TextAlertDialogFragment dialogFragment = new TextAlertDialogFragment();
                             DialogClickListener dialogClickListener = new DialogClickListener() {
                                 @Override

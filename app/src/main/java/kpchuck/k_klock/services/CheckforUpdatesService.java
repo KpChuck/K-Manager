@@ -162,8 +162,10 @@ public class CheckforUpdatesService extends Service {
                 Document doc = Jsoup.connect(url).get();
                 Element newsetVersion = doc.selectFirst(".my-4 a strong");
                 Element changelog = doc.selectFirst(".markdown-body p");
-                ArrayList<String> change = parseChangelog(changelog);
-                    prefUtils.saveArray(change, CHANGELOG_ARRAY);
+                String c = changelog.wholeText();
+                prefUtils.remove(CHANGELOG_ARRAY);
+                prefUtils.putString(CHANGELOG_ARRAY, c);
+
                 if (newsetVersion == null){
                     Log.d("klock", "Newset version is null");
                     name = "";
@@ -192,9 +194,9 @@ public class CheckforUpdatesService extends Service {
         public ArrayList<String> parseChangelog(Element changelog){
 
             ArrayList<String> c = new ArrayList<>();
-            String change = changelog.ownText();
-            change = change.substring(1);
-                String[] t = change.split("-");
+            String change = changelog.wholeText();
+           // change = change.substring(1);
+                String[] t = change.split("\n");
                 for (String s : t) c.add(s);
 
             return c;
