@@ -329,7 +329,7 @@ public class XmlWork {
             if (prefUtils.getBool(PREF_CARRIER_EVERYWHERE)){
                 status = addCustomTextEverywhere(status);
             }
-            if (prefUtils.getBool(PREF_CARRIER_HIDE_NOTIFICATIONS)){
+            if (prefUtils.getBool(PREF_CARRIER_HIDE_NOTIFICATIONS) && !prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT)){
                 status = hideNotifications(status);
             }
         }
@@ -344,6 +344,7 @@ public class XmlWork {
 
 
             statusBarContents.removeChild(notification);
+
         }
 
         if (removeClock){
