@@ -72,7 +72,7 @@ public class XmlWork {
         Document keyguard = getDocument(new File(srcFolder + "/keyguard_status_bar.xml"));
         keyguard = utils.replaceAt(keyguard);
 
-        if (prefUtils.getBool(PREF_CARRIER_TEXT) && !prefUtils.getBool(PREF_CARRIER_EVERYWHERE)) {
+        if ((prefUtils.getBool(PREF_CARRIER_TEXT) && !prefUtils.getBool(PREF_CARRIER_EVERYWHERE)) || prefUtils.getBool(PREF_MOVE_LEFT)) {
             keyguard = addCustomTextToLockscreen(keyguard, hideCarrierText(keyguard));
         }
         keyguard = utils.fixUpForAttrs(keyguard, hasAttrs);
@@ -355,8 +355,6 @@ public class XmlWork {
         }
         return status;
     }
-
-
 
     private Document hideNotifications(Document doc){
         Element statusBarContents = utils.findElementInDoc(doc, "LinearLayout", "@*com.android.systemui:id/status_bar_contents");
