@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -72,8 +73,11 @@ public class XmlWork {
         Document keyguard = getDocument(new File(srcFolder + "/keyguard_status_bar.xml"));
         keyguard = utils.replaceAt(keyguard);
 
-        if ((prefUtils.getBool(PREF_CARRIER_TEXT) && !prefUtils.getBool(PREF_CARRIER_EVERYWHERE)) || prefUtils.getBool(PREF_MOVE_LEFT)) {
+        if ((prefUtils.getBool(PREF_CARRIER_TEXT) && !prefUtils.getBool(PREF_CARRIER_EVERYWHERE))) {
             keyguard = addCustomTextToLockscreen(keyguard, hideCarrierText(keyguard));
+        }
+        else if (prefUtils.getBool(PREF_MOVE_LEFT)) {
+            hideCarrierText(keyguard);
         }
         keyguard = utils.fixUpForAttrs(keyguard, hasAttrs);
 
@@ -109,6 +113,12 @@ public class XmlWork {
             if(prefUtils.getBool(PREF_MOVE_LEFT)) {
                 NodeList list = rootElement.getElementsByTagName("include");
                 Element includeElement = (Element) list.item(0);
+
+                Element battery = utils.findElementInDoc(sysicons, "com.android.systemui.BatteryMeterView",
+                        "@*com.android.systemui:id/battery");
+                Attr margin = includeElement.getAttributeNode("android:layout_marginStart");
+                battery.setAttribute(margin.getName(), margin.getValue());
+
                 rootElement.removeChild(includeElement);
             }
 

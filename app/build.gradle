@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
     buildToolsVersion '26.0.2'
 
     def versionPropsFile = file('version.properties')
@@ -72,20 +72,22 @@ android {
 
     // Hook to check if the release/debug task is among the tasks to be executed.
     //Let's make use of it
-    gradle.taskGraph.whenReady { taskGraph ->
-        if (taskGraph.hasTask(assembleDebug)) {  /* when run debug task */
-            if (versionType.equals("beta")) {
-                uploadBetaWhenFinished.execute()
-            } else if (versionType.equals("debug")) {
-                uploadDebugWhenFinished.execute()
-            }
-            autoIncrementBuildNumber()
-        } else if (taskGraph.hasTask(assembleRelease)) { /* when run release task */
-            autoIncrementBuildNumber()
+
+gradle.taskGraph.whenReady { taskGraph ->
+    if (taskGraph.hasTask(assembleDebug)) {  /* when run debug task */
+        if (versionType.equals("beta")) {
+            uploadBetaWhenFinished.execute()
+        } else if (versionType.equals("debug")) {
+            uploadDebugWhenFinished.execute()
         }
+        autoIncrementBuildNumber()
+    } else if (taskGraph.hasTask(assembleRelease)) { /* when run release task */
+        autoIncrementBuildNumber()
     }
+}
 
 }
+
 
 dependencies {
 
@@ -138,18 +140,53 @@ dependencies {
 
 
 }
+
+// a wrapper closure around executing a string
+// can take either a string or a list of strings (for arguments with spaces)
+// prints all output, complains and halts on error
+def runCommand = { strList ->
+    assert ( strList instanceof String ||
+            ( strList instanceof List && strList.each{ it instanceof String } ) \
+)
+    def proc = strList.execute()
+    proc.in.eachLine { line -> println line }
+    proc.out.close()
+    proc.waitFor()
+
+    print "[INFO] ( "
+    if(strList instanceof List) {
+        strList.each { print "${it} " }
+    } else {
+        print strList
+    }
+    println " )"
+
+    if (proc.exitValue()) {
+        println "gave the following error: "
+        println "[ERROR] ${proc.getErrorStream()}"
+    }
+    assert !proc.exitValue()
+}
+
+
 task uploadDebugWhenFinished {
     doLast {
-        "python /home/karol/PycharmProjects/telegram/Debug.py".execute()
+
+        runCommand("python /home/karol/PycharmProjects/telegram/Debug.py")
+      //  println "python /home/karol/PycharmProjects/telegram/Debug.py".execute().text
     }
 }
+
+
 
 
 task uploadBetaWhenFinished {
     doLast {
-        "python /home/karol/PycharmProjects/telegram/Beta.py".execute()
+        runCommand("python /home/karol/PycharmProjects/telegram/Beta.py")
     }
 }
+
+
 
 apply plugin: 'com.google.gms.google-services'
 
