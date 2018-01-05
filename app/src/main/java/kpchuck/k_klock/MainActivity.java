@@ -448,8 +448,32 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private boolean alreadyRan = false;
+
     private void notifyOnUpdate(){
-        Log.d("klock", "Sending notification...");
+
+        alreadyRan = true;
+        String changelist = prefUtils.getString(CHANGELOG_ARRAY, "No changelog available ¯\\_(ツ)_/¯");
+        TextAlertDialogFragment dialogFragment = new TextAlertDialogFragment();
+        if (dialogFragment.isVisible()) return;
+        DialogClickListener dialogClickListener = new DialogClickListener() {
+            @Override
+            public void onPositiveBtnClick() {
+                Intent intent = new Intent(context, CheckforUpdatesService.class);
+                intent.putExtra("action", 2);
+                startService(intent);
+            }
+
+            @Override
+            public void onCancelBtnClick() {
+
+            }
+        };
+        dialogFragment.Instantiate("New Version of K-Manager is Available", "Changelog\n" + changelist,
+                "Download", "Remind me Later", dialogClickListener);
+        dialogFragment.show(getSupportFragmentManager(), "klock");
+
+       /* Log.d("klock", "Sending notification...");
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         String NOTIFICATION_CHANNEL_ID = "my_channel_id_01";
         Intent intent = new Intent(context, CheckforUpdatesService.class);
@@ -484,7 +508,7 @@ public class MainActivity extends AppCompatActivity {
                 .setContentIntent(pIntent)
                 .setContentInfo("Update");
 
-        notificationManager.notify(/*notification id*/1, notificationBuilder.build());
+        notificationManager.notify(1, notificationBuilder.build());*/
 
     }
 
@@ -493,11 +517,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             boolean newVersion = fileHelper.newVersion(context);
-            if (newVersion && drawer.getDrawerItem(99) == null){
-                notifyOnUpdate();
+
+            if (newVersion){
+                if (!alreadyRan)notifyOnUpdate();
                 drawer.addItemAtPosition(updateNotif, 1);
             }
-            else if (!newVersion) drawer.removeItem(99);
+            else drawer.removeItem(99);
         }
     };
 
