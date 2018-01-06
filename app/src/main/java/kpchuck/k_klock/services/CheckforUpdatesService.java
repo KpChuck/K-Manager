@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import kpchuck.k_klock.R;
 import kpchuck.k_klock.utils.PrefUtils;
 import kpchuck.k_klock.utils.FileHelper;
 import static kpchuck.k_klock.constants.PrefConstants.*;
@@ -114,8 +115,8 @@ public class CheckforUpdatesService extends Service {
                     DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
 
-            request.setTitle("Downloading" + " " + name);
-            request.setDescription("Enjoy");
+            request.setTitle(getString(R.string.downloading) + " " + name);
+            request.setDescription(getString(R.string.enjoy));
 
             request.setNotificationVisibility(DownloadManager.Request
                     .VISIBILITY_VISIBLE_NOTIFY_COMPLETED);

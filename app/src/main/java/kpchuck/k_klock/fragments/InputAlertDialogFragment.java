@@ -120,12 +120,12 @@ public class InputAlertDialogFragment extends DialogFragment {
                             }
 
                         }
-                        else shortToast("Nothing was saved, you must have two values inputted");
+                        else shortToast(getString(R.string.error_adding_new_value));
 
 
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // User cancelled the dialog
                         dialog.cancel();

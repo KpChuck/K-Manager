@@ -144,10 +144,10 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                         try{
                             FileUtils.forceDelete(apk);
                         }catch (IOException e){
-                            Log.e("klock", "Error deleting apks: " + e.getMessage());
+                            Log.e("klock", getString(R.string.delete_apk_error) + e.getMessage());
                         }
                     }
-                    Toast.makeText(getApplicationContext(), "All Apk's Cleared", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.delete_apk_success), Toast.LENGTH_SHORT).show();
 
                 }
                 return true;

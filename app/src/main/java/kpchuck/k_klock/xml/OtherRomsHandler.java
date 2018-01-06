@@ -113,9 +113,9 @@ public class OtherRomsHandler extends AsyncTask<Void,Void, Void>{
             boolean keyguard = FileUtils.directoryContains(xmlfolder, new File(xmlFolder + slash + "keyguard_status_bar.xml"));
             boolean systemicons = FileUtils.directoryContains(xmlfolder, new File(xmlFolder + slash + "system_icons.xml"));
 
-            if (!statusbar) shortToast("Sorry, status_bar.xml not in /sdcard/K-Klock/userInput.");
-            if (!keyguard) shortToast("Sorry, keyguard_status_bar.xml not in /sdcard/K-Klock/userInput.");
-            if (!systemicons) shortToast("Sorry, system_icons.xml not in /sdcard/K-Klock/userInput.");
+            if (!statusbar) shortToast(String.format(context.getString(R.string.xml_not_present_for_otherroms), "status_bar.xml"));
+            if (!keyguard) shortToast(String.format(context.getString(R.string.xml_not_present_for_otherroms), "keyguard_status_bar.xml"));
+            if (!systemicons) shortToast(String.format(context.getString(R.string.xml_not_present_for_otherroms), "system_icons.xml"));
 
             String romName = prefUtils.getString("selectedRom", "");
             if (romName.equals(context.getString(R.string.otherRomsBeta))){

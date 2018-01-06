@@ -140,7 +140,8 @@ public class Misc_Add_On_Fragment extends Fragment {
                 }
             };
 
-            alertDialogFragment.Instantiate("IMPORTANT", getString(R.string.minit_disclaimer), "Enable", "Cancel", listener);
+            alertDialogFragment.Instantiate(getString(R.string.important), getString(R.string.minit_disclaimer),
+                    getString(R.string.enable), getString(R.string.cancel), listener);
             alertDialogFragment.show(myContext.getSupportFragmentManager(), "klock");
 
         }else prefUtils.putBool(PREF_MINIT, false);
@@ -158,7 +159,7 @@ public class Misc_Add_On_Fragment extends Fragment {
                     String filePath = images.get(0).getOriginalPath();
 
                     if (!filePath.substring(filePath.lastIndexOf("."), filePath.length()).equals(".png")){
-                        shortToast("The image you have chosen is not a png. Convert it to a png and try again");
+                        shortToast(getString(R.string.not_png_error_message));
                         prefUtils.putBool(PREF_QS_BG, false);
                         ButterKnife.apply(qsBgSwitch, ENABLED, false);
                         prefUtils.remove(PREF_QS_BG_FILE);

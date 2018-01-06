@@ -9,6 +9,9 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 
+import kpchuck.k_klock.R;
+import kpchuck.k_klock.xml.XmlUtils;
+
 /**
  * Created by karol on 20/09/17.
  */
@@ -48,12 +51,10 @@ public class QsBgUtil {
     }
 
     private void addTyepText(){
-        String type2 = "Custom Qs Background";
+        String type2 = context.getString(R.string.qs_background_type2);
         File destFile = new File(dir.getAbsolutePath() + "/assets/overlays/com.android.systemui.headers/type2");
-        try {
-            destFile.createNewFile();
-            FileUtils.writeStringToFile(destFile, type2, "utf-8");
-        }catch (IOException e){}
+        new XmlUtils().writeType2Desc(type2, destFile.getAbsolutePath());
+
 
     }
 

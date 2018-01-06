@@ -17,22 +17,22 @@ public class MyWelcomeActivity extends WelcomeActivity {
                         "K-Klock")
                 )
                 .page(new BasicPage(R.drawable.transparent,
-                        "How to use",
-                        "Select your Rom and any other settings in K-Manager. " +
-                                "Then tap the yellow build button to get a K-Klock theme with that configuration! "
+                        getString(R.string.how_to_use),
+                        getString(R.string.screen1_1) + "\n" +
+                                getString(R.string.screen1_2)
                                 )
 
                 )
                 .page(new BasicPage(R.drawable.transparent,
-                        "What the Clock Style option means in Substratum",
-                        "\t\tThe first part of the clock style option specifies how the clock should behave.\n" +
-                                "You can choose whether the clock should appear on the lockscreen or not. \n\n" +
-                                "\t\tStock Clock or Dynamic Clock are hidden on the lockscreen without needing to select anything. \n" +
-                                "These two are different because they make the clock dynamic, ie. it changes color against white backgrounds. ")
+                        getString(R.string.hscreen2_title),
+                        "\t\t" + getString(R.string.hscreen2_1) + "\n" +
+                                getString(R.string.hscreen2_2) + "\n\n" +
+                                "\t\t" + getString(R.string.hscreen2_3) + "\n" +
+                                getString(R.string.hscreen2_4))
                 ).page(new BasicPage(R.drawable.transparent,
-                        "Help and Support",
-                        "If you\'re still confused about anything check the navdrawer! \n" +
-                                "You can also check the latest Changelog or check if there\'s an update."))
+                        getString(R.string.hscreen3_title),
+                        getString(R.string.hscreen3_1) + "\n" +
+                                getString(R.string.hscreen3_2)))
                 .swipeToDismiss(true)
                 .build();
     }

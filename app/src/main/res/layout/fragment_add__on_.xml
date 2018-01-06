@@ -20,7 +20,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="12dp"
-            android:text="StatusBar Add-Ons"
+            android:text="@string/statusbar_addon"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
 
         <Switch
@@ -31,7 +31,7 @@
             android:layout_marginRight="12dp"
             android:layout_alignParentStart="true"
             android:layout_below="@id/statusbarAddOnHeader"
-            android:text="Move Network Icons to the Left"
+            android:text="@string/network_icons_left"
             android:id="@+id/moveNetworkLeft"/>
         <Switch
             android:layout_width="match_parent"
@@ -41,7 +41,7 @@
             android:layout_marginRight="12dp"
             android:layout_alignParentStart="true"
             android:layout_below="@id/moveNetworkLeft"
-            android:text="Move Notification Icons to the Right"
+            android:text="@string/notification_icons_right"
             android:id="@+id/notifsRight"/>
         <Switch
             android:layout_width="match_parent"
@@ -51,7 +51,7 @@
             android:layout_marginRight="12dp"
             android:layout_alignParentStart="true"
             android:layout_below="@id/notifsRight"
-            android:text="Show Am/Pm in Stock Clock"
+            android:text="@string/ampm_stock_clock"
             android:id="@+id/ampm"/>
 
         <Switch
@@ -62,7 +62,7 @@
             android:layout_marginRight="12dp"
             android:layout_alignParentStart="true"
             android:layout_below="@id/ampm"
-            android:text="Hide Network Signal Indicators"
+            android:text="@string/hide_network_indicators"
             android:id="@+id/networkSignalIndicatorSwitch"/>
 
         <Switch
@@ -73,7 +73,7 @@
             android:layout_marginRight="12dp"
             android:layout_alignParentStart="true"
             android:layout_below="@id/networkSignalIndicatorSwitch"
-            android:text="StatusBar Clock Size"
+            android:text="@string/clock_size"
             android:id="@+id/clockSize"/>
 
         <Switch
@@ -84,7 +84,7 @@
             android:layout_marginRight="12dp"
             android:layout_alignParentStart="true"
             android:layout_below="@id/clockSize"
-            android:text="Lockscreen StatusBar Height"
+            android:text="@string/lockscreen_statusbar_size"
             android:id="@+id/hideStatusbar"/>
 
         <Switch
@@ -95,7 +95,7 @@
             android:layout_marginRight="12dp"
             android:layout_alignParentStart="true"
             android:layout_below="@id/hideStatusbar"
-            android:text="Display Custom Text on Lockscreen"
+            android:text="@string/custom_text_lockscreen"
             android:id="@+id/carrierText"/>
 
         <!-- Edittext view -->
@@ -121,7 +121,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/showEverywhereCarrier"
-                    android:text="Display Custom Text Everywhere on StatusBar"
+                    android:text="@string/custom_text_everywhere"
                     android:checked="true"
                     android:layout_marginTop="12dp"
                     android:layout_marginLeft="12dp"
@@ -132,7 +132,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/hideNotificationIcons"
-                    android:text="Hide Notification Icons"
+                    android:text="@string/hide_notifications"
                     android:checked="true"
                     android:layout_marginLeft="12dp"
                     android:layout_marginRight="12dp"
@@ -142,7 +142,7 @@
                     android:layout_width="match_parent"
                     android:id="@+id/editCarrierText"
                     android:layout_height="wrap_content"
-                    android:hint="Enter your text here"
+                    android:hint="@string/enter_text_hint"
                     android:layout_marginLeft="12dp"
                     android:layout_marginRight="12dp"
                     android:layout_marginBottom="12dp"
@@ -160,7 +160,7 @@
             android:layout_marginBottom="12dp"
             android:layout_alignParentStart="true"
             android:layout_below="@id/carrierCardView"
-            android:text="Theme StatusBar and Stock Clock Color"
+            android:text="@string/theme_statusbar_color"
             android:id="@+id/colorIcons"/>
 
         <!-- Theme statusbar icons -->
@@ -186,7 +186,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="12dp"
-                    android:text="StatusBar Icon Color Manager"
+                    android:text="@string/si_manager"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
 
                 <TextView
@@ -198,7 +198,7 @@
                     android:layout_alignParentStart="true"
                     android:textAppearance="@style/TextAppearance.AppCompat"
                     android:id="@+id/iconDesc"
-                    android:text="The light statusbar icon colors are linked to the main clock color, so changing clock color will change those.\n\nYou can add dark statusbar icon colors here"
+                    android:text="@string/si_desc"
                     android:layout_below="@id/iconHeaderText"
 
 
@@ -208,7 +208,7 @@
                     android:layout_width="match_parent"
                     android:id="@+id/includedIconsButton"
                     android:layout_height="wrap_content"
-                    android:text="Included Colors"
+                    android:text="@string/included_colors"
                     android:layout_centerHorizontal="true"
                     android:layout_below="@id/iconDesc"
                     android:layout_marginTop="16dp"
@@ -220,7 +220,7 @@
                     android:layout_width="match_parent"
                     android:id="@+id/addIconButton"
                     android:layout_height="wrap_content"
-                    android:text="Add Colors"
+                    android:text="@string/add_color"
                     android:layout_centerHorizontal="true"
                     android:layout_below="@id/includedIconsButton"
                     android:layout_marginTop="8dp"

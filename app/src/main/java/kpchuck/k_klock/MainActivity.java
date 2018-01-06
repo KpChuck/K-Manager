@@ -222,12 +222,12 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelBtnClick() {
-                    shortToast("You will have to install K-Klock manually from the K-Klock folder without this permission granted");
+                    shortToast(getString(R.string.install_permission_not_granted));
 
                 }
             };
-            alertDialogFragment.Instantiate("Install Apps Permissions Required", getString(R.string.request_install_perms),
-                    "Grant", "Deny", clickReactor);
+            alertDialogFragment.Instantiate(getString(R.string.install_permission_title), getString(R.string.request_install_perms),
+                    getString(R.string.grant), getString(R.string.deny), clickReactor);
             alertDialogFragment.show(getSupportFragmentManager(), "missiles");
         }
 
@@ -248,7 +248,6 @@ public class MainActivity extends AppCompatActivity {
         welcomeScreen.show(savedInstanceState);
 
 
-
         // Create the material drawer
         AccountHeader header = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -258,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
                 .addProfiles(
                         new ProfileDrawerItem()
                                 .withName(getString(R.string.app_name))
-                                .withEmail("version " + BuildConfig.VERSION_NAME))
+                                .withEmail(getString(R.string.version) + " " + BuildConfig.VERSION_NAME))
                 .withCurrentProfileHiddenInList(true)
                 .build();
 
@@ -357,7 +356,7 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(formatIntent);
                             break;
                         case 9:
-                            String changelist = prefUtils.getString(CHANGELOG_ARRAY, "No changelog available ¯\\_(ツ)_/¯");
+                            String changelist = prefUtils.getString(CHANGELOG_ARRAY, getString(R.string.no_changelog_available) + " ¯\\_(ツ)_/¯");
                             TextAlertDialogFragment dialogFragment = new TextAlertDialogFragment();
                             DialogClickListener dialogClickListener = new DialogClickListener() {
                                 @Override
@@ -370,7 +369,8 @@ public class MainActivity extends AppCompatActivity {
 
                                 }
                             };
-                            dialogFragment.Instantiate("Changelog", changelist, "Thanks", "Okay", dialogClickListener);
+                            dialogFragment.Instantiate(getString(R.string.changelog), changelist, getString(R.string.thanks),
+                                    getString(R.string.okay), dialogClickListener);
                             dialogFragment.show(getSupportFragmentManager(), "klock");
                             break;
                         case 10:
@@ -379,9 +379,9 @@ public class MainActivity extends AppCompatActivity {
                                     .withActivityStyle(prefUtils.getBool(PREF_BLACK_THEME) ? Libs.ActivityStyle.DARK : Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
                                     .withAboutIconShown(true)
                                     .withAboutVersionShown(true)
-                                    .withAboutDescription("K-Manager builds the substratum app - K-Klock. <br />" +
-                                            " You can customize your statusbar clock as well as other UI elements in your phone!<br /><br />" +
-                                            "Github Sources:" +
+                                    .withAboutDescription(getString(R.string.about_desc1) + " <br /> " +
+                                            getString(R.string.about_desc2) + "<br /><br />" +
+                                            getString(R.string.about_desc3) +
                                             "<ul><li><a href=\"http://github.com/KpChuck/K-Manager\">K-Manager</a></li>" +
                                             "<li><a href=\"http:github.com/KpChuck/K-Klock\">K-Klock</a></li></ul>")
                                     //start the activity
@@ -453,7 +453,7 @@ public class MainActivity extends AppCompatActivity {
     private void notifyOnUpdate(){
 
         alreadyRan = true;
-        String changelist = prefUtils.getString(CHANGELOG_ARRAY, "No changelog available ¯\\_(ツ)_/¯");
+        String changelist = prefUtils.getString(CHANGELOG_ARRAY, getString(R.string.no_changelog_available) + " ¯\\_(ツ)_/¯");
         TextAlertDialogFragment dialogFragment = new TextAlertDialogFragment();
         if (dialogFragment.isVisible()) return;
         DialogClickListener dialogClickListener = new DialogClickListener() {
@@ -469,8 +469,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-        dialogFragment.Instantiate("New Version of K-Manager is Available", "Changelog\n" + changelist,
-                "Download", "Remind me Later", dialogClickListener);
+        dialogFragment.Instantiate(getString(R.string.new_version_available), getString(R.string.changelog) + "\n" + changelist,
+                getString(R.string.download), getString(R.string.remind_me_later), dialogClickListener);
         dialogFragment.show(getSupportFragmentManager(), "klock");
 
        /* Log.d("klock", "Sending notification...");
@@ -572,8 +572,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void ShowIncluded(final View view){
 
-        final ArrayList<String> titles = prefUtils.loadArray( "iconsTitles");
-        final ArrayList<String> values = prefUtils.loadArray("iconsValues");
+        final ArrayList<String> titles = prefUtils.loadArray( ICON_TITLES);
+        final ArrayList<String> values = prefUtils.loadArray(ICON_VALUES);
 
         if(!titles.isEmpty()) {
             final ArrayList<String> finalTitles = new ArrayList<>();
@@ -602,7 +602,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onBtnClick(int position) {
                     String name = finalTitles.get(position);
                     String value = values.get(position);
-                    deleteItems(titles, values, name, value, "iconsTitles", "iconsValues", "saveIcons");
+                    deleteItems(titles, values, name, value, ICON_TITLES, ICON_VALUES, "saveIcons");
                     ShowIncluded(view);
                 }
             };
@@ -684,8 +684,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void showIncludedColors(final View v){
 
-        colorsTitles = prefUtils.loadArray( "colorsTitles");
-        colorsValues = prefUtils.loadArray("colorsValues");
+        colorsTitles = prefUtils.loadArray( COLOR_TITLES);
+        colorsValues = prefUtils.loadArray(COLOR_VALUES);
 
         if(!colorsTitles.isEmpty()) {
             final ArrayList<String> finalColorsTitles = new ArrayList<>();
@@ -714,7 +714,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onBtnClick(int position) {
                     String name = finalColorsTitles.get(position);
                     String value = colorsValues.get(position);
-                    deleteItems(colorsTitles, colorsValues, name, value, "colorsTitles", "colorsValues", "saveColors");
+                    deleteItems(colorsTitles, colorsValues, name, value, COLOR_TITLES, COLOR_VALUES, "saveColors");
                     showIncludedColors(v);
                 }
             };
@@ -766,8 +766,8 @@ public class MainActivity extends AppCompatActivity {
         Button button = (Button) findViewById(R.id.addButton);
 
 
-        formatsTitles = prefUtils.loadArray("formatsTitles");
-        formatsValues = prefUtils.loadArray("formatsValues");
+        formatsTitles = prefUtils.loadArray(FORMAT_TITLES);
+        formatsValues = prefUtils.loadArray(FORMAT_VALUES);
 
         if(!formatsTitles.isEmpty()) {
             final ArrayList<String> finalFormatsTitles = new ArrayList<>();
@@ -799,7 +799,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onBtnClick(int position) {
                     String name = finalFormatsTitles.get(position);
                     String value = formatsValues.get(position);
-                    deleteItems(formatsTitles, formatsValues, name, value, "formatsTitles", "formatsValues", "saveFormats");
+                    deleteItems(formatsTitles, formatsValues, name, value, FORMAT_TITLES, FORMAT_VALUES, "saveFormats");
                     showIncludedFormats(v);
                 }
             };
@@ -906,7 +906,8 @@ public class MainActivity extends AppCompatActivity {
         if (isPackageInstalled("org.telegram.messenger", context.getPackageManager()) ){
 
             TextAlertDialogFragment fragment = new TextAlertDialogFragment();
-            fragment.Instantiate("K-Klock Telegram", getString(R.string.joinTelegram), "OK", "Not Today", new DialogClickListener() {
+            fragment.Instantiate("K-Klock Telegram", getString(R.string.joinTelegram), getString(R.string.ok),
+                    getString(R.string.not_today), new DialogClickListener() {
                 @Override
                 public void onPositiveBtnClick() {
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/kklock"));

@@ -172,7 +172,7 @@ def runCommand = { strList ->
 task uploadDebugWhenFinished {
     doLast {
 
-        runCommand("python /home/karol/PycharmProjects/telegram/Debug.py")
+        "python /home/karol/PycharmProjects/telegram/Debug.py".execute()
       //  println "python /home/karol/PycharmProjects/telegram/Debug.py".execute().text
     }
 }
@@ -182,7 +182,7 @@ task uploadDebugWhenFinished {
 
 task uploadBetaWhenFinished {
     doLast {
-        runCommand("python /home/karol/PycharmProjects/telegram/Beta.py")
+        "python /home/karol/PycharmProjects/telegram/Beta.py".execute()
     }
 }
 

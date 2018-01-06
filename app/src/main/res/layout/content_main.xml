@@ -36,7 +36,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="12dp"
-                    android:text="Rom Manager"
+                    android:text="@string/rom_manager"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
 
 
@@ -89,20 +89,19 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="12dp"
-                    android:text="Clock Color Manager"
+                    android:text="@string/cc_manager"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
 
                 <Button
                     android:layout_width="match_parent"
                     android:id="@+id/includedColorsButton"
                     android:layout_height="wrap_content"
-                    android:text="Included Colors"
+                    android:text="@string/included_colors"
                     android:layout_centerHorizontal="true"
                     android:layout_below="@id/colorHeaderText"
                     android:layout_marginTop="16dp"
                     android:layout_marginLeft="12dp"
                     android:layout_marginRight="12dp"
-                    android:clickable="true"
                     android:onClick="showIncludedColors"
                     />
 
@@ -110,14 +109,13 @@
                     android:layout_width="match_parent"
                     android:id="@+id/addColorButton"
                     android:layout_height="wrap_content"
-                    android:text="Add Colors"
+                    android:text="@string/add_color"
                     android:layout_centerHorizontal="true"
                     android:layout_below="@id/includedColorsButton"
                     android:layout_marginTop="8dp"
                     android:layout_marginLeft="12dp"
                     android:layout_marginRight="12dp"
                     android:layout_marginBottom="12dp"
-                    android:clickable="true"
                     android:onClick="addCustomColors"
                     />
 
@@ -148,20 +146,19 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="12dp"
-                    android:text="Clock Format Manager"
+                    android:text="@string/cf_manager"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
 
                 <Button
                     android:layout_width="match_parent"
                     android:id="@+id/includedFormatButton"
                     android:layout_height="wrap_content"
-                    android:text="Included Formats"
+                    android:text="@string/included_formats"
                     android:layout_centerHorizontal="true"
                     android:layout_below="@id/formatHeaderText"
                     android:layout_marginTop="16dp"
                     android:layout_marginLeft="12dp"
                     android:layout_marginRight="12dp"
-                    android:clickable="true"
                     android:onClick="showIncludedFormats"
                     />
 
@@ -169,14 +166,13 @@
                     android:layout_width="match_parent"
                     android:id="@+id/addFormatButton"
                     android:layout_height="wrap_content"
-                    android:text="Add Formats"
+                    android:text="@string/add_format"
                     android:layout_centerHorizontal="true"
                     android:layout_below="@id/includedFormatButton"
                     android:layout_marginTop="8dp"
                     android:layout_marginLeft="12dp"
                     android:layout_marginRight="12dp"
                     android:layout_marginBottom="12dp"
-                    android:clickable="true"
                     android:onClick="addCustomFormats"
                     />
 
@@ -235,7 +231,6 @@
                 android:layout_alignParentStart="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sample Text"
                 android:textColor="?textColor"
                 android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"/>
 
@@ -265,9 +260,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:textColor="?textColor"
-
             android:id="@+id/secondTextView"
-            android:text="Sample Text"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
 
             android:layout_height="wrap_content"/>
@@ -311,7 +304,6 @@
             android:layout_below="@id/spin_kit"
             android:layout_centerInParent="true"
             android:layout_marginTop="10dp"
-            android:text="Loading loading loading"
             android:textColor="?textColor"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large.Inverse"/>
     </RelativeLayout>
