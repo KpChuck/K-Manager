@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -112,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView (R.id.romSelectionSpinner) SearchableSpinner searchableSpinner;
     @BindView (R.id.defaultLayout) ScrollView scrollView;
     @BindView (R.id.spinnerLinearLayout) LinearLayout SpinnerLayout;
+    @BindView(R.id.otherRomsQm) ImageButton questionMark;
 
     // Call Strings, Arraylists and Classes for later use
     ArrayList<String> roms = new ArrayList<>();
@@ -402,6 +404,7 @@ public class MainActivity extends AppCompatActivity {
         drawer = builder.build();
 
 
+        if (isOtherRoms()) questionMark.setVisibility(View.VISIBLE);
 
 
         new CleanupFiles(loadingLayout, loadingTextView).execute();
@@ -412,8 +415,6 @@ public class MainActivity extends AppCompatActivity {
         final SimpleListAdapter simpleListAdapter = new SimpleListAdapter(this, roms);
         searchableSpinner.setAdapter(simpleListAdapter);
         searchableSpinner.setSelectedItem(prefUtils.getString("selectedRom", getString(R.string.chooseRom)));
-
-
         searchableSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
             public void onItemSelected(View view, int position, long id) {
@@ -422,10 +423,12 @@ public class MainActivity extends AppCompatActivity {
                 if (fileHelper.getOos(selectedItem).equals("OxygenOS")){
                     qsBg.setVisibility(View.GONE);
                     indicatorSwitch.setVisibility(View.VISIBLE);
-                }else {
+                }
+                else {
                     indicatorSwitch.setVisibility(View.GONE);
                     qsBg.setVisibility(View.VISIBLE);
                 }
+                questionMark.setVisibility(isOtherRoms() ? View.VISIBLE : View.GONE);
 
             } // to close the onItemSelected
 
@@ -447,6 +450,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+    private boolean isOtherRoms(){
+        String rom = prefUtils.getString(PREF_SELECTED_ROM, betaString);
+        return rom.equals(context.getString(R.string.otherRomsBeta));
+    }
+
+    @OnClick (R.id.otherRomsQm)
+    public void onClick(){
+        Intent rom = new Intent(context, InformationWebViewActivity.class);
+        rom.putExtra("value", 4);
+        startActivity(rom);
+    }
+
 
     private boolean alreadyRan = false;
 
