@@ -25,11 +25,11 @@ Once you have tried the Other Roms option and it worked on your Rom, you can do 
 + Rename this zip file to 'Your Rom Name Android Version'
 + You can either **send the zip to me** or submit a **pull request** to have those files added to K-Manager
 
---- Place the zip file to *app/src/main/assets/romSpecific* if you are making a pull request
+⋅⋅⋅ Place the zip file to *app/src/main/assets/romSpecific* if you are making a pull request
 
 + If you have tried the addition option in K-Manager Settings, you will need to specify these to have the enabled
 
- --- If you are making a pull request, edit *app/src/main/res/rom_instructions.xml* and add your zip name to the string-arrays of the options.
- --- **Make sure to write your zip name just without the .zip part**
+⋅⋅⋅ If you are making a pull request, edit *app/src/main/res/rom_instructions.xml* and add your zip name to the string-arrays of the options.
+⋅⋅⋅ **Make sure to write your zip name just without the .zip part**
 
 + And that's it!, Your rom will be there in the next update!
