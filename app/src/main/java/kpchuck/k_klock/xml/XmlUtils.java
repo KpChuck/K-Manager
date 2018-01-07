@@ -66,7 +66,8 @@ public class XmlUtils {
         return null;
     }
 
-    private boolean isTheElement(Element element, String layoutTag, String idName){
+
+    public boolean isTheElement(Element element, String layoutTag, String idName){
         return isTheElement(element, layoutTag, idName, X_ID);
     }
 
@@ -84,7 +85,7 @@ public class XmlUtils {
         return element;
     }
 
-    private ArrayList<Element> getChildElements(Element element){
+    public ArrayList<Element> getChildElements(Element element){
 
         ArrayList<Element> elements = new ArrayList<>();
 

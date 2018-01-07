@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -169,21 +170,18 @@ public class XmlWork {
 
         // Center Clock
         statusBarContents.removeChild(customClock);
-        if (makeInlineCenter()){
-            systemIconArea = utils.changeAttribute(systemIconArea, X_LAYOUT_WIDTH, "0dip");
-            systemIconArea.setAttribute(X_WEIGHT, "1");
+        systemIconArea = utils.changeAttribute(systemIconArea, X_LAYOUT_WIDTH, "0dip");
+        systemIconArea.setAttribute(X_WEIGHT, "1");
 
-            customClock = createClock(status, false, "center", X_WRAP_CONTENT);
-            Element view = createViewElement(status);
+        customClock = createClock(status, false, "center", X_WRAP_CONTENT);
+        Element view = createViewElement(status);
 
-            statusBarContents.insertBefore(customClock, systemIconArea);
-            systemIconArea.insertBefore(view, utils.getFirstChildElement(systemIconArea));
-        }
+        statusBarContents.insertBefore(customClock, systemIconArea);
+        systemIconArea.insertBefore(view, utils.getFirstChildElement(systemIconArea));
 
-        else {
-            customClock = createClock(status, false, "center", X_FILL_PARENT);
-            rootElement.insertBefore(customClock, utils.getFirstChildElement(rootElement));
-        }
+        status = packToRightOf(status, statusBarContents, "TextClock", null);
+
+
         if (leaveResBlank()) writeDocToFile(status, new File(baseFolders, "type2_Clock_on_Lockscreen_Center/layout/" + statusbar));
         else writeDocToFile(status, new File(baseFolders, "res/layout/" + statusbar));
 
@@ -235,51 +233,55 @@ public class XmlWork {
 
         // Center Clocks
         statusBarContents.removeChild(hideE);
-        if (makeInlineCenter()){
-            systemIconArea = utils.changeAttribute(systemIconArea, X_LAYOUT_WIDTH, "0dip");
-            systemIconArea.setAttribute(X_WEIGHT, "1");
+        systemIconArea = utils.changeAttribute(systemIconArea, X_LAYOUT_WIDTH, "0dip");
+        systemIconArea.setAttribute(X_WEIGHT, "1");
 
-            customClock = createClock(status, false, "center", X_WRAP_CONTENT);
-            hideE = createLLTop(status, X_WRAP_CONTENT, "center");
-            Element view = createViewElement(status);
+        customClock = createClock(status, false, "center", X_WRAP_CONTENT);
+        hideE = createLLTop(status, X_WRAP_CONTENT, "center");
+        view = createViewElement(status);
 
-            statusBarContents.insertBefore(hideE, systemIconArea);
-            systemIconArea.insertBefore(view, utils.getFirstChildElement(systemIconArea));
+        statusBarContents.insertBefore(hideE, systemIconArea);
+        systemIconArea.insertBefore(view, utils.getFirstChildElement(systemIconArea));
 
-            hideE.appendChild(customClock);
-            writeDocToFile(status, new File(baseFolders, "type2_No_Clock_on_Lockscreen_Center/layout/" + statusbar));
-            if (makeDynamic){
-                customClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
-                writeDocToFile(status, new File(baseFolders, "type2_Dynamic_Clock_Center/layout/" + statusbar));
-            }
-            hideE.removeChild(customClock);
-            customClock = createClock(status, true, "center", X_WRAP_CONTENT);
-            hideE.appendChild(customClock);
-            writeDocToFile(status, new File(baseFolders, "type2_Stock_Clock_Center/layout/" + statusbar));
+        hideE.appendChild(customClock);
+        status = packToRightOf(status, statusBarContents, "LinearLayout", "@*com.android.systemui:id/system_icon_area");
+
+        writeDocToFile(status, new File(baseFolders, "type2_No_Clock_on_Lockscreen_Center/layout/" + statusbar));
+        if (makeDynamic){
+            customClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
+            writeDocToFile(status, new File(baseFolders, "type2_Dynamic_Clock_Center/layout/" + statusbar));
         }
-
-        else {
-            hideE = createLLTop(status, X_FILL_PARENT, "center");
-            customClock = createClock(status, false, "center", X_FILL_PARENT);
-            rootElement.insertBefore(hideE, utils.getFirstChildElement(rootElement));
-
-            hideE.appendChild(customClock);
-            writeDocToFile(status, new File(baseFolders, "type2_No_Clock_on_Lockscreen_Center/layout/" + statusbar));
-            if (makeDynamic){
-                customClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
-                writeDocToFile(status, new File(baseFolders, "type2_Dynamic_Clock_Center/layout/" + statusbar));
-            }
-            hideE.removeChild(customClock);
-            customClock = createClock(status, true, "center", X_FILL_PARENT);
-            hideE.appendChild(customClock);
-            writeDocToFile(status, new File(baseFolders, "type2_Stock_Clock_Center/layout/" + statusbar));
-        }
-
-
+        hideE.removeChild(customClock);
+        customClock = createClock(status, true, "center", X_WRAP_CONTENT);
+        hideE.appendChild(customClock);
+        writeDocToFile(status, new File(baseFolders, "type2_Stock_Clock_Center/layout/" + statusbar));
 
         utils.writeType2Desc(leaveResBlank() ? "Clock Style (Default NONE)" : "Clock Style (Default Clock on Lockscreen Center",
                 baseFolders.getAbsolutePath() + "/type2");
 
+    }
+
+    private Document packToRightOf(Document doc, Element parentElement, String tagName, String idName){
+        ArrayList<Element> elements = utils.getChildElements(parentElement);
+        ArrayList<Element> rightElements = new ArrayList<>();
+        Element linearLayout = doc.createElement("LinearLayout");
+        linearLayout.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
+        linearLayout.setAttribute(X_LAYOUT_WIDTH, "0dp");
+        linearLayout.setAttribute(X_WEIGHT, "1.0");
+        for (Element element : elements){
+            if (idName == null){
+                if (element.getTagName().equals(tagName)) break;
+            }
+            else if (utils.isTheElement(element, tagName, idName)) break;
+            rightElements.add(element);
+        }
+        parentElement.insertBefore(linearLayout, rightElements.get(0));
+       // Collections.reverse(rightElements);
+        for (Element element : rightElements){
+            parentElement.removeChild(element);
+            linearLayout.appendChild(element);
+        }
+        return doc;
     }
 
     private Element createViewElement(Document doc){
@@ -510,10 +512,6 @@ public class XmlWork {
     private boolean leaveResBlank(){
         return ((prefUtils.getString(PREF_SELECTED_ROM, "").contains("OxygenOS") && prefUtils.getString(PREF_SELECTED_ROM, "").contains("Nougat")));
 
-    }
-
-    private boolean makeInlineCenter(){
-        return (!(prefUtils.getBool(PREF_MOVE_LEFT) || prefUtils.getBool(PREF_CARRIER_EVERYWHERE)));
     }
 
     private Document getDocument(File file){
