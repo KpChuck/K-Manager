@@ -202,5 +202,24 @@ public class XmlUtils {
         return document;
     }
 
+    public Element lastElement(Element parentElement){
+        ArrayList<Element> elements = getChildElements(parentElement);
+        return elements.get(elements.size() -1 );
+    }
 
+
+    public ArrayList<Element> getRightElementsTo(Element parentElement, String tagName, String idName, XmlWork xmlWork){
+        ArrayList<Element> elements = getChildElements(parentElement);
+        ArrayList<Element> rightElements = new ArrayList<>();
+
+        for (Element element : elements){
+            if (idName == null){
+                if (element.getTagName().equals(tagName)) break;
+            }
+            else if (isTheElement(element, tagName, idName)) break;
+            rightElements.add(element);
+        }
+
+        return rightElements;
+    }
 }

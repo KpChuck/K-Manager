@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -22,7 +21,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import kpchuck.k_klock.R;
 import kpchuck.k_klock.utils.FileHelper;
 import kpchuck.k_klock.utils.PrefUtils;
 import static kpchuck.k_klock.constants.PrefConstants.*;
@@ -263,18 +261,12 @@ public class XmlWork {
 
     private Document packToRightOf(Document doc, Element parentElement, String tagName, String idName){
         ArrayList<Element> elements = utils.getChildElements(parentElement);
-        ArrayList<Element> rightElements = new ArrayList<>();
+        ArrayList<Element> rightElements = utils.getRightElementsTo(parentElement, tagName, idName, this);
         Element linearLayout = doc.createElement("LinearLayout");
         linearLayout.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
         linearLayout.setAttribute(X_LAYOUT_WIDTH, "0dp");
         linearLayout.setAttribute(X_WEIGHT, "1.0");
-        for (Element element : elements){
-            if (idName == null){
-                if (element.getTagName().equals(tagName)) break;
-            }
-            else if (utils.isTheElement(element, tagName, idName)) break;
-            rightElements.add(element);
-        }
+
         parentElement.insertBefore(linearLayout, rightElements.get(0));
        // Collections.reverse(rightElements);
         for (Element element : rightElements){
@@ -351,8 +343,11 @@ public class XmlWork {
                     "@*com.android.systemui:id/status_bar_contents");
             Element notification = utils.findElementInDoc(status, "com.android.systemui.statusbar.AlphaOptimizedFrameLayout",
                     "@*com.android.systemui:id/notification_icon_area");
+
             Element view = createViewElement(status);
-            statusBarContents.insertBefore(view, notification);
+
+
+            statusBarContents.insertBefore(view, utils.lastElement(statusBarContents));
 
 
             statusBarContents.removeChild(notification);
