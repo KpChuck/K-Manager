@@ -261,7 +261,7 @@ public class XmlWork {
 
     private Document packToRightOf(Document doc, Element parentElement, String tagName, String idName){
         ArrayList<Element> elements = utils.getChildElements(parentElement);
-        ArrayList<Element> rightElements = utils.getRightElementsTo(parentElement, tagName, idName, this);
+        ArrayList<Element> rightElements = utils.getRightElementsTo(parentElement, tagName, idName);
         Element linearLayout = doc.createElement("LinearLayout");
         linearLayout.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
         linearLayout.setAttribute(X_LAYOUT_WIDTH, "0dp");
@@ -344,10 +344,12 @@ public class XmlWork {
             Element notification = utils.findElementInDoc(status, "com.android.systemui.statusbar.AlphaOptimizedFrameLayout",
                     "@*com.android.systemui:id/notification_icon_area");
 
-            Element view = createViewElement(status);
-
-
-            statusBarContents.insertBefore(view, utils.lastElement(statusBarContents));
+            ArrayList<Element> list = utils.getRightElementsTo(statusBarContents, "com.android.keyguard.AlphaOptimizedLinearLayout",
+                    "@*com.android.systemui:id/system_icon_area");
+            if (!utils.isPushyOutElement(list.get(list.size() - 1))) {
+                Element view = createViewElement(status);
+                statusBarContents.insertBefore(view, utils.lastElement(statusBarContents));
+            }
 
 
             statusBarContents.removeChild(notification);

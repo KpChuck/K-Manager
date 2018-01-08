@@ -207,8 +207,14 @@ public class XmlUtils {
         return elements.get(elements.size() -1 );
     }
 
+    public boolean isPushyOutElement(Element element){
+        String weight = element.getAttribute(X_WEIGHT).substring(0, 1);
+        String width = element.getAttribute(X_LAYOUT_WIDTH).substring(0, 1);
+        return (weight.equals("1") && width.equals("0"));
+    }
 
-    public ArrayList<Element> getRightElementsTo(Element parentElement, String tagName, String idName, XmlWork xmlWork){
+
+    public ArrayList<Element> getRightElementsTo(Element parentElement, String tagName, String idName){
         ArrayList<Element> elements = getChildElements(parentElement);
         ArrayList<Element> rightElements = new ArrayList<>();
 
