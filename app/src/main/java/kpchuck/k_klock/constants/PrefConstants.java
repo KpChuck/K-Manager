@@ -35,6 +35,7 @@ public class PrefConstants {
 
     public static final String PREF_STATUSBAR_CLOCK_SIZE = "statusBarClockSizePref";
     public static final String PREF_LOCKSCREEN_STATUSBAR_SIZE = "hideStatusBarPref";
+    public static final String PREF_BLACKOUT_LOCKSCREEN = "blackoutTheLockscreenStatusbar";
 
     // Array keys
     public static final String COLOR_TITLES = "colorsTitles";

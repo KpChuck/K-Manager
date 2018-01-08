@@ -78,6 +78,10 @@ public class XmlWork {
         else if (prefUtils.getBool(PREF_MOVE_LEFT)) {
             hideCarrierText(keyguard);
         }
+        if (prefUtils.getBool(PREF_BLACKOUT_LOCKSCREEN)){
+            Element rootElement = keyguard.getDocumentElement();
+            rootElement = utils.changeAttribute(rootElement, "android:background", "#ff000000");
+        }
         keyguard = utils.fixUpForAttrs(keyguard, hasAttrs);
 
         Element carrierText = utils.findElementInDoc(keyguard, "com.android.keyguard.CarrierText",

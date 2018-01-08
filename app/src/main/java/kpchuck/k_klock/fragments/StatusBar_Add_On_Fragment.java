@@ -54,6 +54,7 @@ public class StatusBar_Add_On_Fragment extends Fragment {
     @BindView(R.id.hideNotificationIcons) CheckBox hideNotifs;
     @BindView(R.id.clockSize) Switch clockSizeSwitch;
     @BindView(R.id.notifsRight) Switch notifsRightSwitch;
+    @BindView(R.id.blackoutLockscreen) Switch blackoutSwitch;
 
     public StatusBar_Add_On_Fragment() {
         // Required empty public constructor
@@ -92,6 +93,7 @@ public class StatusBar_Add_On_Fragment extends Fragment {
         ButterKnife.apply(carrierEveryheckbox, ENABLEDCheckBox, prefUtils.getBool(PREF_CARRIER_EVERYWHERE));
         ButterKnife.apply(hideNotifs, ENABLEDCheckBox, prefUtils.getBool(PREF_CARRIER_HIDE_NOTIFICATIONS));
         ButterKnife.apply(notifsRightSwitch, ENABLED, prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT));
+        ButterKnife.apply(blackoutSwitch, ENABLED, prefUtils.getBool(PREF_BLACKOUT_LOCKSCREEN));
 
 
         if (prefUtils.getBool(PREF_CARRIER_TEXT)) ButterKnife.apply(carrierView, SetVisibility, View.VISIBLE);
@@ -148,8 +150,13 @@ public class StatusBar_Add_On_Fragment extends Fragment {
             prefUtils.setCheckboxPrefs(carrierEveryheckbox, PREF_CARRIER_EVERYWHERE);
         }
 
-        @OnClick (R.id.notifsRight)
+        @OnClick (R.id.blackoutLockscreen)
         public void onClick(){
+            prefUtils.setSwitchPrefs(blackoutSwitch, PREF_BLACKOUT_LOCKSCREEN);
+        }
+
+        @OnClick (R.id.notifsRight)
+        public void onClickTwo(){
             prefUtils.setSwitchPrefs(notifsRightSwitch, PREF_MOVE_NOTIFICATIONS_RIGHT);
         }
 
