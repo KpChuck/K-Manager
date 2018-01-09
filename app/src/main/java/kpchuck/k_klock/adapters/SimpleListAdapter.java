@@ -151,8 +151,9 @@ public class SimpleListAdapter extends BaseAdapter implements Filterable, ISpinn
             }
             final ArrayList<String> filterStrings = new ArrayList<>();
             for (String text : mBackupStrings) {
-                if (text.contains(constraint)) {
+                if (text.toLowerCase().contains(constraint.toString().toLowerCase())) {
                     filterStrings.add(text);
+
                 }
             }
             filterResults.count = filterStrings.size();
