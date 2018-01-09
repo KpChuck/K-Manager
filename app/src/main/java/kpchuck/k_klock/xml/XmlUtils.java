@@ -73,6 +73,7 @@ public class XmlUtils {
 
     private boolean isTheElement(Element element, String layoutTag, String idName, String attributeName){
         if (!element.getTagName().equals(layoutTag)) return false;
+        if (!element.hasAttribute(attributeName)) return false;
 
         Attr attr = element.getAttributeNode(attributeName);
         if (attr.getValue().equals(idName))return true;
