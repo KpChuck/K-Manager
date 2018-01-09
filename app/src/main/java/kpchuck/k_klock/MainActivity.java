@@ -862,6 +862,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getArrayForRoms(){
+
+        roms.add(betaString);
         try {
             String[] temp = getAssets().list("romSpecific");
             Arrays.sort(temp);
@@ -869,7 +871,6 @@ public class MainActivity extends AppCompatActivity {
                 s = s.substring(0, s.lastIndexOf('.'));
                 roms.add(s);
             };
-            roms.add(betaString);
         }catch(Exception e){
             shortToast(e.getMessage());
         }
