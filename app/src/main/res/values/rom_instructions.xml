@@ -24,6 +24,7 @@
 
     <string-array name="hide_clock">
 
+        <item>Cardinal Oreo</item>
         <item>JDC Nougat</item>
         <item>LineageOS Nougat</item>
         <item>LineageOS Oreo</item>
