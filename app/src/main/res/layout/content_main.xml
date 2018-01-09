@@ -44,10 +44,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="16dp"
-
-
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
                     android:layout_below="@id/romHeaderText"
                     android:id="@+id/spinnerLinearLayout">
 
@@ -57,7 +55,7 @@
                         android:layout_height="match_parent"
                         android:layout_marginStart="12dp"
                         android:layout_marginEnd="12dp"
-                        app:StartSearchTintColor="?textColorInverse"
+                        app:StartSearchTintColor="?textColor"
                         app:DoneSearchTintColor="?colorPrimary"
                         app:RevealViewBackgroundColor="?secondaryBackgroundColor"
                         app:SearchViewBackgroundColor="?secondaryBackgroundColor"
