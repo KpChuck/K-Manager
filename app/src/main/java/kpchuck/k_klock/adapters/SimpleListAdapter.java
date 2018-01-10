@@ -32,12 +32,13 @@ public class SimpleListAdapter extends BaseAdapter implements Filterable, ISpinn
     private Context mContext;
     private ArrayList<String> mBackupStrings;
     private ArrayList<String> mStrings;
-    private StringFilter mStringFilter = new StringFilter();
+    private StringFilter mStringFilter;
 
     public SimpleListAdapter(Context context, ArrayList<String> strings) {
         mContext = context;
         mStrings = strings;
         mBackupStrings = strings;
+        mStringFilter = new StringFilter(mContext.getResources().getString(R.string.otherRomsBeta));
     }
 
     @Override
@@ -141,6 +142,12 @@ public class SimpleListAdapter extends BaseAdapter implements Filterable, ISpinn
 
     public class StringFilter extends Filter {
 
+        private String otherRoms;
+
+        public StringFilter(String otherRoms){
+            this.otherRoms = otherRoms;
+        }
+
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             final FilterResults filterResults = new FilterResults();
@@ -151,7 +158,7 @@ public class SimpleListAdapter extends BaseAdapter implements Filterable, ISpinn
             }
             final ArrayList<String> filterStrings = new ArrayList<>();
             for (String text : mBackupStrings) {
-                if (text.toLowerCase().contains(constraint.toString().toLowerCase())) {
+                if (text.toLowerCase().contains(constraint.toString().toLowerCase()) || text.equals(otherRoms)) {
                     filterStrings.add(text);
 
                 }
