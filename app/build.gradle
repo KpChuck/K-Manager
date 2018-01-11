@@ -38,7 +38,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 27
         versionCode 1
-        versionName "21"
+        versionName "22"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     applicationVariants.all { variant ->
@@ -109,8 +109,6 @@ dependencies {
     compile 'com.android.support:support-v4:26.+'
     //Image Picker
     compile 'com.kbeanie:multipicker:1.1.31@aar'
-    //Superuser
-    compile 'eu.chainfire:libsuperuser:1.0.0.+'
     //Searchable Spinner
     compile 'gr.escsoft.michaelprimez.searchablespinner:SearchableSpinner:1.0.9'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
