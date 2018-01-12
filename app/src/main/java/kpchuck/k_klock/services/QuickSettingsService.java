@@ -4,7 +4,7 @@ import android.service.quicksettings.Tile;
 import android.service.quicksettings.TileService;
 import android.util.Log;
 
-import eu.chainfire.libsuperuser.Shell;
+import kpchuck.k_klock.utils.SuUtils;
 
 /**
  * Created by Karol Przestrzelski on 17/08/2017.
@@ -47,7 +47,8 @@ public class QuickSettingsService
     private void restartSystemUi() {
 
             try {
-                Shell.SU.run("killall com.android.systemui");
+                SuUtils su = new SuUtils();
+                su.runSuCommand("killall com.android.systemui");
 
             } catch (Exception e) {
                 Log.e(TAG, "Error killing system UI"+ e.getMessage());

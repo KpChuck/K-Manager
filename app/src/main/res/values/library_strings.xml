@@ -164,33 +164,6 @@
     <!-- License section -->
     <string name="library_multipicker_licenseId" translatable="false" tools:keep="@string/library_multipicker_licenseId">apache_2_0</string>
 
-
-    <!-- LibSuperUser -->
-    <string name="define_libsuperuser" tools:keep="@string/define_libsuperuser" />
-    <!-- Author section -->
-    <string name="library_libsuperuser_author" translatable="false" tools:keep="@string/library_libsuperuser_author">Chainfire</string>
-    <string name="library_libsuperuser_authorWebsite" translatable="false" tools:keep="@string/library_libsuperuser_authorWebsite">
-        http://su.chainfire.eu/
-    </string>
-    <!-- Library section -->
-    <string name="library_libsuperuser_libraryName" translatable="false" tools:keep="@string/library_libsuperuser_libraryName">LibSuperUser</string>
-    <string name="library_libsuperuser_libraryDescription" tools:keep="@string/library_libsuperuser_libraryDescription">A library project containing reusable code to call su.
-    </string>
-    <string name="library_libsuperuser_libraryWebsite" translatable="false" tools:keep="@string/library_libsuperuser_libraryWebsite">
-        https://github.com/Chainfire/libsuperuser
-    </string>
-    <string name="library_libsuperuser_libraryVersion" translatable="false" tools:keep="@string/library_libsuperuser_libraryVersion">1.0.0</string>
-    <!-- OpenSource section -->
-    <string name="library_libsuperuser_isOpenSource" translatable="false" tools:keep="@string/library_libsuperuser_isOpenSource">true</string>
-    <string name="library_libsuperuser_repositoryLink" translatable="false" tools:keep="@string/library_libsuperuser_repositoryLink">
-        https://github.com/Chainfire/libsuperuser
-    </string>
-    <!-- ClassPath for autoDetect section -->
-    <string name="library_libsuperuser_classPath" translatable="false" tools:keep="@string/library_libsuperuser_classPath">eu.chainfire:libsuperuser
-    </string>
-    <!-- License section -->
-    <string name="library_libsuperuser_licenseId" translatable="false" tools:keep="@string/library_libsuperuser_licenseId">apache_2_0</string>
-
     <!-- Searchable Spinner -->
     <string name="define_searchablespinner" tools:keep="@string/define_searchablespinner" />
     <!-- Author section -->
