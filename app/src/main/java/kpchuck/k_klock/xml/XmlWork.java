@@ -179,7 +179,8 @@ public class XmlWork {
         Element view = createViewElement(status);
 
         statusBarContents.insertBefore(customClock, systemIconArea);
-        systemIconArea.insertBefore(view, utils.getFirstChildElement(systemIconArea));
+        if (!prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT))
+            systemIconArea.insertBefore(view, utils.getFirstChildElement(systemIconArea));
 
         status = packToRightOf(status, statusBarContents, "TextClock", null);
 
@@ -243,7 +244,9 @@ public class XmlWork {
         view = createViewElement(status);
 
         statusBarContents.insertBefore(hideE, systemIconArea);
-        systemIconArea.insertBefore(view, utils.getFirstChildElement(systemIconArea));
+
+        if (!prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT))
+            systemIconArea.insertBefore(view, utils.getFirstChildElement(systemIconArea));
 
         hideE.appendChild(customClock);
         status = packToRightOf(status, statusBarContents, "LinearLayout", "@*com.android.systemui:id/system_icon_area");
