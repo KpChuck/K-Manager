@@ -209,9 +209,13 @@ public class XmlUtils {
     }
 
     public boolean isPushyOutElement(Element element){
-        String weight = element.getAttribute(X_WEIGHT).substring(0, 1);
-        String width = element.getAttribute(X_LAYOUT_WIDTH).substring(0, 1);
-        return (weight.equals("1") && width.equals("0"));
+        if (element.hasAttribute(X_WEIGHT) && element.hasAttribute(X_LAYOUT_WIDTH)) {
+            String weight = element.getAttribute(X_WEIGHT).substring(0, 1);
+            String width = element.getAttribute(X_LAYOUT_WIDTH).substring(0, 1);
+            return (weight.equals("1") && width.equals("0"));
+        }else {
+            return false;
+        }
     }
 
 

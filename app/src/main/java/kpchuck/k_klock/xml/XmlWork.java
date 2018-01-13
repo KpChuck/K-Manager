@@ -179,8 +179,7 @@ public class XmlWork {
         Element view = createViewElement(status);
 
         statusBarContents.insertBefore(customClock, systemIconArea);
-        if (!prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT))
-            systemIconArea.insertBefore(view, utils.getFirstChildElement(systemIconArea));
+        systemIconArea.insertBefore(view, utils.getFirstChildElement(systemIconArea));
 
         status = packToRightOf(status, statusBarContents, "TextClock", null);
 
@@ -245,8 +244,7 @@ public class XmlWork {
 
         statusBarContents.insertBefore(hideE, systemIconArea);
 
-        if (!prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT))
-            systemIconArea.insertBefore(view, utils.getFirstChildElement(systemIconArea));
+        systemIconArea.insertBefore(view, utils.getFirstChildElement(systemIconArea));
 
         hideE.appendChild(customClock);
         status = packToRightOf(status, statusBarContents, "LinearLayout", "@*com.android.systemui:id/system_icon_area");
@@ -350,16 +348,17 @@ public class XmlWork {
                     "@*com.android.systemui:id/status_bar_contents");
             Element notification = utils.findElementInDoc(status, "com.android.systemui.statusbar.AlphaOptimizedFrameLayout",
                     "@*com.android.systemui:id/notification_icon_area");
-
+            statusBarContents.removeChild(notification);
             ArrayList<Element> list = utils.getRightElementsTo(statusBarContents, "com.android.keyguard.AlphaOptimizedLinearLayout",
                     "@*com.android.systemui:id/system_icon_area");
-            if (!utils.isPushyOutElement(list.get(list.size() - 1))) {
-                Element view = createViewElement(status);
-                statusBarContents.insertBefore(view, utils.lastElement(statusBarContents));
+            if (list.size() != 0) {
+                if (!utils.isPushyOutElement(list.get(list.size() - 1))) {
+                    Element view = createViewElement(status);
+                    statusBarContents.insertBefore(view, utils.lastElement(statusBarContents));
+                }
             }
 
 
-            statusBarContents.removeChild(notification);
 
         }
 
