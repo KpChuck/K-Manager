@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import eu.chainfire.libsuperuser.Shell;
 import kellinwood.security.zipsigner.ZipSigner;
 import kpchuck.k_klock.XmlModding;
 import kpchuck.k_klock.R;
@@ -98,19 +97,21 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         super.onPostExecute(result);
         String apkVersion = result;
         File apk = new File(rootFolder + slash + apkVersion);
+        SuUtils su = new SuUtils();
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        if (!prefs.getBoolean("installSilently", true) || !Shell.SU.available()) {
+        if (!prefs.getBoolean("installSilently", true) || !su.hasRoot()) {
             FileHelper fh = new FileHelper();
             showSnackbar();
             fh.installApk(apk, context);
         }else {
             String install = "pm install -r /sdcard/K-Klock/" + apkVersion;
-            String output = Shell.SU.run(install).toString();
+            String output = su.runCommand(install).toString();
             if (output.contains("Success")) showSnackbar();
         }
         relativeLayout.setVisibility(View.GONE);
         tv.setText("");
+
     }
 
     private void showSnackbar() {
@@ -123,9 +124,9 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
                             final String SUBSTRATUM_PACKAGE_NAME = "projekt.substratum";
                             final String THEME_PACKAGE_NAME = "com.kpchuck.kklock";
 
-                            Intent intent = new Intent();
-                            intent = intent.setClassName(SUBSTRATUM_PACKAGE_NAME, "projekt.substratum.activities.launch.ThemeLaunchActivity");
-                            intent.putExtra("package_name", THEME_PACKAGE_NAME);
+                            Intent intentActivity = new Intent();
+                            intentActivity = intentActivity.setClassName(SUBSTRATUM_PACKAGE_NAME, "projekt.substratum.activities.launch.ThemeLaunchActivity");
+                          /*  intent.putExtra("package_name", THEME_PACKAGE_NAME);
                             intent.setAction("projekt.substratum.THEME");
                             intent.setPackage(THEME_PACKAGE_NAME);
                             intent.putExtra("calling_package_name", THEME_PACKAGE_NAME);
@@ -133,8 +134,22 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
                             intent.putExtra("theme_mode", (String) null);
                             intent.putExtra("notification", false);
                             intent.putExtra("hash_passthrough", true);
-                            intent.putExtra("certified", false);
-                            context.startActivity(intent);
+                            intent.putExtra("certified", false);*/
+
+
+                            intentActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intentActivity.putExtra("package_name", THEME_PACKAGE_NAME);
+                            intentActivity.setAction("projekt.substratum.THEME");
+                            intentActivity.setPackage(THEME_PACKAGE_NAME);
+                            intentActivity.putExtra("calling_package_name", THEME_PACKAGE_NAME);
+                            intentActivity.putExtra("oms_check", true);
+                            intentActivity.putExtra("theme_mode", (String) null);
+                            intentActivity.putExtra("notification", false);
+                            intentActivity.putExtra("hash_passthrough", true);
+                            intentActivity.putExtra("certified", false);
+
+
+                            context.startActivity(intentActivity);
                         }
                     });
 

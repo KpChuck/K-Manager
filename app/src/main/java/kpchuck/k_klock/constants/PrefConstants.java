@@ -37,6 +37,11 @@ public class PrefConstants {
     public static final String PREF_LOCKSCREEN_STATUSBAR_SIZE = "hideStatusBarPref";
     public static final String PREF_BLACKOUT_LOCKSCREEN = "blackoutTheLockscreenStatusbar";
 
+    public static final String PREF_HIDE_ICONS_ON_LOCKSCREEN = "hideStatusBaronLockscreen";
+    public static final String PREF_HIDE_ICONS_NOT_FULLY = "hideStatusBarIconsOnLockscreenButNotFully";
+    public static final String ICON_BLACKLIST = "iconBlacklistValues";
+    public static final String ICON_BLACKLIST_SCREEN_UNLOCKED = "screenwasunlockedsosave";
+
     // Array keys
     public static final String COLOR_TITLES = "colorsTitles";
     public static final String COLOR_VALUES = "colorsValues";

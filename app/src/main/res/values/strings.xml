@@ -145,6 +145,7 @@
     <string name="statusbar_addon">StatusBar Add-Ons</string>
     <string name="network_icons_left">Move Network Icons to the Left</string>
     <string name="notification_icons_right">Move Notification Icons to the Right</string>
+    <string name="blackout_lockscreen">Blackout the Lockscreen StatusBar</string>
     <string name="ampm_stock_clock">Show Am/Pm in Stock Clock</string>
     <string name="hide_network_indicators">Hide Network Signal Indicators</string>
     <string name="clock_size">StatusBar Clock Size</string>

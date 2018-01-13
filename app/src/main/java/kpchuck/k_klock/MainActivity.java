@@ -3,6 +3,7 @@ package kpchuck.k_klock;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.FragmentManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -84,6 +85,7 @@ import kpchuck.k_klock.fragments.TextAlertDialogFragment;
 import kpchuck.k_klock.interfaces.BtnClickListener;
 import kpchuck.k_klock.interfaces.DialogClickListener;
 import kpchuck.k_klock.services.CheckforUpdatesService;
+import kpchuck.k_klock.services.HideIconsService;
 import kpchuck.k_klock.utils.ApkBuilder;
 import kpchuck.k_klock.utils.FileHelper;
 import kpchuck.k_klock.utils.PrefUtils;
@@ -462,8 +464,6 @@ public class MainActivity extends AppCompatActivity {
         rom.putExtra("value", 4);
         startActivity(rom);
     }
-
-
     private boolean alreadyRan = false;
 
     private void notifyOnUpdate(){

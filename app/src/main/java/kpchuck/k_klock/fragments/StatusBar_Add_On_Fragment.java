@@ -3,6 +3,7 @@ package kpchuck.k_klock.fragments;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -23,8 +24,13 @@ import butterknife.OnTextChanged;
 import butterknife.Unbinder;
 import kpchuck.k_klock.MainActivity;
 import kpchuck.k_klock.R;
+import kpchuck.k_klock.activities.InformationWebViewActivity;
+import kpchuck.k_klock.interfaces.DialogClickListener;
+import kpchuck.k_klock.services.HideIconsService;
 import kpchuck.k_klock.utils.FileHelper;
 import kpchuck.k_klock.utils.PrefUtils;
+import kpchuck.k_klock.utils.StatusBarIconsUtils;
+
 import static kpchuck.k_klock.constants.PrefConstants.*;
 
 /**
@@ -55,6 +61,8 @@ public class StatusBar_Add_On_Fragment extends Fragment {
     @BindView(R.id.clockSize) Switch clockSizeSwitch;
     @BindView(R.id.notifsRight) Switch notifsRightSwitch;
     @BindView(R.id.blackoutLockscreen) Switch blackoutSwitch;
+    @BindView(R.id.hideStatusbarIcons) Switch hideIconsLockscreen;
+    @BindView(R.id.hideStatusbarIconsNotFully) Switch hideIconsNotFully;
 
     public StatusBar_Add_On_Fragment() {
         // Required empty public constructor
@@ -82,6 +90,12 @@ public class StatusBar_Add_On_Fragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_add__on_, container, false);
 
         unbinder = ButterKnife.bind(this, v);
+
+        if (prefUtils.getBool(PREF_HIDE_ICONS_ON_LOCKSCREEN)){
+            Intent i = new Intent(getContext(), HideIconsService.class);
+            getContext().startService(i);
+        }
+
         //Set position and visibility of switches
         ButterKnife.apply(clockSizeSwitch, ENABLED, prefUtils.getBool(PREF_STATUSBAR_CLOCK_SIZE));
         ButterKnife.apply(amSwitch, ENABLED, prefUtils.getBool(PREF_AM));
@@ -94,6 +108,8 @@ public class StatusBar_Add_On_Fragment extends Fragment {
         ButterKnife.apply(hideNotifs, ENABLEDCheckBox, prefUtils.getBool(PREF_CARRIER_HIDE_NOTIFICATIONS));
         ButterKnife.apply(notifsRightSwitch, ENABLED, prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT));
         ButterKnife.apply(blackoutSwitch, ENABLED, prefUtils.getBool(PREF_BLACKOUT_LOCKSCREEN));
+        ButterKnife.apply(hideIconsLockscreen, ENABLED, prefUtils.getBool(PREF_HIDE_ICONS_ON_LOCKSCREEN));
+        ButterKnife.apply(hideIconsNotFully, ENABLED, prefUtils.getBool(PREF_HIDE_ICONS_NOT_FULLY));
 
 
         if (prefUtils.getBool(PREF_CARRIER_TEXT)) ButterKnife.apply(carrierView, SetVisibility, View.VISIBLE);
@@ -150,6 +166,10 @@ public class StatusBar_Add_On_Fragment extends Fragment {
             prefUtils.setCheckboxPrefs(carrierEveryheckbox, PREF_CARRIER_EVERYWHERE);
         }
 
+        @OnClick (R.id.hideStatusbarIconsNotFully)
+        public void notFully(){
+            prefUtils.setSwitchPrefs(hideIconsNotFully, PREF_HIDE_ICONS_NOT_FULLY);
+        }
         @OnClick (R.id.blackoutLockscreen)
         public void onClick(){
             prefUtils.setSwitchPrefs(blackoutSwitch, PREF_BLACKOUT_LOCKSCREEN);
@@ -175,6 +195,50 @@ public class StatusBar_Add_On_Fragment extends Fragment {
             prefUtils.setSwitchPrefs(amSwitch, PREF_AM);
 
         }
+
+        @OnClick(R.id.hideStatusbarIcons)
+        public void hideLockscreen(){
+            if (hideIconsLockscreen.isChecked()) {
+                StatusBarIconsUtils utils = new StatusBarIconsUtils();
+                if (utils.hasPerms(getContext())) {
+                    prefUtils.setSwitchPrefs(hideIconsLockscreen, PREF_HIDE_ICONS_ON_LOCKSCREEN);
+                    Intent i = new Intent(getContext(), HideIconsService.class);
+                    getContext().startService(i);
+                } else {
+                    if (utils.setPerms());
+                    else showAdbSteps();
+                    ButterKnife.apply(hideIconsLockscreen, ENABLED, false);
+                }
+            }
+            else {
+                prefUtils.setSwitchPrefs(hideIconsLockscreen, PREF_HIDE_ICONS_ON_LOCKSCREEN);
+                Intent i = new Intent(getContext(), HideIconsService.class);
+                getContext().stopService(i);
+            }
+        }
+
+    private void showAdbSteps(){
+        TextAlertDialogFragment dialogFragment = new TextAlertDialogFragment();
+        DialogClickListener dialogClickListener = new DialogClickListener() {
+            @Override
+            public void onPositiveBtnClick() {
+                Intent intent = new Intent(getContext(), InformationWebViewActivity.class);
+                intent.putExtra("value", 5);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onCancelBtnClick() {
+
+            }
+        };
+        dialogFragment.Instantiate("Adb Permissions Required",
+                "You need to grant K-Manager permissions through adb for this function to work",
+                "Okay",
+                "No way",
+                dialogClickListener);
+        dialogFragment.show(myContext.getSupportFragmentManager(), "klock");
+    }
 
         @OnClick(R.id.hideStatusbar)
         public void lockClick(){
