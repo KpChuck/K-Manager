@@ -205,9 +205,15 @@ public class StatusBar_Add_On_Fragment extends Fragment {
                     Intent i = new Intent(getContext(), HideIconsService.class);
                     getContext().startService(i);
                 } else {
-                    if (utils.setPerms());
-                    else showAdbSteps();
-                    ButterKnife.apply(hideIconsLockscreen, ENABLED, false);
+                    if (utils.setPerms()){
+                        prefUtils.setSwitchPrefs(hideIconsLockscreen, PREF_HIDE_ICONS_ON_LOCKSCREEN);
+                        Intent i = new Intent(getContext(), HideIconsService.class);
+                        getContext().startService(i);
+                    }
+                    else {
+                        showAdbSteps();
+                        ButterKnife.apply(hideIconsLockscreen, ENABLED, false);
+                        }
                 }
             }
             else {
