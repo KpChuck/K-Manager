@@ -49,24 +49,24 @@ public class SuUtils {
             Process p = Runtime.getRuntime().exec("su");
 
             DataOutputStream outputStream = new DataOutputStream(p.getOutputStream());
-
-            for (String c : command) {
-                outputStream.writeBytes(c);
-                outputStream.flush();
-            }
-
-            outputStream.writeBytes("exit\n");
-            outputStream.flush();
-            p.waitFor();
-
             BufferedReader stdInput = new BufferedReader(new
                     InputStreamReader(p.getInputStream()));
+            for (String c : command) {
+                outputStream.writeBytes(c + "\n");
+                outputStream.flush();
+            }
+       //     p.waitFor();
+            outputStream.writeBytes("exit\n");
+            outputStream.flush();
 
+
+            p.waitFor();
             // read the output from the command
             String s = null;
             while ((s = stdInput.readLine()) != null) {
                 result.add(s);
             }
+
         }catch (Exception e){
             Log.e("klock", e.getMessage());
         }
