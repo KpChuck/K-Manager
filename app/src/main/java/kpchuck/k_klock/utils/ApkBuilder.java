@@ -88,15 +88,8 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         }
         cleanup();
 
-        return apkVersion[0];
-    }
 
-
-    @Override
-    protected void onPostExecute(String result) {
-        super.onPostExecute(result);
-        String apkVersion = result;
-        File apk = new File(rootFolder + slash + apkVersion);
+        File apk = new File(rootFolder + slash + apkVersion[0]);
         SuUtils su = new SuUtils();
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -105,10 +98,18 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             showSnackbar();
             fh.installApk(apk, context);
         }else {
-            String install = "pm install -r /sdcard/K-Klock/" + apkVersion;
-            String output = su.runCommand(install).toString();
+            String install = "pm install -r /sdcard/K-Klock/" + apkVersion[0];
+            String output = su.runSuCommand(install).toString();
             if (output.contains("Success")) showSnackbar();
         }
+        return apkVersion[0];
+    }
+
+
+    @Override
+    protected void onPostExecute(String result) {
+        super.onPostExecute(result);
+
         relativeLayout.setVisibility(View.GONE);
         tv.setText("");
 
