@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import kellinwood.security.zipsigner.ZipSigner;
-import kpchuck.k_klock.XmlModding;
 import kpchuck.k_klock.R;
 import kpchuck.k_klock.xml.XmlCreation;
 import kpchuck.k_klock.xml.XmlWork;
