@@ -66,6 +66,29 @@ public class XmlUtils {
         return null;
     }
 
+    public Element findElementById(Document doc, String idName){
+        Element parentElement = doc.getDocumentElement();
+        if (parentElement.getAttribute(X_ID).equals(idName)) return parentElement;
+
+
+        NodeList list = parentElement.getChildNodes();
+        Element layout = null;
+        for (int i=0; i<list.getLength(); i++){
+            Node node = list.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                layout = (Element) list.item(i);
+                Attr attr = layout.getAttributeNode(X_ID);
+                if (attr.getValue().equals(idName)) break;
+                else layout = null;
+            }
+        }
+        if (layout == null){
+            Log.e("klock", "Could not find element with id " + idName);
+            return null;
+        }
+        return layout;
+    }
+
 
     public boolean isTheElement(Element element, String layoutTag, String idName){
         return isTheElement(element, layoutTag, idName, X_ID);

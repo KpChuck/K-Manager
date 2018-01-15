@@ -84,7 +84,7 @@ public class XmlWork {
         }
         keyguard = utils.fixUpForAttrs(keyguard, hasAttrs);
 
-        Element carrierText = utils.findElementInDoc(keyguard, "com.android.keyguard.CarrierText",
+        Element carrierText = utils.findElementById(keyguard,
                 "@*com.android.systemui:id/keyguard_carrier_text");
         carrierText = utils.changeAttribute(carrierText, "android:textColor", "#ffffffff");
 
@@ -446,13 +446,15 @@ public class XmlWork {
     }
 
     private Element hideCarrierText(Document doc){
-        Element rootElement = doc.getDocumentElement();
-        Element carrierTextElement = utils.getElementById(rootElement, "com.android.keyguard.CarrierText",
+        Element carrierTextElement = utils.findElementById(doc,
                 "@*com.android.systemui:id/keyguard_carrier_text");
 
         // Hide the carrier text
-        carrierTextElement.removeAttribute(X_LAYOUT_WIDTH);
-        carrierTextElement.setAttribute(X_LAYOUT_WIDTH, "0dp");
+        if (carrierTextElement == null){
+            Log.w("klock", "Can't hide carrier text - null element");
+
+        }
+        utils.changeAttribute(carrierTextElement, X_LAYOUT_WIDTH, "0dip");
 
         return carrierTextElement;
     }
