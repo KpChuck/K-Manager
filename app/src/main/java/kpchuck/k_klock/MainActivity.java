@@ -3,11 +3,7 @@ package kpchuck.k_klock;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.app.FragmentManager;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
@@ -17,10 +13,10 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.widget.CardView;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.animation.AnimationUtils;
@@ -30,7 +26,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import android.os.Bundle;
@@ -80,12 +75,16 @@ import kpchuck.k_klock.activities.SettingsActivity;
 import kpchuck.k_klock.adapters.ColorAdapter;
 import kpchuck.k_klock.adapters.FormatAdapter;
 import kpchuck.k_klock.adapters.SimpleListAdapter;
+import kpchuck.k_klock.adapters.SwipeTabAdapter;
+import kpchuck.k_klock.fragments.ClockFragment;
+import kpchuck.k_klock.fragments.IconsFragment;
 import kpchuck.k_klock.fragments.InputAlertDialogFragment;
+import kpchuck.k_klock.fragments.MiscFragment;
+import kpchuck.k_klock.fragments.StatusBarFragment;
 import kpchuck.k_klock.fragments.TextAlertDialogFragment;
 import kpchuck.k_klock.interfaces.BtnClickListener;
 import kpchuck.k_klock.interfaces.DialogClickListener;
 import kpchuck.k_klock.services.CheckforUpdatesService;
-import kpchuck.k_klock.services.HideIconsService;
 import kpchuck.k_klock.utils.ApkBuilder;
 import kpchuck.k_klock.utils.FileHelper;
 import kpchuck.k_klock.utils.PrefUtils;
@@ -97,7 +96,7 @@ import static kpchuck.k_klock.constants.PrefConstants.*;
 public class MainActivity extends AppCompatActivity {
 
     // Bind Switches and things to do with switches
-    @BindView (R.id.networkSignalIndicatorSwitch) Switch indicatorSwitch;
+    /*@BindView (R.id.networkSignalIndicatorSwitch) Switch indicatorSwitch;
     @BindView (R.id.noQsTilesTv) Switch qsSwitch;
     @BindView (R.id.roundedRecents) Switch recentsSwitch;
     @BindView (R.id.moveNetworkLeft) Switch moveLeftSwitch;
@@ -107,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
     @BindView (R.id.minitMod) Switch minit;
     @BindView (R.id.qsTitle) Switch qstitle;
     @BindView (R.id.ampm) Switch ampm;
-    @BindView (R.id.iconColorCardView) CardView iconView;
+    @BindView (R.id.iconColorCardView) CardView iconView;*/
 
     // Bind layouts, spinner
     @BindView (R.id.loadingId) RelativeLayout loadingLayout;
@@ -116,6 +115,9 @@ public class MainActivity extends AppCompatActivity {
     @BindView (R.id.defaultLayout) ScrollView scrollView;
     @BindView (R.id.spinnerLinearLayout) LinearLayout SpinnerLayout;
     @BindView(R.id.otherRomsQm) ImageButton questionMark;
+    SwipeTabAdapter tabAdapter;
+    // Fragment Stuff
+    ClockFragment clockFragment;
 
     // Call Strings, Arraylists and Classes for later use
     ArrayList<String> roms = new ArrayList<>();
@@ -195,12 +197,31 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setTheme(prefUtils.getBool(PREF_BLACK_THEME) ? R.style.AppTheme_Dark : R.style.AppTheme);
-
         setContentView(R.layout.activity_main);
+
         ButterKnife.bind(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Setup tabs
+        // Create an adapter that knows which fragment should be shown on each page
+        this.clockFragment = new ClockFragment();
+        IconsFragment iconsFragment = new IconsFragment();
+        StatusBarFragment statusBarFragment = new StatusBarFragment();
+        MiscFragment miscFragment = new MiscFragment();
+
+        tabAdapter = new SwipeTabAdapter(getSupportFragmentManager(), clockFragment,
+                iconsFragment, statusBarFragment, miscFragment);
+
+        // Set the adapter onto the view pager
+        final ViewPager viewPager = findViewById(R.id.pager);
+        viewPager.setAdapter(tabAdapter);
+
+    //    viewPager.setOffscreenPageLimit(3);
+        // Give the TabLayout the ViewPager
+        TabLayout tabLayout = findViewById(R.id.sliding_tabs);
+        tabLayout.setupWithViewPager(viewPager);
 
         // Setup Custom Crash Activity
         CaocConfig.Builder.create()
@@ -423,12 +444,12 @@ public class MainActivity extends AppCompatActivity {
                 String selectedItem = simpleListAdapter.getItem(position).toString();
                 prefUtils.putString("selectedRom", selectedItem);
                 if (fileHelper.getOos(selectedItem).equals("OxygenOS")){
-                    qsBg.setVisibility(View.GONE);
-                    indicatorSwitch.setVisibility(View.VISIBLE);
+                    //qsBg.setVisibility(View.GONE);
+                   // indicatorSwitch.setVisibility(View.VISIBLE);
                 }
                 else {
-                    indicatorSwitch.setVisibility(View.GONE);
-                    qsBg.setVisibility(View.VISIBLE);
+                  //  indicatorSwitch.setVisibility(View.GONE);
+                   // qsBg.setVisibility(View.VISIBLE);
                 }
                 questionMark.setVisibility(isOtherRoms() ? View.VISIBLE : View.GONE);
 

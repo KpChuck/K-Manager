@@ -12,10 +12,13 @@
     <ScrollView
         android:layout_width="match_parent"
         android:id="@+id/defaultLayout"
+        android:fillViewport="true"
         android:layout_height="match_parent">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
+
+        <!-- Rom selection -->
         <android.support.v7.widget.CardView
             android:id="@+id/romCardView"
             android:layout_width="match_parent"
@@ -82,136 +85,28 @@
 
         </android.support.v7.widget.CardView>
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/clockColorCardView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:id="@+id/ll_vp"
             android:layout_below="@id/romCardView"
-            android:layout_marginTop="12dp">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:id="@+id/colorHeaderText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="12dp"
-                    android:text="@string/cc_manager"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
-
-                <Button
-                    android:layout_width="match_parent"
-                    android:id="@+id/includedColorsButton"
-                    android:layout_height="wrap_content"
-                    android:text="@string/included_colors"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@id/colorHeaderText"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginRight="12dp"
-                    android:onClick="showIncludedColors"
-                    />
-
-                <Button
-                    android:layout_width="match_parent"
-                    android:id="@+id/addColorButton"
-                    android:layout_height="wrap_content"
-                    android:text="@string/add_color"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@id/includedColorsButton"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginRight="12dp"
-                    android:layout_marginBottom="12dp"
-                    android:onClick="addCustomColors"
-                    />
-
-
-
-            </RelativeLayout>
-
-        </android.support.v7.widget.CardView>
-
-
-        <!-- Clock Format Start-->
-        <android.support.v7.widget.CardView
-            android:id="@+id/clockFormatCardView"
+        <android.support.design.widget.TabLayout
+            android:id="@+id/sliding_tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_below="@id/clockColorCardView"
-            android:layout_marginTop="12dp">
+            app:tabMode="fixed" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:id="@+id/formatHeaderText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="12dp"
-                    android:text="@string/cf_manager"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+        <android.support.v4.view.ViewPager
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/pager"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
 
-                <Button
-                    android:layout_width="match_parent"
-                    android:id="@+id/includedFormatButton"
-                    android:layout_height="wrap_content"
-                    android:text="@string/included_formats"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@id/formatHeaderText"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginRight="12dp"
-                    android:onClick="showIncludedFormats"
-                    />
-
-                <Button
-                    android:layout_width="match_parent"
-                    android:id="@+id/addFormatButton"
-                    android:layout_height="wrap_content"
-                    android:text="@string/add_format"
-                    android:layout_centerHorizontal="true"
-                    android:layout_below="@id/includedFormatButton"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginRight="12dp"
-                    android:layout_marginBottom="12dp"
-                    android:onClick="addCustomFormats"
-                    />
-
-            </RelativeLayout>
-
-        </android.support.v7.widget.CardView>
-
-    <fragment
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/statusBarAddOnFragment"
-        android:layout_below="@id/clockFormatCardView"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginTop="12dp"
-        class="kpchuck.k_klock.fragments.StatusBar_Add_On_Fragment"/>
-
-    <fragment
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/miscAddOnFragment"
-        android:layout_below="@id/statusBarAddOnFragment"
-        class="kpchuck.k_klock.fragments.Misc_Add_On_Fragment"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginBottom="300dp"
-        android:layout_marginTop="12dp"/>
+    </LinearLayout>
 
     </RelativeLayout>
 </ScrollView>

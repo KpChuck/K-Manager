@@ -4,7 +4,7 @@ import static kpchuck.k_klock.constants.PrefConstants.*;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,7 +37,7 @@ import static android.app.Activity.RESULT_OK;
  */
 
 
-public class Misc_Add_On_Fragment extends Fragment {
+public class MiscFragment extends Fragment {
 
 
     private Unbinder unbinder;
@@ -54,7 +54,7 @@ public class Misc_Add_On_Fragment extends Fragment {
     @BindView (R.id.minitMod) Switch minitSwitch;
     @BindView (R.id.qsBg) Switch qsBgSwitch;
 
-    public Misc_Add_On_Fragment() {
+    public MiscFragment() {
         // Required empty public constructor
     }
 
@@ -151,7 +151,7 @@ public class Misc_Add_On_Fragment extends Fragment {
     public void qsBGClick(){
         if(qsBgSwitch.isChecked()) {
 
-            imagePicker = new ImagePicker(getFragmentManager().findFragmentById(R.id.miscAddOnFragment));
+      //      imagePicker = new ImagePicker(getFragmentManager().findFragmentById(R.id.miscAddOnFragment));
             imagePicker.setImagePickerCallback(new ImagePickerCallback(){
                 @Override
                 public void onImagesChosen(List<ChosenImage> images) {
