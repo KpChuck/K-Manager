@@ -510,7 +510,7 @@ public class MainActivity extends AppCompatActivity {
         ListDialogFragment listDialogFragment = new ListDialogFragment();
         List<String> names = new ArrayList<>(Arrays.asList("Hide Stock Clock", "Make a Dynamic Clock (Nougat)"));
         List<String> keys = new ArrayList<>(Arrays.asList(DEV_HIDE_CLOCK, DEV_MAKE_DYNAMIC));
-        listDialogFragment.Instantiate("Other Roms Settings", names, keys, true);
+        listDialogFragment.Instantiate("Other Roms Settings", names, keys, false);
         listDialogFragment.show(getSupportFragmentManager(), "");
 
     }
