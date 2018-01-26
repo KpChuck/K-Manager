@@ -150,7 +150,26 @@ public class XmlUtils {
 
     }
 
+    private void findAbnormallyLongGravity(Element element){
+
+        Element e = null;
+        NodeList childs = element.getChildNodes();
+        for (int i = 0; i < childs.getLength(); i++) {
+            Node child = childs.item(i);
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                e = (Element) child;
+                findAbnormallyLongGravity(e);
+                if (!e.hasAttribute(X_GRAVITY)) continue;
+                String gravity = e.getAttribute(X_GRAVITY);
+                if ((gravity.length() > 15))
+                    e = changeAttribute(e, X_GRAVITY, "start|center");
+            }
+        }
+    }
+
     public Document replaceAt(Document doc){
+        doc = replaceStuffInXml(doc, "@+", "@");
+        findAbnormallyLongGravity(doc.getDocumentElement());
         return replaceStuffInXml(doc, "@", "@*com.android.systemui:");
     }
 

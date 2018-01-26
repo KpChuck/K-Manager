@@ -68,6 +68,7 @@ public class XmlWork {
 
         File[] folders = baseFolders.listFiles(fileHelper.DIRECTORY);
 
+
         // Start with keyguard_status_bar.xml
         Document keyguard = getDocument(new File(srcFolder + "/keyguard_status_bar.xml"));
         keyguard = utils.replaceAt(keyguard);
@@ -87,6 +88,7 @@ public class XmlWork {
         Element carrierText = utils.findElementById(keyguard,
                 "@*com.android.systemui:id/keyguard_carrier_text");
         carrierText = utils.changeAttribute(carrierText, "android:textColor", "#ffffffff");
+        carrierText = utils.changeAttribute(carrierText, "android:textAppearance", "?android:textAppearanceSmall");
 
         String[] modPlaces = {"type2_No_Clock_on_Lockscreen_Right", "type2_Dynamic_Clock_Right", "type2_Stock_Clock_Right"};
         // Write unmodified keyguard

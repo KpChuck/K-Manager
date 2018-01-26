@@ -97,27 +97,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             }
         });
 
-        final SwitchPreference enableDevOptions = (SwitchPreference) findPreference(DEV_ENABLED);
-        enableDevOptions.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object o) {
-
-                SharedPreferences.Editor editor = myPref.edit();
-                editor.remove(DEV_HIDE_CLOCK);
-                editor.remove(DEV_MAKE_DYNAMIC);
-                editor.apply();
-                SwitchPreference devDynamic = (SwitchPreference) findPreference(DEV_MAKE_DYNAMIC);
-                SwitchPreference devClock = (SwitchPreference) findPreference(DEV_HIDE_CLOCK);
-
-                if (enableDevOptions.isChecked()) {
-
-                    devDynamic.setChecked(false);
-                    devClock.setChecked(false);
-                }
-
-                return true;
-            }
-        });
 
         Preference deleteApks = (Preference) findPreference("deleteApks");
         deleteApks.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){

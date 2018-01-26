@@ -25,7 +25,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import android.os.Bundle;
@@ -59,10 +58,7 @@ import com.stephentuso.welcome.WelcomeHelper;
 import org.apache.commons.io.FileUtils;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -94,7 +90,6 @@ import kpchuck.k_klock.utils.ApkBuilder;
 import kpchuck.k_klock.utils.FileHelper;
 import kpchuck.k_klock.utils.PrefUtils;
 import kpchuck.k_klock.utils.SuUtils;
-import kpchuck.k_klock.xml.OtherRomsHandler;
 
 import static kpchuck.k_klock.constants.PrefConstants.*;
 

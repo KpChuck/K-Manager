@@ -10,7 +10,6 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.apache.commons.io.FileUtils;
@@ -21,10 +20,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+import jadx.api.JadxDecompiler;
 import kellinwood.security.zipsigner.ZipSigner;
 import kpchuck.k_klock.R;
-import kpchuck.k_klock.xml.XmlCreation;
 import kpchuck.k_klock.xml.XmlWork;
 
 import static kpchuck.k_klock.constants.PrefConstants.*;
@@ -41,20 +41,22 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
     private Context context;
     private RelativeLayout relativeLayout;
     private TextView tv;
-    private ScrollView scrollView;
+    private RelativeLayout defaultLayout;
+    private boolean hasAllXmls = false;
     private FileHelper fileHelper;
     private PrefUtils prefUtils;
     private File mergerFolder;
     private File tempFolder;
     private String univ = "universal";
 
-    public ApkBuilder(Context context, RelativeLayout relativeLayout, TextView textView, ScrollView scrollView){
+    public ApkBuilder(Context context, RelativeLayout relativeLayout, TextView textView, RelativeLayout defaultLayout, boolean xmls){
         this.fileHelper = new FileHelper();
         this.context = context;
         this.prefUtils = new PrefUtils(context);
         this.relativeLayout = relativeLayout;
         this.tv = textView;
-        this.scrollView = scrollView;
+        this.defaultLayout = defaultLayout;
+        this.hasAllXmls= xmls;
     }
 
     @Override
@@ -75,6 +77,14 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
         makeDirs();
         ExtractAssets();
+        if (!hasAllXmls && isOtherRoms(prefUtils.getString(PREF_SELECTED_ROM, ""))){
+            File sysui = new File(Environment.getExternalStorageDirectory() + "/K-Klock/userInput/SystemUI.apk");
+            SuUtils suUtils = new SuUtils();
+            if (!sysui.exists()) {
+                suUtils.runSuCommand("cp /system/priv-app/$(ls /system/priv-app | grep SystemUI)/*.apk /sdcard/K-Klock/userInput/SystemUI.apk");
+            }
+            decompileSysUI(sysui);
+        }
         modTheRomZip();
         insertCustomXmls();
         dealWivQsBg();
@@ -101,6 +111,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             String output = su.runSuCommand(install).toString();
             if (output.contains("Success")) showSnackbar();
         }
+
         return apkVersion[0];
     }
 
@@ -114,9 +125,47 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
     }
 
+    private void decompileSysUI(File sysui){
+        try {
+            JadxDecompiler jadx = new JadxDecompiler();
+            File kManager = fileHelper.newFolder(Environment.getExternalStorageDirectory() + "/K-Manager/");
+            File dest = fileHelper.newFolder(kManager, "libs");
+            fileHelper.copyFromAssets("android", "android.zip", dest, context, true);
+            new File(dest, "android.zip").renameTo(new File(dest, "android"));
+
+
+
+            File resOut = new File(kManager, "res_out");
+            jadx.setSources(true);
+            jadx.loadFile(sysui);
+            jadx.setOutputDir(kManager);
+            jadx.setOutputDirRes(resOut);
+           // jadx.setWhichXmls(new String[]{"status_bar.xml", "system_icons.xml", "keyguard_status_bar.xml", "resources.arsc"});
+            jadx.save();
+            List<File> xmls = new ArrayList<>();
+            xmls.add(new File(resOut, "res/layout/status_bar.xml"));
+            xmls.add(new File(resOut, "res/layout/keyguard_status_bar.xml"));
+            xmls.add(new File(resOut, "res/layout/system_icons.xml"));
+            xmls.add(new File(resOut, "res/values/attrs.xml"));
+            File userInput = sysui.getParentFile();
+            for (File f : xmls){
+                try{
+                    FileUtils.copyFileToDirectory(f, userInput);
+                }
+                catch (IOException e){
+                    Log.e("klock", e.getMessage());
+                }
+            }
+
+        }catch (Exception e){
+            Log.e("klock", e.getMessage());
+            cancel(true);
+        }
+    }
+
     private void showSnackbar() {
         try {
-            Snackbar snackbar = Snackbar.make(scrollView, "Open K-Klock in Substratum", Snackbar.LENGTH_INDEFINITE)
+            Snackbar snackbar = Snackbar.make(defaultLayout, "Open K-Klock in Substratum", Snackbar.LENGTH_INDEFINITE)
                     .setAction("Open", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -214,16 +263,14 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
     }
 
     private boolean shouldBeDynamic(String rom){
-        SharedPreferences defPref = PreferenceManager.getDefaultSharedPreferences(context);
         boolean inWhitelist = Arrays.asList(context.getResources().getStringArray(R.array.dynamic_clocks)).contains(rom);
-        boolean enabledInSettings = defPref.getBoolean(DEV_MAKE_DYNAMIC, false) && isOtherRoms(rom);
+        boolean enabledInSettings = prefUtils.getBool(DEV_MAKE_DYNAMIC) && isOtherRoms(rom);
         return inWhitelist || enabledInSettings;
     }
 
     private boolean hideClock(String rom){
-        SharedPreferences defPref = PreferenceManager.getDefaultSharedPreferences(context);
         boolean inWhitelist = Arrays.asList(context.getResources().getStringArray(R.array.hide_clock)).contains(rom);
-        boolean enabledInSettings = defPref.getBoolean(DEV_HIDE_CLOCK, false) && isOtherRoms(rom);
+        boolean enabledInSettings = prefUtils.getBool(DEV_HIDE_CLOCK) && isOtherRoms(rom);
         return inWhitelist || enabledInSettings;
     }
 
@@ -346,9 +393,10 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
     public void cleanup (){
         try{
-            FileUtils.deleteDirectory(tempFolder);
-            FileUtils.deleteDirectory(mergerFolder);
-            FileUtils.deleteDirectory(new File(rootFolder + "/customInput"));
+            List<File> files = Arrays.asList(new File[]{tempFolder, mergerFolder, new File(rootFolder + "/customInput")});
+            for (File f: files){
+                if (f.exists()) FileUtils.deleteDirectory(f);
+            }
         }catch (IOException e){
             Log.e("klock", e.getMessage());
         }
