@@ -151,7 +151,7 @@ public class MiscFragment extends Fragment {
     public void qsBGClick(){
         if(qsBgSwitch.isChecked()) {
 
-      //      imagePicker = new ImagePicker(getFragmentManager().findFragmentById(R.id.miscAddOnFragment));
+            imagePicker = new ImagePicker(this);
             imagePicker.setImagePickerCallback(new ImagePickerCallback(){
                 @Override
                 public void onImagesChosen(List<ChosenImage> images) {

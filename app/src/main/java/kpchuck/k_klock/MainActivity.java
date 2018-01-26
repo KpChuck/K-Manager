@@ -59,6 +59,10 @@ import com.stephentuso.welcome.WelcomeHelper;
 import org.apache.commons.io.FileUtils;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -79,6 +83,7 @@ import kpchuck.k_klock.adapters.SwipeTabAdapter;
 import kpchuck.k_klock.fragments.ClockFragment;
 import kpchuck.k_klock.fragments.IconsFragment;
 import kpchuck.k_klock.fragments.InputAlertDialogFragment;
+import kpchuck.k_klock.fragments.ListDialogFragment;
 import kpchuck.k_klock.fragments.MiscFragment;
 import kpchuck.k_klock.fragments.StatusBarFragment;
 import kpchuck.k_klock.fragments.TextAlertDialogFragment;
@@ -88,6 +93,7 @@ import kpchuck.k_klock.services.CheckforUpdatesService;
 import kpchuck.k_klock.utils.ApkBuilder;
 import kpchuck.k_klock.utils.FileHelper;
 import kpchuck.k_klock.utils.PrefUtils;
+import kpchuck.k_klock.utils.SuUtils;
 import kpchuck.k_klock.xml.OtherRomsHandler;
 
 import static kpchuck.k_klock.constants.PrefConstants.*;
@@ -95,27 +101,16 @@ import static kpchuck.k_klock.constants.PrefConstants.*;
 
 public class MainActivity extends AppCompatActivity {
 
-    // Bind Switches and things to do with switches
-    /*@BindView (R.id.networkSignalIndicatorSwitch) Switch indicatorSwitch;
-    @BindView (R.id.noQsTilesTv) Switch qsSwitch;
-    @BindView (R.id.roundedRecents) Switch recentsSwitch;
-    @BindView (R.id.moveNetworkLeft) Switch moveLeftSwitch;
-    @BindView (R.id.hideStatusbar) Switch hideStatusbar;
-    @BindView (R.id.colorIcons) Switch iconColors;
-    @BindView (R.id.qsBg) Switch qsBg;
-    @BindView (R.id.minitMod) Switch minit;
-    @BindView (R.id.qsTitle) Switch qstitle;
-    @BindView (R.id.ampm) Switch ampm;
-    @BindView (R.id.iconColorCardView) CardView iconView;*/
 
     // Bind layouts, spinner
     @BindView (R.id.loadingId) RelativeLayout loadingLayout;
     @BindView (R.id.loadingTextView) TextView loadingTextView;
     @BindView (R.id.romSelectionSpinner) SearchableSpinner searchableSpinner;
-    @BindView (R.id.defaultLayout) ScrollView scrollView;
+    @BindView (R.id.defaultLayout) RelativeLayout defaultLayout;
     @BindView (R.id.spinnerLinearLayout) LinearLayout SpinnerLayout;
     @BindView(R.id.otherRomsQm) ImageButton questionMark;
     SwipeTabAdapter tabAdapter;
+    @BindView(R.id.orSettings) Button orSettingsButton;
     // Fragment Stuff
     ClockFragment clockFragment;
 
@@ -151,40 +146,74 @@ public class MainActivity extends AppCompatActivity {
         if(prefUtils.getBoolTrue("joinTelegram")) promptTelegram();
 
 
+
         super.onPostResume();
     }
 
     @OnClick(R.id.fab)
     public void startBuilding() {
-        OtherRomsHandler handler = new OtherRomsHandler(getApplicationContext(), false);
 
-        if (prefUtils.getBool("gsBgPref") && !fileHelper.checkQsFile(prefUtils)) return;
-
+        if (prefUtils.getBool("gsBgPref") && !fileHelper.checkQsFile(prefUtils)) {
+            prefUtils.putBool("qsBgPref", false);
+        }
         String romName = prefUtils.getString("selectedRom", getString(R.string.chooseRom));
-        if(romName.equals(getResources().getString(R.string.chooseRom))){
-            shortToast(getResources().getString(R.string.selectRomToast));
+        if(romName.equals(getString(R.string.chooseRom))){
+            shortToast(getString(R.string.selectRomToast));
+            return;
+        }
+        if(romName.equals(betaString) && !hasXmlsInUser() && !new SuUtils().hasRoot()) {
+
+            TextAlertDialogFragment dialogFragment = new TextAlertDialogFragment();
+            DialogClickListener clickListener = new DialogClickListener() {
+                @Override
+                public void onPositiveBtnClick() {
+                    Intent i = new Intent(getApplicationContext(), InformationWebViewActivity.class);
+                    i.putExtra("value", 4);
+                    startActivity(i);
+                }
+
+                @Override
+                public void onCancelBtnClick() {
+
+                }
+            };
+            dialogFragment.Instantiate("Oh No", "You don\'t seem to have the necessary file and/or permission for this to work properly.\n" +
+                    "Please refer to the guide below to get them",
+                    "Take me to your guide!", "Sounds scary, no thanks", clickListener
+                    );
+            dialogFragment.show(getSupportFragmentManager(), "missiles");
 
         }
-
-        else if(romName.equals(betaString) && !handler.checkForXmls()) {
-
-           /* if (handler.checkForXmls()) {
-                handler.execute();
-                buildingProcess();
-            }
-            else if (!handler.checkForXmls()){
-                Intent i = new Intent(getApplicationContext(), InformationWebViewActivity.class);
-                i.putExtra("value", 4);
-                startActivity(i);
-            }*/
-                Intent i = new Intent(getApplicationContext(), InformationWebViewActivity.class);
-                i.putExtra("value", 4);
-                startActivity(i);
-        }
-
         else if(!romName.equals("")) {
             buildingProcess();
         }
+    }
+
+    private boolean hasAll = false;
+
+    private boolean hasXmlsInUser(){
+        // Check for new version
+        boolean osVersion = (System.getProperty("os.version")).equals(prefUtils.getString("osversion", ""));
+        boolean buildUser = (Build.USER).equals(prefUtils.getString("builduser", ""));
+        boolean releaseVersion = (Build.VERSION.RELEASE).equals(prefUtils.getString("buildversionrelease", ""));
+        boolean newVersion = osVersion && buildUser && releaseVersion;
+        if (newVersion){
+            prefUtils.putString("osversion", System.getProperty("os.version"));
+            prefUtils.putString("builduser", Build.USER);
+            prefUtils.putString("buildversionrelease", Build.VERSION.RELEASE);
+        }
+        String[] x = new File(rootFolder + "/userInput").list(fileHelper.XML);
+        if (x.length == 0) return false;
+        List<String> xmls = Arrays.asList(x);
+        String[] xmlNames = {"status_bar.xml", "keyguard_status_bar.xml", "system_icons"};
+        hasAll = xmls.containsAll(Arrays.asList(xmlNames));
+        boolean hasSysUI = xmls.contains("SystemUI.apk");
+
+        if (newVersion) return false;
+        if (hasAll|| hasSysUI) return true;
+
+
+        return false;
     }
 
     @Override
@@ -428,6 +457,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (isOtherRoms()) questionMark.setVisibility(View.VISIBLE);
+        orSettingsButton.setVisibility(isOtherRoms() ? View.VISIBLE : View.GONE);
 
 
         new CleanupFiles(loadingLayout, loadingTextView).execute();
@@ -451,6 +481,7 @@ public class MainActivity extends AppCompatActivity {
                   //  indicatorSwitch.setVisibility(View.GONE);
                    // qsBg.setVisibility(View.VISIBLE);
                 }
+                orSettingsButton.setVisibility(isOtherRoms() ? View.VISIBLE : View.GONE);
                 questionMark.setVisibility(isOtherRoms() ? View.VISIBLE : View.GONE);
 
             } // to close the onItemSelected
@@ -477,6 +508,16 @@ public class MainActivity extends AppCompatActivity {
     private boolean isOtherRoms(){
         String rom = prefUtils.getString(PREF_SELECTED_ROM, betaString);
         return rom.equals(context.getString(R.string.otherRomsBeta));
+    }
+
+    @OnClick (R.id.orSettings)
+    public void orSettingsClick(){
+        ListDialogFragment listDialogFragment = new ListDialogFragment();
+        List<String> names = new ArrayList<>(Arrays.asList("Hide Stock Clock", "Make a Dynamic Clock (Nougat)"));
+        List<String> keys = new ArrayList<>(Arrays.asList(DEV_HIDE_CLOCK, DEV_MAKE_DYNAMIC));
+        listDialogFragment.Instantiate("Other Roms Settings", names, keys, true);
+        listDialogFragment.show(getSupportFragmentManager(), "");
+
     }
 
     @OnClick (R.id.otherRomsQm)
@@ -510,42 +551,6 @@ public class MainActivity extends AppCompatActivity {
                 getString(R.string.download), getString(R.string.remind_me_later), dialogClickListener);
         dialogFragment.show(getSupportFragmentManager(), "klock");
 
-       /* Log.d("klock", "Sending notification...");
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        String NOTIFICATION_CHANNEL_ID = "my_channel_id_01";
-        Intent intent = new Intent(context, CheckforUpdatesService.class);
-        intent.putExtra("action", 2);
-
-        PendingIntent pIntent = PendingIntent.getService(context, 0, intent, 0);
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, getString(R.string.app_name), NotificationManager.IMPORTANCE_HIGH);
-
-            // Configure the notification channel.
-            notificationChannel.setDescription("Update notifcation");
-            notificationChannel.enableLights(false);
-            notificationChannel.setVibrationPattern(new long[]{500});
-            notificationChannel.enableVibration(true);
-            notificationManager.createNotificationChannel(notificationChannel);
-        }
-
-
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID);
-        String name = prefUtils.getString(LATEST_GITHUB_VERSION_NAME, null);
-
-        notificationBuilder.setAutoCancel(true)
-                .setDefaults(Notification.DEFAULT_ALL)
-                .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setTicker("Update Available")
-                //     .setPriority(Notification.PRIORITY_MAX)
-                .setContentTitle("Update " + name + " available")
-                .setContentText("Tap here to download")
-                .setContentIntent(pIntent)
-                .setContentInfo("Update");
-
-        notificationManager.notify(1, notificationBuilder.build());*/
 
     }
 
@@ -603,7 +608,7 @@ public class MainActivity extends AppCompatActivity {
         int k = fileHelper.decreaseToLowest(check);
         String apkVersion = "K-Klock_v" + k + ".apk";
 
-        new ApkBuilder(context, loadingLayout, loadingTextView, scrollView).execute(apkVersion, apkVersion, apkVersion);
+        new ApkBuilder(context, loadingLayout, loadingTextView, defaultLayout, hasAll).execute(apkVersion, apkVersion, apkVersion);
 
     }
 

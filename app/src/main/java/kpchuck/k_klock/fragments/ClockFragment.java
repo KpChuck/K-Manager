@@ -51,7 +51,7 @@ public class ClockFragment extends Fragment {
     }
 
     // Handle Clicks for Icon View
-    @OnClick(R.id.includedColorsButton)
+    @OnClick(R.id.addColorButton)
     public void addColorListener(View view){
         InputAlertDialogFragment dialogFragment = new InputAlertDialogFragment();
         dialogFragment.Instantiate(getString(R.string.add_color_name_title), getString(R.string.add_color_name_hint),
@@ -60,14 +60,14 @@ public class ClockFragment extends Fragment {
         dialogFragment.show(myContext.getSupportFragmentManager(), "klock");
     }
 
-    @OnClick(R.id.addColorButton)
+    @OnClick(R.id.includedColorsButton)
     public void showColors(View view){
         ((MainActivity) getActivity()).showIncludedColors(view);
 
     }
 
     // Handle Clicks for Icon View
-    @OnClick(R.id.includedFormatButton)
+    @OnClick(R.id.addFormatButton)
     public void addFormatListener(View view){
         InputAlertDialogFragment dialogFragment = new InputAlertDialogFragment();
         dialogFragment.Instantiate(getString(R.string.add_format_name_title), getString(R.string.add_format_name_hint),
@@ -76,7 +76,7 @@ public class ClockFragment extends Fragment {
         dialogFragment.show(myContext.getSupportFragmentManager(), "klock");
     }
 
-    @OnClick(R.id.addFormatButton)
+    @OnClick(R.id.includedFormatButton)
     public void showFormat(View view){
         ((MainActivity) getActivity()).showIncludedFormats(view);
 

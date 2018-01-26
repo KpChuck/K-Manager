@@ -173,7 +173,7 @@ public class IconsFragment extends Fragment {
             Intent i = new Intent(getContext(), HideIconsService.class);
             getContext().stopService(i);
         }
-        if (iconSwitch.isChecked()) {
+        if (hideIconsLockscreen.isChecked()) {
             ButterKnife.apply(hideIconsNotFully, SetVisibility, View.INVISIBLE);
             hideIconsNotFully.animate()
                     .alpha(1.0f)

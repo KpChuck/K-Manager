@@ -9,13 +9,9 @@
              tools:context="kpchuck.k_klock.MainActivity">
 
     <!-- Default Layout -->
-    <ScrollView
-        android:layout_width="match_parent"
-        android:id="@+id/defaultLayout"
-        android:fillViewport="true"
-        android:layout_height="match_parent">
     <RelativeLayout
         android:layout_width="match_parent"
+        android:id="@+id/defaultLayout"
         android:layout_height="wrap_content">
 
         <!-- Rom selection -->
@@ -27,7 +23,8 @@
             android:layout_marginRight="12dp"
             android:layout_marginTop="12dp">
 
-            <RelativeLayout
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 >
@@ -37,8 +34,7 @@
                     android:id="@+id/romHeaderText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="12dp"
                     android:text="@string/rom_manager"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
@@ -48,8 +44,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:paddingTop="16dp"
-                    android:paddingBottom="16dp"
-                    android:layout_below="@id/romHeaderText"
+                    android:paddingBottom="12dp"
                     android:id="@+id/spinnerLinearLayout">
 
                     <gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner
@@ -81,7 +76,17 @@
 
                 </LinearLayout>
 
-             </RelativeLayout>
+                <Button
+                    android:layout_width="match_parent"
+                    android:id="@+id/orSettings"
+                    android:layout_height="wrap_content"
+                    android:text="Other Roms Settings"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:visibility="gone"
+                    />
+
+             </LinearLayout>
 
         </android.support.v7.widget.CardView>
 
@@ -89,6 +94,8 @@
         <LinearLayout
             android:orientation="vertical"
             android:id="@+id/ll_vp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
             android:layout_below="@id/romCardView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -97,19 +104,18 @@
             android:id="@+id/sliding_tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:layout_marginTop="12dp"
             app:tabMode="fixed" />
 
         <android.support.v4.view.ViewPager
-            xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/pager"
-            android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="0dp" />
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
     </RelativeLayout>
-</ScrollView>
 
     <!-- List Views -->
     <RelativeLayout
