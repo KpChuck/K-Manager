@@ -1,5 +1,8 @@
 apply plugin: 'com.android.application'
 
+ext.jadxClasspath = 'clsp-data/android-5.1.jar'
+
+
 android {
     compileSdkVersion 27
     buildToolsVersion '26.0.2'
@@ -112,7 +115,7 @@ dependencies {
     //Searchable Spinner
     compile 'gr.escsoft.michaelprimez.searchablespinner:SearchableSpinner:1.0.9'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
-    compile 'gr.escsoft.michaelprimez.revealedittext:RevealEditText:1.0.1'
+    compile 'gr.escsoft.michaelprimez.revealedittext:RevealEditText:1.0.2'
     //Welcome Activity
     compile 'com.stephentuso:welcome:1.4.1'
     // Butterknife
@@ -135,6 +138,18 @@ dependencies {
     }
     // Custom Activity on Crash
     compile 'cat.ereza:customactivityoncrash:2.2.0'
+
+    // Jadx
+    compile 'org.ow2.asm:asm:5.0.3'
+    compile 'com.intellij:annotations:12.0'
+    compile 'uk.com.robust-it:cloning:1.9.2'
+    compile 'org.slf4j:slf4j-api:1.7.10'
+
+
+   // compile files('libs/android-5.1.jar')
+    compile files(jadxClasspath)
+
+    compile files('libs/dx-1.14.jar')
 
 
 }
