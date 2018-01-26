@@ -104,7 +104,8 @@ public class XmlUtils {
     }
 
     public Element changeAttribute(Element element, String attribute, String value){
-        element.removeAttribute(attribute);
+        if (element.hasAttribute(attribute))
+            element.removeAttribute(attribute);
         element.setAttribute(attribute, value);
         return element;
     }
