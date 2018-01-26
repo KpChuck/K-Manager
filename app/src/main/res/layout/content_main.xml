@@ -199,7 +199,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#bf000000"
+        android:background="#cc000000"
         android:visibility="gone"
         android:id="@+id/loadingId"
         >
@@ -220,7 +220,7 @@
             android:layout_below="@id/spin_kit"
             android:layout_centerInParent="true"
             android:layout_marginTop="10dp"
-            android:textColor="?textColor"
+            android:textColor="#ffffffff"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large.Inverse"/>
     </RelativeLayout>
 

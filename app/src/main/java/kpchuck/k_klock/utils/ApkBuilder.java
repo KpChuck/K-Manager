@@ -80,6 +80,8 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         makeDirs();
         ExtractAssets();
         if (!hasAllXmls && isOtherRoms(prefUtils.getString(PREF_SELECTED_ROM, ""))){
+            publishProgress("Decompiling Apk...");
+
             File sysui = new File(Environment.getExternalStorageDirectory() + "/K-Klock/userInput/SystemUI.apk");
             SuUtils suUtils = new SuUtils();
             if (!sysui.exists()) {
@@ -87,19 +89,24 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             }
             decompileSysUI(sysui);
         }
+        publishProgress(context.getString(R.string.apkBuilderLoading));
         modTheRomZip();
         insertCustomXmls();
         dealWivQsBg();
         appendOptionsZip();// Takes long about 10s
         // Takes long about 5s
+        publishProgress("Signing K-Klock...");
         try {
             createApkFromDir(new File(mergerFolder, "universalFiles.zip"), apkVersion[0]);
         }catch (Exception e){
             Log.e("klock", e.getMessage());
+            cancel(true);
         }
+        publishProgress("Cleaning files...");
         cleanup();
 
 
+        publishProgress("Installing K-Klock...");
         File apk = new File(rootFolder + slash + apkVersion[0]);
         SuUtils su = new SuUtils();
 
@@ -117,7 +124,18 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         return apkVersion[0];
     }
 
+    @Override
+    protected void onProgressUpdate(String... values) {
+        super.onProgressUpdate(values);
+        tv.setText(values[0]);
+    }
 
+    @Override
+    protected void onCancelled() {
+        super.onCancelled();
+        relativeLayout.setVisibility(View.GONE);
+        tv.setText("");
+    }
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
@@ -178,16 +196,6 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
                             Intent intentActivity = new Intent();
                             intentActivity = intentActivity.setClassName(SUBSTRATUM_PACKAGE_NAME, "projekt.substratum.activities.launch.ThemeLaunchActivity");
-                          /*  intent.putExtra("package_name", THEME_PACKAGE_NAME);
-                            intent.setAction("projekt.substratum.THEME");
-                            intent.setPackage(THEME_PACKAGE_NAME);
-                            intent.putExtra("calling_package_name", THEME_PACKAGE_NAME);
-                            intent.putExtra("oms_check", false);
-                            intent.putExtra("theme_mode", (String) null);
-                            intent.putExtra("notification", false);
-                            intent.putExtra("hash_passthrough", true);
-                            intent.putExtra("certified", false);*/
-
 
                             intentActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             intentActivity.putExtra("package_name", THEME_PACKAGE_NAME);
@@ -351,6 +359,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
                 }
             }catch(IOException e){
                 Log.e("klock", e.getMessage());
+                cancel(true);
             }
         }
     }
@@ -396,15 +405,15 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
     public void cleanup (){
         try{
-            List<File> files = Arrays.asList(new File[]{tempFolder, mergerFolder, new File(rootFolder + "/customInput")});
+            List<File> files = Arrays.asList(tempFolder, mergerFolder, new File(rootFolder + "/customInput"));
             for (File f: files){
                 if (f.exists()) FileUtils.deleteDirectory(f);
             }
         }catch (IOException e){
             Log.e("klock", e.getMessage());
+            cancel(true);
         }
     }
-
 
 
 }
