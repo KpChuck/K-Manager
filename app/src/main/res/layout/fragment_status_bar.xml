@@ -30,6 +30,14 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
 
 
+        <!-- Change StatusBar color -->
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Change StatusBar Color"
+            android:id="@+id/statBarColor"/>
+
         <!-- Show ampm -->
         <Switch
             android:layout_width="match_parent"
