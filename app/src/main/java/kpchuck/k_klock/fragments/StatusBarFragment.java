@@ -4,6 +4,9 @@ package kpchuck.k_klock.fragments;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,7 +18,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Switch;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,6 +33,7 @@ import butterknife.OnTextChanged;
 import butterknife.Unbinder;
 import kpchuck.k_klock.R;
 import kpchuck.k_klock.activities.InformationWebViewActivity;
+import kpchuck.k_klock.adapters.SwitchListAdapter;
 import kpchuck.k_klock.interfaces.DialogClickListener;
 import kpchuck.k_klock.services.HideIconsService;
 import kpchuck.k_klock.utils.FileHelper;
@@ -36,6 +46,7 @@ import static kpchuck.k_klock.constants.PrefConstants.PREF_CARRIER_CUSTOM_TEXT;
 import static kpchuck.k_klock.constants.PrefConstants.PREF_CARRIER_EVERYWHERE;
 import static kpchuck.k_klock.constants.PrefConstants.PREF_CARRIER_HIDE_NOTIFICATIONS;
 import static kpchuck.k_klock.constants.PrefConstants.PREF_CARRIER_TEXT;
+import static kpchuck.k_klock.constants.PrefConstants.PREF_CHANGE_STATBAR_COLOR;
 import static kpchuck.k_klock.constants.PrefConstants.PREF_HIDE_ICONS_NOT_FULLY;
 import static kpchuck.k_klock.constants.PrefConstants.PREF_HIDE_ICONS_ON_LOCKSCREEN;
 import static kpchuck.k_klock.constants.PrefConstants.PREF_ICON;
@@ -44,6 +55,7 @@ import static kpchuck.k_klock.constants.PrefConstants.PREF_LOCKSCREEN_STATUSBAR_
 import static kpchuck.k_klock.constants.PrefConstants.PREF_MOVE_LEFT;
 import static kpchuck.k_klock.constants.PrefConstants.PREF_MOVE_NOTIFICATIONS_RIGHT;
 import static kpchuck.k_klock.constants.PrefConstants.PREF_SELECTED_ROM;
+import static kpchuck.k_klock.constants.PrefConstants.PREF_STATBAR_COLOR;
 import static kpchuck.k_klock.constants.PrefConstants.PREF_STATUSBAR_CLOCK_SIZE;
 
 /**
@@ -75,6 +87,7 @@ public class StatusBarFragment extends Fragment {
     @BindView(R.id.hideNotificationIcons) CheckBox hideNotifs;
     @BindView(R.id.clockSize) Switch clockSizeSwitch;
     @BindView(R.id.notifsRight) Switch notifsRightSwitch;
+    @BindView(R.id.statBarColor) Switch statBarColorSwitch;
 
 
     @Override
@@ -116,6 +129,7 @@ public class StatusBarFragment extends Fragment {
         ButterKnife.apply(carrierEveryheckbox, ENABLEDCheckBox, prefUtils.getBool(PREF_CARRIER_EVERYWHERE));
         ButterKnife.apply(hideNotifs, ENABLEDCheckBox, prefUtils.getBool(PREF_CARRIER_HIDE_NOTIFICATIONS));
         ButterKnife.apply(notifsRightSwitch, ENABLED, prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT));
+        ButterKnife.apply(statBarColorSwitch, ENABLED, prefUtils.getBool(PREF_CHANGE_STATBAR_COLOR));
 
         if (prefUtils.getBool(PREF_CARRIER_TEXT)) ButterKnife.apply(carrierView, SetVisibility, View.VISIBLE);
         if (!fileHelper.getOos(prefUtils.getString(PREF_SELECTED_ROM, getString(R.string.chooseRom))).equals("OxygenOS"))
@@ -202,6 +216,45 @@ public class StatusBarFragment extends Fragment {
     public void indicatorClick(){
         prefUtils.setSwitchPrefs(indicatorSwitch, PREF_INDICATORS);
 
+    }
+
+    @OnClick(R.id.statBarColor)
+    public void statbarClick(){
+        prefUtils.setSwitchPrefs(statBarColorSwitch, PREF_CHANGE_STATBAR_COLOR);
+        if (!statBarColorSwitch.isChecked()) return;
+        AlertDialog builder = new AlertDialog.Builder(getContext()).create();
+        // Get the layout inflater
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog layout
+        View view = inflater.inflate(R.layout.fragment_list, null);
+        builder.setView(view);
+
+        TextView textView = view.findViewById(R.id.title);
+        ListView listView = view.findViewById(R.id.listView);
+        final EditText editText = view.findViewById(R.id.editTextValue);
+        editText.setVisibility(View.VISIBLE);
+        textView.setText("Select StatusBar Background Color");
+
+        List<String> names = new ArrayList<>(Arrays.asList("Black", "Black 25% Transparent", "White", "Other(Specify Below)"));
+        List<String> values = new ArrayList<>(Arrays.asList("#ff000000", "#BF000000", "#ffffffff", "other"));
+        List<String> keys = new ArrayList<>(Arrays.asList(PREF_STATBAR_COLOR, PREF_STATBAR_COLOR, PREF_STATBAR_COLOR, PREF_STATBAR_COLOR));
+
+        SwitchListAdapter listAdapter = new SwitchListAdapter(getContext(), names, keys, values, true);
+        listView.setAdapter(listAdapter);
+
+        // Set up buttons
+        builder.setButton(AlertDialog.BUTTON_POSITIVE, "Save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (prefUtils.getString(PREF_STATBAR_COLOR, "").equals("other")){
+                    prefUtils.putString(PREF_STATBAR_COLOR, editText.getText().toString());
+                }
+            }
+        });
+
+        builder.show();
     }
 
     @OnClick (R.id.carrierText)

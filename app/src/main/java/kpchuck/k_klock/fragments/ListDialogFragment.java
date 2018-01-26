@@ -63,7 +63,7 @@ public class ListDialogFragment  extends DialogFragment {
         ListView listView = view.findViewById(R.id.listView);
         textView.setText(title);
 
-        SwitchListAdapter listAdapter = new SwitchListAdapter(getContext(), names, keys, oneValue);
+        SwitchListAdapter listAdapter = new SwitchListAdapter(getContext(), names, keys, null,  oneValue);
         listView.setAdapter(listAdapter);
         // Create the AlertDialog object and return it
         return builder.create();

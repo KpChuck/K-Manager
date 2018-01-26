@@ -333,6 +333,10 @@ public class XmlWork {
         status = utils.replaceAt(status);
         status = utils.fixUpForAttrs(status, hasAttrs);
 
+        Element statusBarContents = utils.findElementInDoc(status,
+                "LinearLayout",
+                "@*com.android.systemui:id/status_bar_contents");
+
         if (prefUtils.getBool(PREF_MOVE_LEFT)){
             status = moveLeft(status);
         }
@@ -345,9 +349,7 @@ public class XmlWork {
             }
         }
         if (prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT) ){
-            Element statusBarContents = utils.findElementInDoc(status,
-                    "LinearLayout",
-                    "@*com.android.systemui:id/status_bar_contents");
+
             Element notification = utils.findElementInDoc(status, "com.android.systemui.statusbar.AlphaOptimizedFrameLayout",
                     "@*com.android.systemui:id/notification_icon_area");
             statusBarContents.removeChild(notification);
@@ -359,9 +361,6 @@ public class XmlWork {
                     statusBarContents.insertBefore(view, utils.lastElement(statusBarContents));
                 }
             }
-
-
-
         }
 
         if (removeClock){
@@ -369,6 +368,10 @@ public class XmlWork {
                     "com.android.systemui.statusbar.policy.Clock",
                     "@*com.android.systemui:id/clock");
             stockClock = utils.changeAttribute(stockClock, X_LAYOUT_WIDTH, "0dip");
+        }
+        if (prefUtils.getBool(PREF_CHANGE_STATBAR_COLOR)){
+            statusBarContents = utils.changeAttribute(statusBarContents, "android:background",
+                    prefUtils.getString(PREF_STATBAR_COLOR, ""));
         }
         return status;
     }
