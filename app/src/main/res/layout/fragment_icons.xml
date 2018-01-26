@@ -16,6 +16,7 @@
             android:layout_width="match_parent"
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
+            android:paddingBottom="12dp"
             android:layout_height="wrap_content">
 
             <!-- Primary title -->
@@ -84,8 +85,8 @@
                 android:layout_height="wrap_content"
                 app:cardBackgroundColor="?secondaryBackgroundColor"
                 app:cardCornerRadius="2dp"
-                android:layout_marginTop="8dp"
-
+                android:layout_marginTop="12dp"
+                android:elevation="20dp"
                 android:layout_marginBottom="12dp">
 
                 <RelativeLayout

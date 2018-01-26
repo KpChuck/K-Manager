@@ -44,7 +44,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:paddingTop="16dp"
-                    android:paddingBottom="12dp"
+                    android:paddingBottom="8dp"
                     android:id="@+id/spinnerLinearLayout">
 
                     <gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner
@@ -83,6 +83,7 @@
                     android:text="Other Roms Settings"
                     android:layout_marginStart="12dp"
                     android:layout_marginEnd="12dp"
+                    android:layout_marginBottom="12dp"
                     android:visibility="gone"
                     />
 
