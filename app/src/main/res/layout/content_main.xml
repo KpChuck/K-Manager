@@ -21,12 +21,15 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
+            android:paddingBottom="12dp"
             android:layout_marginTop="12dp">
 
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingBottom="12dp"
+
                 >
 
 
@@ -83,7 +86,6 @@
                     android:text="Other Roms Settings"
                     android:layout_marginStart="12dp"
                     android:layout_marginEnd="12dp"
-                    android:layout_marginBottom="12dp"
                     android:visibility="gone"
                     />
 
