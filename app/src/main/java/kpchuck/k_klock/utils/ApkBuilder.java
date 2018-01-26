@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import jadx.api.JadxArgs;
 import jadx.api.JadxDecompiler;
 import kellinwood.security.zipsigner.ZipSigner;
 import kpchuck.k_klock.R;
@@ -128,13 +129,14 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
     private void decompileSysUI(File sysui){
         try {
-            JadxDecompiler jadx = new JadxDecompiler();
+            JadxArgs jadxArgs = new JadxArgs();
+            jadxArgs.setSkipSources(true);
+            JadxDecompiler jadx = new JadxDecompiler(jadxArgs);
+
             File kManager = fileHelper.newFolder(Environment.getExternalStorageDirectory() + "/K-Manager/");
             File dest = fileHelper.newFolder(kManager, "libs");
             fileHelper.copyFromAssets("android", "android.zip", dest, context, true);
             new File(dest, "android.zip").renameTo(new File(dest, "android"));
-
-
 
             File resOut = new File(kManager, "res_out");
             jadx.setSources(true);
