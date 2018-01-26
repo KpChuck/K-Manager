@@ -26,9 +26,9 @@ public class XmlCreation {
            String start = "<?xml version=\"1.0\" encoding=\"utf-8\"?><resources><color name=\"status_bar_clock_color\">";
             String end = "</color></resources>";
             String fullColorXml = start + colorCode + end;
-            OtherRomsHandler handler = new OtherRomsHandler(context, false);
 
-            Document doc = handler.stringToDom(fullColorXml);
+            XmlUtils utils = new XmlUtils();
+            Document doc = utils.stringToDom(fullColorXml);
 
             String slash = "/";
             String rootFolder = android.os.Environment.getExternalStorageDirectory() + slash + "K-Klock" + slash + "type1a_"+xmlFilename;
@@ -57,8 +57,8 @@ public class XmlCreation {
             String end = " </string></resources>";
             String fullXmlString = start + formatCode + middle + formatCode + end;
 
-            OtherRomsHandler handler = new OtherRomsHandler(context, false);
-            Document doc = handler.stringToDom(fullXmlString);
+            XmlUtils utils = new XmlUtils();
+            Document doc = utils.stringToDom(fullXmlString);
 
             String slash = "/";
             String rootFolder = android.os.Environment.getExternalStorageDirectory() + slash + "K-Klock" + slash + "type1b_"+xmlFilename;
@@ -88,8 +88,8 @@ public class XmlCreation {
         String fullXml = start + color + middle + color + end;
 
         try{
-            OtherRomsHandler handler = new OtherRomsHandler(context, false);
-            Document doc = handler.stringToDom(fullXml);
+            XmlUtils utils = new XmlUtils();
+            Document doc = utils.stringToDom(fullXml);
 
             String slash = "/";
             String rootFolder = android.os.Environment.getExternalStorageDirectory() + slash + "K-Klock" + slash + "type1c_"+filename;
