@@ -169,6 +169,7 @@ public class IconsFragment extends Fragment {
                         "You can use the SystemUI Tuner app from the playstore to backup/restore your icon configuration.\n" +
                         "You have been and will continue being warned, so I take no responsibility for any icons I may cause",
                 "Okay, I understand", "Cancel", dialogClickListener);
+        dialogFragment.show(myContext.getSupportFragmentManager(), "");
     }
 
     @OnClick(R.id.hideStatusbarIcons)
