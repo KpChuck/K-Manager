@@ -148,19 +148,40 @@ public class IconsFragment extends Fragment {
         prefUtils.setSwitchPrefs(blackoutSwitch, PREF_BLACKOUT_LOCKSCREEN);
     }
 
+    private void warnUser(){
+        boolean r = true;
+        TextAlertDialogFragment dialogFragment = new TextAlertDialogFragment();
+        DialogClickListener dialogClickListener = new DialogClickListener() {
+            @Override
+            public void onPositiveBtnClick() {
+                Intent i = new Intent(getContext(), HideIconsService.class);
+                getContext().startService(i);
+            }
+
+            @Override
+            public void onCancelBtnClick() {
+                ButterKnife.apply(hideIconsLockscreen, ENABLED, false);
+                prefUtils.setSwitchPrefs(hideIconsLockscreen, PREF_HIDE_ICONS_ON_LOCKSCREEN);
+            }
+        };
+        dialogFragment.Instantiate("Warning :)",
+                "Hiding icons on lockscreen result in more icons appearing or sometimes all of them disappearing." +
+                        "You can use the SystemUI Tuner app from the playstore to backup/restore your icon configuration.\n" +
+                        "You have been and will continue being warned, so I take no responsibility for any icons I may cause",
+                "Okay, I understand", "Cancel", dialogClickListener);
+    }
+
     @OnClick(R.id.hideStatusbarIcons)
     public void hideLockscreen(){
         if (hideIconsLockscreen.isChecked()) {
             StatusBarIconsUtils utils = new StatusBarIconsUtils();
             if (utils.hasPerms(getContext())) {
                 prefUtils.setSwitchPrefs(hideIconsLockscreen, PREF_HIDE_ICONS_ON_LOCKSCREEN);
-                Intent i = new Intent(getContext(), HideIconsService.class);
-                getContext().startService(i);
+                warnUser();
             } else {
                 if (utils.setPerms()){
                     prefUtils.setSwitchPrefs(hideIconsLockscreen, PREF_HIDE_ICONS_ON_LOCKSCREEN);
-                    Intent i = new Intent(getContext(), HideIconsService.class);
-                    getContext().startService(i);
+                    warnUser();
                 }
                 else {
                     showAdbSteps();
