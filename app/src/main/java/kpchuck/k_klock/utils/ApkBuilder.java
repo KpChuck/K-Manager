@@ -147,14 +147,16 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
     private void decompileSysUI(File sysui){
         try {
-            JadxArgs jadxArgs = new JadxArgs();
-            jadxArgs.setSkipSources(true);
-            JadxDecompiler jadx = new JadxDecompiler(jadxArgs);
+            JadxDecompiler jadx = new JadxDecompiler();
 
             File kManager = fileHelper.newFolder(Environment.getExternalStorageDirectory() + "/K-Manager/");
             File dest = fileHelper.newFolder(kManager, "libs");
             fileHelper.copyFromAssets("android", "android.zip", dest, context, true);
             new File(dest, "android.zip").renameTo(new File(dest, "android"));
+
+            if (ZipUtil.containsEntry(sysui, "classes.dex")){
+                ZipUtil.removeEntry(sysui, "classes.dex");
+            }
 
             File resOut = new File(kManager, "res_out");
             jadx.setSources(true);
