@@ -177,6 +177,13 @@ public class XmlWork {
         systemIconArea = utils.changeAttribute(systemIconArea, X_LAYOUT_WIDTH, "0dip");
         systemIconArea.setAttribute(X_WEIGHT, "1");
 
+        ArrayList<Element> systemIconElements = utils.getChildElements(systemIconArea);
+        for (Element e : systemIconElements){
+            if (e.getAttribute(X_LAYOUT_WIDTH).equals(X_FILL_PARENT) || e.getAttribute(X_LAYOUT_WIDTH).equals("match_parent")){
+                utils.changeAttribute(e, X_LAYOUT_WIDTH, X_WRAP_CONTENT);
+            }
+        }
+
         customClock = createClock(status, false, "center", X_WRAP_CONTENT);
         Element view = createViewElement(status);
 
@@ -239,6 +246,12 @@ public class XmlWork {
         statusBarContents.removeChild(hideE);
         systemIconArea = utils.changeAttribute(systemIconArea, X_LAYOUT_WIDTH, "0dip");
         systemIconArea.setAttribute(X_WEIGHT, "1");
+        systemIconElements = utils.getChildElements(systemIconArea);
+        for (Element e : systemIconElements){
+            if (e.getAttribute(X_LAYOUT_WIDTH).equals(X_FILL_PARENT) || e.getAttribute(X_LAYOUT_WIDTH).equals("match_parent")){
+                utils.changeAttribute(e, X_LAYOUT_WIDTH, X_WRAP_CONTENT);
+            }
+        }
 
         customClock = createClock(status, false, "center", X_WRAP_CONTENT);
         hideE = createLLTop(status, X_WRAP_CONTENT, "center");
