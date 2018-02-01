@@ -54,16 +54,10 @@ public class TextAlertDialogFragment extends DialogFragment {
             .setNegativeButton(cancelButton, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int id) {
                     // User cancelled the dialog
-                    dialog.cancel();
-                }
-            })
-            .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialogInterface) {
                     dialogClickListener.onCancelBtnClick();
-
                 }
-            });
+            }
+            );
 
         // Create the AlertDialog object and return it
         return builder.create();
