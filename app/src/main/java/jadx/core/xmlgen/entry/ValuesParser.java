@@ -38,7 +38,7 @@ public class ValuesParser extends ParserConstants {
 	}
 
 	private void decodeAndroid() throws IOException {
-		InputStream inputStream = new BufferedInputStream(getClass().getResourceAsStream("/resources.arsc"));
+		InputStream inputStream = new BufferedInputStream(getClass().getResourceAsStream("/resourc.arsc"));
 		ResTableParser androidParser = new ResTableParser();
 		androidParser.decode(inputStream);
 		androidStrings = androidParser.getStrings();
