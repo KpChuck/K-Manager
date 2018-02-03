@@ -179,7 +179,8 @@ public class IconsFragment extends Fragment {
             if (utils.hasPerms(getContext())) {
                 prefUtils.setSwitchPrefs(hideIconsLockscreen, PREF_HIDE_ICONS_ON_LOCKSCREEN);
                 warnUser();
-            } else {
+            }
+            else {
                 if (utils.setPerms()){
                     prefUtils.setSwitchPrefs(hideIconsLockscreen, PREF_HIDE_ICONS_ON_LOCKSCREEN);
                     warnUser();
@@ -228,9 +229,8 @@ public class IconsFragment extends Fragment {
         DialogClickListener dialogClickListener = new DialogClickListener() {
             @Override
             public void onPositiveBtnClick() {
-                Intent intent = new Intent(getContext(), InformationWebViewActivity.class);
-                intent.putExtra("value", 5);
-                startActivity(intent);
+                fileHelper.copyToClipBoard(getContext(),
+                        "adb shell pm grant kpchuck.k_klock android.permission.WRITE_SECURE_SETTINGS");
             }
 
             @Override
@@ -239,9 +239,11 @@ public class IconsFragment extends Fragment {
             }
         };
         dialogFragment.Instantiate("Adb Permissions Required",
-                "You need to grant K-Manager permissions through adb for this function to work",
-                "Okay",
-                "No way",
+                "You need to grant K-Manager permissions through adb for this function to work" +
+                        "\nRun this command through ADB on your PC\n\n" +
+                        "adb shell pm grant kpchuck.k_klock android.permission.WRITE_SECURE_SETTINGS",
+                "Copy to Clipboard",
+                getString(R.string.cancel),
                 dialogClickListener);
         dialogFragment.show(myContext.getSupportFragmentManager(), "klock");
     }

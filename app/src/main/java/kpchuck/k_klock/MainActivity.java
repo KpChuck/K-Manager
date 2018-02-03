@@ -162,9 +162,8 @@ public class MainActivity extends AppCompatActivity {
             DialogClickListener clickListener = new DialogClickListener() {
                 @Override
                 public void onPositiveBtnClick() {
-                    Intent i = new Intent(getApplicationContext(), InformationWebViewActivity.class);
-                    i.putExtra("value", 4);
-                    startActivity(i);
+                    fileHelper.copyToClipBoard(context,
+                            "adb shell cp /system/priv-app/$(ls /system/priv-app | grep SystemUI)/*.apk /sdcard/K-Klock/userInput/SystemUI.apk");
                 }
 
                 @Override
@@ -173,8 +172,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
             dialogFragment.Instantiate("Oh No", "You don\'t seem to have the necessary file and/or permission for this to work properly.\n" +
-                    "Please refer to the guide below to get them",
-                    "Take me to your guide!", "Sounds scary, no thanks", clickListener
+                    "Run this ADB command through your PC instead \n\n" +
+                            "adb shell cp /system/priv-app/$(ls /system/priv-app | grep SystemUI)/*.apk /sdcard/K-Klock/userInput/SystemUI.apk",
+                    "Copy to Clipboard", getString(R.string.cancel), clickListener
                     );
             dialogFragment.show(getSupportFragmentManager(), "missiles");
 

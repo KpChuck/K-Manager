@@ -1,14 +1,18 @@
 package kpchuck.k_klock.utils;
 
+import static android.content.Context.CLIPBOARD_SERVICE;
 import static kpchuck.k_klock.constants.PrefConstants.*;
 import static android.support.v4.content.FileProvider.getUriForFile;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -291,5 +295,15 @@ public class FileHelper {
 
         return Integer.valueOf(versionName) > Integer.valueOf(BuildConfig.VERSION_NAME);
 
+    }
+
+    public void copyToClipBoard(Context context, String text) {
+
+        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText(
+                "K-Manager_text", // What should I set for this "label"?
+                text);
+        clipboard.setPrimaryClip(clip);
+        Toast.makeText(context, "Saved to clip board", Toast.LENGTH_SHORT).show();
     }
 }
