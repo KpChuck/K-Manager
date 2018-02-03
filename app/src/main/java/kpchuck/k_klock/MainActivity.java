@@ -197,18 +197,38 @@ public class MainActivity extends AppCompatActivity {
             prefUtils.putString("builduser", Build.USER);
             prefUtils.putString("buildversionrelease", Build.VERSION.RELEASE);
         }
-        String[] x = new File(rootFolder + "/userInput").list(fileHelper.XML);
+        final String[] x = new File(rootFolder + "/userInput").list(fileHelper.XML);
         if (x.length == 0) return false;
         List<String> xmls = Arrays.asList(x);
         String[] xmlNames = {"status_bar.xml", "keyguard_status_bar.xml", "system_icons"};
         hasAll = xmls.containsAll(Arrays.asList(xmlNames));
         boolean hasSysUI = xmls.contains("SystemUI.apk");
 
-        if (newVersion) return false;
-        if (hasAll|| hasSysUI) return true;
+        if (newVersion) {
 
+            TextAlertDialogFragment fragment = new TextAlertDialogFragment();
+            DialogClickListener clickListener = new DialogClickListener() {
+                @Override
+                public void onPositiveBtnClick() {
+                    for (String f : x){
+                        new File(rootFolder + "/userInput/" + f).delete();
+                    }
+                    hasAll = false;
+                    startBuilding();
+                }
+                @Override
+                public void onCancelBtnClick() {
+                    startBuilding();
+                }
+            };
+            fragment.Instantiate("Warning :)", "It looks like you might have had a system update since the last time you used the " +
+                    "Other Roms option. \nDo you want to delete the system files K-Manager uses and extract them again?",
+                    "Yes", "No, use the ones I have", clickListener);
+            fragment.show(getSupportFragmentManager(), "");
 
-        return false;
+            return false;
+        }
+        return  (hasAll|| hasSysUI);
     }
 
     @Override
