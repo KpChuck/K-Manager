@@ -32,7 +32,6 @@ import static kpchuck.k_klock.constants.XmlConstants.*;
 
 public class XmlWork {
 
-    private Context context;
     private String srcFolder;
     private boolean removeClock;
     private boolean makeDynamic;
@@ -41,14 +40,12 @@ public class XmlWork {
     private XmlUtils utils;
     private File romzip = new File(Environment.getExternalStorageDirectory() + "/K-Klock/tempF/Rom.zip");
     private File baseFolders = new File(romzip, "assets/overlays/com.android.systemui");
-    private String keyguardx = "keyguard_status_bar.xml";
     private String statusbar = "status_bar.xml";
     private String systemicons = "system_icons.xml";
     private boolean hasAttrs = false;
 
-    public XmlWork(Context context, String srcFolder, boolean removeClock, boolean makeDynamic){
+    public XmlWork(Context context, String srcFolder, boolean removeClock, boolean makeDynamic) throws Exception{
 
-        this.context = context;
         this.srcFolder = Environment.getExternalStorageDirectory() + "/K-Klock/" + srcFolder;
         this.removeClock = removeClock;
         this.makeDynamic = makeDynamic;
@@ -64,7 +61,7 @@ public class XmlWork {
     }
 
 
-    private void modController(){
+    private void modController() throws Exception{
 
         File[] folders = baseFolders.listFiles(fileHelper.DIRECTORY);
 
@@ -555,24 +552,15 @@ public class XmlWork {
         return doc;
     }
 
-    private void writeDocToFile(Document doc, File[] dest){
-        for (File file : dest){
-            writeDocToFile(doc, file);
-        }
-    }
+    private void writeDocToFile(Document doc, File dest) throws Exception{
 
-    private void writeDocToFile(Document doc, File dest){
-        try{
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            Transformer transformer = transformerFactory.newTransformer();
-            DOMSource source = new DOMSource(doc);
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        DOMSource source = new DOMSource(doc);
 
-            StreamResult result = new StreamResult(new FileOutputStream(dest));
-            transformer.transform(source, result);
-        }
-        catch (Exception e){
-            Log.e("klock", "Error writing document to file "+ dest.getName() + "\n" + e.getMessage());
-        }
+        StreamResult result = new StreamResult(new FileOutputStream(dest));
+        transformer.transform(source, result);
+
     }
 
 }

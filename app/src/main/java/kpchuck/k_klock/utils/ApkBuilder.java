@@ -18,12 +18,15 @@ import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import cat.ereza.customactivityoncrash.config.CaocConfig;
 import jadx.api.JadxArgs;
 import jadx.api.JadxDecompiler;
+import jadx.core.utils.exceptions.JadxException;
 import kellinwood.security.zipsigner.ZipSigner;
 import kpchuck.k_klock.R;
 import kpchuck.k_klock.xml.XmlCreation;
@@ -77,48 +80,54 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
     @Override
     protected String doInBackground(String... apkVersion) {
 
-        makeDirs();
-        ExtractAssets();
-        if (!hasAllXmls && isOtherRoms(prefUtils.getString(PREF_SELECTED_ROM, ""))){
-            publishProgress("Decompiling Apk...");
-
-            File sysui = new File(Environment.getExternalStorageDirectory() + "/K-Klock/userInput/SystemUI.apk");
-            SuUtils suUtils = new SuUtils();
-            if (!sysui.exists()) {
-                suUtils.runSuCommand("cp /system/priv-app/$(ls /system/priv-app | grep SystemUI)/*.apk /sdcard/K-Klock/userInput/SystemUI.apk");
-            }
-            decompileSysUI(sysui);
-        }
-        publishProgress(context.getString(R.string.apkBuilderLoading));
-        modTheRomZip();
-        insertCustomXmls();
-        dealWivQsBg();
-        appendOptionsZip();// Takes long about 10s
-        // Takes long about 5s
-        publishProgress("Signing K-Klock...");
         try {
+            makeDirs();
+            ExtractAssets();
+            if (!hasAllXmls && isOtherRoms(prefUtils.getString(PREF_SELECTED_ROM, ""))) {
+                publishProgress("Decompiling Apk...");
+
+                File sysui = new File(Environment.getExternalStorageDirectory() + "/K-Klock/userInput/SystemUI.apk");
+                SuUtils suUtils = new SuUtils();
+                if (!sysui.exists()) {
+                    suUtils.runSuCommand("cp /system/priv-app/$(ls /system/priv-app | grep SystemUI)/*.apk /sdcard/K-Klock/userInput/SystemUI.apk");
+                }
+                decompileSysUI(sysui);
+            }
+            publishProgress(context.getString(R.string.apkBuilderLoading));
+            modTheRomZip();
+            insertCustomXmls();
+            dealWivQsBg();
+            appendOptionsZip();// Takes long about 10s
+            // Takes long about 5s
+            publishProgress("Signing K-Klock...");
             createApkFromDir(new File(mergerFolder, "universalFiles.zip"), apkVersion[0]);
-        }catch (Exception e){
+
+            publishProgress("Cleaning files...");
+
+            cleanup();
+
+
+            publishProgress("Installing K-Klock...");
+            File apk = new File(rootFolder + slash + apkVersion[0]);
+            SuUtils su = new SuUtils();
+
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            if (!prefs.getBoolean("installSilently", true) || !su.hasRoot()) {
+                FileHelper fh = new FileHelper();
+                showSnackbar();
+                fh.installApk(apk, context);
+            } else {
+                String install = "pm install -r /sdcard/K-Klock/" + apkVersion[0];
+                String output = su.runSuCommand(install).toString();
+                if (output.contains("Success")) showSnackbar();
+            }
+        } catch (JadxException e) {
+            Log.e("klock", "Error decompiling SystemUI.apk " + e.getMessage());
+            throw new RuntimeException(e.getMessage());
+        }  catch (Exception e){
             Log.e("klock", e.getMessage());
-            cancel(true);
-        }
-        publishProgress("Cleaning files...");
-        cleanup();
+            throw new RuntimeException(e.getMessage());
 
-
-        publishProgress("Installing K-Klock...");
-        File apk = new File(rootFolder + slash + apkVersion[0]);
-        SuUtils su = new SuUtils();
-
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        if (!prefs.getBoolean("installSilently", true) || !su.hasRoot()) {
-            FileHelper fh = new FileHelper();
-            showSnackbar();
-            fh.installApk(apk, context);
-        }else {
-            String install = "pm install -r /sdcard/K-Klock/" + apkVersion[0];
-            String output = su.runSuCommand(install).toString();
-            if (output.contains("Success")) showSnackbar();
         }
 
         return apkVersion[0];
@@ -145,80 +154,68 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
     }
 
-    private void decompileSysUI(File sysui){
-        try {
-            JadxDecompiler jadx = new JadxDecompiler();
+    private void decompileSysUI(File sysui) throws JadxException, IOException{
 
-            File kManager = fileHelper.newFolder(Environment.getExternalStorageDirectory() + "/K-Manager/");
-            File dest = fileHelper.newFolder(kManager, "libs");
-            fileHelper.copyFromAssets("android", "android.zip", dest, context, true);
-            new File(dest, "android.zip").renameTo(new File(dest, "android"));
+        JadxDecompiler jadx = new JadxDecompiler();
 
-            if (ZipUtil.containsEntry(sysui, "classes.dex")){
-                ZipUtil.removeEntry(sysui, "classes.dex");
-            }
+        File kManager = fileHelper.newFolder(Environment.getExternalStorageDirectory() + "/K-Manager/");
+        File dest = fileHelper.newFolder(kManager, "libs");
+        fileHelper.copyFromAssets("android", "android.zip", dest, context, true);
+        new File(dest, "android.zip").renameTo(new File(dest, "android"));
 
-            File resOut = new File(kManager, "res_out");
-            jadx.setSources(true);
-            jadx.loadFile(sysui);
-            jadx.setOutputDir(kManager);
-            jadx.setOutputDirRes(resOut);
-           // jadx.setWhichXmls(new String[]{"status_bar.xml", "system_icons.xml", "keyguard_status_bar.xml", "resources.arsc"});
-            jadx.save();
-            List<File> xmls = new ArrayList<>();
-            xmls.add(new File(resOut, "res/layout/status_bar.xml"));
-            xmls.add(new File(resOut, "res/layout/keyguard_status_bar.xml"));
-            xmls.add(new File(resOut, "res/layout/system_icons.xml"));
-            xmls.add(new File(resOut, "res/values/attrs.xml"));
-            File userInput = sysui.getParentFile();
-            for (File f : xmls){
-                try{
-                    FileUtils.copyFileToDirectory(f, userInput);
-                }
-                catch (IOException e){
-                    Log.e("klock", e.getMessage());
-                }
-            }
-
-        }catch (Exception e){
-            Log.e("klock", e.getMessage());
-            cancel(true);
+        if (ZipUtil.containsEntry(sysui, "classes.dex")){
+            ZipUtil.removeEntry(sysui, "classes.dex");
         }
+
+        File resOut = new File(kManager, "res_out");
+        jadx.setSources(true);
+        jadx.loadFile(sysui);
+        jadx.setOutputDir(kManager);
+        jadx.setOutputDirRes(resOut);
+       // jadx.setWhichXmls(new String[]{"status_bar.xml", "system_icons.xml", "keyguard_status_bar.xml", "resources.arsc"});
+        jadx.save();
+        List<File> xmls = new ArrayList<>();
+        xmls.add(new File(resOut, "res/layout/status_bar.xml"));
+        xmls.add(new File(resOut, "res/layout/keyguard_status_bar.xml"));
+        xmls.add(new File(resOut, "res/layout/system_icons.xml"));
+        xmls.add(new File(resOut, "res/values/attrs.xml"));
+        File userInput = sysui.getParentFile();
+        for (File f : xmls){
+            FileUtils.copyFileToDirectory(f, userInput);
+        }
+
     }
 
     private void showSnackbar() {
-        try {
-            Snackbar snackbar = Snackbar.make(defaultLayout, "Open K-Klock in Substratum", Snackbar.LENGTH_INDEFINITE)
-                    .setAction("Open", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
+        Snackbar snackbar = Snackbar.make(defaultLayout, "Open K-Klock in Substratum", Snackbar.LENGTH_INDEFINITE)
+                .setAction("Open", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
 
-                            final String SUBSTRATUM_PACKAGE_NAME = "projekt.substratum";
-                            final String THEME_PACKAGE_NAME = "com.kpchuck.kklock";
+                        final String SUBSTRATUM_PACKAGE_NAME = "projekt.substratum";
+                        final String THEME_PACKAGE_NAME = "com.kpchuck.kklock";
 
-                            Intent intentActivity = new Intent();
-                            intentActivity = intentActivity.setClassName(SUBSTRATUM_PACKAGE_NAME, "projekt.substratum.activities.launch.ThemeLaunchActivity");
+                        Intent intentActivity = new Intent();
+                        intentActivity = intentActivity.setClassName(SUBSTRATUM_PACKAGE_NAME, "projekt.substratum.activities.launch.ThemeLaunchActivity");
 
-                            intentActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intentActivity.putExtra("package_name", THEME_PACKAGE_NAME);
-                            intentActivity.setAction("projekt.substratum.THEME");
-                            intentActivity.setPackage(THEME_PACKAGE_NAME);
-                            intentActivity.putExtra("calling_package_name", THEME_PACKAGE_NAME);
-                            intentActivity.putExtra("oms_check", true);
-                            intentActivity.putExtra("theme_mode", (String) null);
-                            intentActivity.putExtra("notification", false);
-                            intentActivity.putExtra("hash_passthrough", true);
-                            intentActivity.putExtra("certified", false);
+                        intentActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intentActivity.putExtra("package_name", THEME_PACKAGE_NAME);
+                        intentActivity.setAction("projekt.substratum.THEME");
+                        intentActivity.setPackage(THEME_PACKAGE_NAME);
+                        intentActivity.putExtra("calling_package_name", THEME_PACKAGE_NAME);
+                        intentActivity.putExtra("oms_check", true);
+                        intentActivity.putExtra("theme_mode", (String) null);
+                        intentActivity.putExtra("notification", false);
+                        intentActivity.putExtra("hash_passthrough", true);
+                        intentActivity.putExtra("certified", false);
 
 
-                            context.startActivity(intentActivity);
-                        }
-                    });
+                        context.startActivity(intentActivity);
+                    }
+                });
 
-            snackbar.show();
-        }catch (Exception e){
-            Log.e("klock", e.getMessage());
-        }
+        snackbar.show();
+
     }
 
     public void makeDirs (){
@@ -230,7 +227,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
     }
 
-    public void ExtractAssets (){
+    public void ExtractAssets () throws IOException{
         File customInput = new File(rootFolder + "/customInput");
         String romName = prefUtils.getString(PREF_SELECTED_ROM, context.getString(R.string.chooseRom));
         // Copy files used for every apk first
@@ -254,19 +251,13 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             fileHelper.copyFromAssets("romSpecific", romName + ".zip".trim(), customInput, context, true);
             File zip = new File(customInput, romName + ".zip");
             for (File x : zip.listFiles()){
-                try{
-                    FileUtils.copyFileToDirectory(x, customInput);
-                }catch (IOException e){
-                    Log.e("klock", e.getMessage());
-                }
+                FileUtils.copyFileToDirectory(x, customInput);
             }
-            try {
-                FileUtils.deleteDirectory(zip);
-            }catch (IOException e){Log.e("klock", e.getMessage());}
+            FileUtils.deleteDirectory(zip);
         }
     }
 
-    private void modTheRomZip(){
+    private void modTheRomZip() throws Exception{
         String rom = prefUtils.getString(PREF_SELECTED_ROM, "");
 
         new XmlWork(context,
@@ -329,7 +320,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         }
     }
 
-    public void insertCustomXmls(){
+    public void insertCustomXmls() throws IOException{
 
         xmlBuilder();
 
@@ -346,25 +337,21 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
         for(String s : xmlArray){
             File xml = new File(rootFolder + slash + s);
-            try {
-                if (themeIcons){
-                    File cDest = fileHelper.newFolder(dir.getAbsolutePath() + slash + "assets" + slash + "overlays" + slash + "com.android.systemui.statusbars");
 
-                    if (s.substring(0, 6).equals("type1c")) {
-                        FileUtils.copyFileToDirectory(xml, cDest);
-                        xml.delete();
-                    }
-                }
-                if (xml.exists()) {
-                    FileUtils.copyFileToDirectory(xml, abDest);
+            if (themeIcons){
+                File cDest = fileHelper.newFolder(dir.getAbsolutePath() + slash + "assets" + slash + "overlays" + slash + "com.android.systemui.statusbars");
+
+                if (s.substring(0, 6).equals("type1c")) {
+                    FileUtils.copyFileToDirectory(xml, cDest);
                     xml.delete();
                 }
-            }catch(IOException e){
-                Log.e("klock", e.getMessage());
-                cancel(true);
+            }
+            if (xml.exists()) {
+                FileUtils.copyFileToDirectory(xml, abDest);
+                xml.delete();
             }
         }
-    }
+        }
 
     public void dealWivQsBg(){
         new QsBgUtil(context, tempFolder);
@@ -395,8 +382,8 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
                 FileSource.pair(pathsToFile.toArray(new File[pathsToFile.size()]), fileNames.toArray(new String[fileNames.size()])));
     }
 
-
-    public void createApkFromDir(File universalZip, String apkVersion) throws Exception {
+    public void createApkFromDir(File universalZip, String apkVersion) throws IOException, ClassNotFoundException, IllegalAccessException,
+            InstantiationException, GeneralSecurityException{
 
         File signedApk = new File(rootFolder + slash + apkVersion);
         ZipSigner zipSigner = new ZipSigner();
@@ -405,17 +392,12 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         Log.d("ZipUtils", "signedZip() : file present -> " + signedApk.exists() + " at " + signedApk.getAbsolutePath());
     }
 
-    public void cleanup (){
-        try{
-            List<File> files = Arrays.asList(tempFolder, mergerFolder, new File(rootFolder + "/customInput"));
-            for (File f: files){
-                if (f.exists()) FileUtils.deleteDirectory(f);
-            }
-        }catch (IOException e){
-            Log.e("klock", e.getMessage());
-            cancel(true);
+    public void cleanup () throws IOException{
+
+        List<File> files = Arrays.asList(tempFolder, mergerFolder, new File(rootFolder + "/customInput"));
+        for (File f: files){
+            if (f.exists()) FileUtils.deleteDirectory(f);
         }
+
     }
-
-
 }
