@@ -25,10 +25,8 @@ import org.w3c.dom.NodeList;
 public class ManifestAttributes {
 	private static final Logger LOG = LoggerFactory.getLogger(ManifestAttributes.class);
 
-
-
-	private static final String ATTR_XML = "attrs.xml";
-	private static final String MANIFEST_ATTR_XML = "attrs_manifest.xml";
+	private static final String ATTR_XML = "/android/attrs.xml";
+	private static final String MANIFEST_ATTR_XML = "/android/attrs_manifest.xml";
 
 	private enum MAttrType {
 		ENUM, FLAG
@@ -84,15 +82,11 @@ public class ManifestAttributes {
 	private Document loadXML(String xml) {
 		Document doc;
 		try (InputStream xmlStream = ManifestAttributes.class.getResourceAsStream(xml)) {
-/*
 			if (xmlStream == null) {
 				throw new JadxRuntimeException(xml + " not found in classpath");
-			}*/
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			File file = new File(Environment.getExternalStorageDirectory() + "/K-Manager/libs/android/" + xml);
-			doc = db.parse(file);
-			//doc = dBuilder.parse(xmlStream);
+			}
+			DocumentBuilder dBuilder = XmlSecurity.getSecureDbf().newDocumentBuilder();
+			doc = dBuilder.parse(xmlStream);
 		} catch (Exception e) {
 			throw new JadxRuntimeException("Xml load error, file: " + xml, e);
 		}
