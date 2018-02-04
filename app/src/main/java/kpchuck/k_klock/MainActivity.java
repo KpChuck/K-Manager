@@ -129,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
     PrimaryDrawerItem updateNotif;
     DrawerBuilder builder;
     private boolean spinnerOpen = false;
+    private boolean hasAll = false;
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -156,27 +158,70 @@ public class MainActivity extends AppCompatActivity {
             shortToast(getString(R.string.selectRomToast));
             return;
         }
-        if(romName.equals(betaString) && !hasXmlsInUser() && !new SuUtils().hasRoot()) {
+        if(romName.equals(betaString)) {
+            // Check for new version
+            boolean osVersion = (System.getProperty("os.version")).equals(prefUtils.getString("osversion", ""));
+            boolean buildUser = (Build.USER).equals(prefUtils.getString("builduser", ""));
+            boolean releaseVersion = (Build.VERSION.RELEASE).equals(prefUtils.getString("buildversionrelease", ""));
+            boolean newVersion = osVersion && buildUser && releaseVersion;
+            if (newVersion){
+                prefUtils.putString("osversion", System.getProperty("os.version"));
+                prefUtils.putString("builduser", Build.USER);
+                prefUtils.putString("buildversionrelease", Build.VERSION.RELEASE);
+            }
+            final String[] x = new File(rootFolder + "/userInput").list(fileHelper.XML);
+            List<String> xmls = Arrays.asList(x);
+            String[] xmlNames = {"status_bar.xml", "keyguard_status_bar.xml", "system_icons"};
+            hasAll = xmls.containsAll(Arrays.asList(xmlNames));
+            boolean hasSysUI = xmls.contains("SystemUI.apk");
 
-            TextAlertDialogFragment dialogFragment = new TextAlertDialogFragment();
-            DialogClickListener clickListener = new DialogClickListener() {
-                @Override
-                public void onPositiveBtnClick() {
-                    fileHelper.copyToClipBoard(context,
-                            "adb shell cp /system/priv-app/$(ls /system/priv-app | grep SystemUI)/*.apk /sdcard/K-Klock/userInput/SystemUI.apk");
-                }
+            if (newVersion) {
 
-                @Override
-                public void onCancelBtnClick() {
+                TextAlertDialogFragment fragment = new TextAlertDialogFragment();
+                DialogClickListener clickListener = new DialogClickListener() {
+                    @Override
+                    public void onPositiveBtnClick() {
+                        for (String f : x){
+                            new File(rootFolder + "/userInput/" + f).delete();
+                        }
+                        hasAll = false;
+                        buildingProcess();
+                    }
+                    @Override
+                    public void onCancelBtnClick() {
+                        buildingProcess();
+                    }
+                };
+                fragment.Instantiate("Warning :)", "It looks like you might have had a system update since the last time you used the " +
+                                "Other Roms option. \nDo you want to delete the system files K-Manager uses and extract them again?",
+                        "Yes", "No, use the ones I have", clickListener);
+                fragment.show(getSupportFragmentManager(), "");
 
-                }
-            };
-            dialogFragment.Instantiate("Oh No", "You don\'t seem to have the necessary file and/or permission for this to work properly.\n" +
-                    "Run this ADB command through your PC instead \n\n" +
-                            "adb shell cp /system/priv-app/$(ls /system/priv-app | grep SystemUI)/*.apk /sdcard/K-Klock/userInput/SystemUI.apk",
-                    "Copy to Clipboard", getString(R.string.cancel), clickListener
-                    );
-            dialogFragment.show(getSupportFragmentManager(), "missiles");
+            }
+            else if (hasAll|| hasSysUI || new SuUtils().hasRoot()) buildingProcess();
+
+            else {
+
+                TextAlertDialogFragment dialogFragment = new TextAlertDialogFragment();
+                DialogClickListener clickListener = new DialogClickListener() {
+                    @Override
+                    public void onPositiveBtnClick() {
+                        fileHelper.copyToClipBoard(context,
+                                "adb shell cp /system/priv-app/$(ls /system/priv-app | grep SystemUI)/*.apk /sdcard/K-Klock/userInput/SystemUI.apk");
+                    }
+
+                    @Override
+                    public void onCancelBtnClick() {
+
+                    }
+                };
+                dialogFragment.Instantiate("Oh No", "You don\'t seem to have the necessary file and/or permission for this to work properly.\n" +
+                                "Run this ADB command through your PC instead \n\n" +
+                                "adb shell cp /system/priv-app/$(ls /system/priv-app | grep SystemUI)/*.apk /sdcard/K-Klock/userInput/SystemUI.apk",
+                        "Copy to Clipboard", getString(R.string.cancel), clickListener
+                );
+                dialogFragment.show(getSupportFragmentManager(), "");
+            }
 
         }
         else if(!romName.equals("")) {
@@ -184,52 +229,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean hasAll = false;
-
-    private boolean hasXmlsInUser(){
-        // Check for new version
-        boolean osVersion = (System.getProperty("os.version")).equals(prefUtils.getString("osversion", ""));
-        boolean buildUser = (Build.USER).equals(prefUtils.getString("builduser", ""));
-        boolean releaseVersion = (Build.VERSION.RELEASE).equals(prefUtils.getString("buildversionrelease", ""));
-        boolean newVersion = osVersion && buildUser && releaseVersion;
-        if (newVersion){
-            prefUtils.putString("osversion", System.getProperty("os.version"));
-            prefUtils.putString("builduser", Build.USER);
-            prefUtils.putString("buildversionrelease", Build.VERSION.RELEASE);
-        }
-        final String[] x = new File(rootFolder + "/userInput").list(fileHelper.XML);
-        if (x.length == 0) return false;
-        List<String> xmls = Arrays.asList(x);
-        String[] xmlNames = {"status_bar.xml", "keyguard_status_bar.xml", "system_icons"};
-        hasAll = xmls.containsAll(Arrays.asList(xmlNames));
-        boolean hasSysUI = xmls.contains("SystemUI.apk");
-
-        if (newVersion) {
-
-            TextAlertDialogFragment fragment = new TextAlertDialogFragment();
-            DialogClickListener clickListener = new DialogClickListener() {
-                @Override
-                public void onPositiveBtnClick() {
-                    for (String f : x){
-                        new File(rootFolder + "/userInput/" + f).delete();
-                    }
-                    hasAll = false;
-                    startBuilding();
-                }
-                @Override
-                public void onCancelBtnClick() {
-                    startBuilding();
-                }
-            };
-            fragment.Instantiate("Warning :)", "It looks like you might have had a system update since the last time you used the " +
-                    "Other Roms option. \nDo you want to delete the system files K-Manager uses and extract them again?",
-                    "Yes", "No, use the ones I have", clickListener);
-            fragment.show(getSupportFragmentManager(), "");
-
-            return false;
-        }
-        return  (hasAll|| hasSysUI);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
