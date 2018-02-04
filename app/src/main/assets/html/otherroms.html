@@ -1,135 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8"/>
-        <title>K-Manager</title>
-        <link rel="stylesheet" href="styles.css"/>
+<head>
+    <meta charset="utf-8"/>
+    <title>K-Manager</title>
+    <link rel="stylesheet" href="styles.css"/>
 
-    </head>
+</head>
 
-    <body>
+<body>
 
-        <header>
-            <h1>Other Roms Setup</h1>
-
-
-        </header>
-
-        <nav>
-          
-                <a href="index.html">FAQ's</a>
-                <a href="">Other Roms Help</a>
-                <a href="qsbg.html">Custom Qs Backgrounds</a>
-                <a href="left.html">Left Network Indicators</a>
-
-          
-
-        </nav>
-
-        <main>
-
-            <h1>This guide is for <em>rooted user</em></h1>
-
-            <p>
-                <a href="romsunrooted.html">Head over here if you're not rooted</a>
-            </p>
-
-            <article>
-                <h1>About other Roms</h1>
-                <ul>
-                    <li>This option modifies the xml files necessary to create K-Klock on the go</li>
-                    <li>Unfortunately, these xml files are different for each Rom
-                    <li>Since I don't have the xml files from every Rom, you'll have to provide these yourself</li>
-                    <li>Below is an easy step-by-step guide that anyone should be able to follow</li>
-
-                </ul>
-
-            </article>
-
-            <article>
-                <h1>Instructions</h1>
-                <ol>
-                    <li>
-                    
-                        <h1>Download an apk decompiler</h1>
-                        <p>
-                            I would recommend 
-                            <a href="https://play.google.com/store/apps/details?id=com.gmail.heagoo.apkeditor&hl=en">Apk Editor</a>
-                            It's faster than using a Pc for everything.
-                        </p>
-                    
-                    </li>
-
-                    <li>
-                        
-                        <h1>Find and decompile your Roms SystemUI.apk</h1>
-
-                        <ul>
-                            <li>Open up Apk Editor</li>
-                            <li>Select the Apk from App option. Then tap the three dots at the top to find system apps.
-                            </li>
-                            <li>Now search for System UI and decompile with Full Edit.</li>
-                        </ul>
-                        
-                        <p>Now select Files at the bottom of Apk Editor</p>
-                      
-                    </li>
-                    <li>
-                    
-                        <h1>Exctracting the files</h1>
-                        <p>
-                            Navigate to res -> layout and select the following three xml's:
-                        </p>
-                        <ul>
-                            <li>keyguard_status_bar.xml</li>
-                            <li>status_bar.xml</li>
-                            <li>system_icons.xml</li>
-                        </ul>
-                        <p>
-                            Then use the Extract option at the bottom to extract the xmls to K-Klock/userInput (case-sensitive).
-                        </p>
-
-                        <p>
-                            Now move out of the layout folder and into res -> values.<br>
-                            Extract attrs.xml the same way as above.
-
-                        </p>
-                    
-                    </li>
-                    <li>
-                        <h1>The Fun Part!</h1>
-                        <p>
-                            Open up K-Manager and select the Other Roms option as your Rom.
-                            You won't have to repeat this process unless those files are deleted or you change Roms.
-                        </p>
-                    </li>
-
-                    <li>
-                        <h1>Contribute</h1>
-                        <p>
-                            Add your Rom into the list of supported Roms in K-Manager.
-                        </p>
-                        <p>
-                            <a href="contribute.html">Find out more.</a>
-                        </p>
-                    </li>
-
-                </ol>
-
-               
-
-            </article>
+<header>
+    <h1>Other Roms Setup</h1>
 
 
-        </main>
+</header>
 
-        <footer>
-            <p>
-                 <small>I have tried to make this guide as clear as possible but if you have any ideas on how to improve it, Let me know</small>     
-            </p>
-        </footer>
+<nav>
+
+    <a href="index.html">FAQ's</a>
+    <a href="">Other Roms Help</a>
+    <a href="qsbg.html">Custom Qs Backgrounds</a>
+    <a href="left.html">Left Network Indicators</a>
 
 
-    </body>
+
+</nav>
+
+<main>
+
+    <h1>This guide is for <em>rooted user</em></h1>
+
+    <p>
+        <a href="romsunrooted.html">Head over here if you're not rooted</a>
+    </p>
+
+    <article>
+        <h1>About other Roms</h1>
+        <ul>
+            <li>This option modifies the xml files necessary to create K-Klock on the go</li>
+            <li>Unfortunately, these xml files are different for each Rom
+            <li>Fortunately K-Manager can now decompile your SystemUI.apk and extract those files</li>
+            <li>If you're not rooted you will have to run an ADB command that you can copy to your clipboard if you try building</li>
+
+        </ul>
+
+    </article>
+
+    <article>
+
+        <h1>Contribute</h1>
+
+        <p>
+            Add your Rom into the list of supported Roms in K-Manager.
+        </p>
+
+        <p>
+            Once you have tested that your Other Roms options work, they can be added to K-Manager.
+        </p>
+
+        <p>
+            You can also use the Other Roms settings to add extra functionality for your Rom.
+        </p>
+
+        <article>
+
+            <h1>Submitting files to be included in K-Manager - Guide</h1>
+
+            <ul>
+                <li>
+                    Open a filemanager and navigate to /sdcard/K-Klock. You should have a userInput folder there.
+                </li>
+                <li>Zip <b>all the xmls</b> inside your userInput folder. Rename the zip file to your name of your Rom with it's android version.
+                    For example 'Paranoid Android Nougat.zip'
+                </li>
+                <li>You can fork K-Manager and make a pull request to submit the files</li>
+                <li><em>Or just send it to me via email, telegram, xda.</em> If you do it this way, you can ignore the rest of this guide.</li>
+                <li>If you're making a pull request,
+                    place the zipped xmls into the
+                    <b>app/src/main/assets/romSpecific</b>
+                    folder.
+                </li>
+                <li>
+                    If you have tested the Dev Options in K-Manager, open the file rom_instructions.xml in
+                    <b>app/src/main/res/values</b>
+                    and add your Rom to the lists there.<br>
+                    <strong>Make sure that the text there is exactly the same as the name of your zip file without the .zip!</strong>
+                </li>
+                <li>
+                    Then just open up a pull request on github and I'll merge your files into K-Manager
+                </li>
+            </ul>
+
+        </article>
+
+
+
+    </article>
+
+
+</main>
+
+<footer>
+    <p>
+        <small>I have tried to make this guide as clear as possible but if you have any ideas on how to improve it, Let me know</small>
+    </p>
+</footer>
+
+
+</body>
 
 </html>
