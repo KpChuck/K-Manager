@@ -6,6 +6,12 @@
     android:orientation="vertical"
     tools:context="kpchuck.k_klock.fragments.IconsFragment">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="75dp">
+
+
     <android.support.v7.widget.CardView
         tools:context="kpchuck.k_klock.fragments.StatusBar_Add_On_Fragment"
         android:layout_width="match_parent"
@@ -154,6 +160,6 @@
 
 
     </android.support.v7.widget.CardView>
-
+    </ScrollView>
 
 </LinearLayout>
