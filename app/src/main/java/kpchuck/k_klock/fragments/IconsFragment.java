@@ -149,7 +149,6 @@ public class IconsFragment extends Fragment {
     }
 
     private void warnUser(){
-        boolean r = true;
         TextAlertDialogFragment dialogFragment = new TextAlertDialogFragment();
         DialogClickListener dialogClickListener = new DialogClickListener() {
             @Override
@@ -162,6 +161,16 @@ public class IconsFragment extends Fragment {
             public void onCancelBtnClick() {
                 ButterKnife.apply(hideIconsLockscreen, ENABLED, false);
                 prefUtils.setSwitchPrefs(hideIconsLockscreen, PREF_HIDE_ICONS_ON_LOCKSCREEN);
+                hideIconsNotFully.animate()
+                        .alpha(0.0f)
+                        .setDuration(500)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                super.onAnimationEnd(animation);
+                                ButterKnife.apply(hideIconsNotFully, SetVisibility, View.GONE);
+                            }
+                        });
             }
         };
         dialogFragment.Instantiate("Warning :)",
@@ -188,6 +197,16 @@ public class IconsFragment extends Fragment {
                 else {
                     showAdbSteps();
                     ButterKnife.apply(hideIconsLockscreen, ENABLED, false);
+                    hideIconsNotFully.animate()
+                            .alpha(0.0f)
+                            .setDuration(500)
+                            .setListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    super.onAnimationEnd(animation);
+                                    ButterKnife.apply(hideIconsNotFully, SetVisibility, View.GONE);
+                                }
+                            });
                 }
             }
         }
