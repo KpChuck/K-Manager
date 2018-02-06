@@ -1,6 +1,7 @@
 package kpchuck.k_klock.xml;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
@@ -268,7 +269,7 @@ public class XmlWork {
 
         writeDocToFile(status, new File(baseFolders, "type2_No_Clock_on_Lockscreen_Center/layout/" + statusbar));
         if (makeDynamic){
-            customClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
+            customClock = utils.changeAttribute(customClock, X_ID, "@*com.android.systemui:id/clock");
             writeDocToFile(status, new File(baseFolders, "type2_Dynamic_Clock_Center/layout/" + statusbar));
         }
         hideE.removeChild(customClock);
@@ -324,6 +325,8 @@ public class XmlWork {
         textClock.setAttribute("android:textColor", "@*com.android.systemui:color/status_bar_clock_color");
         textClock.setAttribute("android:layout_height", "fill_parent");
         textClock.setAttribute("android:singleLine", "true");
+
+        if (Build.VERSION.SDK_INT >= 26) textClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
 
         textClock.setAttribute("android:layout_width", width);
         textClock.setAttribute("android:gravity", gravity);
