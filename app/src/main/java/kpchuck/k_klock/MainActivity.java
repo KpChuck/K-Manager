@@ -8,7 +8,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
@@ -315,6 +319,13 @@ public class MainActivity extends AppCompatActivity {
         welcomeScreen = new WelcomeHelper(this, MyWelcomeActivity.class);
         welcomeScreen.show(savedInstanceState);
 
+/*
+        orSettingsButton.setBackgroundResource(R.drawable.neon_green);
+
+        // Get the background, which has been compiled to an AnimationDrawable object.
+        AnimationDrawable frameAnimation = (AnimationDrawable) orSettingsButton.getBackground();
+        // Start the animation (looped playback by default).
+        frameAnimation.start();*/
 
         // Create the material drawer
         AccountHeader header = new AccountHeaderBuilder()
