@@ -149,6 +149,29 @@ public class MainActivity extends AppCompatActivity {
     protected void onPostResume() {
         if(prefUtils.getBoolTrue("joinTelegram")) promptTelegram();
 
+        if (!isPackageInstalled("projekt.substratum", context.getPackageManager())){
+
+            TextAlertDialogFragment textAlertDialogFragment = new TextAlertDialogFragment();
+            DialogClickListener clickListener = new DialogClickListener() {
+                @Override
+                public void onPositiveBtnClick() {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=projekt.substratum&hl=en"));
+                    startActivity(browserIntent);
+                }
+
+                @Override
+                public void onCancelBtnClick() {
+                    shortToast("I guess just take a look around then");
+
+                }
+            };
+            textAlertDialogFragment.Instantiate("Substratum not Installed!",
+                    "This application requires the substratum theming engine to be useful. Do you want to download substratum?",
+                    getString(R.string.okay), getString(R.string.cancel), clickListener);
+            textAlertDialogFragment.show(getSupportFragmentManager(), "");
+
+        }
+
 
 
         super.onPostResume();
