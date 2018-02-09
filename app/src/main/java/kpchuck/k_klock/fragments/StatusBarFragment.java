@@ -140,6 +140,11 @@ public class StatusBarFragment extends Fragment {
         return v;
     }
 
+    public void oosIndicators(boolean show){
+        ButterKnife.apply(indicatorSwitch, SetVisibility, show ? View.VISIBLE : View.GONE);
+
+    }
+
     @OnTextChanged(R.id.editCarrierText)
     public void saveEditText(CharSequence s){
         prefUtils.putString(PREF_CARRIER_CUSTOM_TEXT, s.toString());

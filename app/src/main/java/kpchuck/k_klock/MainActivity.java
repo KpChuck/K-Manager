@@ -111,7 +111,10 @@ public class MainActivity extends AppCompatActivity {
     SwipeTabAdapter tabAdapter;
     @BindView(R.id.orSettings) Button orSettingsButton;
     // Fragment Stuff
-    ClockFragment clockFragment;
+    private ClockFragment clockFragment;
+    private IconsFragment iconsFragment;
+    private StatusBarFragment statusBarFragment;
+    private MiscFragment miscFragment;
 
     // Call Strings, Arraylists and Classes for later use
     ArrayList<String> roms = new ArrayList<>();
@@ -254,9 +257,9 @@ public class MainActivity extends AppCompatActivity {
         // Setup tabs
         // Create an adapter that knows which fragment should be shown on each page
         this.clockFragment = new ClockFragment();
-        IconsFragment iconsFragment = new IconsFragment();
-        StatusBarFragment statusBarFragment = new StatusBarFragment();
-        MiscFragment miscFragment = new MiscFragment();
+        this.iconsFragment = new IconsFragment();
+        this.statusBarFragment = new StatusBarFragment();
+        this.miscFragment = new MiscFragment();
 
         tabAdapter = new SwipeTabAdapter(getSupportFragmentManager(), clockFragment,
                 iconsFragment, statusBarFragment, miscFragment);
@@ -498,14 +501,10 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(View view, int position, long id) {
                 String selectedItem = simpleListAdapter.getItem(position).toString();
                 prefUtils.putString("selectedRom", selectedItem);
-                if (fileHelper.getOos(selectedItem).equals("OxygenOS")){
-                    //qsBg.setVisibility(View.GONE);
-                   // indicatorSwitch.setVisibility(View.VISIBLE);
-                }
-                else {
-                  //  indicatorSwitch.setVisibility(View.GONE);
-                   // qsBg.setVisibility(View.VISIBLE);
-                }
+
+                statusBarFragment.oosIndicators(fileHelper.getOos(selectedItem).equals("OxygenOS"));
+                miscFragment.oosBg(fileHelper.getOos(selectedItem).equals("OxygenOS"));
+
                 orSettingsButton.setVisibility(isOtherRoms() ? View.VISIBLE : View.GONE);
                 questionMark.setVisibility(isOtherRoms() ? View.VISIBLE : View.GONE);
 

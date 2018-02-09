@@ -88,6 +88,11 @@ public class MiscFragment extends Fragment {
         return v;
     }
 
+    public void oosBg(boolean show){
+        ButterKnife.apply(qsBgSwitch, SetVisibility, show ? View.VISIBLE : View.GONE);
+
+    }
+
     // ButterKnife Methods
 
     static final ButterKnife.Setter<Switch, Boolean> ENABLED = new ButterKnife.Setter<Switch, Boolean>() {
