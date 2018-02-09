@@ -12,6 +12,7 @@
         <item>Ocean Green</item>
         <item>Purple</item>
         <item>Scarlet</item>
+        <item>White</item>
         <item>Wisteria</item>
 
     </string-array>
@@ -26,6 +27,7 @@
         <item>#4DAF7C</item>
         <item>#6005bc</item>
         <item>#E3000E</item>
+        <item>#ffffff</item>
         <item>#6005bc</item>
     </string-array>
 
