@@ -971,7 +971,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void promptTelegram(){
-        if (isPackageInstalled("org.telegram.messenger", context.getPackageManager()) ){
+        if (isPackageInstalled("org.telegram.messenger", context.getPackageManager()) ||
+                isPackageInstalled("org.telegram.plus", context.getPackageManager()) ||
+                isPackageInstalled("org.thunderdog.challegram", context.getPackageManager())){
 
             TextAlertDialogFragment fragment = new TextAlertDialogFragment();
             fragment.Instantiate("K-Klock Telegram", getString(R.string.joinTelegram), getString(R.string.ok),
