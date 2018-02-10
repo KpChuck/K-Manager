@@ -89,7 +89,7 @@ public class MiscFragment extends Fragment {
     }
 
     public void oosBg(boolean show){
-        ButterKnife.apply(qsBgSwitch, SetVisibility, show ? View.VISIBLE : View.GONE);
+        if (qsBgSwitch != null) ButterKnife.apply(qsBgSwitch, SetVisibility, !show ? View.VISIBLE : View.GONE);
 
     }
 

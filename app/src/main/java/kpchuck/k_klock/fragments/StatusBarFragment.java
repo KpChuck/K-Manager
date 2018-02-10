@@ -90,6 +90,7 @@ public class StatusBarFragment extends Fragment {
     @BindView(R.id.statBarColor) Switch statBarColorSwitch;
 
 
+
     @Override
     public void onAttach(Activity activity) {
         myContext=(FragmentActivity) activity;
@@ -141,7 +142,7 @@ public class StatusBarFragment extends Fragment {
     }
 
     public void oosIndicators(boolean show){
-        ButterKnife.apply(indicatorSwitch, SetVisibility, show ? View.VISIBLE : View.GONE);
+        if (indicatorSwitch != null)ButterKnife.apply(indicatorSwitch, SetVisibility, show ? View.VISIBLE : View.GONE);
 
     }
 
