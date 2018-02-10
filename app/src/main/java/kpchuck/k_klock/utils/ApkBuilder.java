@@ -121,13 +121,13 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
                 String output = su.runSuCommand(install).toString();
                 if (output.contains("Success")) showSnackbar();
             }
+
         } catch (JadxException e) {
             Log.e("klock", "Error decompiling SystemUI.apk " + e.getMessage());
-            throw new RuntimeException(e.getMessage());
+            throw new RuntimeException("Jadx error I think: \n" + e);
         }  catch (Exception e){
-            Log.e("klock", e.getMessage());
-            throw new RuntimeException(e.getMessage());
-
+            Log.e("klock", "Error: ", e);
+            throw new RuntimeException("Error modding rom I think: \n" + e);
         }
 
         return apkVersion[0];
