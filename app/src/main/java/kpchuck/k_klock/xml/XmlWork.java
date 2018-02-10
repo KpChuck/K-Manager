@@ -385,7 +385,10 @@ public class XmlWork {
             Element stockClock = utils.findElementInDoc(status,
                     "com.android.systemui.statusbar.policy.Clock",
                     "@*com.android.systemui:id/clock");
-            stockClock = utils.changeAttribute(stockClock, X_LAYOUT_WIDTH, "0dip");
+            if (Build.VERSION.SDK_INT >= 26)
+                statusBarContents.removeChild(stockClock);
+            else
+                stockClock = utils.changeAttribute(stockClock, X_LAYOUT_WIDTH, "0dip");
         }
         if (prefUtils.getBool(PREF_CHANGE_STATBAR_COLOR)){
             statusBarContents = utils.changeAttribute(statusBarContents, "android:background",
