@@ -24,8 +24,14 @@
 
     <string-array name="hide_clock">
 
+
+        <item>AOKP Oreo</item>
+        <item>AOSIP Oreo</item>
+        <item>AOSP Extended Oreo</item>
         <item>Cardinal Oreo</item>
+        <item>Codename Phoenix Oreo</item>
         <item>Cosmic OS Oreo</item>
+        <item>Dirty Unicorns 12</item>
         <item>JDC Nougat</item>
         <item>LineageOS Nougat</item>
         <item>LineageOS Oreo</item>
@@ -35,15 +41,13 @@
         <item>OxygenOS Nougat</item>
         <item>OxygenOS Oreo</item>
         <item>Paranoid Android</item>
-        <item>Pure Fusion OS</item>
         <item>Pixel Experience Oreo</item>
+        <item>Pure Fusion OS</item>
+        <item>Resurrection Remix Oreo</item>
         <item>Slim</item>
         <item>Validus Oreo</item>
-        <item>AOKP Oreo</item>
-        <item>AOSIP Oreo</item>
-        <item>Dirty Unicorns 12</item>
-        <item>Codename Phoenix Oreo</item>
-        <item>AOSP Extended Oreo</item>
+
+
 
     </string-array>
 
