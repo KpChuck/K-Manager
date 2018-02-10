@@ -153,10 +153,9 @@ public class XmlWork {
 
         // Find elements needed
         Element rootElement = status.getDocumentElement();
-     //   rootElement.insertBefore(createLLTop(status, X_FILL_PARENT, "center"), utils.getFirstChildElement(rootElement));
 
         Element stockClock = utils.findElementInDoc(status,
-                "com.android.systemui.statusbar.policy.clock",
+                "com.android.systemui.statusbar.policy.Clock",
                 "@*com.android.systemui:id/clock");
         Element systemIconArea = utils.findElementInDoc(status,
                 "com.android.keyguard.AlphaOptimizedLinearLayout",
@@ -167,6 +166,7 @@ public class XmlWork {
         //Insert Right Clock First
         Element customClock = createClock(status, false, "start|center", X_WRAP_CONTENT);
         systemIconArea.insertBefore(customClock, stockClock);
+        if (removeClock && Build.VERSION.SDK_INT > 25) systemIconArea.removeChild(stockClock);
         writeDocToFile(status, new File(baseFolders, "type2_Clock_on_Lockscreen_Right/layout/" + statusbar));
 
         // Now Left Clock
@@ -203,7 +203,7 @@ public class XmlWork {
         status = setupStatusBar();
         // Find elements needed
         stockClock = utils.findElementInDoc(status,
-                "com.android.systemui.statusbar.policy.clock",
+                "com.android.systemui.statusbar.policy.Clock",
                 "@*com.android.systemui:id/clock");
         systemIconArea = utils.findElementInDoc(status,
                 "com.android.keyguard.AlphaOptimizedLinearLayout",
@@ -218,6 +218,8 @@ public class XmlWork {
         Element hideE = createLLTop(status, X_FILL_PARENT, "center");
 
         systemIconArea.insertBefore(hideE, stockClock);
+        if (removeClock && Build.VERSION.SDK_INT > 25) systemIconArea.removeChild(stockClock);
+
         hideE.appendChild(customClock);
         writeDocToFile(status, new File(baseFolders,"type2_No_Clock_on_Lockscreen_Right/layout/" + statusbar));
         if (makeDynamic) {
@@ -270,6 +272,7 @@ public class XmlWork {
         writeDocToFile(status, new File(baseFolders, "type2_No_Clock_on_Lockscreen_Center/layout/" + statusbar));
         if (makeDynamic){
             customClock = utils.changeAttribute(customClock, X_ID, "@*com.android.systemui:id/clock");
+            customClock.setAttribute(X_ID, "");
             writeDocToFile(status, new File(baseFolders, "type2_Dynamic_Clock_Center/layout/" + statusbar));
         }
         hideE.removeChild(customClock);
@@ -326,7 +329,7 @@ public class XmlWork {
         textClock.setAttribute("android:layout_height", "fill_parent");
         textClock.setAttribute("android:singleLine", "true");
 
-        if (Build.VERSION.SDK_INT >= 26) textClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
+        if (Build.VERSION.SDK_INT > 26) textClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
 
         textClock.setAttribute("android:layout_width", width);
         textClock.setAttribute("android:gravity", gravity);
@@ -385,10 +388,7 @@ public class XmlWork {
             Element stockClock = utils.findElementInDoc(status,
                     "com.android.systemui.statusbar.policy.Clock",
                     "@*com.android.systemui:id/clock");
-            if (Build.VERSION.SDK_INT >= 26)
-                statusBarContents.removeChild(stockClock);
-            else
-                stockClock = utils.changeAttribute(stockClock, X_LAYOUT_WIDTH, "0dip");
+            utils.changeAttribute(stockClock, X_LAYOUT_WIDTH, "0dip");
         }
         if (prefUtils.getBool(PREF_CHANGE_STATBAR_COLOR)){
             statusBarContents = utils.changeAttribute(statusBarContents, "android:background",
