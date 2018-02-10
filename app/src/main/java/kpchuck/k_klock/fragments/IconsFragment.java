@@ -5,6 +5,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -154,7 +155,8 @@ public class IconsFragment extends Fragment {
             @Override
             public void onPositiveBtnClick() {
                 Intent i = new Intent(getContext(), HideIconsService.class);
-                getContext().startService(i);
+                if (Build.VERSION.SDK_INT > 25)getContext().startForegroundService(i);
+                else getContext().startService(i);
             }
 
             @Override

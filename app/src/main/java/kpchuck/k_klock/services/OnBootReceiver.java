@@ -3,6 +3,7 @@ package kpchuck.k_klock.services;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 
 import kpchuck.k_klock.utils.PrefUtils;
@@ -17,7 +18,9 @@ public class OnBootReceiver extends BroadcastReceiver {
         if (action.equals("android.intent.action.BOOT_COMPLETED") || action.equals("android.intent.action.QUICKBOOT_POWERON")) {
             PrefUtils prefUtils = new PrefUtils(context);
             if (prefUtils.getBool(PREF_HIDE_ICONS_ON_LOCKSCREEN)) {
-                context.startService(new Intent(context, HideIconsService.class));
+                Intent i = new Intent(context, HideIconsService.class);
+                if (Build.VERSION.SDK_INT > 25) context.startForegroundService(i);
+                else context.startService(i);
             }
         }
     }
