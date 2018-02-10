@@ -38,4 +38,16 @@
 
         />
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/list_button"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="4dp"
+        android:text="Submit Other Rom files to K-Manager"
+        android:visibility="gone"
+        />
+
 </LinearLayout>

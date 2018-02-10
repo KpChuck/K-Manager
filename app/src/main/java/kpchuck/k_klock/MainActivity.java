@@ -4,8 +4,10 @@ package kpchuck.k_klock;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -19,12 +21,16 @@ import android.os.Environment;
 import android.provider.Settings;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -60,6 +66,9 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.stephentuso.welcome.WelcomeHelper;
 
 import org.apache.commons.io.FileUtils;
+import org.zeroturnaround.zip.FileSource;
+import org.zeroturnaround.zip.ZipEntrySource;
+import org.zeroturnaround.zip.ZipUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -201,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
             }
             final String[] x = new File(rootFolder + "/userInput").list(fileHelper.XML);
             List<String> xmls = Arrays.asList(x);
-            String[] xmlNames = {"status_bar.xml", "keyguard_status_bar.xml", "system_icons"};
+            String[] xmlNames = {"status_bar.xml", "keyguard_status_bar.xml", "system_icons.xml"};
             hasAll = xmls.containsAll(Arrays.asList(xmlNames));
             boolean hasSysUI = xmls.contains("SystemUI.apk");
 
@@ -562,7 +571,85 @@ public class MainActivity extends AppCompatActivity {
         ListDialogFragment listDialogFragment = new ListDialogFragment();
         List<String> names = new ArrayList<>(Arrays.asList("Hide Stock Clock", "Make a Dynamic Clock (Nougat)"));
         List<String> keys = new ArrayList<>(Arrays.asList(DEV_HIDE_CLOCK, DEV_MAKE_DYNAMIC));
-        listDialogFragment.Instantiate("Other Roms Settings", names, keys, false);
+        BtnClickListener clickListener = new BtnClickListener() {
+            @Override
+            public void onBtnClick(int position) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                // Get the layout inflater
+                LayoutInflater inflater = getLayoutInflater();
+
+                // Inflate and set the layout for the dialog
+                // Pass null as the parent view because its going in the dialog layout
+                View view = inflater.inflate(R.layout.input_menu_dialog, null);
+                builder.setView(view);
+
+                TextView textView = view.findViewById(R.id.title);
+                final EditText nameEdit = view.findViewById(R.id.name);
+                final EditText valueEdit = view.findViewById(R.id.value);
+                textView.setText("Rom Information");
+                nameEdit.setHint("Enter your Rom Name here");
+                valueEdit.setHint("Enter your Android Version here (Nougat or Oreo)");
+
+                builder
+                        .setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                File zip = new File(rootFolder, nameEdit.getText() + " " + valueEdit.getText() + ".zip");
+                                if (zip.exists()) zip.delete();
+                                // Zip the xmls
+                                String[] x = new File(rootFolder + "/userInput").list(fileHelper.XML);
+                                List<String> xmls = Arrays.asList(x);
+                                String[] xmlNames = {"status_bar.xml", "keyguard_status_bar.xml", "system_icons.xml"};
+                                List<String> xmlNam = Arrays.asList(xmlNames);
+
+                                if (!xmls.containsAll(Arrays.asList(xmlNames))){
+                                    shortToast("You don\'t have the necessary Rom files. Run and test K-Klock with Other Roms at least once!");
+                                    return;
+                                }
+                                List<ZipEntrySource> zipEntrySources = new ArrayList<>();
+                                for (String f : x){
+                                    if (xmlNam.contains(f) || f.equals("attrs.xml")){
+                                        zipEntrySources.add(new FileSource("/"+f, new File(rootFolder + "/userInput/"+f)));
+                                    }
+                                }
+                                ZipEntrySource[] addedEntries = new ZipEntrySource[zipEntrySources.size()];
+                                for (int i = 0; i< zipEntrySources.size(); i++){
+                                    addedEntries[i] = zipEntrySources.get(i);
+                                }
+                                ZipUtil.pack(addedEntries, zip);
+                                // Send the zip file
+                                Intent i = new Intent(Intent.ACTION_SEND);
+                                i.setType("message/rfc822");
+                                i.putExtra(Intent.EXTRA_EMAIL, new String[]{"przestrzelski.com@gmail.com"});
+                                i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name) + " Other Roms");
+                                i.putExtra(Intent.EXTRA_TEXT, "Hi, here are the rom files for " + nameEdit.getText() + " " + valueEdit.getText() + ". " +
+                                        "I would love it if you added them to K-Manager :)");
+                                i.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(context, context.getPackageName() + ".fileprovider", zip));
+                                try {
+                                    context.startActivity(Intent.createChooser(i,
+                                            "Send through..."));
+                                } catch (ActivityNotFoundException ex) {
+                                    Toast.makeText(context,
+                                            "Error sending zip, try again later",
+                                            Toast.LENGTH_LONG)
+                                            .show();
+                                }
+
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                                dialog.cancel();
+                            }}
+
+                        );
+
+                // Create the AlertDialog object and return it
+                builder.create().show();
+
+            }
+        };
+        listDialogFragment.Instantiate("Other Roms Settings", names, keys, false, true, clickListener);
         listDialogFragment.show(getSupportFragmentManager(), "");
 
     }

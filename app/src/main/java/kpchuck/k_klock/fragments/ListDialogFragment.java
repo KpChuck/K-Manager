@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -23,6 +24,7 @@ import java.util.List;
 import kpchuck.k_klock.MainActivity;
 import kpchuck.k_klock.R;
 import kpchuck.k_klock.adapters.SwitchListAdapter;
+import kpchuck.k_klock.interfaces.BtnClickListener;
 import kpchuck.k_klock.interfaces.DialogInputClickListener;
 import kpchuck.k_klock.utils.PrefUtils;
 
@@ -36,14 +38,18 @@ public class ListDialogFragment  extends DialogFragment {
     private List<String> names;
     private List<String> keys;
     private boolean oneValue;
+    private boolean showButton;
+    private BtnClickListener btnClickListener;
 
     public void Instantiate (String title, List<String> names,
                              List<String> keys,
-                             boolean oneValue){
+                             boolean oneValue, boolean showButton, BtnClickListener btnClickListener){
         this.title=title;
         this.names=names;
         this.keys=keys;
         this.oneValue=oneValue;
+        this.showButton = showButton;
+        this.btnClickListener = btnClickListener;
     }
 
     @NonNull
@@ -61,6 +67,16 @@ public class ListDialogFragment  extends DialogFragment {
 
         TextView textView = view.findViewById(R.id.title);
         ListView listView = view.findViewById(R.id.listView);
+        Button button = view.findViewById(R.id.list_button);
+        button.setVisibility(showButton ? View.VISIBLE : View.GONE);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btnClickListener.onBtnClick(1);
+            }
+        });
+
+
         textView.setText(title);
 
         SwitchListAdapter listAdapter = new SwitchListAdapter(getContext(), names, keys, null,  oneValue);
