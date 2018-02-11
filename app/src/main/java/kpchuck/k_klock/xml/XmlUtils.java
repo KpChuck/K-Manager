@@ -78,7 +78,7 @@ public class XmlUtils {
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 layout = (Element) list.item(i);
                 Attr attr = layout.getAttributeNode(X_ID);
-                if (attr.getValue().equals(idName)) break;
+                if (attr != null && attr.getValue().equals(idName)) break;
                 else layout = null;
             }
         }
@@ -99,7 +99,7 @@ public class XmlUtils {
         if (!element.hasAttribute(attributeName)) return false;
 
         Attr attr = element.getAttributeNode(attributeName);
-        if (attr.getValue().equals(idName))return true;
+        if (attr != null && attr.getValue().equals(idName))return true;
         else return false;
     }
 
@@ -140,7 +140,7 @@ public class XmlUtils {
         for (int i=0; i<list.getLength(); i++){
             layout = (Element) list.item(i);
             Attr attr = layout.getAttributeNode(attributeName);
-            if (attr.getValue().equals(idName)) break;
+            if (attr != null && attr.getValue().equals(idName)) break;
             else layout = null;
         }
         if (layout == null){
