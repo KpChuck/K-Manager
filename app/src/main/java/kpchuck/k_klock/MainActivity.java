@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
             hasAll = xmls.containsAll(Arrays.asList(xmlNames));
             boolean hasSysUI = xmls.contains("SystemUI.apk");
 
-            if (newVersion) {
+            if (newVersion && (hasAll || hasSysUI)) {
 
                 TextAlertDialogFragment fragment = new TextAlertDialogFragment();
                 DialogClickListener clickListener = new DialogClickListener() {
