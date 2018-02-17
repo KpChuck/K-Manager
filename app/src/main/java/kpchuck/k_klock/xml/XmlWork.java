@@ -105,7 +105,7 @@ public class XmlWork {
         superContainer.setAttribute("android:visibility", "gone");
 
         String[] modPlaces = {"type2_No_Clock_on_Lockscreen_Center", "type2_Dynamic_Clock_Center", "type2_Stock_Clock_Center",
-                    "type2_No_Clock_on_Lockscreen_Left", "type2_Dynamic_Clock_Left"};
+                    "type2_No_Clock_on_Lockscreen_Left", "type2_Stock_Clock_Left", "type2_Dynamic_Clock_Left"};
         for (String s: modPlaces){
             if (new File(baseFolders, s).exists())
                 writeDocToFile(keyguard, new File(baseFolders, s + "/layout/keyguard_status_bar.xml"));
