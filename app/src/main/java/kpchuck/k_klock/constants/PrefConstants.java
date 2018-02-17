@@ -29,6 +29,7 @@ public class PrefConstants {
     public static final String PREF_MOVE_NOTIFICATIONS_RIGHT = "moveNotificationsRightPref";
     public static final String PREF_CHANGE_STATBAR_COLOR = "changeStatusbarColor";
     public static final String PREF_STATBAR_COLOR = "newStatBarColor";
+    public static final String PREF_CLOCK_HIDEABLE = "makeclockhideableinlaunchers";
 
     public static final String PREF_CARRIER_TEXT = "customCarrierTextPref";
     public static final String PREF_CARRIER_CUSTOM_TEXT = "inputtedCarrierText";

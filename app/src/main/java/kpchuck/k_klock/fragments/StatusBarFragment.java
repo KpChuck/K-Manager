@@ -47,6 +47,7 @@ import static kpchuck.k_klock.constants.PrefConstants.PREF_CARRIER_EVERYWHERE;
 import static kpchuck.k_klock.constants.PrefConstants.PREF_CARRIER_HIDE_NOTIFICATIONS;
 import static kpchuck.k_klock.constants.PrefConstants.PREF_CARRIER_TEXT;
 import static kpchuck.k_klock.constants.PrefConstants.PREF_CHANGE_STATBAR_COLOR;
+import static kpchuck.k_klock.constants.PrefConstants.PREF_CLOCK_HIDEABLE;
 import static kpchuck.k_klock.constants.PrefConstants.PREF_HIDE_ICONS_NOT_FULLY;
 import static kpchuck.k_klock.constants.PrefConstants.PREF_HIDE_ICONS_ON_LOCKSCREEN;
 import static kpchuck.k_klock.constants.PrefConstants.PREF_ICON;
@@ -88,6 +89,7 @@ public class StatusBarFragment extends Fragment {
     @BindView(R.id.clockSize) Switch clockSizeSwitch;
     @BindView(R.id.notifsRight) Switch notifsRightSwitch;
     @BindView(R.id.statBarColor) Switch statBarColorSwitch;
+    @BindView(R.id.clockHideable) Switch clockHideableSwitch;
 
 
 
@@ -131,6 +133,8 @@ public class StatusBarFragment extends Fragment {
         ButterKnife.apply(hideNotifs, ENABLEDCheckBox, prefUtils.getBool(PREF_CARRIER_HIDE_NOTIFICATIONS));
         ButterKnife.apply(notifsRightSwitch, ENABLED, prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT));
         ButterKnife.apply(statBarColorSwitch, ENABLED, prefUtils.getBool(PREF_CHANGE_STATBAR_COLOR));
+        ButterKnife.apply(clockHideableSwitch, ENABLED, prefUtils.getBool(PREF_CLOCK_HIDEABLE));
+
 
         if (prefUtils.getBool(PREF_CARRIER_TEXT)) ButterKnife.apply(carrierView, SetVisibility, View.VISIBLE);
         if (!fileHelper.getOos(prefUtils.getString(PREF_SELECTED_ROM, getString(R.string.chooseRom))).equals("OxygenOS"))
@@ -188,6 +192,11 @@ public class StatusBarFragment extends Fragment {
     @OnClick(R.id.showEverywhereCarrier)
     public void checkClick(){
         prefUtils.setCheckboxPrefs(carrierEveryheckbox, PREF_CARRIER_EVERYWHERE);
+    }
+
+    @OnClick(R.id.clockHideable)
+    public void launchers(){
+        prefUtils.setSwitchPrefs(clockHideableSwitch, PREF_CLOCK_HIDEABLE);
     }
 
     @OnClick (R.id.notifsRight)

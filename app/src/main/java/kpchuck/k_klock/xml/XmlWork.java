@@ -166,7 +166,7 @@ public class XmlWork {
         //Insert Right Clock First
         Element customClock = createClock(status, false, "start|center", X_WRAP_CONTENT);
         systemIconArea.insertBefore(customClock, stockClock);
-        if (removeClock && Build.VERSION.SDK_INT > 25) systemIconArea.removeChild(stockClock);
+        if (removeClock && Build.VERSION.SDK_INT > 25 && prefUtils.getBool(PREF_CLOCK_HIDEABLE)) systemIconArea.removeChild(stockClock);
         writeDocToFile(status, new File(baseFolders, "type2_Clock_on_Lockscreen_Right/layout/" + statusbar));
 
         // Now Left Clock
@@ -218,7 +218,7 @@ public class XmlWork {
         Element hideE = createLLTop(status, X_FILL_PARENT, "center");
 
         systemIconArea.insertBefore(hideE, stockClock);
-        if (removeClock && Build.VERSION.SDK_INT > 25) systemIconArea.removeChild(stockClock);
+        if (removeClock && Build.VERSION.SDK_INT > 25 && prefUtils.getBool(PREF_CLOCK_HIDEABLE)) systemIconArea.removeChild(stockClock);
 
         hideE.appendChild(customClock);
         writeDocToFile(status, new File(baseFolders,"type2_No_Clock_on_Lockscreen_Right/layout/" + statusbar));
@@ -329,7 +329,7 @@ public class XmlWork {
         textClock.setAttribute("android:layout_height", "fill_parent");
         textClock.setAttribute("android:singleLine", "true");
 
-        if (Build.VERSION.SDK_INT > 26) textClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
+        if (Build.VERSION.SDK_INT > 26 && prefUtils.getBool(PREF_CLOCK_HIDEABLE)) textClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
 
         textClock.setAttribute("android:layout_width", width);
         textClock.setAttribute("android:gravity", gravity);

@@ -68,6 +68,15 @@
             android:text="@string/clock_size"
             android:id="@+id/clockSize"/>
 
+        <!-- Clock Hideable on Nove -->
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Make Clock Hideable in Launchers"
+            android:id="@+id/clockHideable"/>
+
+
 
         <!-- Move Network Left Switch -->
         <Switch
