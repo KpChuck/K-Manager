@@ -52,6 +52,10 @@ import android.net.Uri;
 import android.content.Intent;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -146,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
     DrawerBuilder builder;
     private boolean spinnerOpen = false;
     private boolean hasAll = false;
+    private InterstitialAd mInterstitialAd;
 
 
     @Override
@@ -188,6 +193,11 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.fab)
     public void startBuilding() {
+
+        if (mInterstitialAd.isLoaded()){
+            mInterstitialAd.show();
+        }
+
 
         if (prefUtils.getBool("gsBgPref") && !fileHelper.checkQsFile(prefUtils)) {
             prefUtils.putBool("qsBgPref", false);
@@ -282,6 +292,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
+
+
+        MobileAds.initialize(this, "ca-app-pub-8166276602491641~4853039884");
+
+        AdView mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-8166276602491641/2336070649");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

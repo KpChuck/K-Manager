@@ -127,7 +127,7 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:26.1.0'
     implementation 'com.android.support:support-annotations:26.1.0'
     // Firebase
-    implementation 'com.google.firebase:firebase-core:11.6.0'
+    implementation 'com.google.firebase:firebase-core:11.8.0'
     // Jsoup
     implementation 'org.jsoup:jsoup:1.11.2'
     // About Libraries
@@ -146,6 +146,10 @@ dependencies {
 
     implementation files('libs/android-5.1.jar')
     implementation files('libs/dx-1.14.jar')
+
+    // Ads
+    compile 'com.google.android.gms:play-services-ads:11.8.0'
+
 
 
 }
