@@ -209,10 +209,10 @@ public class MainActivity extends AppCompatActivity {
         }
         if(romName.equals(betaString)) {
             // Check for new version
-            boolean osVersion = (System.getProperty("os.version")).equals(prefUtils.getString("osversion", ""));
-            boolean buildUser = (Build.USER).equals(prefUtils.getString("builduser", ""));
-            boolean releaseVersion = (Build.VERSION.RELEASE).equals(prefUtils.getString("buildversionrelease", ""));
-            boolean newVersion = osVersion && buildUser && releaseVersion;
+            boolean osVersion = !(System.getProperty("os.version")).equals(prefUtils.getString("osversion", ""));
+            boolean buildUser = !(Build.USER).equals(prefUtils.getString("builduser", ""));
+            boolean releaseVersion = !(Build.VERSION.RELEASE).equals(prefUtils.getString("buildversionrelease", ""));
+            boolean newVersion = osVersion || buildUser || releaseVersion;
             if (newVersion){
                 prefUtils.putString("osversion", System.getProperty("os.version"));
                 prefUtils.putString("builduser", Build.USER);
