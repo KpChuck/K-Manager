@@ -62,8 +62,10 @@ public class HideIconsService extends Service {
                 .setContentTitle("K-Manager")
                 .setContentText("Hide icons service is running in the background")
                 .setContentIntent(pendingIntent);
+
         Notification notification=builder.build();
-        if(Build.VERSION.SDK_INT>=26) {
+
+        if(Build.VERSION.SDK_INT >= 26) {
             NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW);
             channel.setDescription(NOTIFICATION_CHANNEL_DESC);
             NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);

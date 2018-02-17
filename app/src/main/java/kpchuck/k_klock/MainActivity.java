@@ -636,10 +636,13 @@ public class MainActivity extends AppCompatActivity {
                                 // Send the zip file
                                 Intent i = new Intent(Intent.ACTION_SEND);
                                 i.setType("message/rfc822");
+                                String message = String.format("Hi, here are the rom files for %s %s.\nI'm %s making the clock dynamic and %s the stock clock.\nI would love it if you added them to K-Manager :)",
+                                        nameEdit.getText(), valueEdit.getText(),
+                                        prefUtils.getBool(DEV_MAKE_DYNAMIC) ? "" : "not",
+                                        prefUtils.getBool(DEV_HIDE_CLOCK) ? "I\'m hiding" : "not hiding");
                                 i.putExtra(Intent.EXTRA_EMAIL, new String[]{"przestrzelski.com@gmail.com"});
                                 i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name) + " Other Roms");
-                                i.putExtra(Intent.EXTRA_TEXT, "Hi, here are the rom files for " + nameEdit.getText() + " " + valueEdit.getText() + ". " +
-                                        "I would love it if you added them to K-Manager :)");
+                                i.putExtra(Intent.EXTRA_TEXT, (message));
                                 i.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(context, context.getPackageName() + ".fileprovider", zip));
                                 try {
                                     context.startActivity(Intent.createChooser(i,
