@@ -166,12 +166,16 @@ public class XmlWork {
         //Insert Right Clock First
         Element customClock = createClock(status, false, "start|center", X_WRAP_CONTENT);
         systemIconArea.insertBefore(customClock, stockClock);
+        setPadding(customClock, stockClock);
+
         if (removeClock && Build.VERSION.SDK_INT > 25 && prefUtils.getBool(PREF_CLOCK_HIDEABLE)) systemIconArea.removeChild(stockClock);
         writeDocToFile(status, new File(baseFolders, "type2_Clock_on_Lockscreen_Right/layout/" + statusbar));
 
         // Now Left Clock
         systemIconArea.removeChild(customClock);
         customClock = createClock(status, false, "left|center", X_WRAP_CONTENT);
+        setPadding(customClock, stockClock);
+
         statusBarContents.insertBefore(customClock, utils.getFirstChildElement(statusBarContents));
         writeDocToFile(status, new File(baseFolders, "type2_Clock_on_Lockscreen_Left/layout/" + statusbar));
 
@@ -216,6 +220,7 @@ public class XmlWork {
         // Right clocks
         customClock = createClock(status, false, "start|center", X_WRAP_CONTENT);
         Element hideE = createLLTop(status, X_FILL_PARENT, "center");
+        setPadding(customClock, stockClock);
 
         systemIconArea.insertBefore(hideE, stockClock);
         if (removeClock && Build.VERSION.SDK_INT > 25 && prefUtils.getBool(PREF_CLOCK_HIDEABLE)) systemIconArea.removeChild(stockClock);
@@ -235,6 +240,8 @@ public class XmlWork {
         systemIconArea.removeChild(hideE);
         hideE = createLLTop(status, X_WRAP_CONTENT, "left");
         customClock = createClock(status, false, "left|center", X_WRAP_CONTENT);
+        setPadding(customClock, stockClock);
+
         statusBarContents.insertBefore(hideE, utils.getFirstChildElement(statusBarContents));
         hideE.appendChild(customClock);
         writeDocToFile(status, new File(baseFolders, "type2_No_Clock_on_Lockscreen_Left/layout/" + statusbar));
@@ -336,14 +343,18 @@ public class XmlWork {
 
         textClock.setAttribute("android:layout_width", width);
         textClock.setAttribute("android:gravity", gravity);
+        setPadding(textClock, stockClock);
 
+
+        return textClock;
+    }
+
+    private void setPadding(Element textClock, Element stockClock) {
         // Set the same padding that stock clock has
         String[] pads = {"android:paddingStart", "android:paddingEnd"};
         for (String s : pads){
             if (stockClock.hasAttribute(s)) textClock.setAttribute(s, stockClock.getAttribute(s));
         }
-
-        return textClock;
     }
 
     private Element createLLTop(Document doc, String width, String gravity){
