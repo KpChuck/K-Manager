@@ -315,6 +315,9 @@ public class XmlWork {
     private Element createClock(Document doc, boolean stock, String gravity, String width){
 
         Element textClock = null;
+        Element stockClock = utils.findElementInDoc(doc,
+                "com.android.systemui.statusbar.policy.Clock",
+                "@*com.android.systemui:id/clock");
         if (stock) {
             textClock = doc.createElement("com.android.systemui.statusbar.policy.Clock");
             textClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
@@ -333,6 +336,12 @@ public class XmlWork {
 
         textClock.setAttribute("android:layout_width", width);
         textClock.setAttribute("android:gravity", gravity);
+
+        // Set the same padding that stock clock has
+        String[] pads = {"android:paddingStart", "android:paddingEnd"};
+        for (String s : pads){
+            if (stockClock.hasAttribute(s)) textClock.setAttribute(s, stockClock.getAttribute(s));
+        }
 
         return textClock;
     }
