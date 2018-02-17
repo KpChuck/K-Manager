@@ -194,11 +194,6 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.fab)
     public void startBuilding() {
 
-        if (mInterstitialAd.isLoaded()){
-            mInterstitialAd.show();
-        }
-
-
         if (prefUtils.getBool("gsBgPref") && !fileHelper.checkQsFile(prefUtils)) {
             prefUtils.putBool("qsBgPref", false);
         }
@@ -764,7 +759,7 @@ public class MainActivity extends AppCompatActivity {
         int k = fileHelper.decreaseToLowest(check);
         String apkVersion = "K-Klock_v" + k + ".apk";
 
-        new ApkBuilder(context, loadingLayout, loadingTextView, defaultLayout, hasAll).execute(apkVersion, apkVersion, apkVersion);
+        new ApkBuilder(context, loadingLayout, loadingTextView, defaultLayout, hasAll, mInterstitialAd).execute(apkVersion, apkVersion, apkVersion);
 
     }
 

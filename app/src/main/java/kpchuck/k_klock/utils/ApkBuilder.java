@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.InterstitialAd;
+
 import org.apache.commons.io.FileUtils;
 import org.zeroturnaround.zip.FileSource;
 import org.zeroturnaround.zip.ZipUtil;
@@ -53,8 +55,9 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
     private File mergerFolder;
     private File tempFolder;
     private String univ = "universal";
+    private InterstitialAd interstitialAd;
 
-    public ApkBuilder(Context context, RelativeLayout relativeLayout, TextView textView, RelativeLayout defaultLayout, boolean xmls){
+    public ApkBuilder(Context context, RelativeLayout relativeLayout, TextView textView, RelativeLayout defaultLayout, boolean xmls, InterstitialAd interstitialAd){
         this.fileHelper = new FileHelper();
         this.context = context;
         this.prefUtils = new PrefUtils(context);
@@ -62,11 +65,17 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         this.tv = textView;
         this.defaultLayout = defaultLayout;
         this.hasAllXmls= xmls;
+        this.interstitialAd = interstitialAd;
     }
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
+        if (interstitialAd.isLoaded()){
+            interstitialAd.show();
+        }
+
+
         relativeLayout.setVisibility(View.VISIBLE);
         tv.setText(R.string.apkBuilderLoading);
     }
