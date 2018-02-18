@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 
 
 android {
@@ -8,6 +9,10 @@ android {
     def versionPropsFile = file('version.properties')
     def versionBuild
     def versionType
+
+    defaultConfig {
+        multiDexEnabled true
+    }
 
     /*Setting default value for versionBuild which is the last incremented value stored in the file */
     if (versionPropsFile.canRead()) {
@@ -70,6 +75,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
 
     // Hook to check if the release/debug task is among the tasks to be executed.
     //Let's make use of it
@@ -105,9 +114,12 @@ dependencies {
     //Loading Animation
     implementation 'com.github.ybq:Android-SpinKit:1.1.0'
     //All those com.android.s
-    implementation 'com.android.support:design:26.1.0'
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support:support-v4:26.+'
+    implementation 'com.android.support:support-v4:27.0.2'  // Adding this line (according to above warning message)
+    implementation 'com.android.support:appcompat-v7:27.0.2'
+    implementation 'com.android.support:recyclerview-v7:27.0.2'
+    implementation 'com.android.support:design:27.0.2'
+    implementation 'com.android.support:support-annotations:27.0.2'
+
     //Image Picker
     implementation 'com.kbeanie:multipicker:1.1.31@aar'
     //Searchable Spinner
@@ -123,9 +135,6 @@ dependencies {
     implementation("com.mikepenz:materialdrawer:6.0.2@aar") {
         transitive = true
     }
-    //required support lib modules
-    implementation 'com.android.support:recyclerview-v7:26.1.0'
-    implementation 'com.android.support:support-annotations:26.1.0'
     // Firebase
     implementation 'com.google.firebase:firebase-core:11.8.0'
     // Jsoup
@@ -143,44 +152,19 @@ dependencies {
     implementation 'uk.com.robust-it:cloning:1.9.2'
     implementation 'org.slf4j:slf4j-api:1.7.10'
 
-
     implementation files('libs/android-5.1.jar')
     implementation files('libs/dx-1.14.jar')
 
     // Ads
-    compile 'com.google.android.gms:play-services-ads:11.8.0'
+    implementation 'com.google.android.gms:play-services-ads:11.8.0'
+    implementation ("org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"){
+        transitive = true
+        exclude group: 'org.jetbrains', module: 'annotations'
 
+    }
 
 
 }
-
-// a wrapper closure around executing a string
-// can take either a string or a list of strings (for arguments with spaces)
-// prints all output, complains and halts on error
-def runCommand = { strList ->
-    assert ( strList instanceof String ||
-            ( strList instanceof List && strList.each{ it instanceof String } ) \
-)
-    def proc = strList.execute()
-    proc.in.eachLine { line -> println line }
-    proc.out.close()
-    proc.waitFor()
-
-    print "[INFO] ( "
-    if(strList instanceof List) {
-        strList.each { print "${it} " }
-    } else {
-        print strList
-    }
-    println " )"
-
-    if (proc.exitValue()) {
-        println "gave the following error: "
-        println "[ERROR] ${proc.getErrorStream()}"
-    }
-    assert !proc.exitValue()
-}
-
 
 task uploadDebugWhenFinished {
     doLast {
@@ -189,9 +173,6 @@ task uploadDebugWhenFinished {
       //  println "python /home/karol/PycharmProjects/telegram/Debug.py".execute().text
     }
 }
-
-
-
 
 task uploadBetaWhenFinished {
     doLast {
@@ -202,4 +183,7 @@ task uploadBetaWhenFinished {
 
 
 apply plugin: 'com.google.gms.google-services'
+repositories {
+    mavenCentral()
+}
 

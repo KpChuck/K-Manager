@@ -10,11 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.AnimationDrawable;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
@@ -56,6 +52,9 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -151,6 +150,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean spinnerOpen = false;
     private boolean hasAll = false;
     private InterstitialAd mInterstitialAd;
+    private RewardedVideoAd rewardedVideoAd;
+    private boolean b = false;
 
 
     @Override
@@ -193,6 +194,12 @@ public class MainActivity extends AppCompatActivity {
 
     @OnClick(R.id.fab)
     public void startBuilding() {
+
+        if (b && rewardedVideoAd.isLoaded()){
+            Toast.makeText(context, "You must watch this Ad to start building K-Klock", Toast.LENGTH_LONG).show();
+            rewardedVideoAd.show();
+            return;
+        }
 
         if (prefUtils.getBool("gsBgPref") && !fileHelper.checkQsFile(prefUtils)) {
             prefUtils.putBool("qsBgPref", false);
@@ -298,6 +305,16 @@ public class MainActivity extends AppCompatActivity {
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-8166276602491641/2336070649");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+        b = Checks.INSTANCE.getSelfVerifiedPirateTools(context);
+        if (b){
+            //load ad
+            rewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
+            rewardedVideoAd.setRewardedVideoAdListener(rewardedVideoAdListener);
+            rewardedVideoAd.loadAd("ca-app-pub-8166276602491641/8867079155",
+                    new AdRequest.Builder().build());
+        }
+
 
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -738,6 +755,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     protected void onResume(){
+        if (rewardedVideoAd != null)rewardedVideoAd.resume(this);
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(BReceiver, new IntentFilter("message"));
         setTheme(prefUtils.getBool(PREF_BLACK_THEME) ? R.style.AppTheme_Dark : R.style.AppTheme);
@@ -745,8 +763,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void onPause (){
+        if (rewardedVideoAd != null)rewardedVideoAd.pause(this);
         super.onPause();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(BReceiver);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (rewardedVideoAd != null)rewardedVideoAd.destroy(this);
+        super.onDestroy();
     }
 
     @BindView(R.id.listViewLayout) RelativeLayout bgLayout;
@@ -1097,6 +1122,45 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    RewardedVideoAdListener rewardedVideoAdListener = new RewardedVideoAdListener() {
+        @Override
+        public void onRewardedVideoAdLoaded() {
+
+        }
+
+        @Override
+        public void onRewardedVideoAdOpened() {
+
+        }
+
+        @Override
+        public void onRewardedVideoStarted() {
+
+        }
+
+        @Override
+        public void onRewardedVideoAdClosed() {
+            rewardedVideoAd.loadAd("ca-app-pub-8166276602491641/8867079155",
+                    new AdRequest.Builder().build());
+        }
+
+        @Override
+        public void onRewarded(RewardItem rewardItem) {
+            b = false;
+            startBuilding();
+        }
+
+        @Override
+        public void onRewardedVideoAdLeftApplication() {
+
+        }
+
+        @Override
+        public void onRewardedVideoAdFailedToLoad(int i) {
+
+        }
+    };
 
 
     private void promptTelegram(){

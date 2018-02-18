@@ -284,7 +284,7 @@ public class FileHelper {
     }
 
     /*
-    Checks if the version code of the last checked github apk is the same as the version code
+    kpchuck.k_klock.Checks if the version code of the last checked github apk is the same as the version code
      */
     public boolean newVersion(Context context){
         PrefUtils prefUtils = new PrefUtils(context);
