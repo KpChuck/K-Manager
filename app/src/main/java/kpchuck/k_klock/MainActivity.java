@@ -15,6 +15,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
@@ -48,6 +50,11 @@ import android.net.Uri;
 import android.content.Intent;
 import android.widget.Toast;
 
+import com.github.javiersantos.piracychecker.PiracyChecker;
+import com.github.javiersantos.piracychecker.enums.InstallerID;
+import com.github.javiersantos.piracychecker.enums.PiracyCheckerCallback;
+import com.github.javiersantos.piracychecker.enums.PiracyCheckerError;
+import com.github.javiersantos.piracychecker.enums.PirateApp;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
@@ -152,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
     private InterstitialAd mInterstitialAd;
     private RewardedVideoAd rewardedVideoAd;
     private boolean b = false;
+    private boolean installed_from_playstore = true;
 
 
     @Override
@@ -295,7 +303,24 @@ public class MainActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
+        // Check if K-Manager was installed from playstore
+        new PiracyChecker(context)
+                .enableInstallerId(InstallerID.GOOGLE_PLAY)
+                .callback(new PiracyCheckerCallback() {
+                    @Override
+                    public void allow() {
+                        installed_from_playstore = true;
+                    }
 
+                    @Override
+                    public void dontAllow(@NonNull PiracyCheckerError piracyCheckerError, @Nullable PirateApp pirateApp) {
+                        installed_from_playstore = false;
+                    }
+                });
+
+
+
+        // Ads
         MobileAds.initialize(this, "ca-app-pub-8166276602491641~4853039884");
 
         AdView mAdView = findViewById(R.id.adView);
@@ -308,7 +333,6 @@ public class MainActivity extends AppCompatActivity {
 
         b = Checks.INSTANCE.getSelfVerifiedPirateTools(context);
         if (b){
-            //load ad
             rewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
             rewardedVideoAd.setRewardedVideoAdListener(rewardedVideoAdListener);
             rewardedVideoAd.loadAd("ca-app-pub-8166276602491641/8867079155",
@@ -345,6 +369,7 @@ public class MainActivity extends AppCompatActivity {
                 .trackActivities(true) //default: false
                 .restartActivity(MainActivity.class) //default: null (your app's launch activity)
                 .apply();
+
 
 
         LocalBroadcastManager.getInstance(this).registerReceiver(BReceiver, new IntentFilter("message"));
@@ -708,9 +733,12 @@ public class MainActivity extends AppCompatActivity {
         DialogClickListener dialogClickListener = new DialogClickListener() {
             @Override
             public void onPositiveBtnClick() {
-                Intent intent = new Intent(context, CheckforUpdatesService.class);
-                intent.putExtra("action", 2);
-                startService(intent);
+                if (!installed_from_playstore) {
+                    Intent intent = new Intent(context, CheckforUpdatesService.class);
+                    intent.putExtra("action", 2);
+                    startService(intent);
+                }
+                // Open intent to playstore
             }
 
             @Override

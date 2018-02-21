@@ -157,10 +157,12 @@ dependencies {
 
     // Ads
     implementation 'com.google.android.gms:play-services-ads:11.8.0'
+    // Piracy Checker
+    implementation 'com.github.javiersantos:PiracyChecker:1.2.1'
+    //Kotlin
     implementation ("org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"){
         transitive = true
         exclude group: 'org.jetbrains', module: 'annotations'
-
     }
 
 
