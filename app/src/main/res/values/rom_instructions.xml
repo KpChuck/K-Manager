@@ -25,6 +25,7 @@
     <string-array name="hide_clock">
 
 
+        <item>AICP Oreo</item>
         <item>AOKP Oreo</item>
         <item>AOSIP Oreo</item>
         <item>AOSP Extended Oreo</item>
