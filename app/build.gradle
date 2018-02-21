@@ -85,13 +85,14 @@ android {
 
 gradle.taskGraph.whenReady { taskGraph ->
     if (taskGraph.hasTask(assembleDebug)) {  /* when run debug task */
-        if (versionType.equals("beta")) {
-            uploadBetaWhenFinished.execute()
-        } else if (versionType.equals("debug")) {
+        if (versionType.equals("debug")) {
             uploadDebugWhenFinished.execute()
         }
         autoIncrementBuildNumber()
     } else if (taskGraph.hasTask(assembleRelease)) { /* when run release task */
+        if (versionType.equals("beta")) {
+            uploadBetaWhenFinished.execute()
+        }
         autoIncrementBuildNumber()
     }
 }
