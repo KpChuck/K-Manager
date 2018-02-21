@@ -1,12 +1,18 @@
 package kpchuck.k_klock.utils;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.util.Log;
 
 
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import kpchuck.k_klock.R;
@@ -23,8 +29,6 @@ public class QsBgUtil {
     File tempFolder;
     File dir;
     FileHelper fileHelper;
-
-    String slash = "/";
 
 
     public QsBgUtil(Context context, File tempFolder){
@@ -55,7 +59,6 @@ public class QsBgUtil {
         File destFile = new File(dir.getAbsolutePath() + "/assets/overlays/com.android.systemui.headers/type2");
         new XmlUtils().writeType2Desc(type2, destFile.getAbsolutePath());
 
-
     }
 
     private void buildFilePath(){
@@ -72,6 +75,26 @@ public class QsBgUtil {
             Log.e("klock", e.getMessage());
         }
 
+
+    }
+
+    public void changeAlpha(String png) throws FileNotFoundException{
+        Bitmap originalBitmap = BitmapFactory.decodeFile(png);
+
+        // lets create a new empty bitmap
+        Bitmap newBitmap = Bitmap.createBitmap(originalBitmap.getWidth(), originalBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+          // create a canvas where we can draw on
+        Canvas canvas = new Canvas(newBitmap);
+          // create a paint instance with alpha
+        Paint alphaPaint = new Paint();
+        alphaPaint.setAlpha(42);
+         // now lets draw using alphaPaint instance
+        canvas.drawBitmap(originalBitmap, 0, 0, alphaPaint);
+
+          // now lets store the bitmap to a file - the canvas has drawn on the newBitmap, so we can just store that one
+          // please add stream handling with try/catch blocks
+        FileOutputStream fos = new FileOutputStream(new File(png));
+        newBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
 
     }
 
