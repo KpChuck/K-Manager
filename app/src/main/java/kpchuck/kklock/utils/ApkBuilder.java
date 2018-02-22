@@ -69,7 +69,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        if (interstitialAd.isLoaded()){
+        if (interstitialAd != null && interstitialAd.isLoaded()){
             interstitialAd.show();
         }
 
