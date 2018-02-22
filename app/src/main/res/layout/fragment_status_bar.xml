@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="kpchuck.k_klock.fragments.StatusBarFragment"
+    tools:context="kpchuck.kklock.fragments.StatusBarFragment"
     android:id="@+id/statusBarAddOnFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"

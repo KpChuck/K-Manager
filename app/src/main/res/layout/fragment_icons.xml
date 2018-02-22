@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context="kpchuck.k_klock.fragments.IconsFragment">
+    tools:context="kpchuck.kklock.fragments.IconsFragment">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
 
 
     <android.support.v7.widget.CardView
-        tools:context="kpchuck.k_klock.fragments.StatusBar_Add_On_Fragment"
+        tools:context="kpchuck.kklock.fragments.StatusBar_Add_On_Fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

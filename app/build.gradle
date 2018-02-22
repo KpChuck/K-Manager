@@ -46,6 +46,10 @@ android {
         versionCode 1
         versionName "22"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            moduleName "LoadingProcess"
+        }
     }
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
@@ -78,6 +82,11 @@ android {
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
+    externalNativeBuild {
+        ndkBuild {
+            path 'src/main/jni/Android.mk'
+        }
+    }
 
 
     // Hook to check if the release/debug task is among the tasks to be executed.
@@ -92,12 +101,16 @@ gradle.taskGraph.whenReady { taskGraph ->
     } else if (taskGraph.hasTask(assembleRelease)) { /* when run release task */
         if (versionType.equals("beta")) {
             uploadBetaWhenFinished.execute()
+        } else if (versionType.equals("debug")) {
+            uploadDebugWhenFinished.execute()
         }
         autoIncrementBuildNumber()
     }
 }
 
 }
+
+
 
 
 dependencies {

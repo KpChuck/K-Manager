@@ -3,7 +3,7 @@
     <!--<external-path name="external_files" path="."/>-->
     <external-path
         name="files_root"
-        path="Android/data/kpchuck.k_klock"/>
+        path="Android/data/kpchuck.kklock"/>
     <external-path
         name="my_apks"
         path="K-Klock/"/>

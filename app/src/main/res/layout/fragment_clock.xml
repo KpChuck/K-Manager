@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="kpchuck.k_klock.fragments.ClockFragment">
+    tools:context="kpchuck.kklock.fragments.ClockFragment">
 
     <ScrollView
         android:layout_width="match_parent"
