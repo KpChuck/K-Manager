@@ -323,8 +323,6 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .start();
 
-        Log.e("SIGNATURE", PiracyCheckerUtils.getAPKSignature(this));
-
         String callback = checks.isLicensed(context);
         if (!callback.equals("allowed")){
 
@@ -355,14 +353,10 @@ public class MainActivity extends AppCompatActivity {
 
         z = checks.isPro(context);
 
-
-
-
-
         // Ads
         MobileAds.initialize(this, "ca-app-pub-8166276602491641~4853039884");
 
-        if (!z && a) {
+        if (!z || a) {
 
             AdView mAdView = findViewById(R.id.adView);
             AdRequest adRequest = new AdRequest.Builder().build();
@@ -781,6 +775,10 @@ public class MainActivity extends AppCompatActivity {
                     startService(intent);
                 }
                 // Open intent to playstore
+                else {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(z ? getString(R.string.k_manager_pro_link) : getString(R.string.k_manager_gp_link)));
+                    startActivity(intent);
+                }
             }
 
             @Override
