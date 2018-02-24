@@ -786,7 +786,10 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-        dialogFragment.Instantiate(getString(R.string.new_version_available), getString(R.string.changelog) + "\n" + changelist,
+        String name = prefUtils.getString(LATEST_GITHUB_VERSION_NAME, "");
+        String versionName = " " + name.substring(10, name.lastIndexOf(".apk"));
+
+        dialogFragment.Instantiate(getString(R.string.new_version_available) + versionName, getString(R.string.changelog) + "\n" + changelist,
                 getString(R.string.download), getString(R.string.remind_me_later), dialogClickListener);
         dialogFragment.show(getSupportFragmentManager(), "klock");
 
