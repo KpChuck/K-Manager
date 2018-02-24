@@ -26,26 +26,23 @@
 
         <main>
 
-            <h1>Contributing</h1>
-
-            <p>
-                Once you have tested that your Other Roms options work, they can be added to K-Manager.
-            </p>
-
-            <p>
-                You can also go into the K-Manager Settings and try the Developer Options for Other Roms to add extra functionality for your Rom.
-            </p>
-
             <article>
 
+                <h1>Submitting files to be included in K-Manager - Guide</h1>
+
                 <ul>
-                    <li>Zip your userInput folder. Rename the zip file to your name of your Rom with it's android version.
-                        For example Paranoid Android Nougat.zip
+                    <li>
+                        Open K-Manager, select Other Roms as your Rom and tap on Other Roms Settings.
                     </li>
-                    <li>You can fork K-Manager and make a pull request to submit the files.
-                        Or just send it to me via email, telegram, xda.</li>
-                    <li>If you're making a pull request,
-                    place the zipped xmls into the
+                    <li>
+                        Press the Submit Files to K-Manager option, fill out your Rom details and an option will come up to send it to me
+                        through Email or Telegram.
+                    </li>
+                    <li>Alternatively, you can fork K-Manager and make a pull request to submit the files</li>
+                    <li>
+                        After following the above steps you can go to /sdcard/K-Klock and you should find a zip with the details you filled out.
+                    </li>
+                    <li>Place the zip into the
                         <b>app/src/main/assets/romSpecific</b>
                         folder.
                     </li>
@@ -54,6 +51,9 @@
                         <b>app/src/main/res/values</b>
                         and add your Rom to the lists there.<br>
                         <strong>Make sure that the text there is exactly the same as the name of your zip file without the .zip!</strong>
+                    </li>
+                    <li>
+                        Then just open up a pull request on github and I'll merge your files into K-Manager
                     </li>
                 </ul>
 
