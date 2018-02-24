@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.Preference;
@@ -28,6 +29,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 
 import kpchuck.kklock.AppCompatPreferenceActivity;
+import kpchuck.kklock.Checks;
 import kpchuck.kklock.MainActivity;
 import kpchuck.kklock.R;
 import kpchuck.kklock.utils.PrefUtils;
@@ -84,6 +86,19 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 return true;
             }
         });
+
+        Preference upgrade = (Preference) findPreference("goPro");
+        if (new Checks().isPro(getApplicationContext())) upgrade.setEnabled(false);
+        else {
+            upgrade.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent rgb = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.k_manager_pro_link)));
+                    startActivity(rgb);
+                    return true;
+                }
+            });
+        }
 
         Preference deletePref = (Preference) findPreference("deleteSaved");
         deletePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {

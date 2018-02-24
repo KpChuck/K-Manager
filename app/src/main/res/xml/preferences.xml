@@ -20,7 +20,18 @@
 
         <Preference
         android:key="deleteApks"
-        android:title="Delete all K-Klock Apks"/>
+        android:title="Delete all built K-Klock Apks"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Upgrade to Pro">
+
+        <Preference
+            android:key="goPro"
+            android:title="Get K-Manager Pro"
+            android:summary="Support the developer and get adfree K-Manager"/>
+
 
     </PreferenceCategory>
 
