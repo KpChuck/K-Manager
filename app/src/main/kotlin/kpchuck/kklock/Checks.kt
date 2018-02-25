@@ -2,6 +2,7 @@ package kpchuck.kklock
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.widget.Toast
 import com.github.javiersantos.piracychecker.PiracyChecker
 import com.github.javiersantos.piracychecker.enums.InstallerID
 import com.github.javiersantos.piracychecker.enums.PiracyCheckerCallback
