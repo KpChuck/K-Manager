@@ -88,7 +88,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         });
 
         Preference upgrade = (Preference) findPreference("goPro");
-        if (new Checks().isPro(getApplicationContext())) upgrade.setEnabled(false);
+        if (new Checks().isPro(getApplicationContext())) upgrade.setEnabled(true);
         else {
             upgrade.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override

@@ -71,7 +71,7 @@ class Checks {
         piracyChecker.enableSigningCertificate(getAPKSignatureProduction())
         piracyChecker.enableInstallerId(InstallerID.GOOGLE_PLAY)
         piracyChecker.start()
-        if (BuildConfig.APPLICATION_ID != "kpchuck.k_klock.pro") b = false
+        if (BuildConfig.APPLICATION_ID != "kpchuck.k_klock.pro"){ b = false}
         return b
     }
 
