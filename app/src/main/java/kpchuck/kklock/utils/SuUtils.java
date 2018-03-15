@@ -7,6 +7,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by karol on 11/01/18.
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 public class SuUtils {
 
     public boolean hasRoot(){
-        String check = runCommand("which su").get(0);
+        List<String> check = runCommand("which su");
         return (check != null) && !check.isEmpty();
     }
 
