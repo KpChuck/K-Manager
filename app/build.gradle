@@ -42,9 +42,9 @@ android {
     defaultConfig {
         applicationId "kpchuck.k_klock"
         minSdkVersion 24
-        targetSdkVersion 27
-        versionCode 1
-        versionName "22"
+        targetSdkVersion 26
+        versionCode 7
+        versionName "23"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         ndk {
@@ -101,8 +101,6 @@ gradle.taskGraph.whenReady { taskGraph ->
     } else if (taskGraph.hasTask(assembleRelease)) { /* when run release task */
         if (versionType.equals("beta")) {
             uploadBetaWhenFinished.execute()
-        } else if (versionType.equals("debug")) {
-            uploadDebugWhenFinished.execute()
         }
         autoIncrementBuildNumber()
     }
