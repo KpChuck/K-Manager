@@ -65,8 +65,7 @@ public class XmlUtils {
         return null;
     }
 
-    public Element findElementById(Document doc, String idName){
-        Element parentElement = doc.getDocumentElement();
+    public Element findElementById(Element parentElement, String idName){
         if (parentElement.getAttribute(X_ID).equals(idName)) return parentElement;
 
 
@@ -78,7 +77,11 @@ public class XmlUtils {
                 layout = (Element) list.item(i);
                 Attr attr = layout.getAttributeNode(X_ID);
                 if (attr != null && attr.getValue().equals(idName)) break;
-                else layout = null;
+                if (layout.getChildNodes() != null || layout.getChildNodes().getLength() != 0){
+                    layout = findElementById(layout, idName);
+                    if (layout != null) break;
+                }
+                layout = null;
             }
         }
         if (layout == null){

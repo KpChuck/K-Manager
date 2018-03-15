@@ -134,7 +134,21 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             throw new RuntimeException("Jadx error I think: \n" + e);
         }  catch (Exception e){
             Log.e("klock", "Error: ", e);
+            File errormsg = new File(Environment.getExternalStorageDirectory() + "/K-Klock/error.txt");
+            try{
+                if (errormsg.exists())errormsg.delete();
+                FileUtils.writeStringToFile(errormsg, e.getMessage() + "\n", "utf-8", true);
+                FileUtils.writeStringToFile(errormsg, e.getCause() + "\n", "utf-8", true);
+
+                for (StackTraceElement s : e.getStackTrace()){
+                    FileUtils.writeStringToFile(errormsg, s.toString() + "\n" , "utf-8", true);
+
+                }
+            } catch (IOException q){
+                 Log.e("klock", q.getMessage());
+            }
             throw new RuntimeException("Error modding rom I think: \n" + e);
+
         }
 
         return apkVersion[0];

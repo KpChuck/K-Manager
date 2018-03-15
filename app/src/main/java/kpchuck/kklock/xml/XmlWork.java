@@ -82,7 +82,7 @@ public class XmlWork {
         }
         keyguard = utils.fixUpForAttrs(keyguard, hasAttrs);
 
-        Element carrierText = utils.findElementById(keyguard,
+        Element carrierText = utils.findElementById(keyguard.getDocumentElement(),
                 "@*com.android.systemui:id/keyguard_carrier_text");
         carrierText = utils.changeAttribute(carrierText, "android:textColor", "#ffffffff");
         carrierText = utils.changeAttribute(carrierText, "android:textAppearance", "?android:textAppearanceSmall");
@@ -153,12 +153,12 @@ public class XmlWork {
         // Find elements needed
         Element rootElement = status.getDocumentElement();
 
-        Element stockClock = utils.findElementInDoc(status,
-                "com.android.systemui.statusbar.policy.Clock",
-                "@*com.android.systemui:id/clock");
+
         Element systemIconArea = utils.findElementInDoc(status,
                 "com.android.keyguard.AlphaOptimizedLinearLayout",
                 "@*com.android.systemui:id/system_icon_area");
+        Element stockClock = utils.findElementById(systemIconArea,
+                "@*com.android.systemui:id/clock");
         Element statusBarContents = utils.findElementInDoc(status,
                 "LinearLayout",
                 "@*com.android.systemui:id/status_bar_contents");
@@ -202,12 +202,11 @@ public class XmlWork {
         // All other clocks
         status = setupStatusBar();
         // Find elements needed
-        stockClock = utils.findElementInDoc(status,
-                "com.android.systemui.statusbar.policy.Clock",
-                "@*com.android.systemui:id/clock");
         systemIconArea = utils.findElementInDoc(status,
                 "com.android.keyguard.AlphaOptimizedLinearLayout",
                 "@*com.android.systemui:id/system_icon_area");
+        stockClock = utils.findElementById(systemIconArea,
+                "@*com.android.systemui:id/clock");
         statusBarContents = utils.findElementInDoc(status,
                 "LinearLayout",
                 "@*com.android.systemui:id/status_bar_contents");
@@ -486,7 +485,7 @@ public class XmlWork {
     }
 
     private Element hideCarrierText(Document doc){
-        Element carrierTextElement = utils.findElementById(doc,
+        Element carrierTextElement = utils.findElementById(doc.getDocumentElement(),
                 "@*com.android.systemui:id/keyguard_carrier_text");
 
         // Hide the carrier text
