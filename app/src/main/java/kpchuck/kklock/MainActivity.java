@@ -352,11 +352,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         z = checks.isPro(context);
+        if (z){
+            setTitle(getString(R.string.app_name) + " Pro");
+        }
 
         // Ads
         MobileAds.initialize(this, "ca-app-pub-8166276602491641~4853039884");
-
-        Log.e("klock", PiracyCheckerUtils.getAPKSignature(context));
 
         if (!z ) {
 
@@ -723,7 +724,7 @@ public class MainActivity extends AppCompatActivity {
                                 i.putExtra(Intent.EXTRA_EMAIL, new String[]{"przestrzelski.com@gmail.com"});
                                 i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name) + " Other Roms");
                                 i.putExtra(Intent.EXTRA_TEXT, (message));
-                                i.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(context, context.getPackageName() + ".fileprovider", zip));
+                                i.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileprovider", zip));
                                 try {
                                     context.startActivity(Intent.createChooser(i,
                                             "Send through..."));

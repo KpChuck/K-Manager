@@ -63,14 +63,14 @@ public class FileHelper {
                if (packageManager.canRequestPackageInstalls()) {
                    final Intent intent = new Intent(Intent.ACTION_VIEW)
                            .setDataAndType(getUriForFile(ctx,
-                                   ctx.getPackageName() + ".fileprovider", file),
+                                   BuildConfig.APPLICATION_ID + ".fileprovider", file),
                                    "application/vnd.android.package-archive").addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                    ctx.startActivity(intent);
                }}
            else {
                 final Intent intent = new Intent(Intent.ACTION_VIEW)
                            .setDataAndType(getUriForFile(ctx,
-                                   ctx.getPackageName() + ".fileprovider", file),
+                                   BuildConfig.APPLICATION_ID + ".fileprovider", file),
                                    "application/vnd.android.package-archive").addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                    ctx.startActivity(intent);
            }
