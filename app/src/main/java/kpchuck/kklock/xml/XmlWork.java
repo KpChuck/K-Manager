@@ -378,7 +378,7 @@ public class XmlWork {
 
             Element notification = utils.findElementById(status,
                     "@*com.android.systemui:id/notification_icon_area");
-            statusBarContents.removeChild(notification);
+            notification.getParentNode().removeChild(notification);
             ArrayList<Element> list = utils.getRightElementsTo(statusBarContents, "com.android.keyguard.AlphaOptimizedLinearLayout",
                     "@*com.android.systemui:id/system_icon_area");
             if (list.size() != 0) {
@@ -411,7 +411,7 @@ public class XmlWork {
         hideNotificationLayout.setAttribute(X_LAYOUT_WIDTH, "0dip");
         hideNotificationLayout.setAttribute(X_LAYOUT_HEIGHT, "0dip");
         hideNotificationLayout.setAttribute("android:layout_weight", "1.0");
-        statusBarContents.insertBefore(hideNotificationLayout, notificationArea);
+        notificationArea.getParentNode().insertBefore(hideNotificationLayout, notificationArea);
         statusBarContents.removeChild(notificationArea);
         hideNotificationLayout.appendChild(notificationArea);
 
@@ -473,7 +473,8 @@ public class XmlWork {
         customTextElement = createCustomTextElement(customTextElement);
 
         //Insert TextView
-        rootElement.insertBefore(customTextElement, carrierTextElement);
+
+        carrierTextElement.getParentNode().insertBefore(customTextElement, carrierTextElement);
         return doc;
     }
 
