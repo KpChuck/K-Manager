@@ -265,7 +265,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         if (prefUtils.getBool(PREF_STATUSBAR_CLOCK_SIZE)) fileHelper.copyFromAssets(univ, "clockSize.zip", tempFolder, context, true);
         if(prefUtils.getBool(PREF_INDICATORS) && romName.equals("OxygenOS Nougat"))
             fileHelper.copyFromAssets(univ, "indicatorsN.zip".trim(), tempFolder, context, true);
-        if(prefUtils.getBool(PREF_INDICATORS) && romName.equals("OxygenOS Oreo"))
+        if(prefUtils.getBool(PREF_INDICATORS) && romName.startsWith("OxygenOS Oreo"))
             fileHelper.copyFromAssets(univ, "indicatorsO.zip".trim(), tempFolder, context, true);
         // Copy the rom specific file if a rom was selected
         if (!romName.equals(context.getString(R.string.otherRomsBeta))) {
