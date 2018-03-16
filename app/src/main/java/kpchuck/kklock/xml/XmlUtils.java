@@ -65,6 +65,10 @@ public class XmlUtils {
         return null;
     }
 
+    public Element findElementById(Document document, String idName){
+        return findElementById(document.getDocumentElement(), idName);
+    }
+
     public Element findElementById(Element parentElement, String idName){
         if (parentElement.getAttribute(X_ID).equals(idName)) return parentElement;
 

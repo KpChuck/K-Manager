@@ -98,7 +98,7 @@ public class XmlWork {
             writeDocToFile(keyguard, new File(baseFolders, "res/layout/keyguard_status_bar.xml"));
 
         // Write modified keyguard
-        Element superContainer = utils.findElementInDoc(keyguard, "LinearLayout",
+        Element superContainer = utils.findElementById(keyguard.getDocumentElement(),
                 "@*com.android.systemui:id/system_icons_super_container");
         superContainer = utils.changeAttribute(superContainer, X_LAYOUT_WIDTH, "0dip");
         superContainer.setAttribute("android:visibility", "gone");
@@ -121,7 +121,7 @@ public class XmlWork {
                 NodeList list = rootElement.getElementsByTagName("include");
                 Element includeElement = (Element) list.item(0);
 
-                Element battery = utils.findElementInDoc(sysicons, "com.android.systemui.BatteryMeterView",
+                Element battery = utils.findElementById(sysicons,
                         "@*com.android.systemui:id/battery");
                 Attr margin = includeElement.getAttributeNode("android:layout_marginStart");
                 battery.setAttribute(margin.getName(), margin.getValue());
@@ -154,13 +154,11 @@ public class XmlWork {
         Element rootElement = status.getDocumentElement();
 
 
-        Element systemIconArea = utils.findElementInDoc(status,
-                "com.android.keyguard.AlphaOptimizedLinearLayout",
+        Element systemIconArea = utils.findElementById(status,
                 "@*com.android.systemui:id/system_icon_area");
         Element stockClock = utils.findElementById(systemIconArea,
                 "@*com.android.systemui:id/clock");
-        Element statusBarContents = utils.findElementInDoc(status,
-                "LinearLayout",
+        Element statusBarContents = utils.findElementById(status,
                 "@*com.android.systemui:id/status_bar_contents");
         //Insert Right Clock First
         Element customClock = createClock(status, false, "start|center", X_WRAP_CONTENT);
@@ -202,13 +200,11 @@ public class XmlWork {
         // All other clocks
         status = setupStatusBar();
         // Find elements needed
-        systemIconArea = utils.findElementInDoc(status,
-                "com.android.keyguard.AlphaOptimizedLinearLayout",
+        systemIconArea = utils.findElementById(status,
                 "@*com.android.systemui:id/system_icon_area");
         stockClock = utils.findElementById(systemIconArea,
                 "@*com.android.systemui:id/clock");
-        statusBarContents = utils.findElementInDoc(status,
-                "LinearLayout",
+        statusBarContents = utils.findElementById(status,
                 "@*com.android.systemui:id/status_bar_contents");
         rootElement = status.getDocumentElement();
 
@@ -286,7 +282,6 @@ public class XmlWork {
     }
 
     private Document packToRightOf(Document doc, Element parentElement, String tagName, String idName){
-        ArrayList<Element> elements = utils.getChildElements(parentElement);
         ArrayList<Element> rightElements = utils.getRightElementsTo(parentElement, tagName, idName);
         Element linearLayout = doc.createElement("LinearLayout");
         linearLayout.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
@@ -314,10 +309,8 @@ public class XmlWork {
 
     private Element createClock(Document doc, boolean stock, String gravity, String width){
 
-        Element textClock = null;
-        Element stockClock = utils.findElementInDoc(doc,
-                "com.android.systemui.statusbar.policy.Clock",
-                "@*com.android.systemui:id/clock");
+        Element textClock;
+
         if (stock) {
             textClock = doc.createElement("com.android.systemui.statusbar.policy.Clock");
             textClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
@@ -367,8 +360,7 @@ public class XmlWork {
         status = utils.replaceAt(status);
         status = utils.fixUpForAttrs(status, hasAttrs);
 
-        Element statusBarContents = utils.findElementInDoc(status,
-                "LinearLayout",
+        Element statusBarContents = utils.findElementById(status,
                 "@*com.android.systemui:id/status_bar_contents");
 
         if (prefUtils.getBool(PREF_MOVE_LEFT)){
@@ -384,7 +376,7 @@ public class XmlWork {
         }
         if (prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT) ){
 
-            Element notification = utils.findElementInDoc(status, "com.android.systemui.statusbar.AlphaOptimizedFrameLayout",
+            Element notification = utils.findElementById(status,
                     "@*com.android.systemui:id/notification_icon_area");
             statusBarContents.removeChild(notification);
             ArrayList<Element> list = utils.getRightElementsTo(statusBarContents, "com.android.keyguard.AlphaOptimizedLinearLayout",
@@ -398,8 +390,9 @@ public class XmlWork {
         }
 
         if (removeClock){
-            Element stockClock = utils.findElementInDoc(status,
-                    "com.android.systemui.statusbar.policy.Clock",
+            Element systemiconarea = utils.findElementById(status,
+                    "@*com.android.systemui:id/system_icon_area");
+            Element stockClock = utils.findElementById(systemiconarea,
                     "@*com.android.systemui:id/clock");
             utils.changeAttribute(stockClock, X_LAYOUT_WIDTH, "0dip");
         }
@@ -411,8 +404,8 @@ public class XmlWork {
     }
 
     private Document hideNotifications(Document doc){
-        Element statusBarContents = utils.findElementInDoc(doc, "LinearLayout", "@*com.android.systemui:id/status_bar_contents");
-        Element notificationArea = utils.findElementInDoc(doc, "com.android.systemui.statusbar.AlphaOptimizedFrameLayout", "@*com.android.systemui:id/notification_icon_area");
+        Element statusBarContents = utils.findElementById(doc, "@*com.android.systemui:id/status_bar_contents");
+        Element notificationArea = utils.findElementById(doc, "@*com.android.systemui:id/notification_icon_area");
 
         Element hideNotificationLayout = doc.createElement("LinearLayout");
         hideNotificationLayout.setAttribute(X_LAYOUT_WIDTH, "0dip");
@@ -426,7 +419,7 @@ public class XmlWork {
     }
 
     private Document addCustomTextEverywhere(Document doc){
-        Element statusBarContents = utils.findElementInDoc(doc, "LinearLayout", "@*com.android.systemui:id/status_bar_contents");
+        Element statusBarContents = utils.findElementById(doc, "@*com.android.systemui:id/status_bar_contents");
 
         Element customTextElement = doc.createElement("TextView");
         customTextElement = createCustomTextElement(customTextElement);
@@ -439,7 +432,7 @@ public class XmlWork {
     }
 
     private Document moveLeft(Document doc){
-        Element layout = utils.findElementInDoc(doc, "LinearLayout", "@*com.android.systemui:id/status_bar_contents");
+        Element layout = utils.findElementById(doc, "@*com.android.systemui:id/status_bar_contents");
         // Might have to complicate this if netwrok icons on extreme left aren't good
         Element insertBeforeElement = utils.getFirstChildElement(layout);
 
@@ -456,7 +449,7 @@ public class XmlWork {
 
     private Document modForMinit(Document doc, Element rootElement){
         if (prefUtils.getBool(PREF_MINIT)){
-            Element battery = utils.findElementInDoc(doc, "com.android.systemui.BatteryMeterView", "@*com.android.systemui:id/battery");
+            Element battery = utils.findElementById(doc, "@*com.android.systemui:id/battery");
             battery.removeAttribute("android:layout_width");
             battery.removeAttribute("android:layout_height");
             battery.setAttribute("android:layout_width", "0.0dip");
@@ -485,7 +478,7 @@ public class XmlWork {
     }
 
     private Element hideCarrierText(Document doc){
-        Element carrierTextElement = utils.findElementById(doc.getDocumentElement(),
+        Element carrierTextElement = utils.findElementById(doc,
                 "@*com.android.systemui:id/keyguard_carrier_text");
 
         // Hide the carrier text
