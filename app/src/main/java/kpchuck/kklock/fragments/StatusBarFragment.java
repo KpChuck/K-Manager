@@ -31,6 +31,7 @@ import butterknife.OnTextChanged;
 import butterknife.Unbinder;
 import kpchuck.kklock.R;
 import kpchuck.kklock.adapters.SwitchListAdapter;
+import kpchuck.kklock.interfaces.DialogClickListener;
 import kpchuck.kklock.services.HideIconsService;
 import kpchuck.kklock.utils.FileHelper;
 import kpchuck.kklock.utils.PrefUtils;
@@ -187,8 +188,25 @@ public class StatusBarFragment extends Fragment {
 
     @OnClick(R.id.clockHideable)
     public void launchers(){
+        if(clockHideableSwitch.isChecked()){
+            TextAlertDialogFragment fragment = new TextAlertDialogFragment();
+            DialogClickListener listener = new DialogClickListener() {
+                @Override
+                public void onPositiveBtnClick() {
+                    prefUtils.setSwitchPrefs(clockHideableSwitch, PREF_CLOCK_HIDEABLE);
+                }
 
-        prefUtils.setSwitchPrefs(clockHideableSwitch, PREF_CLOCK_HIDEABLE);
+                @Override
+                public void onCancelBtnClick() {
+
+                }
+            };
+            fragment.Instantiate("Warning :)", "If your Rom already has statusbar customization like changing its position/stuff then don't use this." +
+                "\nIt will cause a SystemUI crash...", "Sounds good, enable", "Cancel", listener);
+            fragment.show(myContext.getSupportFragmentManager(), "");
+        }
+        else
+            prefUtils.setSwitchPrefs(clockHideableSwitch, PREF_CLOCK_HIDEABLE);
     }
 
     @OnClick (R.id.notifsRight)
