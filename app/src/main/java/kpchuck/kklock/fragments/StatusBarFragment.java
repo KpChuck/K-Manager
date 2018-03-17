@@ -187,6 +187,7 @@ public class StatusBarFragment extends Fragment {
 
     @OnClick(R.id.clockHideable)
     public void launchers(){
+
         prefUtils.setSwitchPrefs(clockHideableSwitch, PREF_CLOCK_HIDEABLE);
     }
 
