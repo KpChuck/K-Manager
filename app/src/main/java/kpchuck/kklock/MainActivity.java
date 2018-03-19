@@ -112,6 +112,7 @@ import kpchuck.kklock.interfaces.DialogClickListener;
 import kpchuck.kklock.services.CheckforUpdatesService;
 import kpchuck.kklock.utils.ApkBuilder;
 import kpchuck.kklock.utils.FileHelper;
+import kpchuck.kklock.utils.HeaderExtract;
 import kpchuck.kklock.utils.PrefUtils;
 import kpchuck.kklock.utils.SuUtils;
 
@@ -152,6 +153,14 @@ public class MainActivity extends AppCompatActivity {
     WelcomeHelper welcomeScreen;
     Drawer drawer;
     @BindString (R.string.otherRomsBeta) String betaString;
+
+    @OnClick (R.id.header_extract)
+    public void extract(){
+        if (!prefUtils.getString(PREF_SELECTED_ROM, "").equals("") ||
+                prefUtils.getString(PREF_SELECTED_ROM, "").equals(getString(R.string.otherRomsBeta))){
+            new HeaderExtract(context, loadingLayout, loadingTextView, defaultLayout).execute();
+        }
+    }
 
     PrimaryDrawerItem updateNotif;
     DrawerBuilder builder;
@@ -705,7 +714,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 List<ZipEntrySource> zipEntrySources = new ArrayList<>();
                                 for (String f : x){
-                                    if (xmlNam.contains(f) || f.equals("attrs.xml")){
+                                    if (xmlNam.contains(f) || f.equals("attrs.xml") || f.equals("quick_status_bar_expanded_header.xml")){
                                         zipEntrySources.add(new FileSource("/"+f, new File(rootFolder + "/userInput/"+f)));
                                     }
                                 }
