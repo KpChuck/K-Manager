@@ -180,9 +180,6 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         JadxDecompiler jadx = new JadxDecompiler();
 
         File kManager = fileHelper.newFolder(Environment.getExternalStorageDirectory() + "/K-Manager/");
-        File dest = fileHelper.newFolder(kManager, "libs");
-        fileHelper.copyFromAssets("android", "android.zip", dest, context, true);
-        new File(dest, "android.zip").renameTo(new File(dest, "android"));
 
         if (ZipUtil.containsEntry(sysui, "classes.dex")){
             ZipUtil.removeEntry(sysui, "classes.dex");
@@ -376,7 +373,8 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         }
 
     public void dealWivQsBg(){
-        new QsBgUtil(context, tempFolder);
+        String rom = prefUtils.getString(PREF_SELECTED_ROM, "");
+        new QsBgUtil(context, tempFolder, isOtherRoms(rom) ? "userInput" : "customInput");
     }
 
     public void appendOptionsZip (){

@@ -64,6 +64,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:text="Add Custom Qs Header"
+            android:id="@+id/qsHeader"/>
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="@string/minit_compatibility"
             android:layout_marginBottom="12dp"
             android:id="@+id/minitMod"/>

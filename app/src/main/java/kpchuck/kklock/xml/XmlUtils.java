@@ -13,6 +13,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -281,5 +282,29 @@ public class XmlUtils {
         }
 
         return rightElements;
+    }
+
+    public Document getDocument(File file){
+        Document doc = null;
+        try {
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            doc = db.parse(file);
+        }catch (Exception e){
+            Log.e("klock", "Error getting document for file " + file.getName() + "\n" + e.getMessage());
+        }
+
+        return doc;
+    }
+
+    public void writeDocToFile(Document doc, File dest) throws Exception{
+
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        DOMSource source = new DOMSource(doc);
+
+        StreamResult result = new StreamResult(new FileOutputStream(dest));
+        transformer.transform(source, result);
+
     }
 }

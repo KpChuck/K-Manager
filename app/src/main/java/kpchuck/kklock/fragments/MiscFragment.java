@@ -53,6 +53,7 @@ public class MiscFragment extends Fragment {
     @BindView (R.id.roundedRecents) Switch recentsSwitch;
     @BindView (R.id.minitMod) Switch minitSwitch;
     @BindView (R.id.qsBg) Switch qsBgSwitch;
+    @BindView(R.id.qsHeader) Switch qsHeaderSwitch;
 
     public MiscFragment() {
         // Required empty public constructor
@@ -81,6 +82,7 @@ public class MiscFragment extends Fragment {
         ButterKnife.apply(minitSwitch, ENABLED, prefUtils.getBool(PREF_MINIT));
         ButterKnife.apply(titleSwitch, ENABLED, prefUtils.getBool(PREF_QS_BG));
         ButterKnife.apply(qsSwitch, ENABLED, prefUtils.getBool(PREF_QS));
+        ButterKnife.apply(qsHeaderSwitch, ENABLED, prefUtils.getBool(PREF_QS_HEADER));
 
         if (fileHelper.getOos(prefUtils.getString(PREF_SELECTED_ROM, getString(R.string.chooseRom))).equals("OxygenOS"))
             ButterKnife.apply(qsBgSwitch, SetVisibility, View.GONE);
@@ -152,72 +154,97 @@ public class MiscFragment extends Fragment {
         }else prefUtils.putBool(PREF_MINIT, false);
     }
 
+    private ImagePicker imagePickerBg;
+    private ImagePicker imagePickerHeader;
+
     @OnClick(R.id.qsBg)
     public void qsBGClick(){
         if(qsBgSwitch.isChecked()) {
 
-            imagePicker = new ImagePicker(this);
-            imagePicker.setImagePickerCallback(new ImagePickerCallback(){
-                @Override
-                public void onImagesChosen(List<ChosenImage> images) {
-
-                    String filePath = images.get(0).getOriginalPath();
-
-                    if (!filePath.substring(filePath.lastIndexOf("."), filePath.length()).equals(".png")){
-                        shortToast(getString(R.string.not_png_error_message));
-                        prefUtils.putBool(PREF_QS_BG, false);
-                        ButterKnife.apply(qsBgSwitch, ENABLED, false);
-                        prefUtils.remove(PREF_QS_BG_FILE);
-                        new File(filePath).delete();
-                    }
-                    else{
-                        prefUtils.putString(PREF_QS_BG_FILE, filePath);
-                        prefUtils.putBool(PREF_QS_BG, true);
-                    }
-                    File dir = new File(new File(filePath).getParent());
-                    String[] files = dir.list();
-                    for (String f: files){
-                        String check = dir.getAbsolutePath() + slash + f;
-                        if (!filePath.equals(check)){
-                            new File(check).delete();
-                        }
-                    }
-                }
-
-                @Override
-                public void onError(String message) {
-                    // Do error handling
-                    prefUtils.putBool(PREF_QS_BG, false);
-                    prefUtils.remove(PREF_QS_BG_FILE);
-                    ButterKnife.apply(qsBgSwitch, ENABLED, false);
-                }}
-            );
-            imagePicker.pickImage();
+            imagePickerBg = pickImage(0, qsBgSwitch, PREF_QS_BG, PREF_QS_BG_FILE);
 
         }else{
             prefUtils.putBool(PREF_QS_BG, false);
             prefUtils.remove(PREF_QS_BG_FILE);
         }
+    }
+
+    @OnClick(R.id.qsHeader)
+    public void qsHeadClick(){
+        if(qsHeaderSwitch.isChecked()) {
+
+            imagePickerHeader = pickImage(1, qsHeaderSwitch, PREF_QS_HEADER, PREF_QS_HEADER_FILE);
+
+        }else{
+            prefUtils.putBool(PREF_QS_HEADER, false);
+            prefUtils.remove(PREF_QS_HEADER_FILE);
+        }
+    }
+
+    private ImagePicker pickImage(int requestId, final Switch mySwitch, final String switch_bool, final String file_pref) {
+        ImagePicker imagePicker = new ImagePicker(this);
+        imagePicker.setRequestId(requestId);
+        imagePicker.setImagePickerCallback(new ImagePickerCallback(){
+            @Override
+            public void onImagesChosen(List<ChosenImage> images) {
+
+                String filePath = images.get(0).getOriginalPath();
+
+                if (!filePath.substring(filePath.lastIndexOf("."), filePath.length()).equals(".png")){
+                    shortToast(getString(R.string.not_png_error_message));
+                    prefUtils.putBool(switch_bool, false);
+                    ButterKnife.apply(mySwitch, ENABLED, false);
+                    prefUtils.remove(file_pref);
+                    new File(filePath).delete();
+                }
+                else{
+                    prefUtils.putString(file_pref, filePath);
+                    prefUtils.putBool(switch_bool, true);
+                }
+                File dir = new File(new File(filePath).getParent());
+                String[] files = dir.list();
+                for (String f: files){
+                    String check = dir.getAbsolutePath() + slash + f;
+                    if (!filePath.equals(check)){
+                        new File(check).delete();
+                    }
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                // Do error handling
+                prefUtils.putBool(switch_bool, false);
+                prefUtils.remove(file_pref);
+                ButterKnife.apply(mySwitch, ENABLED, false);
+            }}
+        );
+        imagePicker.pickImage();
+
+        return imagePicker;
     }
 
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        ImagePicker imagePicker = requestCode == 0 ? imagePickerBg : imagePickerHeader;
+
         if(resultCode == RESULT_OK) {
             if(requestCode == Picker.PICK_IMAGE_DEVICE) {
                 imagePicker.submit(data);
             }
         }else{
-            Switch qsSwitch = (Switch) getView().findViewById(R.id.qsBg);
-            prefUtils.putBool(PREF_QS_BG, false);
-            prefUtils.remove(PREF_QS_BG_FILE);
-            qsSwitch.setChecked(false);
+            Switch mySwitch = requestCode == 0 ? qsBgSwitch : qsHeaderSwitch;
+            prefUtils.putBool(requestCode == 0 ? PREF_QS_BG: PREF_QS_HEADER, false);
+            prefUtils.remove(requestCode == 0 ? PREF_QS_BG_FILE : PREF_QS_HEADER_FILE);
+            mySwitch.setChecked(false);
 
         }
     }
 
 
-    private ImagePicker imagePicker;
+
 
     private void shortToast(String message){
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();

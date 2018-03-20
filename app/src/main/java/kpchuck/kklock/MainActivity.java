@@ -705,7 +705,7 @@ public class MainActivity extends AppCompatActivity {
                                 // Zip the xmls
                                 String[] x = new File(rootFolder + "/userInput").list(fileHelper.XML);
                                 List<String> xmls = Arrays.asList(x);
-                                String[] xmlNames = {"status_bar.xml", "keyguard_status_bar.xml", "system_icons.xml"};
+                                String[] xmlNames = {"status_bar.xml", "keyguard_status_bar.xml", "system_icons.xml", "quick_status_bar_expanded_header.xml"};
                                 List<String> xmlNam = Arrays.asList(xmlNames);
 
                                 if (!xmls.containsAll(Arrays.asList(xmlNames))){
@@ -714,7 +714,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 List<ZipEntrySource> zipEntrySources = new ArrayList<>();
                                 for (String f : x){
-                                    if (xmlNam.contains(f) || f.equals("attrs.xml") || f.equals("quick_status_bar_expanded_header.xml")){
+                                    if (xmlNam.contains(f) || f.equals("attrs.xml") ){
                                         zipEntrySources.add(new FileSource("/"+f, new File(rootFolder + "/userInput/"+f)));
                                     }
                                 }
@@ -968,22 +968,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-    }
-
-    public void addCustomColors(View v){
-        InputAlertDialogFragment dialogFragment = new InputAlertDialogFragment();
-        dialogFragment.Instantiate(getString(R.string.add_color_name_title), getString(R.string.add_color_name_hint),
-                getString(R.string.add_color_value_hint), false, "colors",
-                false, v);
-        dialogFragment.show(getSupportFragmentManager(), "klock");
-    }
-
-    public void addCustomFormats(View v){
-        InputAlertDialogFragment fragment = new InputAlertDialogFragment();
-        fragment.Instantiate(getString(R.string.add_format_name_title), getString(R.string.add_format_name_hint),
-                getString(R.string.add_format_value_hint), false, "formats",
-                false, v);
-        fragment.show(getSupportFragmentManager(), "klock");
     }
 
     public void showIncludedColors(final View v){
