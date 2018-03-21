@@ -50,6 +50,9 @@ public class QsBgUtil {
                 if (modQsHeader())
                     moveImage(PREF_QS_HEADER_FILE, "arrow_down.png");
             }
+            File attention = new File(dir.getAbsolutePath() + "/assets/overlays/com.android.systemui.headers/attention");
+            new XmlUtils().writeType2Desc("Overlay for Qs Background/Headers", attention.getAbsolutePath());
+
         }
 
     }
