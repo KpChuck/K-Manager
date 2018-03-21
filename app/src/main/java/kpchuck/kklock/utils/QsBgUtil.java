@@ -59,9 +59,10 @@ public class QsBgUtil {
         this.dir = myDir;
         fileHelper.newFolder(new File(myDir, "assets"));
         fileHelper.newFolder(myDir.getAbsolutePath() + "/assets/overlays");
-        String t = fileHelper.newFolder(myDir.getAbsolutePath() + "assets/overlays/com.android.systemui.headers").getAbsolutePath();
+        String t = fileHelper.newFolder(myDir.getAbsolutePath() + "/assets/overlays/com.android.systemui.headers").getAbsolutePath();
         fileHelper.newFolder(t + "/res");
-        fileHelper.newFolder(t + "/res/drawable");
+        fileHelper.newFolder(t + "/res/drawable-anydpi");
+        fileHelper.newFolder(t + "/res/layout");
     }
 
     private void moveImage(String file_pref, String newName) throws IOException{
@@ -69,17 +70,16 @@ public class QsBgUtil {
 
         String filePath = prefUtils.getString(file_pref, "null");
         FileUtils.copyFileToDirectory(new File(filePath), destFolder);
-        String[] files = destFolder.list();
-        File qsFile = new File(destFolder, files[0]);
+        File qsFile = new File(destFolder, filePath.substring(filePath.lastIndexOf("/")));
         qsFile.renameTo(new File(destFolder, newName));
 
     }
 
     private boolean modQsHeader() throws Exception{
 
-        File destFolder = new File(dir,  "assets/overlays/com.android.systemui.headers/res/layout");
+        File destFolder = new File(dir,  "/assets/overlays/com.android.systemui.headers/res/layout");
 
-        File qsHeader = new File(Environment.getExternalStorageDirectory() + "/" + "quick_status_bar_expanded_header.xml");
+        File qsHeader = new File(Environment.getExternalStorageDirectory() + "/K-Klock/" + inputFolder +  "/quick_status_bar_expanded_header.xml");
         if (!qsHeader.exists()) return false;
         XmlUtils xmlUtils = new XmlUtils();
 

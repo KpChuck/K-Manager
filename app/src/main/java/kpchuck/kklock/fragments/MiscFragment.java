@@ -4,6 +4,7 @@ import static kpchuck.kklock.constants.PrefConstants.*;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
@@ -17,7 +18,10 @@ import com.kbeanie.multipicker.api.Picker;
 import com.kbeanie.multipicker.api.callbacks.ImagePickerCallback;
 import com.kbeanie.multipicker.api.entity.ChosenImage;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import butterknife.BindView;
@@ -156,12 +160,13 @@ public class MiscFragment extends Fragment {
 
     private ImagePicker imagePickerBg;
     private ImagePicker imagePickerHeader;
+    private int requestId = -1;
 
     @OnClick(R.id.qsBg)
     public void qsBGClick(){
         if(qsBgSwitch.isChecked()) {
 
-            imagePickerBg = pickImage(0, qsBgSwitch, PREF_QS_BG, PREF_QS_BG_FILE);
+            imagePickerBg = pick(0, qsBgSwitch, PREF_QS_BG, PREF_QS_BG_FILE);
 
         }else{
             prefUtils.putBool(PREF_QS_BG, false);
@@ -173,7 +178,7 @@ public class MiscFragment extends Fragment {
     public void qsHeadClick(){
         if(qsHeaderSwitch.isChecked()) {
 
-            imagePickerHeader = pickImage(1, qsHeaderSwitch, PREF_QS_HEADER, PREF_QS_HEADER_FILE);
+            imagePickerHeader = pick(1, qsHeaderSwitch, PREF_QS_HEADER, PREF_QS_HEADER_FILE);
 
         }else{
             prefUtils.putBool(PREF_QS_HEADER, false);
@@ -181,9 +186,10 @@ public class MiscFragment extends Fragment {
         }
     }
 
-    private ImagePicker pickImage(int requestId, final Switch mySwitch, final String switch_bool, final String file_pref) {
+    private ImagePicker pick(final int requestId, final Switch mySwitch, final String switch_bool, final String file_pref) {
         ImagePicker imagePicker = new ImagePicker(this);
-        imagePicker.setRequestId(requestId);
+        this.requestId = requestId;
+
         imagePicker.setImagePickerCallback(new ImagePickerCallback(){
             @Override
             public void onImagesChosen(List<ChosenImage> images) {
@@ -198,8 +204,14 @@ public class MiscFragment extends Fragment {
                     new File(filePath).delete();
                 }
                 else{
-                    prefUtils.putString(file_pref, filePath);
-                    prefUtils.putBool(switch_bool, true);
+                    try {
+                        File destFolder = fileHelper.newFolder(Environment.getExternalStorageDirectory() + "/K-Manager/qs_images");
+                        File destFile = new File(destFolder, requestId == 0 ? "qs_bg.png" : "qs_header.png");
+                        if (destFile.exists()) destFile.delete();
+                        FileUtils.copyFile(new File(filePath), destFile);
+                        prefUtils.putString(file_pref, destFile.getAbsolutePath());
+                        prefUtils.putBool(switch_bool, true);
+                    }catch (IOException e){}
                 }
                 File dir = new File(new File(filePath).getParent());
                 String[] files = dir.list();
@@ -228,16 +240,18 @@ public class MiscFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        ImagePicker imagePicker = requestCode == 0 ? imagePickerBg : imagePickerHeader;
+
+        ImagePicker imagePicker = requestId == 0 ? imagePickerBg : imagePickerHeader;
 
         if(resultCode == RESULT_OK) {
             if(requestCode == Picker.PICK_IMAGE_DEVICE) {
                 imagePicker.submit(data);
+
             }
         }else{
-            Switch mySwitch = requestCode == 0 ? qsBgSwitch : qsHeaderSwitch;
-            prefUtils.putBool(requestCode == 0 ? PREF_QS_BG: PREF_QS_HEADER, false);
-            prefUtils.remove(requestCode == 0 ? PREF_QS_BG_FILE : PREF_QS_HEADER_FILE);
+            Switch mySwitch = requestId == 0 ? qsBgSwitch : qsHeaderSwitch;
+            prefUtils.putBool(requestId == 0 ? PREF_QS_BG: PREF_QS_HEADER, false);
+            prefUtils.remove(requestId == 0 ? PREF_QS_BG_FILE : PREF_QS_HEADER_FILE);
             mySwitch.setChecked(false);
 
         }

@@ -93,8 +93,11 @@ android {
     //Let's make use of it
 
 gradle.taskGraph.whenReady { taskGraph ->
+    if(taskGraph.hasTask(assembleDebug)){
+        project.logger.debug('my debug message')
 
-    if (taskGraph.hasTask(assembleRelease)) { /* when run release task */
+    }
+    else if (taskGraph.hasTask(assembleRelease)) { /* when run release task */
         if (versionType.equals("beta")) {
             uploadBetaWhenFinished.execute()
         } else if (versionType.equals("debug")) {

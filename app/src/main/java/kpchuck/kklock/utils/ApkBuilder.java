@@ -372,7 +372,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         }
         }
 
-    public void dealWivQsBg(){
+    public void dealWivQsBg() throws Exception{
         String rom = prefUtils.getString(PREF_SELECTED_ROM, "");
         new QsBgUtil(context, tempFolder, isOtherRoms(rom) ? "userInput" : "customInput");
     }

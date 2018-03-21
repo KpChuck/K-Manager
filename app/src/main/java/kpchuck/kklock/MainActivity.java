@@ -242,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
             }
             final String[] x = new File(rootFolder + "/userInput").list(fileHelper.XML);
             List<String> xmls = Arrays.asList(x);
-            String[] xmlNames = {"status_bar.xml", "keyguard_status_bar.xml", "system_icons.xml"};
+            String[] xmlNames = {"status_bar.xml", "keyguard_status_bar.xml", "system_icons.xml", "quick_status_bar_expanded_header.xml"};
             hasAll = xmls.containsAll(Arrays.asList(xmlNames));
             boolean hasSysUI = xmls.contains("SystemUI.apk");
 
@@ -423,7 +423,7 @@ public class MainActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(BReceiver, new IntentFilter("message"));
 
         // Ask for Permissions
-        if(Build.VERSION.SDK_INT >= 26 && !getPackageManager().canRequestPackageInstalls()) {
+       /* if(Build.VERSION.SDK_INT >= 26 && !getPackageManager().canRequestPackageInstalls()) {
             TextAlertDialogFragment alertDialogFragment = new TextAlertDialogFragment();
             DialogClickListener clickReactor = new DialogClickListener() {
                 @Override
@@ -443,7 +443,7 @@ public class MainActivity extends AppCompatActivity {
             alertDialogFragment.Instantiate(getString(R.string.install_permission_title), getString(R.string.request_install_perms),
                     getString(R.string.grant), getString(R.string.deny), clickReactor);
             alertDialogFragment.show(getSupportFragmentManager(), "missiles");
-        }
+        }*/
 
         if(!hasPermissions(this, PERMISSIONS)){
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);

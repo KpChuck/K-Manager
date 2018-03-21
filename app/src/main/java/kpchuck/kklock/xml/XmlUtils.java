@@ -89,10 +89,7 @@ public class XmlUtils {
                 layout = null;
             }
         }
-        if (layout == null){
-            Log.e("klock", "Could not find element with id " + idName);
-            return null;
-        }
+
         return layout;
     }
 
@@ -150,10 +147,7 @@ public class XmlUtils {
             if (attr != null && attr.getValue().equals(idName)) break;
             else layout = null;
         }
-        if (layout == null){
-            Log.e("klock", "Layout is equal to null" + layoutTag);
-            return null;
-        }
+
         return layout;
 
     }
