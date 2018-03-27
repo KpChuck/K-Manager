@@ -34,6 +34,7 @@ public class QsBgUtil {
     File dir;
     FileHelper fileHelper;
     String inputFolder;
+    String header_png = "abc_list_selector_holo_dark.png";
 
 
     public QsBgUtil(Context context, File tempFolder, String inputFolder) throws Exception{
@@ -44,14 +45,18 @@ public class QsBgUtil {
         this.prefUtils = new PrefUtils(context);
         if (prefUtils.getBool(PREF_QS_BG) || prefUtils.getBool(PREF_QS_HEADER)){
             buildDirs();
-            if (prefUtils.getBool(PREF_QS_BG))
-                 moveImage(PREF_QS_BG_FILE, "qs_background_primary.png");
-            if (prefUtils.getBool(PREF_QS_HEADER)){
-                if (modQsHeader())
-                    moveImage(PREF_QS_HEADER_FILE, "arrow_down.png");
-            }
             File attention = new File(dir.getAbsolutePath() + "/assets/overlays/com.android.systemui.headers/attention");
-            new XmlUtils().writeType2Desc("Overlay for Qs Background/Headers", attention.getAbsolutePath());
+
+            if (prefUtils.getBool(PREF_QS_BG))
+                moveImage(PREF_QS_BG_FILE, "qs_background_primary.png");
+                new XmlUtils().writeType2Desc("Overlay for Qs Background/Headers", attention.getAbsolutePath());
+
+            if (prefUtils.getBool(PREF_QS_HEADER)) {
+                if (modQsHeader()){
+                    moveImage(PREF_QS_HEADER_FILE, header_png);
+                    new XmlUtils().writeType2Desc("Overlay for Qs Background/Headers", attention.getAbsolutePath());
+                 }
+            }
 
         }
 
@@ -65,6 +70,8 @@ public class QsBgUtil {
         String t = fileHelper.newFolder(myDir.getAbsolutePath() + "/assets/overlays/com.android.systemui.headers").getAbsolutePath();
         fileHelper.newFolder(t + "/res");
         fileHelper.newFolder(t + "/res/drawable-anydpi");
+        fileHelper.newFolder(t + "/res/values");
+
         fileHelper.newFolder(t + "/res/layout");
     }
 
@@ -88,6 +95,7 @@ public class QsBgUtil {
 
         Document xml = xmlUtils.getDocument(qsHeader);
         xml = xmlUtils.replaceAt(xml);
+
         Element rootElement = xml.getDocumentElement();
 
         String[] attrs = {"xmlns:prvandroid", "xmlns:systemui", "xmlns:aapt"};
@@ -97,8 +105,11 @@ public class QsBgUtil {
         }
 
         rootElement.setAttribute("xmlns:systemui", "http://schemas.android.com/apk/res/com.android.systemui");
-        rootElement.setAttribute("android:alpha", "0.8");
-        rootElement.setAttribute("android:background", "@*com.android.systemui:drawable/arrow_down");
+
+        xml = xmlUtils.replaceStuffInXml(xml, "?attr/wallpaperTextColorSecondary", "#ffffffff");
+        xmlUtils.changeAttribute(rootElement, "android:alpha", "0.8");
+        xmlUtils.changeAttribute(rootElement, "android:background", "@*com.android.systemui:drawable/" + header_png.substring(0, header_png.lastIndexOf(".")));
+        xmlUtils.changeAttribute(rootElement, "android:layout_gravity", "center");
 
         xmlUtils.writeDocToFile(xml, new File(destFolder, "quick_status_bar_expanded_header.xml"));
 
