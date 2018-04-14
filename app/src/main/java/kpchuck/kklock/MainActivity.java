@@ -1197,6 +1197,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
+        public void onRewardedVideoCompleted() {
+
+        }
+
+        @Override
         public void onRewardedVideoAdOpened() {
 
         }

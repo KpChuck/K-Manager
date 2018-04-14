@@ -149,7 +149,7 @@ dependencies {
         transitive = true
     }
     // Firebase
-    implementation 'com.google.firebase:firebase-core:11.8.0'
+    implementation 'com.google.firebase:firebase-core:12.0.0'
     // Jsoup
     implementation 'org.jsoup:jsoup:1.11.2'
     // About Libraries
@@ -169,7 +169,7 @@ dependencies {
     implementation files('libs/dx-1.14.jar')
 
     // Ads
-    implementation 'com.google.android.gms:play-services-ads:11.8.0'
+    implementation 'com.google.android.gms:play-services-ads:12.0.0'
     // Piracy Checker
     implementation 'com.github.javiersantos:PiracyChecker:1.2.1'
     //Kotlin
