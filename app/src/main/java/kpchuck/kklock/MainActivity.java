@@ -14,7 +14,6 @@ import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -51,7 +50,6 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import com.github.javiersantos.piracychecker.PiracyChecker;
-import com.github.javiersantos.piracychecker.PiracyCheckerUtils;
 import com.github.javiersantos.piracychecker.enums.InstallerID;
 import com.github.javiersantos.piracychecker.enums.PiracyCheckerCallback;
 import com.github.javiersantos.piracychecker.enums.PiracyCheckerError;
@@ -112,7 +110,6 @@ import kpchuck.kklock.interfaces.DialogClickListener;
 import kpchuck.kklock.services.CheckforUpdatesService;
 import kpchuck.kklock.utils.ApkBuilder;
 import kpchuck.kklock.utils.FileHelper;
-import kpchuck.kklock.utils.HeaderExtract;
 import kpchuck.kklock.utils.PrefUtils;
 import kpchuck.kklock.utils.SuUtils;
 
@@ -154,13 +151,6 @@ public class MainActivity extends AppCompatActivity {
     Drawer drawer;
     @BindString (R.string.otherRomsBeta) String betaString;
 
-    @OnClick (R.id.header_extract)
-    public void extract(){
-        if (!prefUtils.getString(PREF_SELECTED_ROM, "").equals("") ||
-                prefUtils.getString(PREF_SELECTED_ROM, "").equals(getString(R.string.otherRomsBeta))){
-            new HeaderExtract(context, loadingLayout, loadingTextView, defaultLayout).execute();
-        }
-    }
 
     PrimaryDrawerItem updateNotif;
     DrawerBuilder builder;
