@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '27.0.3'
 
     def versionPropsFile = file('version.properties')
     def versionBuild
@@ -42,7 +42,7 @@ android {
     defaultConfig {
         applicationId "kpchuck.k_klock"
         minSdkVersion 24
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 9
         versionName "25"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -114,7 +114,7 @@ gradle.taskGraph.whenReady { taskGraph ->
 
 dependencies {
 
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -127,11 +127,11 @@ dependencies {
     //Loading Animation
     implementation 'com.github.ybq:Android-SpinKit:1.1.0'
     //All those com.android.s
-    implementation 'com.android.support:support-v4:27.0.2'  // Adding this line (according to above warning message)
-    implementation 'com.android.support:appcompat-v7:27.0.2'
-    implementation 'com.android.support:recyclerview-v7:27.0.2'
-    implementation 'com.android.support:design:27.0.2'
-    implementation 'com.android.support:support-annotations:27.0.2'
+    implementation 'com.android.support:support-v4:27.1.1'  // Adding this line (according to above warning message)
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:support-annotations:27.1.1'
 
     //Image Picker
     implementation 'com.kbeanie:multipicker:1.1.31@aar'
@@ -149,7 +149,7 @@ dependencies {
         transitive = true
     }
     // Firebase
-    implementation 'com.google.firebase:firebase-core:12.0.0'
+    implementation 'com.google.firebase:firebase-core:15.0.0'
     // Jsoup
     implementation 'org.jsoup:jsoup:1.11.2'
     // About Libraries
@@ -169,7 +169,7 @@ dependencies {
     implementation files('libs/dx-1.14.jar')
 
     // Ads
-    implementation 'com.google.android.gms:play-services-ads:12.0.0'
+    implementation 'com.google.android.gms:play-services-ads:15.0.0'
     // Piracy Checker
     implementation 'com.github.javiersantos:PiracyChecker:1.2.1'
     //Kotlin
@@ -184,14 +184,14 @@ dependencies {
 task uploadDebugWhenFinished {
     doLast {
 
-        "python /home/karol/PycharmProjects/telegram/Debug.py".execute()
+        "python3 /home/karol/python/bot/upload.py debug &".execute()
       //  println "python /home/karol/PycharmProjects/telegram/Debug.py".execute().text
     }
 }
 
 task uploadBetaWhenFinished {
     doLast {
-        "python /home/karol/PycharmProjects/telegram/Beta.py".execute()
+        "python3 /home/karol/python/bot/upload.py beta".execute()
     }
 }
 
