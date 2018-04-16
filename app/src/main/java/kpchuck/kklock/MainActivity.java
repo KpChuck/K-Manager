@@ -156,10 +156,8 @@ public class MainActivity extends AppCompatActivity {
     DrawerBuilder builder;
     private boolean spinnerOpen = false;
     private boolean hasAll = false;
-    private InterstitialAd mInterstitialAd;
     private RewardedVideoAd rewardedVideoAd;
     private boolean b = false;
-    private boolean a = true;
     private boolean isPro = false;
     private boolean installed_from_playstore = true;
 
@@ -827,7 +825,7 @@ public class MainActivity extends AppCompatActivity {
         int k = fileHelper.decreaseToLowest(check);
         String apkVersion = "K-Klock_v" + k + ".apk";
 
-        new ApkBuilder(context, loadingLayout, loadingTextView, defaultLayout, hasAll, mInterstitialAd).execute(apkVersion, apkVersion, apkVersion);
+        new ApkBuilder(context, loadingLayout, loadingTextView, defaultLayout, hasAll).execute(apkVersion, apkVersion, apkVersion);
 
     }
 
