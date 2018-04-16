@@ -3,6 +3,8 @@ package kpchuck.kklock.fragments;
 import static kpchuck.kklock.constants.PrefConstants.*;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
@@ -28,6 +30,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import kpchuck.kklock.Checks;
 import kpchuck.kklock.interfaces.DialogClickListener;
 import kpchuck.kklock.R;
 import kpchuck.kklock.utils.FileHelper;
@@ -49,6 +52,7 @@ public class MiscFragment extends Fragment {
     private String slash = "/";
     private FragmentActivity myContext;
     private FileHelper fileHelper;
+    private boolean isPro = false;
 
 
     // Bind Everything
@@ -69,6 +73,7 @@ public class MiscFragment extends Fragment {
         super.onCreate(savedInstanceState);
         this.prefUtils = new PrefUtils(getContext());
         this.fileHelper= new FileHelper();
+        this.isPro = new Checks().isPro(getContext());
 
     }
 
@@ -79,6 +84,15 @@ public class MiscFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_misc__add__on_, container, false);
 
         unbinder = ButterKnife.bind(this, v);
+        if (isPro)
+            ButterKnife.apply(qsHeaderSwitch, ENABLED, prefUtils.getBool(PREF_QS_HEADER));
+        else {
+            prefUtils.putBool(PREF_QS_HEADER, false);
+            prefUtils.remove(PREF_QS_HEADER_FILE);
+            ButterKnife.apply(qsHeaderSwitch, ENABLED, false);
+            qsHeaderSwitch.setPaintFlags(qsHeaderSwitch.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            qsHeaderSwitch.setBackgroundColor(Color.GRAY);
+        }
         //Set position and visibility of switches
         ButterKnife.apply(qsSwitch, ENABLED, prefUtils.getBool(PREF_QS));
         ButterKnife.apply(recentsSwitch, ENABLED, prefUtils.getBool(PREF_RECENTS));
@@ -86,7 +100,6 @@ public class MiscFragment extends Fragment {
         ButterKnife.apply(minitSwitch, ENABLED, prefUtils.getBool(PREF_MINIT));
         ButterKnife.apply(titleSwitch, ENABLED, prefUtils.getBool(PREF_QS_BG));
         ButterKnife.apply(qsSwitch, ENABLED, prefUtils.getBool(PREF_QS));
-        ButterKnife.apply(qsHeaderSwitch, ENABLED, prefUtils.getBool(PREF_QS_HEADER));
 
         if (fileHelper.getOos(prefUtils.getString(PREF_SELECTED_ROM, getString(R.string.chooseRom))).equals("OxygenOS"))
             ButterKnife.apply(qsBgSwitch, SetVisibility, View.GONE);
@@ -135,6 +148,7 @@ public class MiscFragment extends Fragment {
     public void recentsClick(){
         prefUtils.setSwitchPrefs(recentsSwitch, PREF_RECENTS);
     }
+
     @OnClick(R.id.minitMod)
     public void minitClick(){
         if(minitSwitch.isChecked()){
@@ -176,6 +190,11 @@ public class MiscFragment extends Fragment {
 
     @OnClick(R.id.qsHeader)
     public void qsHeadClick(){
+        if(!isPro){
+            new ProOptionDialog().show(myContext.getSupportFragmentManager(), "");
+            qsHeaderSwitch.setChecked(false);
+            return;
+        }
         if(qsHeaderSwitch.isChecked()) {
 
             imagePickerHeader = pick(1, qsHeaderSwitch, PREF_QS_HEADER, PREF_QS_HEADER_FILE);

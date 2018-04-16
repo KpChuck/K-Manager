@@ -5,6 +5,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -21,6 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import kpchuck.kklock.Checks;
 import kpchuck.kklock.MainActivity;
 import kpchuck.kklock.R;
 import kpchuck.kklock.interfaces.DialogClickListener;
@@ -43,7 +46,8 @@ public class IconsFragment extends Fragment {
     private PrefUtils prefUtils;
     private FragmentActivity myContext;
     private Unbinder unbinder;
-    FileHelper fileHelper;
+    private FileHelper fileHelper;
+    private boolean isPro = false;
 
     // Bind Everything
     @BindView (R.id.hideStatusbar) Switch lockSwitch;
@@ -81,17 +85,31 @@ public class IconsFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_icons, container, false);
         unbinder = ButterKnife.bind(this, v);
 
-        if (prefUtils.getBool(PREF_HIDE_ICONS_ON_LOCKSCREEN)){
-            Intent i = new Intent(getContext(), HideIconsService.class);
-            getContext().startService(i);
+        isPro = new Checks().isPro(getContext());
+        if (isPro) {
+
+            if (prefUtils.getBool(PREF_HIDE_ICONS_ON_LOCKSCREEN)) {
+                Intent i = new Intent(getContext(), HideIconsService.class);
+                getContext().startService(i);
+            }
+            ButterKnife.apply(hideIconsLockscreen, ENABLED, prefUtils.getBool(PREF_HIDE_ICONS_ON_LOCKSCREEN));
+            ButterKnife.apply(hideIconsNotFully, ENABLED, prefUtils.getBool(PREF_HIDE_ICONS_NOT_FULLY));
+            hideIconsNotFully.setVisibility(prefUtils.getBool(PREF_HIDE_ICONS_ON_LOCKSCREEN) ? View.VISIBLE : View.GONE);
+        }
+        else {
+            prefUtils.putBool(PREF_HIDE_ICONS_ON_LOCKSCREEN, false);
+            prefUtils.putBool(PREF_HIDE_ICONS_NOT_FULLY, false);
+            ButterKnife.apply(hideIconsLockscreen, ENABLED, false);
+            ButterKnife.apply(hideIconsNotFully, ENABLED, false);
+            hideIconsLockscreen.setPaintFlags(hideIconsLockscreen.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            hideIconsLockscreen.setBackgroundColor(Color.GRAY);
+            hideIconsNotFully.setVisibility(View.GONE);
         }
 
         //Set position and visibility of switches
         ButterKnife.apply(iconSwitch, ENABLED, prefUtils.getBool(PREF_ICON));
         ButterKnife.apply(lockSwitch, ENABLED, prefUtils.getBool(PREF_LOCKSCREEN_STATUSBAR_SIZE));
         ButterKnife.apply(blackoutSwitch, ENABLED, prefUtils.getBool(PREF_BLACKOUT_LOCKSCREEN));
-        ButterKnife.apply(hideIconsLockscreen, ENABLED, prefUtils.getBool(PREF_HIDE_ICONS_ON_LOCKSCREEN));
-        ButterKnife.apply(hideIconsNotFully, ENABLED, prefUtils.getBool(PREF_HIDE_ICONS_NOT_FULLY));
 
         return v;
     }
@@ -129,6 +147,11 @@ public class IconsFragment extends Fragment {
 
     @OnClick (R.id.hideStatusbarIconsNotFully)
     public void notFully(){
+        if(!isPro){
+            new ProOptionDialog().show(myContext.getSupportFragmentManager(), "");
+            hideIconsNotFully.setChecked(false);
+            return;
+        }
         prefUtils.setSwitchPrefs(hideIconsNotFully, PREF_HIDE_ICONS_NOT_FULLY);
     }
     @OnClick (R.id.blackoutLockscreen)
@@ -172,6 +195,11 @@ public class IconsFragment extends Fragment {
 
     @OnClick(R.id.hideStatusbarIcons)
     public void hideLockscreen(){
+        if (!isPro){
+            new ProOptionDialog().show(myContext.getSupportFragmentManager(), "");
+            hideIconsLockscreen.setChecked(false);
+            return;
+        }
         if (hideIconsLockscreen.isChecked()) {
             StatusBarIconsUtils utils = new StatusBarIconsUtils();
             if (utils.hasPerms(getContext())) {

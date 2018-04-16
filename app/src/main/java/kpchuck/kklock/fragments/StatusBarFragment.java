@@ -7,6 +7,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -29,6 +31,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 import butterknife.Unbinder;
+import kpchuck.kklock.Checks;
 import kpchuck.kklock.R;
 import kpchuck.kklock.adapters.SwitchListAdapter;
 import kpchuck.kklock.interfaces.DialogClickListener;
@@ -43,6 +46,7 @@ import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_HIDE_NOTIFICAT
 import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_TEXT;
 import static kpchuck.kklock.constants.PrefConstants.PREF_CHANGE_STATBAR_COLOR;
 import static kpchuck.kklock.constants.PrefConstants.PREF_CLOCK_HIDEABLE;
+import static kpchuck.kklock.constants.PrefConstants.PREF_HIDE_ICONS_NOT_FULLY;
 import static kpchuck.kklock.constants.PrefConstants.PREF_HIDE_ICONS_ON_LOCKSCREEN;
 import static kpchuck.kklock.constants.PrefConstants.PREF_INDICATORS;
 import static kpchuck.kklock.constants.PrefConstants.PREF_MOVE_LEFT;
@@ -83,6 +87,8 @@ public class StatusBarFragment extends Fragment {
     @BindView(R.id.statBarColor) Switch statBarColorSwitch;
     @BindView(R.id.clockHideable) Switch clockHideableSwitch;
 
+    private boolean isPro = false;
+
 
 
     @Override
@@ -98,6 +104,7 @@ public class StatusBarFragment extends Fragment {
         super.onCreate(savedInstanceState);
         this.prefUtils = new PrefUtils(getContext());
         this.fileHelper=new FileHelper();
+        this.isPro = new Checks().isPro(getContext());
 
     }
 
@@ -110,14 +117,20 @@ public class StatusBarFragment extends Fragment {
 
         unbinder = ButterKnife.bind(this, v);
 
-        if (prefUtils.getBool(PREF_HIDE_ICONS_ON_LOCKSCREEN)){
-            Intent i = new Intent(getContext(), HideIconsService.class);
-            getContext().startService(i);
+        if (isPro){
+            ButterKnife.apply(amSwitch, ENABLED, prefUtils.getBool(PREF_AM));
+
         }
+        else {
+            prefUtils.putBool(PREF_AM, false);
+            ButterKnife.apply(amSwitch, ENABLED, false);
+            amSwitch.setPaintFlags(amSwitch.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            amSwitch.setBackgroundColor(Color.GRAY);
+        }
+
 
         //Set position and visibility of switches
         ButterKnife.apply(clockSizeSwitch, ENABLED, prefUtils.getBool(PREF_STATUSBAR_CLOCK_SIZE));
-        ButterKnife.apply(amSwitch, ENABLED, prefUtils.getBool(PREF_AM));
         ButterKnife.apply(indicatorSwitch, ENABLED, prefUtils.getBool(PREF_INDICATORS));
         ButterKnife.apply(leftSwitch, ENABLED, prefUtils.getBool(PREF_MOVE_LEFT));
         ButterKnife.apply(carrierSwitch, ENABLED, prefUtils.getBool(PREF_CARRIER_TEXT));
@@ -226,6 +239,11 @@ public class StatusBarFragment extends Fragment {
 
     @OnClick(R.id.ampm)
     public void amClick(){
+        if (!isPro) {
+            new ProOptionDialog().show(myContext.getSupportFragmentManager(), "");
+            amSwitch.setChecked(false);
+            return;
+        }
         prefUtils.setSwitchPrefs(amSwitch, PREF_AM);
 
     }
