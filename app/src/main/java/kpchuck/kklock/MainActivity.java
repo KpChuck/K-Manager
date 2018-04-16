@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
     private RewardedVideoAd rewardedVideoAd;
     private boolean b = false;
     private boolean a = true;
-    private boolean z = false;
+    private boolean isPro = false;
     private boolean installed_from_playstore = true;
 
 
@@ -322,6 +322,7 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .start();
 
+        // Check if K-Manager is licensed
         String callback = checks.isLicensed(context);
         String signature_bot_valid = PiracyCheckerError.SIGNATURE_NOT_VALID.toString();
 
@@ -350,24 +351,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        z = checks.isPro(context);
-        if (z){
+        isPro = checks.isPro(context);
+        if (isPro){
             setTitle(getString(R.string.app_name) + " Pro");
         }
 
         // Ads
         MobileAds.initialize(this, "ca-app-pub-8166276602491641~4853039884");
-
-        if (!z ) {
-
-            AdView mAdView = findViewById(R.id.adView);
-            AdRequest adRequest = new AdRequest.Builder().build();
-            mAdView.loadAd(adRequest);
-
-            mInterstitialAd = new InterstitialAd(this);
-            mInterstitialAd.setAdUnitId("ca-app-pub-8166276602491641/2336070649");
-            mInterstitialAd.loadAd(new AdRequest.Builder().build());
-        }
+        
 
         b = checks.getSelfVerifiedPirateTools(context);
         if (b){
@@ -754,7 +745,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 // Open intent to playstore
                 else {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(z ? getString(R.string.k_manager_pro_link) : getString(R.string.k_manager_gp_link)));
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(isPro ? getString(R.string.k_manager_pro_link) : getString(R.string.k_manager_gp_link)));
                     startActivity(intent);
                 }
             }
