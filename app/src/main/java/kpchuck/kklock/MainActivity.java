@@ -323,32 +323,32 @@ public class MainActivity extends AppCompatActivity {
                 .start();
 
         String callback = checks.isLicensed(context);
-        if (!callback.equals("allowed")){
+        String signature_bot_valid = PiracyCheckerError.SIGNATURE_NOT_VALID.toString();
 
-            a = false;
-            if (callback.equals(PiracyCheckerError.SIGNATURE_NOT_VALID.toString())){
-                TextAlertDialogFragment dialogFragment = new TextAlertDialogFragment();
-                DialogClickListener clickListener = new DialogClickListener() {
-                    @Override
-                    public void onPositiveBtnClick() {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/search?q=K-Manager%20for%20K-Klock&hl=en"));
-                        startActivity(browserIntent);
-                    }
+        if (callback.equals(signature_bot_valid)){
+            TextAlertDialogFragment dialogFragment = new TextAlertDialogFragment();
+            DialogClickListener clickListener = new DialogClickListener() {
+                @Override
+                public void onPositiveBtnClick() {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/search?q=K-Manager%20for%20K-Klock&hl=en"));
+                    startActivity(browserIntent);
+                }
 
-                    @Override
-                    public void onCancelBtnClick() {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/KpChuck/K-Manager/releases"));
-                        startActivity(browserIntent);
+                @Override
+                public void onCancelBtnClick() {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/KpChuck/K-Manager/releases"));
+                    startActivity(browserIntent);
 
-                    }
-                };
-                dialogFragment.Instantiate("Invalid Signature Detected",
-                        "It looks like you haven't installed K-Manager from an official source. \n" +
-                                "This means that the original apk has been modified and may contain malware or viruses. \n" +
-                                "Please head to an official source and install from there.",
-                        "Google Play Store", "Github", clickListener);
-            }
+                }
+            };
+            dialogFragment.Instantiate("Invalid Signature Detected",
+                    "It looks like you haven't installed K-Manager from an official source. \n" +
+                            "This means that the original apk has been modified and may contain malware or viruses. \n" +
+                            "Please head to an official source and install from there.",
+                    "Google Play Store", "Github", clickListener);
+            dialogFragment.show(getSupportFragmentManager(), "");
         }
+
 
         z = checks.isPro(context);
         if (z){
@@ -396,7 +396,6 @@ public class MainActivity extends AppCompatActivity {
         final ViewPager viewPager = findViewById(R.id.pager);
         viewPager.setAdapter(tabAdapter);
 
-    //    viewPager.setOffscreenPageLimit(3);
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
@@ -411,29 +410,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         LocalBroadcastManager.getInstance(this).registerReceiver(BReceiver, new IntentFilter("message"));
-
-        // Ask for Permissions
-       /* if(Build.VERSION.SDK_INT >= 26 && !getPackageManager().canRequestPackageInstalls()) {
-            TextAlertDialogFragment alertDialogFragment = new TextAlertDialogFragment();
-            DialogClickListener clickReactor = new DialogClickListener() {
-                @Override
-                public void onPositiveBtnClick() {
-                    Intent k = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
-                    Uri uri = Uri.fromParts("package", getPackageName(), null);
-                    k.setData(uri);
-                    startActivity(k);
-                }
-
-                @Override
-                public void onCancelBtnClick() {
-                    shortToast(getString(R.string.install_permission_not_granted));
-
-                }
-            };
-            alertDialogFragment.Instantiate(getString(R.string.install_permission_title), getString(R.string.request_install_perms),
-                    getString(R.string.grant), getString(R.string.deny), clickReactor);
-            alertDialogFragment.show(getSupportFragmentManager(), "missiles");
-        }*/
 
         if(!hasPermissions(this, PERMISSIONS)){
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);

@@ -40,7 +40,7 @@ class Checks {
         val piracyChecker = PiracyChecker(context)
         piracyChecker.callback(object : PiracyCheckerCallback() {
             override fun allow() {
-                result = "allowed"
+                result = "hi"
 
             }
 
