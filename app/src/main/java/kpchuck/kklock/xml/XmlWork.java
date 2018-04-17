@@ -113,12 +113,7 @@ public class XmlWork {
                 NodeList list = rootElement.getElementsByTagName("include");
                 Element includeElement = (Element) list.item(0);
 
-                Element battery = utils.findElementById(sysicons,
-                        "@*com.android.systemui:id/battery");
-                Attr margin = includeElement.getAttributeNode("android:layout_marginStart");
-                battery.setAttribute(margin.getName(), margin.getValue());
-
-                rootElement.removeChild(includeElement);
+                utils.changeAttribute(includeElement, X_LAYOUT_WIDTH, "0dip");
             }
 
             if (prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT)){
