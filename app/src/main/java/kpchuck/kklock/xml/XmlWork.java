@@ -116,7 +116,7 @@ public class XmlWork {
                 utils.changeAttribute(includeElement, X_LAYOUT_WIDTH, "0dip");
             }
 
-            if (prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT)){
+            if (prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT)){/*
                 Element notificationArea = sysicons.createElement("com.android.systemui.statusbar.AlphaOptimizedFrameLayout");
                 notificationArea.setAttribute("android:orientation", "horizontal");
                 notificationArea.setAttribute(X_ID, "@*com.android.systemui:id/notification_icon_area");
@@ -124,7 +124,7 @@ public class XmlWork {
                 notificationArea.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
                 notificationArea.setAttribute(X_WEIGHT, "1.0");
 
-                rootElement.insertBefore(notificationArea, utils.getFirstChildElement(rootElement));
+                rootElement.insertBefore(notificationArea, utils.getFirstChildElement(rootElement));*/
             }
 
             fileHelper.newFolder(baseFolders, "res/");
@@ -138,7 +138,6 @@ public class XmlWork {
 
 
         // Find elements needed
-        Element rootElement = status.getDocumentElement();
 
 
         Element systemIconArea = utils.findElementById(status,
@@ -173,10 +172,12 @@ public class XmlWork {
         }
 
         customClock = createClock(status, false, "center", X_WRAP_CONTENT);
-        Element view = createViewElement(status);
-
         statusBarContents.insertBefore(customClock, systemIconArea);
-        systemIconArea.insertBefore(view, utils.getFirstChildElement(systemIconArea));
+
+        if (!utils.isPushyOutElement(utils.getFirstChildElement(systemIconArea))) {
+            Element view = createViewElement(status);
+            systemIconArea.insertBefore(view, utils.getFirstChildElement(systemIconArea));
+        }
 
         status = packToRightOf(status, statusBarContents, "TextClock", null);
 
@@ -193,7 +194,6 @@ public class XmlWork {
                 "@*com.android.systemui:id/clock");
         statusBarContents = utils.findElementById(status,
                 "@*com.android.systemui:id/status_bar_contents");
-        rootElement = status.getDocumentElement();
 
         // Right clocks
         customClock = createClock(status, false, "start|center", X_WRAP_CONTENT);
@@ -243,11 +243,14 @@ public class XmlWork {
 
         customClock = createClock(status, false, "center", X_WRAP_CONTENT);
         hideE = createLLTop(status, X_WRAP_CONTENT, "center");
-        view = createViewElement(status);
 
         statusBarContents.insertBefore(hideE, systemIconArea);
 
-        systemIconArea.insertBefore(view, utils.getFirstChildElement(systemIconArea));
+        if (!utils.isPushyOutElement(utils.getFirstChildElement(systemIconArea))) {
+
+            Element view = createViewElement(status);
+            systemIconArea.insertBefore(view, utils.getFirstChildElement(systemIconArea));
+        }
 
         hideE.appendChild(customClock);
         status = packToRightOf(status, statusBarContents, "LinearLayout", "@*com.android.systemui:id/system_icon_area");
@@ -270,6 +273,7 @@ public class XmlWork {
 
     private Document packToRightOf(Document doc, Element parentElement, String tagName, String idName){
         ArrayList<Element> rightElements = utils.getRightElementsTo(parentElement, tagName, idName);
+
         Element linearLayout = doc.createElement("LinearLayout");
         linearLayout.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
         linearLayout.setAttribute(X_LAYOUT_WIDTH, "0dp");
@@ -280,6 +284,7 @@ public class XmlWork {
         for (Element element : rightElements){
             parentElement.removeChild(element);
             linearLayout.appendChild(element);
+
         }
         return doc;
     }
@@ -349,6 +354,7 @@ public class XmlWork {
 
         Element statusBarContents = utils.findElementById(status,
                 "@*com.android.systemui:id/status_bar_contents");
+        Element systemIconArea = utils.findElementById(status, "@*com.android.systemui:id/system_icon_area");
 
         if (prefUtils.getBool(PREF_MOVE_LEFT)){
             status = moveLeft(status);
@@ -365,7 +371,7 @@ public class XmlWork {
 
             Element notification = utils.findElementById(status,
                     "@*com.android.systemui:id/notification_icon_area");
-            notification.getParentNode().removeChild(notification);
+            notification.getParentNode().removeChild(notification);/*
             ArrayList<Element> list = utils.getRightElementsTo(statusBarContents, "com.android.keyguard.AlphaOptimizedLinearLayout",
                     "@*com.android.systemui:id/system_icon_area");
             if (list.size() != 0) {
@@ -374,6 +380,25 @@ public class XmlWork {
                     statusBarContents.insertBefore(view, utils.lastElement(statusBarContents));
                 }
             }
+            Element notificationHolder = status.createElement("LinearLayout");
+            notificationHolder.setAttribute(X_WEIGHT, "1.0");
+            notificationHolder.setAttribute(X_LAYOUT_WIDTH, "0dip");
+            notificationHolder.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);*/
+
+            Element notificationArea = status.createElement("com.android.systemui.statusbar.AlphaOptimizedFrameLayout");
+            notificationArea.setAttribute("android:orientation", "horizontal");
+            notificationArea.setAttribute(X_ID, "@*com.android.systemui:id/notification_icon_area");
+            notificationArea.setAttribute(X_LAYOUT_WIDTH, "0.0dip");
+            notificationArea.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
+            notificationArea.setAttribute(X_WEIGHT, "1.0");
+            notificationArea.setAttribute("android:layoutDirection", "rtl");
+
+            //notificationHolder.appendChild(notificationArea);
+            systemIconArea.insertBefore(notificationArea, utils.getFirstChildElement(systemIconArea));
+
+            utils.changeAttribute(systemIconArea, X_LAYOUT_WIDTH, "0dip");
+            utils.changeAttribute(systemIconArea, X_WEIGHT, "1.0");
+
         }
 
         if (removeClock){
