@@ -222,14 +222,14 @@ public class CheckforUpdatesService extends Service {
             for (Element element: rom_files){
                 String key = element.selectFirst("td.message a").attr("title");
                 String lastEdited = element.selectFirst("td.age time-ago").attr("datetime");
-                //if (!lastEdited.equals(sharedPreferences.getString(key, ""))){
-                  //  editor.putString(key, lastEdited);
+                if (!lastEdited.equals(sharedPreferences.getString(key, ""))){
+                    editor.putString(key, lastEdited);
                     String download_url = "http://github.com" + element.selectFirst("td.content a").attr("href");
                     String romName = download_url.substring(download_url.lastIndexOf('/')+1, download_url.lastIndexOf("."))
                             .replace("%20", " ");
                     download_urls.add(romName);
                     download_urls.add(download_url);
-                //}
+                }
             }
             editor.apply();
             if (download_urls.size() > 1){
@@ -239,9 +239,9 @@ public class CheckforUpdatesService extends Service {
                     updateNotification((int)prog, download_urls.get(i));
                     downloadFile(getDownloadUrl(download_urls.get(i+1)));
                 }
-
+                finishNotification();
             }
-            finishNotification();
+
         }
 
         NotificationManager notificationManager;

@@ -272,7 +272,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         if (!romName.equals(context.getString(R.string.otherRomsBeta))) {
             File romFile = new File(Environment.getExternalStorageDirectory() + "/K-Manager/romSpecific/" + romName + ".zip");
             if (romFile.exists()){
-                ZipUtil.unpack(romFile, customInput);
+                ZipUtil.unpack(romFile, new File(customInput, romName + ".zip"));
             }
             else {
                 fileHelper.copyFromAssets("romSpecific", romName + ".zip".trim(), customInput, context, true);
