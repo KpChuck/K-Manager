@@ -80,6 +80,7 @@ import org.zeroturnaround.zip.ZipEntrySource;
 import org.zeroturnaround.zip.ZipUtil;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindString;
@@ -1092,8 +1093,17 @@ public class MainActivity extends AppCompatActivity {
 
         roms.add(betaString);
         try {
-            String[] temp = getAssets().list("romSpecific");
-            Arrays.sort(temp);
+            String[] t = getAssets().list("romSpecific");
+            List<String> temp = Arrays.asList(t);
+            String[] notAssetsTemp = new File(Environment.getExternalStorageDirectory() + "/K-Manager/romSpecific").list(fileHelper.XML);
+            if (notAssetsTemp != null) {
+                for (String s : notAssetsTemp) {
+                    if (!temp.contains(s)) {
+                        temp.add(s);
+                    }
+                }
+            }
+            Collections.sort(temp);
             for(String s:temp){
                 s = s.substring(0, s.lastIndexOf('.'));
                 roms.add(s);
@@ -1103,6 +1113,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
 
     public void shortToast(String message){
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();

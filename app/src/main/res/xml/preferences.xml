@@ -14,6 +14,11 @@
             android:defaultValue="false"
             android:title="Set Dark Theme"/>
 
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="sync_rom_files"
+            android:summary="Sync rom files automatically when K-Manager is opened"
+            android:title="Sync Rom Files" />
         <Preference
             android:key="deleteSaved"
             android:title="Delete Saved Clock Formats and Colors"/>
