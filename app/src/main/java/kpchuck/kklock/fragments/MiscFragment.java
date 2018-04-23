@@ -100,6 +100,8 @@ public class MiscFragment extends Fragment {
             ButterKnife.apply(qsHeaderSwitch, ENABLED, false);
             qsHeaderSwitch.setPaintFlags(qsHeaderSwitch.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             qsHeaderSwitch.setBackgroundColor(Color.GRAY);
+            String text = qsHeaderSwitch.getText().toString();
+            qsHeaderSwitch.setText(text + " [PRO]");
         }
         //Set position and visibility of switches
         switches.put(PREF_QS, qsSwitch);

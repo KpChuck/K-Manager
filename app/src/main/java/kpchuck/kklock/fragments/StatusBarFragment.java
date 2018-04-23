@@ -126,6 +126,8 @@ public class StatusBarFragment extends Fragment {
             ButterKnife.apply(amSwitch, ENABLED, false);
             amSwitch.setPaintFlags(amSwitch.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             amSwitch.setBackgroundColor(Color.GRAY);
+            String text = amSwitch.getText().toString();
+            amSwitch.setText(text + " [PRO]");
         }
 
 

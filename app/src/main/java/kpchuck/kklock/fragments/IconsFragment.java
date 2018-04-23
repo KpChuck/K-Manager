@@ -103,6 +103,8 @@ public class IconsFragment extends Fragment {
             ButterKnife.apply(hideIconsNotFully, ENABLED, false);
             hideIconsLockscreen.setPaintFlags(hideIconsLockscreen.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             hideIconsLockscreen.setBackgroundColor(Color.GRAY);
+            String text = hideIconsLockscreen.getText().toString();
+            hideIconsLockscreen.setText(text + " [PRO]");
             hideIconsNotFully.setVisibility(View.GONE);
         }
 
