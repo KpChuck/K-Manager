@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import jadx.api.JadxDecompiler;
@@ -246,19 +247,27 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         // Copy files used for every apk first
         fileHelper.copyFromAssets(univ, "universalFiles.zip", mergerFolder, context, false);
         // Copy optional files into the tempfolder
-        if (prefUtils.getBool(PREF_RECENTS)) fileHelper.copyFromAssets(univ, "recents.zip", tempFolder, context, true);
-        if(prefUtils.getBool(PREF_QS)) fileHelper.copyFromAssets(univ, "qsTiles.zip".trim(), tempFolder, context, true);
-        if(prefUtils.getBool(PREF_ICON)) fileHelper.copyFromAssets(univ, "colorIcons.zip".trim(), tempFolder, context, true);
-        if (prefUtils.getBool(PREF_LOCKSCREEN_STATUSBAR_SIZE)) fileHelper.copyFromAssets(univ, "hideStatusbar.zip".trim(), tempFolder, context, true);
-        if (prefUtils.getBool(PREF_QS_BG) && !fileHelper.getOos(romName).equals("OxygenOS"))
-            fileHelper.copyFromAssets(univ, "qsBgs.zip", tempFolder, context, true);
-        if (prefUtils.getBool(PREF_QS_LABEL)) fileHelper.copyFromAssets(univ, "qsTitle.zip", tempFolder, context, true);
-        if (prefUtils.getBool(PREF_AM)) fileHelper.copyFromAssets(univ, "ampm.zip", tempFolder, context, true);
-        if (prefUtils.getBool(PREF_STATUSBAR_CLOCK_SIZE)) fileHelper.copyFromAssets(univ, "clockSize.zip", tempFolder, context, true);
+        LinkedHashMap<String, String> hashMap = new LinkedHashMap<String, String>(){{
+            put(PREF_RECENTS, "recents.zip");
+            put(PREF_QS, "qsTiles.zip");
+            put(PREF_ICON, "colorIcons.zip");
+            put(PREF_LOCKSCREEN_STATUSBAR_SIZE, "hideStatusbar.zip");
+            put(PREF_QS_LABEL, "qsTitle.zip");
+            put(PREF_AM, "ampm.zip");
+            put(PREF_STATUSBAR_CLOCK_SIZE, "clockSize.zip");
+            put(PREF_LOCK_CLOCK, "lock_clock.zip");
+            put(PREF_HEADS_UP, "timeout.zip");
+
+        }};
+        for (String key: hashMap.keySet()){
+            checkPrefAndCopy(key, hashMap.get(key));
+        }
+
         if(prefUtils.getBool(PREF_INDICATORS) && romName.equals("OxygenOS Nougat"))
             fileHelper.copyFromAssets(univ, "indicatorsN.zip".trim(), tempFolder, context, true);
         if(prefUtils.getBool(PREF_INDICATORS) && romName.startsWith("OxygenOS Oreo"))
             fileHelper.copyFromAssets(univ, "indicatorsO.zip".trim(), tempFolder, context, true);
+
         // Copy the rom specific file if a rom was selected
         if (!romName.equals(context.getString(R.string.otherRomsBeta))) {
             fileHelper.copyFromAssets("romSpecific", romName + ".zip".trim(), customInput, context, true);
@@ -268,6 +277,11 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             }
             FileUtils.deleteDirectory(zip);
         }
+    }
+
+    private void checkPrefAndCopy(String key, String zipName){
+        if(prefUtils.getBool(key))
+            fileHelper.copyFromAssets(univ, zipName, tempFolder, context, true);
     }
 
     private void modTheRomZip() throws Exception{

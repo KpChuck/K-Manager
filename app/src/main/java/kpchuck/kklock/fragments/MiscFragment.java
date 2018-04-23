@@ -24,6 +24,8 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -62,6 +64,12 @@ public class MiscFragment extends Fragment {
     @BindView (R.id.minitMod) Switch minitSwitch;
     @BindView (R.id.qsBg) Switch qsBgSwitch;
     @BindView(R.id.qsHeader) Switch qsHeaderSwitch;
+    @BindView(R.id.lockscreenClock) Switch lockscreenClock;
+    @BindView(R.id.headsUpTimout) Switch headsUpTimeout;
+
+    // Make a hashmap
+    LinkedHashMap<String,Switch> switches = new LinkedHashMap<>();
+
 
     public MiscFragment() {
         // Required empty public constructor
@@ -94,12 +102,17 @@ public class MiscFragment extends Fragment {
             qsHeaderSwitch.setBackgroundColor(Color.GRAY);
         }
         //Set position and visibility of switches
-        ButterKnife.apply(qsSwitch, ENABLED, prefUtils.getBool(PREF_QS));
-        ButterKnife.apply(recentsSwitch, ENABLED, prefUtils.getBool(PREF_RECENTS));
-        ButterKnife.apply(qsBgSwitch, ENABLED, prefUtils.getBool(PREF_QS_BG));
-        ButterKnife.apply(minitSwitch, ENABLED, prefUtils.getBool(PREF_MINIT));
-        ButterKnife.apply(titleSwitch, ENABLED, prefUtils.getBool(PREF_QS_BG));
-        ButterKnife.apply(qsSwitch, ENABLED, prefUtils.getBool(PREF_QS));
+        switches.put(PREF_QS, qsSwitch);
+        switches.put(PREF_RECENTS, recentsSwitch);
+        switches.put(PREF_QS_BG, qsBgSwitch);
+        switches.put(PREF_MINIT, minitSwitch);
+        switches.put(PREF_QS_LABEL, titleSwitch);
+        switches.put(PREF_QS, qsSwitch);
+        switches.put(PREF_LOCK_CLOCK, lockscreenClock);
+        switches.put(PREF_HEADS_UP, headsUpTimeout);
+        for (String key: switches.keySet()){
+            ButterKnife.apply(switches.get(key), ENABLED, prefUtils.getBool(key));
+        }
 
         if (fileHelper.getOos(prefUtils.getString(PREF_SELECTED_ROM, getString(R.string.chooseRom))).equals("OxygenOS"))
             ButterKnife.apply(qsBgSwitch, SetVisibility, View.GONE);
@@ -133,6 +146,14 @@ public class MiscFragment extends Fragment {
     }
 
     // Handle On Click Methods
+    @OnClick(R.id.headsUpTimout)
+    public void headsup(){
+        prefUtils.setSwitchPrefs(headsUpTimeout, PREF_HEADS_UP);
+    }
+    @OnClick(R.id.lockscreenClock)
+    public void lockclock(){
+        prefUtils.setSwitchPrefs(lockscreenClock, PREF_LOCK_CLOCK);
+    }
     @OnClick(R.id.noQsTilesTv)
     public void onClick (){
         prefUtils.setSwitchPrefs(qsSwitch, PREF_QS);
@@ -152,16 +173,17 @@ public class MiscFragment extends Fragment {
     @OnClick(R.id.minitMod)
     public void minitClick(){
         if(minitSwitch.isChecked()){
+            ButterKnife.apply(minitSwitch, ENABLED, false);
             TextAlertDialogFragment alertDialogFragment = new TextAlertDialogFragment();
             DialogClickListener listener = new DialogClickListener() {
                 @Override
                 public void onPositiveBtnClick() {
-                    prefUtils.putBool(PREF_MINIT, true);
+                    prefUtils.putBool(PREF_MINIT, false);
+                    ButterKnife.apply(minitSwitch, ENABLED, false);
                 }
                 @Override
                 public void onCancelBtnClick() {
-                    prefUtils.putBool(PREF_MINIT, false);
-                    ButterKnife.apply(minitSwitch, ENABLED, false);
+
                 }
             };
 

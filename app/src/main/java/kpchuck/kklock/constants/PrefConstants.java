@@ -44,6 +44,9 @@ public class PrefConstants {
     public static final String ICON_BLACKLIST = "iconBlacklistValues";
     public static final String ICON_BLACKLIST_SCREEN_UNLOCKED = "screenwasunlockedsosave";
 
+    public static final String PREF_HEADS_UP = "prefHeadsUpTimeout";
+    public static final String PREF_LOCK_CLOCK = "prefhidelockscreenclock";
+
     // Array keys
     public static final String COLOR_TITLES = "colorsTitles";
     public static final String COLOR_VALUES = "colorsValues";

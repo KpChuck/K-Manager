@@ -70,6 +70,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:text="Heads-up Timeout"
+            android:id="@+id/headsUpTimout"/>
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Hide Lockscreen Clock"
+            android:id="@+id/lockscreenClock"/>
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:text="@string/minit_compatibility"
             android:layout_marginBottom="12dp"
             android:id="@+id/minitMod"/>
