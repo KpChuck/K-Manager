@@ -1,11 +1,14 @@
 package kpchuck.kklock.utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Environment;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 
@@ -21,6 +24,7 @@ import java.io.IOException;
 import kpchuck.kklock.R;
 import kpchuck.kklock.xml.XmlUtils;
 import static kpchuck.kklock.constants.PrefConstants.*;
+import static kpchuck.kklock.constants.XmlConstants.*;
 
 /**
  * Created by karol on 20/09/17.
@@ -69,14 +73,14 @@ public class QsBgUtil {
         fileHelper.newFolder(myDir.getAbsolutePath() + "/assets/overlays");
         String t = fileHelper.newFolder(myDir.getAbsolutePath() + "/assets/overlays/com.android.systemui.headers").getAbsolutePath();
         fileHelper.newFolder(t + "/res");
-        fileHelper.newFolder(t + "/res/drawable-anydpi");
+        fileHelper.newFolder(t + "/res/drawable");
         fileHelper.newFolder(t + "/res/values");
 
         fileHelper.newFolder(t + "/res/layout");
     }
 
     private void moveImage(String file_pref, String newName) throws IOException{
-        File destFolder = new File(dir.getAbsolutePath() + "/assets/overlays/com.android.systemui.headers/res/drawable-anydpi");
+        File destFolder = new File(dir.getAbsolutePath() + "/assets/overlays/com.android.systemui.headers/res/drawable");
 
         String filePath = prefUtils.getString(file_pref, "null");
         FileUtils.copyFileToDirectory(new File(filePath), destFolder);
@@ -95,6 +99,7 @@ public class QsBgUtil {
 
         Document xml = xmlUtils.getDocument(qsHeader);
         xml = xmlUtils.replaceAt(xml);
+        xml = xmlUtils.replaceStuffInXml(xml, "?attr/wallpaperTextColorSecondary", "#ffffffff");
 
         Element rootElement = xml.getDocumentElement();
 
@@ -106,10 +111,30 @@ public class QsBgUtil {
 
         rootElement.setAttribute("xmlns:systemui", "http://schemas.android.com/apk/res/com.android.systemui");
 
-        xml = xmlUtils.replaceStuffInXml(xml, "?attr/wallpaperTextColorSecondary", "#ffffffff");
-        xmlUtils.changeAttribute(rootElement, "android:alpha", "0.8");
-        xmlUtils.changeAttribute(rootElement, "android:background", "@*com.android.systemui:drawable/" + header_png.substring(0, header_png.lastIndexOf(".")));
-        xmlUtils.changeAttribute(rootElement, "android:layout_gravity", "center");
+        SharedPreferences default_pref = PreferenceManager.getDefaultSharedPreferences(context);
+
+        boolean alternate_qs_header = default_pref.getBoolean("alternate_qs_header", false);
+
+        if (alternate_qs_header) {
+            Element image = xml.createElement("View");
+            image.setAttribute(X_LAYOUT_WIDTH, "match_parent");
+            image.setAttribute(X_LAYOUT_HEIGHT, "124dip");
+            image.setAttribute("android:background", "@*com.android.systemui:drawable/" + header_png.substring(0, header_png.lastIndexOf(".")));
+            image.setAttribute("android:alpha", "0.8");
+            image.setAttribute("android:paddingStart", "0dip");
+            image.setAttribute("android:paddingEnd", "0dip");
+            image.setAttribute("android:layout_alignParentRight", "true");
+            image.setAttribute("android:layout_alignParentTop", "true");
+
+            rootElement.insertBefore(image, xmlUtils.getFirstChildElement(rootElement));
+
+        } else {
+
+            rootElement = xmlUtils.changeAttribute(rootElement, "android:alpha", "0.8");
+            rootElement = xmlUtils.changeAttribute(rootElement, X_LAYOUT_HEIGHT, "124dip");
+            rootElement = xmlUtils.changeAttribute(rootElement, "android:background", "@*com.android.systemui:drawable/" + header_png.substring(0, header_png.lastIndexOf(".")));
+        }
+
 
         xmlUtils.writeDocToFile(xml, new File(destFolder, "quick_status_bar_expanded_header.xml"));
 

@@ -148,6 +148,11 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             }
         });
 
+        Preference alternate_qs_header = findPreference("alternate_qs_header");
+        if (!new Checks().isPro(getApplicationContext())){
+            alternate_qs_header.setEnabled(false);
+        }
+
     }
 
 

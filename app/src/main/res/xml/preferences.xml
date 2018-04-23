@@ -21,6 +21,11 @@
         <Preference
         android:key="deleteApks"
         android:title="Delete all built K-Klock Apks"/>
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="alternate_qs_header"
+            android:summary="Use a different method for showing qs header images. "
+            android:title="Alternate Qs Header" />
 
     </PreferenceCategory>
 
