@@ -79,8 +79,8 @@ public class XmlWork {
         carrierText = utils.changeAttribute(carrierText, "android:textColor", "#ffffffff");
         carrierText = utils.changeAttribute(carrierText, "android:textAppearance", "?android:textAppearanceSmall");
 
-        String[] unmodPlaces = {"type2_No_Clock_on_Lockscreen_Right", "type2_Dynamic_Clock_Right", "type2_Stock_Clock_Right",
-                    "type2_Clock_on_Lockscreen_Right", "type2_Clock_on_Lockscreen_Left", "type2_Clock_on_Lockscreen_Center"};
+        String[] unmodPlaces = {"type2_Right:_No_Clock_on_Lockscreen", "type2_Right:_Dynamic_Clock", "type2_Right:_Stock_Clock",
+                    "type2_Right:_Clock_on_Lockscreen", "type2_Left:_Clock_on_Lockscreen", "type2_Center:_Clock_on_Lockscreen"};
         // Write unmodified keyguard
         for (String s: unmodPlaces){
             if (new File(baseFolders, s).exists())
@@ -95,15 +95,15 @@ public class XmlWork {
         superContainer = utils.changeAttribute(superContainer, X_LAYOUT_WIDTH, "0dip");
         superContainer.setAttribute("android:visibility", "gone");
 
-        String[] modPlaces = {"type2_No_Clock_on_Lockscreen_Center", "type2_Dynamic_Clock_Center", "type2_Stock_Clock_Center",
-                    "type2_No_Clock_on_Lockscreen_Left", "type2_Stock_Clock_Left", "type2_Dynamic_Clock_Left"};
+        String[] modPlaces = {"type2_Center:_No_Clock_on_Lockscreen", "type2_Center:_Dynamic_Clock", "type2_Center:_Stock_Clock",
+                    "type2_Left:_No_Clock_on_Lockscreen", "type2_Left:_Stock_Clock", "type2_Left:_Dynamic_Clock"};
         for (String s: modPlaces){
             if (new File(baseFolders, s).exists())
                 utils.writeDocToFile(keyguard, new File(baseFolders, s + "/layout/keyguard_status_bar.xml"));
         }
 
         // Continue with System_icons
-        if (prefUtils.getBool(PREF_MOVE_LEFT) || prefUtils.getBool(PREF_MINIT) || prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT)){
+        if (prefUtils.getBool(PREF_MOVE_LEFT) || prefUtils.getBool(PREF_MINIT)){
             Document sysicons = utils.getDocument(new File(srcFolder + "/" + systemicons));
             sysicons = utils.replaceAt(sysicons);
             Element rootElement = sysicons.getDocumentElement();
@@ -114,17 +114,6 @@ public class XmlWork {
                 Element includeElement = (Element) list.item(0);
 
                 utils.changeAttribute(includeElement, X_LAYOUT_WIDTH, "0dip");
-            }
-
-            if (prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT)){/*
-                Element notificationArea = sysicons.createElement("com.android.systemui.statusbar.AlphaOptimizedFrameLayout");
-                notificationArea.setAttribute("android:orientation", "horizontal");
-                notificationArea.setAttribute(X_ID, "@*com.android.systemui:id/notification_icon_area");
-                notificationArea.setAttribute(X_LAYOUT_WIDTH, "0.0dip");
-                notificationArea.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
-                notificationArea.setAttribute(X_WEIGHT, "1.0");
-
-                rootElement.insertBefore(notificationArea, utils.getFirstChildElement(rootElement));*/
             }
 
             fileHelper.newFolder(baseFolders, "res/");
@@ -151,13 +140,13 @@ public class XmlWork {
         systemIconArea.insertBefore(customClock, stockClock);
 
         if (removeClock && Build.VERSION.SDK_INT > 25 && prefUtils.getBool(PREF_CLOCK_HIDEABLE)) systemIconArea.removeChild(stockClock);
-        utils.writeDocToFile(status, new File(baseFolders, "type2_Clock_on_Lockscreen_Right/layout/" + statusbar));
+        utils.writeDocToFile(status, new File(baseFolders, "type2_Right:_Clock_on_Lockscreen/layout/" + statusbar));
 
         // Now Left Clock
         systemIconArea.removeChild(customClock);
         customClock = createClock(status, false, "left|center", X_WRAP_CONTENT);
         statusBarContents.insertBefore(customClock, utils.getFirstChildElement(statusBarContents));
-        utils.writeDocToFile(status, new File(baseFolders, "type2_Clock_on_Lockscreen_Left/layout/" + statusbar));
+        utils.writeDocToFile(status, new File(baseFolders, "type2_Left:_Clock_on_Lockscreen/layout/" + statusbar));
 
         // Center Clock
         statusBarContents.removeChild(customClock);
@@ -182,7 +171,7 @@ public class XmlWork {
         status = packToRightOf(status, statusBarContents, "TextClock", null);
 
 
-        if (leaveResBlank()) utils.writeDocToFile(status, new File(baseFolders, "type2_Clock_on_Lockscreen_Center/layout/" + statusbar));
+        if (leaveResBlank()) utils.writeDocToFile(status, new File(baseFolders, "type2_Center:_Clock_on_Lockscreen/layout/" + statusbar));
         else utils.writeDocToFile(status, new File(baseFolders, "res/layout/" + statusbar));
 
         // All other clocks
@@ -203,15 +192,15 @@ public class XmlWork {
         if (removeClock && Build.VERSION.SDK_INT > 25 && prefUtils.getBool(PREF_CLOCK_HIDEABLE)) systemIconArea.removeChild(stockClock);
 
         hideE.appendChild(customClock);
-        utils.writeDocToFile(status, new File(baseFolders,"type2_No_Clock_on_Lockscreen_Right/layout/" + statusbar));
+        utils.writeDocToFile(status, new File(baseFolders,"type2_Right:_No_Clock_on_Lockscreen/layout/" + statusbar));
         if (makeDynamic) {
             customClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
-            utils.writeDocToFile(status, new File(baseFolders, "type2_Dynamic_Clock_Right/layout/" + statusbar));
+            utils.writeDocToFile(status, new File(baseFolders, "type2_Right:_Dynamic_Clock/layout/" + statusbar));
         }
         hideE.removeChild(customClock);
         customClock = createClock(status, true, "start|center", X_WRAP_CONTENT);
         hideE.appendChild(customClock);
-        utils.writeDocToFile(status, new File(baseFolders, "type2_Stock_Clock_Right/layout/" + statusbar));
+        utils.writeDocToFile(status, new File(baseFolders, "type2_Right:_Stock_Clock/layout/" + statusbar));
 
         // Left Clocks
         systemIconArea.removeChild(hideE);
@@ -220,15 +209,15 @@ public class XmlWork {
 
         statusBarContents.insertBefore(hideE, utils.getFirstChildElement(statusBarContents));
         hideE.appendChild(customClock);
-        utils.writeDocToFile(status, new File(baseFolders, "type2_No_Clock_on_Lockscreen_Left/layout/" + statusbar));
+        utils.writeDocToFile(status, new File(baseFolders, "type2_Left:_No_Clock_on_Lockscreen/layout/" + statusbar));
         if (makeDynamic){
             customClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
-            utils.writeDocToFile(status, new File(baseFolders, "type2_Dynamic_Clock_Left/layout/" + statusbar));
+            utils.writeDocToFile(status, new File(baseFolders, "type2_Left:_Dynamic_Clock/layout/" + statusbar));
         }
         hideE.removeChild(customClock);
         customClock = createClock(status, true, "left|center", X_WRAP_CONTENT);
         hideE.appendChild(customClock);
-        utils.writeDocToFile(status, new File(baseFolders, "type2_Stock_Clock_Left/layout/" + statusbar));
+        utils.writeDocToFile(status, new File(baseFolders, "type2_Left:_Stock_Clock/layout/" + statusbar));
 
         // Center Clocks
         statusBarContents.removeChild(hideE);
@@ -255,18 +244,18 @@ public class XmlWork {
         hideE.appendChild(customClock);
         status = packToRightOf(status, statusBarContents, "LinearLayout", "@*com.android.systemui:id/system_icon_area");
 
-        utils.writeDocToFile(status, new File(baseFolders, "type2_No_Clock_on_Lockscreen_Center/layout/" + statusbar));
+        utils.writeDocToFile(status, new File(baseFolders, "type2_Center:_No_Clock_on_Lockscreen/layout/" + statusbar));
         if (makeDynamic){
             customClock = utils.changeAttribute(customClock, X_ID, "@*com.android.systemui:id/clock");
             customClock.setAttribute(X_ID, "");
-            utils.writeDocToFile(status, new File(baseFolders, "type2_Dynamic_Clock_Center/layout/" + statusbar));
+            utils.writeDocToFile(status, new File(baseFolders, "type2_Center:_Dynamic_Clock/layout/" + statusbar));
         }
         hideE.removeChild(customClock);
         customClock = createClock(status, true, "center", X_WRAP_CONTENT);
         hideE.appendChild(customClock);
-        utils.writeDocToFile(status, new File(baseFolders, "type2_Stock_Clock_Center/layout/" + statusbar));
+        utils.writeDocToFile(status, new File(baseFolders, "type2_Center:_Stock_Clock/layout/" + statusbar));
 
-        utils.writeType2Desc(leaveResBlank() ? "Clock Style (Default NONE)" : "Clock Style (Default Clock on Lockscreen Center",
+        utils.writeType2Desc(leaveResBlank() ? "Clock Position: Style (Default NONE)" : "Clock Position: Style (Default Center: Clock on Lockscreen",
                 baseFolders.getAbsolutePath() + "/type2");
 
     }
@@ -534,21 +523,21 @@ public class XmlWork {
 
         ArrayList<String> startFolder = new ArrayList<>();
         startFolder.add("res");
-        startFolder.add("type2_Clock_on_Lockscreen_Right");
-        startFolder.add("type2_Clock_on_Lockscreen_Left");
-        startFolder.add("type2_No_Clock_on_Lockscreen_Center");
-        startFolder.add("type2_No_Clock_on_Lockscreen_Right");
-        startFolder.add("type2_No_Clock_on_Lockscreen_Left");
-        startFolder.add("type2_Stock_Clock_Center");
-        startFolder.add("type2_Stock_Clock_Left");
-        startFolder.add("type2_Stock_Clock_Right");
+        startFolder.add("type2_Right:_Clock_on_Lockscreen");
+        startFolder.add("type2_Left:_Clock_on_Lockscreen");
+        startFolder.add("type2_Center:_No_Clock_on_Lockscreen");
+        startFolder.add("type2_Right:_No_Clock_on_Lockscreen");
+        startFolder.add("type2_Left:_No_Clock_on_Lockscreen");
+        startFolder.add("type2_Center:_Stock_Clock");
+        startFolder.add("type2_Left:_Stock_Clock");
+        startFolder.add("type2_Right:_Stock_Clock");
         if (makeDynamic) {
-            startFolder.add("type2_Dynamic_Clock_Right");
-            startFolder.add("type2_Dynamic_Clock_Left");
-            startFolder.add("type2_Dynamic_Clock_Center");
+            startFolder.add("type2_Right:_Dynamic_Clock");
+            startFolder.add("type2_Left:_Dynamic_Clock");
+            startFolder.add("type2_Center:_Dynamic_Clock");
         }
         if (leaveResBlank()) {
-            startFolder.add("type2_Clock_on_Lockscreen_Center");startFolder.remove("res");
+            startFolder.add("type2_Center:_Clock_on_Lockscreen");startFolder.remove("res");
         }
         String slash = "/";
 
