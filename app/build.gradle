@@ -184,14 +184,14 @@ dependencies {
 task uploadDebugWhenFinished {
     doLast {
 
-        "python3 /home/karol/python/bot/upload.py debug &".execute()
+       // "python3 /home/karol/python/bot/upload.py debug &".execute()
       //  println "python /home/karol/PycharmProjects/telegram/Debug.py".execute().text
     }
 }
 
 task uploadBetaWhenFinished {
     doLast {
-        "python3 /home/karol/python/bot/upload.py beta".execute()
+        //"python3 /home/karol/python/bot/upload.py beta".execute()
     }
 }
 
