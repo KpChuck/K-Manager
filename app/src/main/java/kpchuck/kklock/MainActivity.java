@@ -584,43 +584,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         new CleanupFiles(loadingLayout, loadingTextView).execute();
-
-        getArrayForRoms();
-
-        // Initialize the spinner
-        final SimpleListAdapter simpleListAdapter = new SimpleListAdapter(this, roms);
-        searchableSpinner.setAdapter(simpleListAdapter);
-        searchableSpinner.setSelectedItem(prefUtils.getString("selectedRom", getString(R.string.chooseRom)));
-        searchableSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(View view, int position, long id) {
-                String selectedItem = simpleListAdapter.getItem(position).toString();
-                prefUtils.putString("selectedRom", selectedItem);
-
-                statusBarFragment.oosIndicators(fileHelper.getOos(selectedItem).equals("OxygenOS"));
-                miscFragment.oosBg(fileHelper.getOos(selectedItem).equals("OxygenOS"));
-
-                orSettingsButton.setVisibility(isOtherRoms() ? View.VISIBLE : View.GONE);
-                questionMark.setVisibility(isOtherRoms() ? View.VISIBLE : View.GONE);
-
-            } // to close the onItemSelected
-
-            @Override
-            public void onNothingSelected() {
-
-            }
-        });
-        searchableSpinner.setStatusListener(new IStatusListener() {
-            @Override
-            public void spinnerIsOpening() {
-                spinnerOpen = true;
-            }
-
-            @Override
-            public void spinnerIsClosing() {
-                spinnerOpen = false;
-            }
-        });
+        loadSpinner();
 
     }
 
@@ -768,15 +732,60 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            boolean newVersion = fileHelper.newVersion(context);
+            int key = intent.getIntExtra("key", 0);
+            switch(key) {
+                case 1:
+                    boolean newVersion = fileHelper.newVersion(context);
 
-            if (newVersion){
-                if (!alreadyRan)notifyOnUpdate();
-                drawer.addItemAtPosition(updateNotif, 1);
+                    if (newVersion) {
+                        if (!alreadyRan) notifyOnUpdate();
+                        drawer.addItemAtPosition(updateNotif, 1);
+                    } else drawer.removeItem(99);
+                    break;
+                case 2:
+                    loadSpinner();
+                    break;
             }
-            else drawer.removeItem(99);
         }
     };
+
+    private void loadSpinner(){
+        getArrayForRoms();
+        // Initialize the spinner
+        final SimpleListAdapter simpleListAdapter = new SimpleListAdapter(this, roms);
+        searchableSpinner.setAdapter(simpleListAdapter);
+        searchableSpinner.setSelectedItem(prefUtils.getString("selectedRom", getString(R.string.chooseRom)));
+        searchableSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(View view, int position, long id) {
+                String selectedItem = simpleListAdapter.getItem(position).toString();
+                prefUtils.putString("selectedRom", selectedItem);
+
+                statusBarFragment.oosIndicators(fileHelper.getOos(selectedItem).equals("OxygenOS"));
+                miscFragment.oosBg(fileHelper.getOos(selectedItem).equals("OxygenOS"));
+
+                orSettingsButton.setVisibility(isOtherRoms() ? View.VISIBLE : View.GONE);
+                questionMark.setVisibility(isOtherRoms() ? View.VISIBLE : View.GONE);
+
+            } // to close the onItemSelected
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
+        searchableSpinner.setStatusListener(new IStatusListener() {
+            @Override
+            public void spinnerIsOpening() {
+                spinnerOpen = true;
+            }
+
+            @Override
+            public void spinnerIsClosing() {
+                spinnerOpen = false;
+            }
+        });
+    }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {

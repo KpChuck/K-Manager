@@ -76,8 +76,9 @@ public class CheckforUpdatesService extends Service {
         return Service.START_NOT_STICKY;
     }
 
-    private void sendBroadcast (){
+    private void sendBroadcast (int key){
         Intent intent = new Intent ("message"); //put the same message as in the filter you used in the activity when registering the receiver
+        intent.putExtra("key", key);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
@@ -195,7 +196,7 @@ public class CheckforUpdatesService extends Service {
 
                     prefUtils.putString(LATEST_GITHUB_VERSION_NAME, name);
                     prefUtils.putString(LATEST_GITHUB_VERSION_URL, downloadUrl);
-                    sendBroadcast();
+                    sendBroadcast(1);
 
                     SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
                     if (preferences.getBoolean("sync_rom_files", true)) {
@@ -240,6 +241,7 @@ public class CheckforUpdatesService extends Service {
                     downloadFile(getDownloadUrl(download_urls.get(i+1)));
                 }
                 finishNotification();
+                sendBroadcast(2);
             }
 
         }
