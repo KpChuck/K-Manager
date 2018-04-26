@@ -221,7 +221,7 @@ public class CheckforUpdatesService extends Service {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             List<String> download_urls = new ArrayList<>();
             for (Element element: rom_files){
-                String key = element.selectFirst("td.message a").attr("title");
+                String key = element.selectFirst("td.content a").attr("title");
                 String lastEdited = element.selectFirst("td.age time-ago").attr("datetime");
                 if (!lastEdited.equals(sharedPreferences.getString(key, ""))){
                     editor.putString(key, lastEdited);
