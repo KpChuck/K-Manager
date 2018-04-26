@@ -624,15 +624,14 @@ public class MainActivity extends AppCompatActivity {
                                 String[] xmlNames = {"status_bar.xml", "keyguard_status_bar.xml", "system_icons.xml", "quick_status_bar_expanded_header.xml"};
                                 List<String> xmlNam = Arrays.asList(xmlNames);
 
-                                if (!xmls.containsAll(Arrays.asList(xmlNames))){
+                                if (!xmls.containsAll(xmlNam)){
                                     shortToast("You don\'t have the necessary Rom files. Run and test K-Klock with Other Roms at least once!");
                                     return;
                                 }
                                 List<ZipEntrySource> zipEntrySources = new ArrayList<>();
-                                for (String f : x){
-                                    if (xmlNam.contains(f) || f.equals("attrs.xml") ){
-                                        zipEntrySources.add(new FileSource("/"+f, new File(rootFolder + "/userInput/"+f)));
-                                    }
+                                for (String f : xmlNam){
+                                    zipEntrySources.add(new FileSource("/"+f, new File(rootFolder + "/userInput/"+f)));
+
                                 }
                                 ZipEntrySource[] addedEntries = new ZipEntrySource[zipEntrySources.size()];
                                 for (int i = 0; i< zipEntrySources.size(); i++){
