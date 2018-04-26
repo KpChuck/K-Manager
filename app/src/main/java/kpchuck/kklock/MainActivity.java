@@ -306,43 +306,6 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         Checks checks = new Checks();
-        TextAlertDialogFragment ddialogFragment = new TextAlertDialogFragment();
-        final String emulated_path = Environment.getExternalStorageDirectory().getPath();
-        final String command = String.format("adb shell \"mkdir -p %s/K-Klock/userInput && cp /system/priv-app/$(ls /system/priv-app | grep SystemUI)/*.apk %s/K-Klock/userInput/SystemUI.apk\"",
-                emulated_path, emulated_path);
-        DialogClickListener dclickListener = new DialogClickListener() {
-            @Override
-            public void onPositiveBtnClick() {
-                fileHelper.copyToClipBoard(context, command);
-            }
-
-            @Override
-            public void onCancelBtnClick() {
-
-            }
-        };
-        ddialogFragment.Instantiate("Oh No", "You don\'t seem to have the necessary file and/or permission for this to work properly.\n" +
-                        "Run this ADB command through your PC instead \n\n" +
-                        command,
-                "Copy to Clipboard", getString(R.string.cancel), dclickListener
-        );
-        ddialogFragment.show(getSupportFragmentManager(), "");
-
-        // Check if K-Manager was installed from playstore
-        new PiracyChecker(context)
-                .enableInstallerId(InstallerID.GOOGLE_PLAY)
-                .callback(new PiracyCheckerCallback() {
-                    @Override
-                    public void allow() {
-                        installed_from_playstore = true;
-                    }
-
-                    @Override
-                    public void dontAllow(@NonNull PiracyCheckerError piracyCheckerError, @Nullable PirateApp pirateApp) {
-                        installed_from_playstore = false;
-                    }
-                })
-                .start();
 
         // Check if K-Manager is licensed
 
