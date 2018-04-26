@@ -91,7 +91,8 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
                 File sysui = new File(Environment.getExternalStorageDirectory() + "/K-Klock/userInput/SystemUI.apk");
                 SuUtils suUtils = new SuUtils();
                 if (!sysui.exists()) {
-                    suUtils.runSuCommand("cp /system/priv-app/$(ls /system/priv-app | grep SystemUI)/*.apk /sdcard/K-Klock/userInput/SystemUI.apk");
+                    suUtils.runSuCommand(String.format("cp /system/priv-app/$(ls /system/priv-app | grep SystemUI)/*.apk %s/K-Klock/userInput/SystemUI.apk",
+                            Environment.getExternalStorageDirectory().getPath()));
                 }
                 decompileSysUI(sysui);
             }
@@ -119,7 +120,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
                 showSnackbar();
                 fh.installApk(apk, context);
             } else {
-                String install = "pm install -r /sdcard/K-Klock/" + apkVersion[0];
+                String install = String.format("pm install -r %s/K-Klock/" + apkVersion[0], Environment.getExternalStorageDirectory().getPath());
                 String output = su.runSuCommand(install).toString();
                 if (output.contains("Success")) showSnackbar();
             }

@@ -263,11 +263,13 @@ public class MainActivity extends AppCompatActivity {
             else {
 
                 TextAlertDialogFragment dialogFragment = new TextAlertDialogFragment();
+                final String emulated_path = Environment.getExternalStorageDirectory().getPath();
+                final String command = String.format("adb shell \"mkdir -p %s/K-Klock/userInput && cp /system/priv-app/$(ls /system/priv-app | grep SystemUI)/*.apk %s/K-Klock/userInput/SystemUI.apk\"",
+                        emulated_path, emulated_path);
                 DialogClickListener clickListener = new DialogClickListener() {
                     @Override
                     public void onPositiveBtnClick() {
-                        fileHelper.copyToClipBoard(context,
-                                "adb shell cp /system/priv-app/$(ls /system/priv-app | grep SystemUI)/*.apk /sdcard/K-Klock/userInput/SystemUI.apk");
+                        fileHelper.copyToClipBoard(context, command);
                     }
 
                     @Override
@@ -277,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
                 };
                 dialogFragment.Instantiate("Oh No", "You don\'t seem to have the necessary file and/or permission for this to work properly.\n" +
                                 "Run this ADB command through your PC instead \n\n" +
-                                "adb shell cp /system/priv-app/$(ls /system/priv-app | grep SystemUI)/*.apk /sdcard/K-Klock/userInput/SystemUI.apk",
+                                command,
                         "Copy to Clipboard", getString(R.string.cancel), clickListener
                 );
                 dialogFragment.show(getSupportFragmentManager(), "");
@@ -304,6 +306,27 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         Checks checks = new Checks();
+        TextAlertDialogFragment ddialogFragment = new TextAlertDialogFragment();
+        final String emulated_path = Environment.getExternalStorageDirectory().getPath();
+        final String command = String.format("adb shell \"mkdir -p %s/K-Klock/userInput && cp /system/priv-app/$(ls /system/priv-app | grep SystemUI)/*.apk %s/K-Klock/userInput/SystemUI.apk\"",
+                emulated_path, emulated_path);
+        DialogClickListener dclickListener = new DialogClickListener() {
+            @Override
+            public void onPositiveBtnClick() {
+                fileHelper.copyToClipBoard(context, command);
+            }
+
+            @Override
+            public void onCancelBtnClick() {
+
+            }
+        };
+        ddialogFragment.Instantiate("Oh No", "You don\'t seem to have the necessary file and/or permission for this to work properly.\n" +
+                        "Run this ADB command through your PC instead \n\n" +
+                        command,
+                "Copy to Clipboard", getString(R.string.cancel), dclickListener
+        );
+        ddialogFragment.show(getSupportFragmentManager(), "");
 
         // Check if K-Manager was installed from playstore
         new PiracyChecker(context)
@@ -322,33 +345,6 @@ public class MainActivity extends AppCompatActivity {
                 .start();
 
         // Check if K-Manager is licensed
-        String callback = checks.isLicensed(context);
-        String signature_bot_valid = PiracyCheckerError.SIGNATURE_NOT_VALID.toString();
-
-        if (callback.equals(signature_bot_valid)){
-            TextAlertDialogFragment dialogFragment = new TextAlertDialogFragment();
-            DialogClickListener clickListener = new DialogClickListener() {
-                @Override
-                public void onPositiveBtnClick() {
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/search?q=K-Manager%20for%20K-Klock&hl=en"));
-                    startActivity(browserIntent);
-                }
-
-                @Override
-                public void onCancelBtnClick() {
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/KpChuck/K-Manager/releases"));
-                    startActivity(browserIntent);
-
-                }
-            };
-            dialogFragment.Instantiate("Invalid Signature Detected",
-                    "It looks like you haven't installed K-Manager from an official source. \n" +
-                            "This means that the original apk has been modified and may contain malware or viruses. \n" +
-                            "Please head to an official source and install from there.",
-                    "Google Play Store", "Github", clickListener);
-            dialogFragment.show(getSupportFragmentManager(), "");
-        }
-
 
         isPro = checks.isPro(context);
         if (isPro){
