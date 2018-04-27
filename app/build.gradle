@@ -168,8 +168,6 @@ dependencies {
     implementation files('libs/android-5.1.jar')
     implementation files('libs/dx-1.14.jar')
 
-    // Ads
-    implementation 'com.google.android.gms:play-services-ads:15.0.0'
     // Piracy Checker
     implementation 'com.github.javiersantos:PiracyChecker:1.2.1'
     //Kotlin

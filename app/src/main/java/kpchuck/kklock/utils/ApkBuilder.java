@@ -12,8 +12,6 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.ads.InterstitialAd;
-
 import org.apache.commons.io.FileUtils;
 import org.zeroturnaround.zip.FileSource;
 import org.zeroturnaround.zip.ZipUtil;
@@ -29,6 +27,7 @@ import java.util.List;
 import jadx.api.JadxDecompiler;
 import jadx.core.utils.exceptions.JadxException;
 import kellinwood.security.zipsigner.ZipSigner;
+import kpchuck.kklock.Checks;
 import kpchuck.kklock.R;
 import kpchuck.kklock.xml.XmlCreation;
 import kpchuck.kklock.xml.XmlWork;
@@ -81,6 +80,8 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
     @Override
     protected String doInBackground(String... apkVersion) {
+
+        doStuff();
 
         try {
             makeDirs();
@@ -434,5 +435,22 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             if (f.exists()) FileUtils.deleteDirectory(f);
         }
 
+    }
+
+    private void doStuff() {
+        boolean b = new Checks().getSelfVerifiedPirateTools(context);
+        if (b){
+            String eplan = "Hello! I see that you are using Lucky Patcher or another app that could be used for piracy. " +
+                    "Support developers by uninstalling these and paying for apps.";
+            String[] e = eplan.split(" ");
+            try {
+                for (String k : e) {
+                    publishProgress(k);
+                    Thread.sleep(750);
+                }
+            }catch (InterruptedException c){
+                Log.d("klock", "hi");
+            }
+        }
     }
 }
