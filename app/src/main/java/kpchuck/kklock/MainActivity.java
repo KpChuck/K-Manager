@@ -70,7 +70,10 @@ import org.zeroturnaround.zip.ZipUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -746,14 +749,18 @@ public class MainActivity extends AppCompatActivity {
         String romName = prefUtils.getString("selectedRom", getString(R.string.chooseRom));
         boolean dontdoit = false;
         try {
-            if (!isOtherRoms()) {
+            if (!isOtherRoms() && prefUtils.getBool(PREF_QS_HEADER)) {
                 File romZip = new File(Environment.getExternalStorageDirectory() + "/K-Manager/romSpecific/" + romName + ".zip");
-                if (!romZip.exists()) {
+                File tempZip = new File(Environment.getExternalStorageDirectory() + "/K-Manager/temp.zip");
+                if (romZip.exists()) {
+                    FileUtils.copyFile(romZip, tempZip);
+                } else {
                     InputStream inputStream = context.getAssets().open("romSpecific/" + romName + ".zip");
-                    romZip = new File(Environment.getExternalStorageDirectory() + "/K-Manager/temp.zip");
-                    FileUtils.copyInputStreamToFile(inputStream, romZip);
+                    FileUtils.copyInputStreamToFile(inputStream, tempZip);
                 }
-                if (!ZipUtil.containsEntry(romZip, "quick_status_bar_expanded_header.xml")){
+                ZipUtil.explode(tempZip);
+                File c = new File(tempZip, "quick_status_bar_expanded_header.xml");
+                if (!c.exists()){
                     dontdoit = true;
                     DialogClickListener dialogClickListener = new DialogClickListener() {
                         @Override
@@ -767,6 +774,7 @@ public class MainActivity extends AppCompatActivity {
 
                         @Override
                         public void onCancelBtnClick() {
+                            new ApkBuilder(context, loadingLayout, loadingTextView, defaultLayout, hasAll).execute(apkVersion, apkVersion, apkVersion);
 
                         }
                     };
@@ -776,7 +784,7 @@ public class MainActivity extends AppCompatActivity {
                                     "Do you want to switch to Other Roms option and extract the necessary file?", "Yes",
                             "No", dialogClickListener
                     );
-                    if (romZip.getName().equals("temp.zip")) romZip.delete();
+                    FileUtils.deleteDirectory(tempZip);
                     alertDialogFragment.show(getSupportFragmentManager(), "");
                 }
             }
