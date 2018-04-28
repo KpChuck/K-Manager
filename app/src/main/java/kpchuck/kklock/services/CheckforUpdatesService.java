@@ -198,8 +198,7 @@ public class CheckforUpdatesService extends Service {
                     prefUtils.putString(LATEST_GITHUB_VERSION_URL, downloadUrl);
                     sendBroadcast(1);
 
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-                    if (preferences.getBoolean("sync_rom_files", true)) {
+                    if (prefUtils.getBoolTrue("sync_rom_files")) {
                         syncRomFiles();
                     }
                 }
@@ -216,12 +215,14 @@ public class CheckforUpdatesService extends Service {
 
         private void syncRomFiles() throws IOException{
             Document document = Jsoup.connect("https://github.com/KpChuck/K-Manager/tree/master/app/src/main/assets/romSpecific").get();
-            Elements rom_files = document.select("div.repository-content div.file-wrap table tbody + tbody tr.js-navigation-item");
+            Elements rom_files = document.select("div.repository-content div.file-wrap table tr.js-navigation-item");
+            rom_files.remove(0); // Remove the up navigation element
             SharedPreferences sharedPreferences = context.getSharedPreferences("rom_files", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             List<String> download_urls = new ArrayList<>();
             for (Element element: rom_files){
-                String key = element.selectFirst("td.content a").attr("title");
+                Element keyElement = element.selectFirst("td.content a");
+                String key = keyElement.attr("title");
                 String lastEdited = element.selectFirst("td.age time-ago").attr("datetime");
                 if (!lastEdited.equals(sharedPreferences.getString(key, ""))){
                     editor.putString(key, lastEdited);

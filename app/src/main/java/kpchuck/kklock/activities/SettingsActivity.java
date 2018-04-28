@@ -73,7 +73,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         addPreferencesFromResource(R.xml.preferences);
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
-        final SharedPreferences myPref = PreferenceManager.getDefaultSharedPreferences(this);
 
         final SwitchPreference changeTheme = (SwitchPreference) findPreference(PREF_BLACK_THEME);
 
@@ -83,6 +82,16 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                 prefUtils.putBool(PREF_BLACK_THEME, !changeTheme.isChecked());
                 finish();
                 startActivity(new Intent(getApplicationContext(), SettingsActivity.class));
+                return true;
+            }
+        });
+
+        final SwitchPreference syncromfiles = (SwitchPreference) findPreference(SYNC_ROM_FILES);
+
+        syncromfiles.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object o) {
+                prefUtils.putBool(SYNC_ROM_FILES, syncromfiles.isChecked());
                 return true;
             }
         });
@@ -148,10 +157,17 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             }
         });
 
-        Preference alternate_qs_header = findPreference("alternate_qs_header");
+        final SwitchPreference alternate_qs_header = (SwitchPreference) findPreference("alternate_qs_header");
         if (!new Checks().isPro(getApplicationContext())){
             alternate_qs_header.setEnabled(false);
         }
+        alternate_qs_header.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object o) {
+                prefUtils.putBool("alternate_qs_header", alternate_qs_header.isChecked());
+                return true;
+            }
+        });
 
     }
 
