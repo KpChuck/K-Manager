@@ -10,10 +10,6 @@ android {
     def versionBuild
     def versionType
 
-    defaultConfig {
-        multiDexEnabled true
-    }
-
     /*Setting default value for versionBuild which is the last incremented value stored in the file */
     if (versionPropsFile.canRead()) {
         def Properties versionProps = new Properties()
@@ -43,14 +39,23 @@ android {
         applicationId "kpchuck.k_klock"
         minSdkVersion 24
         targetSdkVersion 27
-        versionCode 9
-        versionName "25"
+        versionCode 13
+        versionName "26"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         ndk {
             moduleName "LoadingProcess"
         }
     }
+    signingConfigs {
+        release {
+            storeFile file("/home/karol/Documents/AndroidStudioProjects/keys/kmanager_key.jks")
+            storePassword "Password.tar"
+            keyAlias "key0"
+            keyPassword "Password.tar"
+        }
+    }
+
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
             if (versionType.equals("beta")) {
@@ -75,8 +80,13 @@ android {
     }
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.release
         }
     }
     sourceSets {
@@ -195,7 +205,7 @@ task uploadBetaWhenFinished {
 
 
 
-apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.gms.google-services'
 repositories {
     mavenCentral()
 }
