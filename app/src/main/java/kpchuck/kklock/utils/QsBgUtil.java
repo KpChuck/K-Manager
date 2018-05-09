@@ -111,9 +111,7 @@ public class QsBgUtil {
 
         rootElement.setAttribute("xmlns:systemui", "http://schemas.android.com/apk/res/com.android.systemui");
 
-        SharedPreferences default_pref = PreferenceManager.getDefaultSharedPreferences(context);
-
-        boolean alternate_qs_header = default_pref.getBoolean("alternate_qs_header", false);
+        boolean alternate_qs_header = prefUtils.getBool("alternate_qs_header");
 
         if (alternate_qs_header) {
             Element image = xml.createElement("View");

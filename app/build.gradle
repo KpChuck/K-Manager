@@ -39,8 +39,8 @@ android {
         applicationId "kpchuck.k_klock"
         minSdkVersion 24
         targetSdkVersion 27
-        versionCode 13
-        versionName "26"
+        versionCode 14
+        versionName "27"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         ndk {
