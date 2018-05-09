@@ -75,12 +75,10 @@ public class StatusBarFragment extends Fragment {
     Switch amSwitch;
     @BindView (R.id.moveNetworkLeft) Switch leftSwitch;
     @BindView (R.id.networkSignalIndicatorSwitch) Switch indicatorSwitch;
-    @BindView (R.id.carrierText) Switch carrierSwitch;
+    @BindView (R.id.customText) Switch customText;
     @BindView (R.id.carrierCardView) CardView carrierView;
-    @BindView (R.id.editCarrierText)
-    EditText carrierEditText;
-    @BindView (R.id.showEverywhereCarrier)
-    CheckBox carrierEveryheckbox;
+    @BindView (R.id.editCarrierText) EditText carrierEditText;
+    @BindView (R.id.showLockscreen) CheckBox showLockscreen;
     @BindView(R.id.hideNotificationIcons) CheckBox hideNotifs;
     @BindView(R.id.clockSize) Switch clockSizeSwitch;
     @BindView(R.id.notifsRight) Switch notifsRightSwitch;
@@ -135,15 +133,15 @@ public class StatusBarFragment extends Fragment {
         ButterKnife.apply(clockSizeSwitch, ENABLED, prefUtils.getBool(PREF_STATUSBAR_CLOCK_SIZE));
         ButterKnife.apply(indicatorSwitch, ENABLED, prefUtils.getBool(PREF_INDICATORS));
         ButterKnife.apply(leftSwitch, ENABLED, prefUtils.getBool(PREF_MOVE_LEFT));
-        ButterKnife.apply(carrierSwitch, ENABLED, prefUtils.getBool(PREF_CARRIER_TEXT));
-        ButterKnife.apply(carrierEveryheckbox, ENABLEDCheckBox, prefUtils.getBool(PREF_CARRIER_EVERYWHERE));
+        ButterKnife.apply(showLockscreen, ENABLEDCheckBox, prefUtils.getBool(PREF_CARRIER_TEXT));
+        ButterKnife.apply(customText, ENABLED, prefUtils.getBool(PREF_CARRIER_EVERYWHERE));
         ButterKnife.apply(hideNotifs, ENABLEDCheckBox, prefUtils.getBool(PREF_CARRIER_HIDE_NOTIFICATIONS));
         ButterKnife.apply(notifsRightSwitch, ENABLED, prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT));
         ButterKnife.apply(statBarColorSwitch, ENABLED, prefUtils.getBool(PREF_CHANGE_STATBAR_COLOR));
         ButterKnife.apply(clockHideableSwitch, ENABLED, prefUtils.getBool(PREF_CLOCK_HIDEABLE));
 
 
-        if (prefUtils.getBool(PREF_CARRIER_TEXT)) ButterKnife.apply(carrierView, SetVisibility, View.VISIBLE);
+        if (prefUtils.getBool(PREF_CARRIER_EVERYWHERE)) ButterKnife.apply(carrierView, SetVisibility, View.VISIBLE);
         if (!fileHelper.getOos(prefUtils.getString(PREF_SELECTED_ROM, getString(R.string.chooseRom))).equals("OxygenOS"))
             ButterKnife.apply(indicatorSwitch, SetVisibility, View.GONE);
 
@@ -196,9 +194,9 @@ public class StatusBarFragment extends Fragment {
 
 
     // Handle Clicks for Switches
-    @OnClick(R.id.showEverywhereCarrier)
+    @OnClick(R.id.showLockscreen)
     public void checkClick(){
-        prefUtils.setCheckboxPrefs(carrierEveryheckbox, PREF_CARRIER_EVERYWHERE);
+        prefUtils.setCheckboxPrefs(showLockscreen, PREF_CARRIER_TEXT);
     }
 
     @OnClick(R.id.clockHideable)
@@ -302,10 +300,10 @@ public class StatusBarFragment extends Fragment {
         builder.show();
     }
 
-    @OnClick (R.id.carrierText)
+    @OnClick (R.id.customText)
     public void carrierSwitch(){
-        prefUtils.setSwitchPrefs(carrierSwitch, PREF_CARRIER_TEXT);
-        if (carrierSwitch.isChecked()) {
+        prefUtils.setSwitchPrefs(customText, PREF_CARRIER_EVERYWHERE);
+        if (customText.isChecked()) {
             ButterKnife.apply(carrierView, SetVisibility, View.INVISIBLE);
             carrierView.animate()
                     .alpha(1.0f)

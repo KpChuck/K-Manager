@@ -99,8 +99,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/custom_text_lockscreen"
-            android:id="@+id/carrierText"/>
+            android:text="Display Custom Text on StatusBar"
+            android:id="@+id/customText"/>
 
         <!-- Edittext view -->
         <android.support.v7.widget.CardView
@@ -124,8 +124,8 @@
                 <CheckBox
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/showEverywhereCarrier"
-                    android:text="@string/custom_text_everywhere"
+                    android:id="@+id/showLockscreen"
+                    android:text="Only show on lockscreen"
                     android:checked="true"
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="8dp"/>

@@ -124,6 +124,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
                 String install = String.format("pm install -r %s/K-Klock/" + apkVersion[0], Environment.getExternalStorageDirectory().getPath());
                 String output = su.runSuCommand(install).toString();
                 if (output.contains("Success")) showSnackbar();
+                else fileHelper.installApk(apk, context);
             }
 
         } catch (JadxException e) {
