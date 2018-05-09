@@ -62,7 +62,7 @@ public class XmlWork {
         Document keyguard = utils.getDocument(new File(srcFolder + "/keyguard_status_bar.xml"));
         keyguard = utils.replaceAt(keyguard);
 
-        if ((prefUtils.getBool(PREF_CARRIER_TEXT) && !prefUtils.getBool(PREF_CARRIER_EVERYWHERE))) {
+        if ((prefUtils.getBool(PREF_CARRIER_TEXT) && prefUtils.getBool(PREF_CARRIER_EVERYWHERE))) {
             keyguard = addCustomTextToLockscreen(keyguard, hideCarrierText(keyguard));
         }
         else if (prefUtils.getBool(PREF_MOVE_LEFT)) {
@@ -348,8 +348,8 @@ public class XmlWork {
         if (prefUtils.getBool(PREF_MOVE_LEFT)){
             status = moveLeft(status);
         }
-        if (prefUtils.getBool(PREF_CARRIER_TEXT)){
-            if (prefUtils.getBool(PREF_CARRIER_EVERYWHERE)){
+        if (prefUtils.getBool(PREF_CARRIER_EVERYWHERE) ){
+            if (!prefUtils.getBool(PREF_CARRIER_TEXT)){
                 status = addCustomTextEverywhere(status);
             }
             if (prefUtils.getBool(PREF_CARRIER_HIDE_NOTIFICATIONS) && !prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT)){
@@ -405,15 +405,14 @@ public class XmlWork {
     }
 
     private Document hideNotifications(Document doc){
-        Element statusBarContents = utils.findElementById(doc, "@*com.android.systemui:id/status_bar_contents");
         Element notificationArea = utils.findElementById(doc, "@*com.android.systemui:id/notification_icon_area");
-
         Element hideNotificationLayout = doc.createElement("LinearLayout");
+
         hideNotificationLayout.setAttribute(X_LAYOUT_WIDTH, "0dip");
         hideNotificationLayout.setAttribute(X_LAYOUT_HEIGHT, "0dip");
         hideNotificationLayout.setAttribute("android:layout_weight", "1.0");
         notificationArea.getParentNode().insertBefore(hideNotificationLayout, notificationArea);
-        statusBarContents.removeChild(notificationArea);
+        notificationArea.getParentNode().removeChild(notificationArea);
         hideNotificationLayout.appendChild(notificationArea);
 
         return doc;
