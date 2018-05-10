@@ -62,6 +62,9 @@ public class PrefConstants {
     public static final String PREF_QS_BG_FILE = "qsBgFilePath";
     public static final String PREF_QS_HEADER_FILE = "qsHeaderFilePath";
     public static final String PREF_QS_HEADER = "qsHeaderSwitchPref";
+    // Custom Icon Stuff
+    public static final String PREF_CUSTOM_ICON = "customIconPref";
+    public static final String PREF_CUSTOM_ICON_FILE = "customIconFilePath";
 
     //
     public static final String SYNC_ROM_FILES ="sync_rom_files";

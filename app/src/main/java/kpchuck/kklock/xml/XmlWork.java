@@ -5,12 +5,14 @@ import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
+import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import kpchuck.kklock.utils.FileHelper;
@@ -125,10 +127,6 @@ public class XmlWork {
         Document status = setupStatusBar();
         // Clock on Lockscreens first
 
-
-        // Find elements needed
-
-
         Element systemIconArea = utils.findElementById(status,
                 "@*com.android.systemui:id/system_icon_area");
         Element stockClock = utils.findElementById(systemIconArea,
@@ -139,7 +137,7 @@ public class XmlWork {
         Element customClock = createClock(status, false, "start|center", X_WRAP_CONTENT);
         systemIconArea.insertBefore(customClock, stockClock);
 
-        if (removeClock && Build.VERSION.SDK_INT > 25 && prefUtils.getBool(PREF_CLOCK_HIDEABLE)) systemIconArea.removeChild(stockClock);
+        if (removeClock && Build.VERSION.SDK_INT > 25 && prefUtils.getBool(PREF_CLOCK_HIDEABLE)) status.removeChild(stockClock);
         utils.writeDocToFile(status, new File(baseFolders, "type2_Right:_Clock_on_Lockscreen/layout/" + statusbar));
 
         // Now Left Clock
@@ -336,7 +334,8 @@ public class XmlWork {
         return hideyLayout;
     }
 
-    private Document setupStatusBar() {
+
+    private Document setupStatusBar() throws IOException{
         Document status = utils.getDocument(new File(srcFolder + "/" + statusbar));
         status = utils.replaceAt(status);
         status = utils.fixUpForAttrs(status, hasAttrs);
@@ -360,19 +359,7 @@ public class XmlWork {
 
             Element notification = utils.findElementById(status,
                     "@*com.android.systemui:id/notification_icon_area");
-            notification.getParentNode().removeChild(notification);/*
-            ArrayList<Element> list = utils.getRightElementsTo(statusBarContents, "com.android.keyguard.AlphaOptimizedLinearLayout",
-                    "@*com.android.systemui:id/system_icon_area");
-            if (list.size() != 0) {
-                if (!utils.isPushyOutElement(list.get(list.size() - 1))) {
-                    Element view = createViewElement(status);
-                    statusBarContents.insertBefore(view, utils.lastElement(statusBarContents));
-                }
-            }
-            Element notificationHolder = status.createElement("LinearLayout");
-            notificationHolder.setAttribute(X_WEIGHT, "1.0");
-            notificationHolder.setAttribute(X_LAYOUT_WIDTH, "0dip");
-            notificationHolder.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);*/
+            notification.getParentNode().removeChild(notification);
 
             Element notificationArea = status.createElement("com.android.systemui.statusbar.AlphaOptimizedFrameLayout");
             notificationArea.setAttribute("android:orientation", "horizontal");
@@ -401,7 +388,25 @@ public class XmlWork {
             statusBarContents = utils.changeAttribute(statusBarContents, "android:background",
                     prefUtils.getString(PREF_STATBAR_COLOR, ""));
         }
+        status = addCustomIcon(status);
         return status;
+    }
+
+    private Document addCustomIcon(Document document) throws IOException{
+        if (prefUtils.getBool(PREF_CUSTOM_ICON) && !prefUtils.getString(PREF_CUSTOM_ICON_FILE, "").equals("")){
+            FileUtils.copyFile(new File(prefUtils.getString(PREF_CUSTOM_ICON_FILE, "")),
+                    new File(fileHelper.newFolder(baseFolders, "drawable"), "abc_list_selector_holo_light.png"));
+
+            Element image = document.createElement("ImageView");
+            image.setAttribute(X_LAYOUT_WIDTH, X_WRAP_CONTENT);
+            image.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
+            image.setAttribute("android:src", "@*com.android.systemui:drawable/abc_list_selector_holo_light");
+
+            Element status_bar_contents = utils.findElementById(document, "@*com.android.systemui:id/status_bar_contents");
+            status_bar_contents.insertBefore(image, utils.getFirstChildElement(status_bar_contents));
+
+        }
+        return document;
     }
 
     private Document hideNotifications(Document doc){
