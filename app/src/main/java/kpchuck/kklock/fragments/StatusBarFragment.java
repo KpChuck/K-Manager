@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.CardView;
@@ -21,7 +22,17 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.kbeanie.multipicker.api.ImagePicker;
+import com.kbeanie.multipicker.api.Picker;
+import com.kbeanie.multipicker.api.callbacks.ImagePickerCallback;
+import com.kbeanie.multipicker.api.entity.ChosenImage;
+
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -39,6 +50,7 @@ import kpchuck.kklock.services.HideIconsService;
 import kpchuck.kklock.utils.FileHelper;
 import kpchuck.kklock.utils.PrefUtils;
 
+import static android.app.Activity.RESULT_OK;
 import static kpchuck.kklock.constants.PrefConstants.PREF_AM;
 import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_CUSTOM_TEXT;
 import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_EVERYWHERE;
@@ -46,6 +58,8 @@ import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_HIDE_NOTIFICAT
 import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_TEXT;
 import static kpchuck.kklock.constants.PrefConstants.PREF_CHANGE_STATBAR_COLOR;
 import static kpchuck.kklock.constants.PrefConstants.PREF_CLOCK_HIDEABLE;
+import static kpchuck.kklock.constants.PrefConstants.PREF_CUSTOM_ICON;
+import static kpchuck.kklock.constants.PrefConstants.PREF_CUSTOM_ICON_FILE;
 import static kpchuck.kklock.constants.PrefConstants.PREF_HIDE_ICONS_NOT_FULLY;
 import static kpchuck.kklock.constants.PrefConstants.PREF_HIDE_ICONS_ON_LOCKSCREEN;
 import static kpchuck.kklock.constants.PrefConstants.PREF_INDICATORS;
@@ -84,8 +98,10 @@ public class StatusBarFragment extends Fragment {
     @BindView(R.id.notifsRight) Switch notifsRightSwitch;
     @BindView(R.id.statBarColor) Switch statBarColorSwitch;
     @BindView(R.id.clockHideable) Switch clockHideableSwitch;
+    @BindView(R.id.customIcon) Switch customIconSwitch;
 
     private boolean isPro = false;
+    private ImagePicker imagePicker;
 
 
 
@@ -139,6 +155,7 @@ public class StatusBarFragment extends Fragment {
         ButterKnife.apply(notifsRightSwitch, ENABLED, prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT));
         ButterKnife.apply(statBarColorSwitch, ENABLED, prefUtils.getBool(PREF_CHANGE_STATBAR_COLOR));
         ButterKnife.apply(clockHideableSwitch, ENABLED, prefUtils.getBool(PREF_CLOCK_HIDEABLE));
+        ButterKnife.apply(customIconSwitch, ENABLED, prefUtils.getBool(PREF_CUSTOM_ICON));
 
 
         if (prefUtils.getBool(PREF_CARRIER_EVERYWHERE)) ButterKnife.apply(carrierView, SetVisibility, View.VISIBLE);
@@ -328,6 +345,88 @@ public class StatusBarFragment extends Fragment {
                             ButterKnife.apply(carrierView, SetVisibility, View.GONE);
                         }
                     });
+        }
+    }
+
+    @OnClick (R.id.customIcon)
+    public void customIconMethod(){
+        if(customIconSwitch.isChecked()) {
+
+            imagePicker = pick(customIconSwitch, PREF_CUSTOM_ICON, PREF_CUSTOM_ICON_FILE);
+
+        }else{
+            prefUtils.putBool(PREF_CUSTOM_ICON, false);
+            prefUtils.remove(PREF_CUSTOM_ICON_FILE);
+        }
+    }
+
+    private ImagePicker pick(final Switch mySwitch, final String switch_bool, final String file_pref) {
+        ImagePicker imagePicker = new ImagePicker(this);
+        final String slash = "/";
+
+        imagePicker.setImagePickerCallback(new ImagePickerCallback(){
+            @Override
+            public void onImagesChosen(List<ChosenImage> images) {
+
+                String filePath = images.get(0).getOriginalPath();
+
+                if (!filePath.substring(filePath.lastIndexOf("."), filePath.length()).equals(".png")){
+                    Toast.makeText(getContext(), getString(R.string.not_png_error_message), Toast.LENGTH_SHORT).show();
+                    prefUtils.putBool(switch_bool, false);
+                    ButterKnife.apply(mySwitch, ENABLED, false);
+                    prefUtils.remove(file_pref);
+                    new File(filePath).delete();
+                }
+                else{
+                    try {
+                        File destFolder = fileHelper.newFolder(Environment.getExternalStorageDirectory() + "/K-Manager/qs_images");
+                        File destFile = new File(destFolder, "custom_icon.png");
+                        if (destFile.exists()) destFile.delete();
+                        FileUtils.copyFile(new File(filePath), destFile);
+                        prefUtils.putString(file_pref, destFile.getAbsolutePath());
+                        prefUtils.putBool(switch_bool, true);
+                    }catch (IOException e){}
+                }
+                File dir = new File(new File(filePath).getParent());
+                String[] files = dir.list();
+                for (String f: files){
+                    String check = dir.getAbsolutePath() + slash + f;
+                    if (!filePath.equals(check)){
+                        new File(check).delete();
+                    }
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                // Do error handling
+                prefUtils.putBool(switch_bool, false);
+                prefUtils.remove(file_pref);
+                ButterKnife.apply(mySwitch, ENABLED, false);
+            }}
+        );
+        imagePicker.pickImage();
+
+        return imagePicker;
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+
+
+        if(resultCode == RESULT_OK) {
+            if(requestCode == Picker.PICK_IMAGE_DEVICE) {
+                imagePicker.submit(data);
+
+            }
+        }else{
+            Switch mySwitch = customIconSwitch;
+            prefUtils.putBool(PREF_CUSTOM_ICON, false);
+            prefUtils.remove(PREF_CUSTOM_ICON_FILE);
+            mySwitch.setChecked(false);
+
         }
     }
 
