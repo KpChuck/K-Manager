@@ -172,7 +172,8 @@ public class XmlUtils {
     public Document replaceAt(Document doc){
         doc = replaceStuffInXml(doc, "@+", "@");
         findAbnormallyLongGravity(doc.getDocumentElement());
-        return replaceStuffInXml(doc, "@", "@*com.android.systemui:");
+        doc = replaceStuffInXml(doc, "@", "@*com.android.systemui:");
+        return replaceStuffInXml(doc, "@*com.android.systemui:android", "@*android");
     }
 
     public Document replaceStuffInXml(Document doc, String old, String news){
