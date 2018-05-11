@@ -1,0 +1,48 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <PreferenceCategory
+        android:title="General">
+
+        <SwitchPreference
+            android:key="installSilently"
+            android:defaultValue="true"
+            android:title="Install K-Klock Apk's Silently after building"/>
+
+        <SwitchPreference
+            android:key="chooseredthemewhite"
+            android:defaultValue="false"
+            android:title="Set Dark Theme"/>
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="sync_rom_files"
+            android:summary="Sync rom files automatically when K-Manager is opened"
+            android:title="Sync Rom Files" />
+        <Preference
+            android:key="deleteSaved"
+            android:title="Delete Saved Clock Formats and Colors"/>
+
+        <Preference
+        android:key="deleteApks"
+        android:title="Delete all built K-Klock Apks"/>
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="alternate_qs_header"
+            android:summary="Use a different method for showing qs header images. "
+            android:title="Alternate Qs Header" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Upgrade to Pro">
+
+        <Preference
+            android:key="goPro"
+            android:title="Get K-Manager Pro"
+            android:summary="Support the developer and get adfree K-Manager"/>
+
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

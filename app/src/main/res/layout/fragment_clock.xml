@@ -1,0 +1,104 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="kpchuck.kklock.fragments.ClockFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="75dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:orientation="vertical">
+
+    <!-- Clock color start -->
+    <android.support.v7.widget.CardView
+        android:id="@+id/clockColorCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:padding="12dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/colorHeaderText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/cc_manager"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:id="@+id/includedColorsButton"
+                android:layout_height="wrap_content"
+                android:text="@string/included_colors"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                />
+
+            <Button
+                android:layout_width="match_parent"
+                android:id="@+id/addColorButton"
+                android:layout_height="wrap_content"
+                android:text="@string/add_color"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                />
+
+
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+    <!-- Clock Format Start-->
+    <android.support.v7.widget.CardView
+        android:id="@+id/clockFormatCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:padding="12dp"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/formatHeaderText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/cf_manager"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:id="@+id/includedFormatButton"
+                android:layout_height="wrap_content"
+                android:text="@string/included_formats"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"
+                />
+
+            <Button
+                android:layout_width="match_parent"
+                android:id="@+id/addFormatButton"
+                android:layout_height="wrap_content"
+                android:text="@string/add_format"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                />
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+        </LinearLayout>
+</ScrollView>
+</LinearLayout>

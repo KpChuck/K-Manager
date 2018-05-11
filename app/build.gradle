@@ -1,0 +1,212 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+
+android {
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
+
+    def versionPropsFile = file('version.properties')
+    def versionBuild
+    def versionType
+
+    /*Setting default value for versionBuild which is the last incremented value stored in the file */
+    if (versionPropsFile.canRead()) {
+        def Properties versionProps = new Properties()
+        versionProps.load(new FileInputStream(versionPropsFile))
+        versionBuild = versionProps['VERSION_BUILD'].toInteger()
+        versionType = versionProps['VERSION_VARIANT']
+    } else {
+        throw new FileNotFoundException("Could not read version.properties!")
+    }
+
+    /*Wrapping inside a method avoids auto incrementing on every gradle task run. Now it runs only when we build apk*/
+    ext.autoIncrementBuildNumber = {
+
+        if (versionPropsFile.canRead()) {
+            def Properties versionProps = new Properties()
+            versionProps.load(new FileInputStream(versionPropsFile))
+            if (versionType.equals("beta")) {
+                versionBuild = versionBuild + 1
+            }
+            versionProps['VERSION_BUILD'] = versionBuild.toString()
+            versionProps.store(versionPropsFile.newWriter(), null)
+        } else {
+            throw new FileNotFoundException("Could not read version.properties!")
+        }
+    }
+    defaultConfig {
+        applicationId "kpchuck.k_klock"
+        minSdkVersion 24
+        targetSdkVersion 27
+        versionCode 14
+        versionName "27"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        ndk {
+            moduleName "LoadingProcess"
+        }
+    }
+    signingConfigs {
+        release {
+            storeFile file("/home/karol/Documents/AndroidStudioProjects/keys/kmanager_key.jks")
+            storePassword "Password.tar"
+            keyAlias "key0"
+            keyPassword "Password.tar"
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            if (versionType.equals("beta")) {
+                outputFileName = "K-Manager-v$versionName.$versionBuild-beta.apk"
+            } else if (versionType.equals("debug")) {
+                outputFileName = "K-Manager-debug" + ".apk"
+            } else if (versionType.equals("stable")) {
+                outputFileName = "K-Manager-v$versionName" + ".apk"
+                if (versionPropsFile.canRead()) {
+                    def Properties versionProps = new Properties()
+                    versionProps.load(new FileInputStream(versionPropsFile))
+                    versionBuild = 0
+                    versionProps['VERSION_BUILD'] = versionBuild.toString()
+                    versionProps.store(versionPropsFile.newWriter(), null)
+                } else {
+                    throw new FileNotFoundException("Could not read version.properties!")
+                }
+            }
+
+
+        }
+    }
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.release
+        }
+    }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+    externalNativeBuild {
+        ndkBuild {
+            path 'src/main/jni/Android.mk'
+        }
+    }
+
+
+    // Hook to check if the release/debug task is among the tasks to be executed.
+    //Let's make use of it
+
+gradle.taskGraph.whenReady { taskGraph ->
+    if(taskGraph.hasTask(assembleDebug)){
+        project.logger.debug('my debug message')
+
+    }
+    else if (taskGraph.hasTask(assembleRelease)) { /* when run release task */
+        if (versionType.equals("beta")) {
+            uploadBetaWhenFinished.execute()
+        } else if (versionType.equals("debug")) {
+            uploadDebugWhenFinished.execute()
+        }
+        autoIncrementBuildNumber()
+    }
+}
+
+}
+
+
+
+
+dependencies {
+
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+    //Ziputils
+    implementation "org.zeroturnaround:zt-zip:${1.8}"
+    //Commons io
+    implementation "commons-io:commons-io:${2.5}"
+    //Loading Animation
+    implementation 'com.github.ybq:Android-SpinKit:1.1.0'
+    //All those com.android.s
+    implementation 'com.android.support:support-v4:27.1.1'  // Adding this line (according to above warning message)
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:recyclerview-v7:27.1.1'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:support-annotations:27.1.1'
+
+    //Image Picker
+    implementation 'com.kbeanie:multipicker:1.1.31@aar'
+    //Searchable Spinner
+    implementation 'gr.escsoft.michaelprimez.searchablespinner:SearchableSpinner:1.0.9'
+    implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+    implementation 'gr.escsoft.michaelprimez.revealedittext:RevealEditText:1.0.2'
+    //Welcome Activity
+    implementation 'com.stephentuso:welcome:1.4.1'
+    // Butterknife
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    // MaterialDrawer
+    implementation("com.mikepenz:materialdrawer:6.0.2@aar") {
+        transitive = true
+    }
+    // Firebase
+    implementation 'com.google.firebase:firebase-core:15.0.0'
+    // Jsoup
+    implementation 'org.jsoup:jsoup:1.11.2'
+    // About Libraries
+    implementation('com.mikepenz:aboutlibraries:6.0.1@aar') {
+        transitive = true
+    }
+    // Custom Activity on Crash
+    implementation 'cat.ereza:customactivityoncrash:2.2.0'
+
+    // Jadx
+    implementation 'org.ow2.asm:asm:5.0.3'
+    implementation 'com.intellij:annotations:12.0'
+    implementation 'uk.com.robust-it:cloning:1.9.2'
+    implementation 'org.slf4j:slf4j-api:1.7.10'
+
+    implementation files('libs/android-5.1.jar')
+    implementation files('libs/dx-1.14.jar')
+
+    // Piracy Checker
+    implementation 'com.github.javiersantos:PiracyChecker:1.2.1'
+    //Kotlin
+    implementation ("org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"){
+        transitive = true
+        exclude group: 'org.jetbrains', module: 'annotations'
+    }
+
+
+}
+
+task uploadDebugWhenFinished {
+    doLast {
+
+       // "python3 /home/karol/python/bot/upload.py debug &".execute()
+      //  println "python /home/karol/PycharmProjects/telegram/Debug.py".execute().text
+    }
+}
+
+task uploadBetaWhenFinished {
+    doLast {
+        //"python3 /home/karol/python/bot/upload.py beta".execute()
+    }
+}
+
+
+
+//apply plugin: 'com.google.gms.google-services'
+repositories {
+    mavenCentral()
+}
+

@@ -1,0 +1,217 @@
+<resources>
+    <string name="app_name">K-Manager</string>
+    <string name="action_settings">Donate</string>
+
+    <string-array name="included_icons_title">
+        <item>Amber</item>
+        <item>Black</item>
+        <item>Blue</item>
+        <item>Carrot</item>
+        <item>Dodger Blue</item>
+        <item>Monza</item>
+        <item>Ocean Green</item>
+        <item>Purple</item>
+        <item>Scarlet</item>
+        <item>White</item>
+        <item>Wisteria</item>
+
+    </string-array>
+
+    <string-array name="included_icons_value">
+        <item>#CA6924</item>
+        <item>#000000</item>
+        <item>#1E008C</item>
+        <item>#e67e22</item>
+        <item>#19B5FE</item>
+        <item>#CF000F</item>
+        <item>#4DAF7C</item>
+        <item>#6005bc</item>
+        <item>#E3000E</item>
+        <item>#ffffff</item>
+        <item>#6005bc</item>
+    </string-array>
+
+    <string-array name="included_colors_title">
+        <item>White</item>
+        <item>Apple Green</item>
+        <item>Bright Red</item>
+        <item>Byzantine Pink</item>
+        <item>Cyan_Blue</item>
+        <item>Dark Orange</item>
+        <item>Dark Violet</item>
+        <item>Electric Green</item>
+        <item>Electric Ultramarine Blue</item>
+        <item>Golden Yellow</item>
+        <item>Grey</item>
+        <item>Match System Accent</item>
+        <item>Pixel Blue</item>
+        <item>Red</item>
+
+    </string-array>
+
+    <string-array name="included_colors_value">
+        <item>#ffffff</item>
+        <item>#ff27e4a0</item>
+        <item>#ffe62020</item>
+        <item>#ffbd33a4</item>
+        <item>#ff00ffff</item>
+        <item>#ffff8c00</item>
+        <item>#ff9400d3</item>
+        <item>#ff00ff00</item>
+        <item>#ff3f00ff</item>
+        <item>#ffffdf00</item>
+        <item>#ff777777</item>
+        <item>#ffffffff</item>
+        <item>#ff4885ed</item>
+        <item>#ffbc052d</item>
+    </string-array>
+
+    <string-array name="included_formats_title">
+        <item>Default - Normal Clock</item>
+        <item>Abbreviated Day, Date and Month</item>
+        <item>Abbreviated Day</item>
+        <item>Abbreviated Day and Date</item>
+        <item>Bigger Hour Normal Clock</item>
+        <item>Date and Month</item>
+        <item>Full Day</item>
+        <item>Full Day after Clock</item>
+        <item>Month, Date, Abbreviated Day, and Seconds</item>
+        <item>Normal Clock with no Am/Pm</item>
+        <item>Small Day, Big Hour</item>
+
+
+    </string-array>
+
+    <string name="title_activity_settings">Settings</string>
+
+    <string name="minit_disclaimer">
+        This option does NOT install 3minit battery mod. All it does is make sure that there are no conflicts between K-Klock and 3 Minit.\n
+        You should only have this option selected if you have 3minit already flashed. \n\n<b>This will break your Rom if you don\'t have 3 Minit installed.</b>
+
+    </string>
+    <string name="request_install_perms">
+        \nK-Manager needs permission to install unknown apps in order to install K-Klock automatically from Android 8.0 onwards.
+    </string>
+
+    <!-- Strings related to Settings -->
+    <string name="pref_header_general">Custom Clock Settins</string>
+    <string name="pref_title_save_additions">Save Additions</string>
+    <string name="pref_save_colors">Remember Added Colors</string>
+    <string name="pref_save_formats">Remember Added Formats</string>
+    <string name="delete_apk_error">Error deleting apks: </string>
+    <string name="delete_apk_success">All Apk\'s Cleared</string>
+
+
+    <string name="otherRomsBeta">Other Roms</string>
+
+    <string name="error_adding_new_value">Nothing was saved, you must have two values inputted</string>
+    <string name="install_permission_title">Install Apps Permissions Required</string>
+    <string name="install_permission_not_granted">You will have to install K-Klock manually from the K-Klock folder without this permission granted</string>
+    <string name="cancel">Cancel</string>
+    <string name="grant">Grant</string>
+    <string name="deny">Deny</string>
+    <string name="version">version</string>
+    <string name="changelog">Changelog</string>
+    <string name="okay">Okay</string>
+    <string name="thanks">Thanks</string>
+    <string name="no_changelog_available">No changelog available</string>
+    <string name="new_version_available">New Version of K-Manager is Available</string>
+    <string name="download">Download</string>
+    <string name="not_today">Not Today</string>
+    <string name="cleaning_files">Cleaning residual files...</string>
+    <string name="remind_me_later">Remind me Later</string>
+    <string name="enable">Enable</string>
+    <string name="important">IMPORTANT</string>
+    <string name="rom_manager">Rom Manager</string>
+    <string name="cc_manager">Clock Color Manager</string>
+    <string name="cf_manager">Clock Format Manager</string>
+    <string name="apkBuilderLoading">Building Apk, Please Wait&#8230;</string>
+    <string name="chooseRom">Select your Rom</string>
+    <string name="selectRomToast">Please Select Your Rom</string>
+    <string name="add_color_name_title">Add a Custom Color</string>
+    <string name="add_color">Add Colors</string>
+    <string name="add_format">Add Formats</string>
+    <string name="add_color_value_hint">Enter color rgb value here. Eg. #00ff00</string>
+    <string name="add_color_name_hint">Enter color name here. Eg. Dark Blue</string>
+    <string name="ok">OK</string>
+    <string name="next">Next</string>
+    <string name="xml_not_present_for_otherroms">Sorry, %s not in /sdcard/K-Klock/userInput.</string>
+    <string name="add_format_name_title">Add a Custom Format</string>
+    <string name="add_format_value_hint">Enter java clock format. Eg. EEE HH:mm</string>
+    <string name="add_format_name_hint">Enter color format name here. Eg. Abbreviated Day</string>
+    <string name="included_colors">Included Colors</string>
+    <string name="added_colors">Added Colors</string>
+    <string name="included_formats">Included Formats</string>
+    <string name="added_formats">Added Formats</string>
+    <!-- StatusBar Add-On Strings -->
+    <string name="statusbar_addon">StatusBar Add-Ons</string>
+    <string name="network_icons_left">Move Network Icons to the Left</string>
+    <string name="notification_icons_right">Move Notification Icons to the Right</string>
+    <string name="blackout_lockscreen">Blackout the Lockscreen StatusBar</string>
+    <string name="ampm_stock_clock">Show Am/Pm in Stock Clock</string>
+    <string name="hide_network_indicators">Hide Network Signal Indicators</string>
+    <string name="clock_size">StatusBar Clock Size</string>
+    <string name="lockscreen_statusbar_size">Lockscreen StatusBar Height</string>
+    <string name="custom_text_lockscreen">Display Custom Text on Lockscreen</string>
+    <string name="custom_text_everywhere">Display Custom Text Everywhere on StatusBar</string>
+    <string name="hide_notifications">Hide Notification Icons</string>
+    <string name="enter_text_hint">Enter your text here</string>
+    <string name="theme_statusbar_color">Theme StatusBar and Stock Clock Color</string>
+    <string name="si_manager">StatusBar Icon Color Manager</string>
+    <string name="si_desc">The light statusbar icon colors are linked to the main clock color,
+        so changing clock color will change those.\n\nYou can add dark statusbar icon colors here</string>
+    <!-- Miscallaneous Add-On Strings -->
+    <string name="misc_addon">Misc. Add-Ons</string><!-- Misc short for miscallaneous -->
+    <string name="qs_tile_no">Number of Qs Tiles</string>
+    <string name="qs_tile_text">Hide Qs Tile Title</string>
+    <string name="rounded_recents">Rounded Recents</string>
+    <string name="qs_background">Add Custom Qs Background</string>
+    <string name="minit_compatibility">Make compatible with 3 Minit</string>
+    <string name="not_png_error_message">The image you have chosen is not a png. Convert it to a png and try again</string>
+    <!-- Welcome Screen Strings -->
+    <string name="how_to_use">How to use</string>
+    <string name="screen1_1">Select your Rom and any other settings in K-Manager.</string>
+    <string name="screen1_2">Then tap the yellow build button to get a K-Klock theme with that configuration!</string>
+    <string name="hscreen2_title">What the Clock Style option means in Substratum</string>
+    <string name="hscreen2_1">The first part of the clock style option specifies how the clock should behave.</string>
+    <string name="hscreen2_2">You can choose whether the clock should appear on the lockscreen or not. </string>
+    <string name="hscreen2_3">Stock Clock or Dynamic Clock are hidden on the lockscreen without needing to select anything. </string>
+    <string name="hscreen2_4">These two are different because they make the clock dynamic, ie. it changes color against white backgrounds. </string>
+    <string name="hscreen3_title">Help and Support</string>
+    <string name="hscreen3_1">If you\'re still confused about anything check the navdrawer! </string>
+    <string name="hscreen3_2">You can also check the latest Changelog or check if there\'s an update.</string>
+    <!-- New Version Download -->
+    <string name="downloading">Downloading</string>
+    <string name="enjoy">Enjoy</string>
+
+
+    <string name="cleared_saved">Saved Values Cleared</string>
+    <string name="joinTelegram">I see you\'ve got Telegram installed. \nSo join the K-Klock Official Group for support and stuff.</string>
+    <string name="about_desc1">K-Manager builds the substratum app - K-Klock.</string>
+    <string name="about_desc2">You can customize your statusbar clock as well as other UI elements in your phone!</string>
+    <string name="about_desc3">Github Sources:</string>
+
+    <!-- K-Klock Strings -->
+    <string name="qs_background_type2">Custom Qs Background</string>
+
+    <!-- Drawer Strings -->
+    <string name="telegramItem">Telegram Group</string>
+    <string name="faqsTitle">Help and FAQ\'s</string>
+    <string name="faqsItem">FAQ\'s</string>
+    <string name="otherromsItem">Other Rom\'s Help</string>
+    <string name="qsbgItem">Custom Qs Backgrounds</string>
+    <string name="leftnetworkItem">Left Network Indicators</string>
+    <string name="usefullLinksTitle">Useful Links</string>
+    <string name="rgbItem">RGB Colors Chart</string>
+    <string name="formatsItem">Clock Formats Guide</string>
+    <string name="settings">Settings</string>
+    <string name="updateItem">New Version Available</string>
+    <string name="updateDesc">Tap to Install</string>
+    <string name="changelogItem">View Changelog</string>
+    <string name="aboutItem">About &amp; Licenses</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+</resources>

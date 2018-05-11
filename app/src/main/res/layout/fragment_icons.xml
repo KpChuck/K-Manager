@@ -1,0 +1,165 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="kpchuck.kklock.fragments.IconsFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="75dp">
+
+
+    <android.support.v7.widget.CardView
+        tools:context="kpchuck.kklock.fragments.StatusBar_Add_On_Fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:paddingBottom="12dp"
+            android:layout_height="wrap_content">
+
+            <!-- Primary title -->
+            <TextView
+                android:id="@+id/statusbarAddOnHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_gravity="center_horizontal"
+                android:text="StatusBar Icons Options"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+
+            <!-- Theme icons -->
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/theme_statusbar_color"
+                android:id="@+id/colorIcons"/>
+
+            <!-- Hide Icons Service -->
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Hide StatusBar Icons on Lockscreen"
+                android:id="@+id/hideStatusbarIcons"/>
+
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:padding="6dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:visibility="gone"
+                android:background="?secondaryBackgroundColor"
+                android:text="Leave Battery, Wifi and Network Icons"
+                android:id="@+id/hideStatusbarIconsNotFully"/>
+
+            <!-- Lockscreen statusbar height -->
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/lockscreen_statusbar_size"
+                android:id="@+id/hideStatusbar"/>
+
+
+
+            <!-- Blackout lockscreen -->
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/blackout_lockscreen"
+                android:id="@+id/blackoutLockscreen"/>
+
+
+
+
+            <!-- Theme statusbar icons -->
+            <android.support.v7.widget.CardView
+                android:id="@+id/iconColorCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="?secondaryBackgroundColor"
+                app:cardCornerRadius="2dp"
+                android:layout_marginTop="12dp"
+                android:elevation="20dp"
+                android:layout_marginBottom="12dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/iconHeaderText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="12dp"
+                        android:text="@string/si_manager"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginRight="12dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_alignParentStart="true"
+                        android:textAppearance="@style/TextAppearance.AppCompat"
+                        android:id="@+id/iconDesc"
+                        android:text="@string/si_desc"
+                        android:layout_below="@id/iconHeaderText"
+
+
+                        />
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:id="@+id/includedIconsButton"
+                        android:layout_height="wrap_content"
+                        android:text="@string/included_colors"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/iconDesc"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginRight="12dp"
+                        />
+
+                    <Button
+                        android:layout_width="match_parent"
+                        android:id="@+id/addIconButton"
+                        android:layout_height="wrap_content"
+                        android:text="@string/add_color"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/includedIconsButton"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginLeft="12dp"
+                        android:layout_marginRight="12dp"
+                        android:layout_marginBottom="12dp"
+                        />
+
+
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+
+
+        </LinearLayout>
+
+
+    </android.support.v7.widget.CardView>
+    </ScrollView>
+
+</LinearLayout>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="k_manager_pro_link" translatable="false">https://play.google.com/store/apps/details?id=kpchuck.k_klock.pro&amp;hl=en</string>
+    <string name="k_manager_gp_link" translatable="false">https://play.google.com/store/apps/details?id=kpchuck.k_klock&amp;hl=en</string>
+    <string name="k_manager_git_link" translatable="false">https://github.com/KpChuck/K-Manager/releases</string>
+
+</resources>
