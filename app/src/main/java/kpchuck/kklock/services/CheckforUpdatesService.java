@@ -214,7 +214,7 @@ public class CheckforUpdatesService extends Service {
         }
 
         private void syncRomFiles() throws IOException{
-            Document document = Jsoup.connect("https://github.com/KpChuck/K-Manager/tree/master/app/src/main/assets/romSpecific").get();
+            Document document = Jsoup.connect("http://github.com/KpChuck/K-Manager/tree/master/app/src/main/assets/romSpecific").get();
             Elements rom_files = document.select("div.repository-content div.file-wrap table tbody tr.js-navigation-item");
             rom_files.remove(0); // Remove the up navigation element
             SharedPreferences sharedPreferences = context.getSharedPreferences("rom_files", Context.MODE_PRIVATE);

@@ -395,12 +395,15 @@ public class XmlWork {
     private Document addCustomIcon(Document document) throws IOException{
         if (prefUtils.getBool(PREF_CUSTOM_ICON) && !prefUtils.getString(PREF_CUSTOM_ICON_FILE, "").equals("")){
             FileUtils.copyFile(new File(prefUtils.getString(PREF_CUSTOM_ICON_FILE, "")),
-                    new File(fileHelper.newFolder(baseFolders, "drawable"), "abc_list_selector_holo_light.png"));
+                    new File(fileHelper.newFolder(baseFolders, "res/drawable"), "abc_list_selector_holo_light.png"));
 
             Element image = document.createElement("ImageView");
-            image.setAttribute(X_LAYOUT_WIDTH, X_WRAP_CONTENT);
-            image.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
+            image.setAttribute(X_LAYOUT_WIDTH, "@*com.android.systemui:dimen/status_bar_icon_size");
+            image.setAttribute(X_LAYOUT_HEIGHT, "@*com.android.systemui:dimen/status_bar_icon_size");
             image.setAttribute("android:src", "@*com.android.systemui:drawable/abc_list_selector_holo_light");
+           // image.setAttribute("android:background", "@*com.android.systemui:drawable/abc_list_selector_holo_light");
+            image.setAttribute("android:padding", "2.0dip");
+            image.setAttribute("android:scaleType", "centerInside");
 
             Element status_bar_contents = utils.findElementById(document, "@*com.android.systemui:id/status_bar_contents");
             status_bar_contents.insertBefore(image, utils.getFirstChildElement(status_bar_contents));
