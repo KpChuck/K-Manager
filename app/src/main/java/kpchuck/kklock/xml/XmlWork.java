@@ -405,7 +405,6 @@ public class XmlWork {
             image.setAttribute("android:padding", "2.0dip");
             image.setAttribute("android:scaleType", "centerInside");
 
-
             Element status_bar_contents = utils.findElementById(document, "@*com.android.systemui:id/status_bar_contents");
             status_bar_contents.insertBefore(image, utils.getFirstChildElement(status_bar_contents));
 
