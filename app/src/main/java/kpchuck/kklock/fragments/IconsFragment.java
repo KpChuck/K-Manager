@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
@@ -18,6 +19,18 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Switch;
+import android.widget.Toast;
+
+import com.kbeanie.multipicker.api.ImagePicker;
+import com.kbeanie.multipicker.api.Picker;
+import com.kbeanie.multipicker.api.callbacks.ImagePickerCallback;
+import com.kbeanie.multipicker.api.entity.ChosenImage;
+
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +45,10 @@ import kpchuck.kklock.utils.FileHelper;
 import kpchuck.kklock.utils.PrefUtils;
 import kpchuck.kklock.utils.StatusBarIconsUtils;
 
+import static android.app.Activity.RESULT_OK;
 import static kpchuck.kklock.constants.PrefConstants.PREF_BLACKOUT_LOCKSCREEN;
+import static kpchuck.kklock.constants.PrefConstants.PREF_CUSTOM_ICON;
+import static kpchuck.kklock.constants.PrefConstants.PREF_CUSTOM_ICON_FILE;
 import static kpchuck.kklock.constants.PrefConstants.PREF_HIDE_ICONS_NOT_FULLY;
 import static kpchuck.kklock.constants.PrefConstants.PREF_HIDE_ICONS_ON_LOCKSCREEN;
 import static kpchuck.kklock.constants.PrefConstants.PREF_ICON;
@@ -57,6 +73,10 @@ public class IconsFragment extends Fragment {
     @BindView(R.id.blackoutLockscreen) Switch blackoutSwitch;
     @BindView(R.id.hideStatusbarIcons) Switch hideIconsLockscreen;
     @BindView(R.id.hideStatusbarIconsNotFully) Switch hideIconsNotFully;
+    @BindView(R.id.customIcon) Switch customIconSwitch;
+
+    private ImagePicker imagePicker;
+
 
     public IconsFragment() {
         // Required empty public constructor
@@ -112,6 +132,8 @@ public class IconsFragment extends Fragment {
         ButterKnife.apply(iconSwitch, ENABLED, prefUtils.getBool(PREF_ICON));
         ButterKnife.apply(lockSwitch, ENABLED, prefUtils.getBool(PREF_LOCKSCREEN_STATUSBAR_SIZE));
         ButterKnife.apply(blackoutSwitch, ENABLED, prefUtils.getBool(PREF_BLACKOUT_LOCKSCREEN));
+        ButterKnife.apply(customIconSwitch, ENABLED, prefUtils.getBool(PREF_CUSTOM_ICON));
+
 
         return v;
     }
@@ -311,6 +333,88 @@ public class IconsFragment extends Fragment {
     public void showColors(View view){
         ((MainActivity) getActivity()).ShowIncluded(view);
 
+    }
+
+    @OnClick (R.id.customIcon)
+    public void customIconMethod(){
+        if(customIconSwitch.isChecked()) {
+
+            imagePicker = pick(customIconSwitch, PREF_CUSTOM_ICON, PREF_CUSTOM_ICON_FILE);
+
+        }else{
+            prefUtils.putBool(PREF_CUSTOM_ICON, false);
+            prefUtils.remove(PREF_CUSTOM_ICON_FILE);
+        }
+    }
+
+    private ImagePicker pick(final Switch mySwitch, final String switch_bool, final String file_pref) {
+        ImagePicker imagePicker = new ImagePicker(this);
+        final String slash = "/";
+
+        imagePicker.setImagePickerCallback(new ImagePickerCallback(){
+            @Override
+            public void onImagesChosen(List<ChosenImage> images) {
+
+                String filePath = images.get(0).getOriginalPath();
+
+                if (!filePath.substring(filePath.lastIndexOf("."), filePath.length()).equals(".png")){
+                    Toast.makeText(getContext(), getString(R.string.not_png_error_message), Toast.LENGTH_SHORT).show();
+                    prefUtils.putBool(switch_bool, false);
+                    ButterKnife.apply(mySwitch, ENABLED, false);
+                    prefUtils.remove(file_pref);
+                    new File(filePath).delete();
+                }
+                else{
+                    try {
+                        File destFolder = fileHelper.newFolder(Environment.getExternalStorageDirectory() + "/K-Manager/qs_images");
+                        File destFile = new File(destFolder, "custom_icon.png");
+                        if (destFile.exists()) destFile.delete();
+                        FileUtils.copyFile(new File(filePath), destFile);
+                        prefUtils.putString(file_pref, destFile.getAbsolutePath());
+                        prefUtils.putBool(switch_bool, true);
+                    }catch (IOException e){}
+                }
+                File dir = new File(new File(filePath).getParent());
+                String[] files = dir.list();
+                for (String f: files){
+                    String check = dir.getAbsolutePath() + slash + f;
+                    if (!filePath.equals(check)){
+                        new File(check).delete();
+                    }
+                }
+            }
+
+            @Override
+            public void onError(String message) {
+                // Do error handling
+                prefUtils.putBool(switch_bool, false);
+                prefUtils.remove(file_pref);
+                ButterKnife.apply(mySwitch, ENABLED, false);
+            }}
+        );
+        imagePicker.pickImage();
+
+        return imagePicker;
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+
+
+        if(resultCode == RESULT_OK) {
+            if(requestCode == Picker.PICK_IMAGE_DEVICE) {
+                imagePicker.submit(data);
+
+            }
+        }else{
+            Switch mySwitch = customIconSwitch;
+            prefUtils.putBool(PREF_CUSTOM_ICON, false);
+            prefUtils.remove(PREF_CUSTOM_ICON_FILE);
+            mySwitch.setChecked(false);
+
+        }
     }
 
 }

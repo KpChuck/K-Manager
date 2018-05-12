@@ -51,6 +51,14 @@
                 android:text="Hide StatusBar Icons on Lockscreen"
                 android:id="@+id/hideStatusbarIcons"/>
 
+            <!-- Custom Icon in StatusBar -->
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Add Custom Icon to StatusBar"
+                android:id="@+id/customIcon"/>
+
             <Switch
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

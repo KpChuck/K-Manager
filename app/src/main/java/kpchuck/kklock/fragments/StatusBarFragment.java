@@ -98,10 +98,8 @@ public class StatusBarFragment extends Fragment {
     @BindView(R.id.notifsRight) Switch notifsRightSwitch;
     @BindView(R.id.statBarColor) Switch statBarColorSwitch;
     @BindView(R.id.clockHideable) Switch clockHideableSwitch;
-    @BindView(R.id.customIcon) Switch customIconSwitch;
 
     private boolean isPro = false;
-    private ImagePicker imagePicker;
 
 
 
@@ -155,7 +153,6 @@ public class StatusBarFragment extends Fragment {
         ButterKnife.apply(notifsRightSwitch, ENABLED, prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT));
         ButterKnife.apply(statBarColorSwitch, ENABLED, prefUtils.getBool(PREF_CHANGE_STATBAR_COLOR));
         ButterKnife.apply(clockHideableSwitch, ENABLED, prefUtils.getBool(PREF_CLOCK_HIDEABLE));
-        ButterKnife.apply(customIconSwitch, ENABLED, prefUtils.getBool(PREF_CUSTOM_ICON));
 
 
         if (prefUtils.getBool(PREF_CARRIER_EVERYWHERE)) ButterKnife.apply(carrierView, SetVisibility, View.VISIBLE);
@@ -348,87 +345,7 @@ public class StatusBarFragment extends Fragment {
         }
     }
 
-    @OnClick (R.id.customIcon)
-    public void customIconMethod(){
-        if(customIconSwitch.isChecked()) {
 
-            imagePicker = pick(customIconSwitch, PREF_CUSTOM_ICON, PREF_CUSTOM_ICON_FILE);
-
-        }else{
-            prefUtils.putBool(PREF_CUSTOM_ICON, false);
-            prefUtils.remove(PREF_CUSTOM_ICON_FILE);
-        }
-    }
-
-    private ImagePicker pick(final Switch mySwitch, final String switch_bool, final String file_pref) {
-        ImagePicker imagePicker = new ImagePicker(this);
-        final String slash = "/";
-
-        imagePicker.setImagePickerCallback(new ImagePickerCallback(){
-            @Override
-            public void onImagesChosen(List<ChosenImage> images) {
-
-                String filePath = images.get(0).getOriginalPath();
-
-                if (!filePath.substring(filePath.lastIndexOf("."), filePath.length()).equals(".png")){
-                    Toast.makeText(getContext(), getString(R.string.not_png_error_message), Toast.LENGTH_SHORT).show();
-                    prefUtils.putBool(switch_bool, false);
-                    ButterKnife.apply(mySwitch, ENABLED, false);
-                    prefUtils.remove(file_pref);
-                    new File(filePath).delete();
-                }
-                else{
-                    try {
-                        File destFolder = fileHelper.newFolder(Environment.getExternalStorageDirectory() + "/K-Manager/qs_images");
-                        File destFile = new File(destFolder, "custom_icon.png");
-                        if (destFile.exists()) destFile.delete();
-                        FileUtils.copyFile(new File(filePath), destFile);
-                        prefUtils.putString(file_pref, destFile.getAbsolutePath());
-                        prefUtils.putBool(switch_bool, true);
-                    }catch (IOException e){}
-                }
-                File dir = new File(new File(filePath).getParent());
-                String[] files = dir.list();
-                for (String f: files){
-                    String check = dir.getAbsolutePath() + slash + f;
-                    if (!filePath.equals(check)){
-                        new File(check).delete();
-                    }
-                }
-            }
-
-            @Override
-            public void onError(String message) {
-                // Do error handling
-                prefUtils.putBool(switch_bool, false);
-                prefUtils.remove(file_pref);
-                ButterKnife.apply(mySwitch, ENABLED, false);
-            }}
-        );
-        imagePicker.pickImage();
-
-        return imagePicker;
-    }
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-
-
-        if(resultCode == RESULT_OK) {
-            if(requestCode == Picker.PICK_IMAGE_DEVICE) {
-                imagePicker.submit(data);
-
-            }
-        }else{
-            Switch mySwitch = customIconSwitch;
-            prefUtils.putBool(PREF_CUSTOM_ICON, false);
-            prefUtils.remove(PREF_CUSTOM_ICON_FILE);
-            mySwitch.setChecked(false);
-
-        }
-    }
 
 
 }
