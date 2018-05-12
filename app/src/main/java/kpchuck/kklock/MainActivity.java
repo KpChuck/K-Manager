@@ -72,6 +72,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.SortedMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -175,12 +176,11 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelBtnClick() {
-                    shortToast("I guess just take a look around then");
 
                 }
             };
-            textAlertDialogFragment.Instantiate("Substratum not Installed!",
-                    "This application requires the substratum theming engine to be useful. Do you want to download substratum?",
+            textAlertDialogFragment.Instantiate(getString(R.string.subs_not_installed),
+                    getString(R.string.subs_required),
                     getString(R.string.okay), getString(R.string.cancel), clickListener);
             textAlertDialogFragment.show(getSupportFragmentManager(), "");
 
@@ -236,9 +236,8 @@ public class MainActivity extends AppCompatActivity {
                         buildingProcess();
                     }
                 };
-                fragment.Instantiate("Warning :)", "It looks like you might have had a system update since the last time you used the " +
-                                "Other Roms option. \nDo you want to delete the system files K-Manager uses and extract them again?",
-                        "Yes", "No, use the ones I have", clickListener);
+                fragment.Instantiate(getString(R.string.warning), getString(R.string.rom_files_updated),
+                        getString(R.string.okay), getString(R.string.use_ones_have), clickListener);
                 fragment.show(getSupportFragmentManager(), "");
 
             }
@@ -261,10 +260,9 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 };
-                dialogFragment.Instantiate("Oh No", "You don\'t seem to have the necessary file and/or permission for this to work properly.\n" +
-                                "Run this ADB command through your PC instead \n\n" +
+                dialogFragment.Instantiate(getString(R.string.important), getString(R.string.adb_copy_sysui)+"\n\n" +
                                 command,
-                        "Copy to Clipboard", getString(R.string.cancel), clickListener
+                        getString(R.string.copy_to_clipboard), getString(R.string.cancel), clickListener
                 );
                 dialogFragment.show(getSupportFragmentManager(), "");
             }
@@ -336,14 +334,6 @@ public class MainActivity extends AppCompatActivity {
 
         welcomeScreen = new WelcomeHelper(this, MyWelcomeActivity.class);
         welcomeScreen.show(savedInstanceState);
-
-/*
-        orSettingsButton.setBackgroundResource(R.drawable.neon_green);
-
-        // Get the background, which has been compiled to an AnimationDrawable object.
-        AnimationDrawable frameAnimation = (AnimationDrawable) orSettingsButton.getBackground();
-        // Start the animation (looped playback by default).
-        frameAnimation.start();*/
 
         // Create the material drawer
         AccountHeader header = new AccountHeaderBuilder()
@@ -503,7 +493,7 @@ public class MainActivity extends AppCompatActivity {
         orSettingsButton.setVisibility(isOtherRoms() ? View.VISIBLE : View.GONE);
 
 
-        new CleanupFiles(loadingLayout, loadingTextView).execute();
+        new CleanupFiles().execute();
         loadSpinner();
 
     }
@@ -516,7 +506,7 @@ public class MainActivity extends AppCompatActivity {
     @OnClick (R.id.orSettings)
     public void orSettingsClick(){
         ListDialogFragment listDialogFragment = new ListDialogFragment();
-        List<String> names = new ArrayList<>(Arrays.asList("Hide Stock Clock", "Make a Dynamic Clock (Nougat)"));
+        List<String> names = new ArrayList<>(Arrays.asList(getString(R.string.hide_stock), getString(R.string.make_dynamic)));
         List<String> keys = new ArrayList<>(Arrays.asList(DEV_HIDE_CLOCK, DEV_MAKE_DYNAMIC));
         BtnClickListener clickListener = new BtnClickListener() {
             @Override
@@ -533,9 +523,9 @@ public class MainActivity extends AppCompatActivity {
                 TextView textView = view.findViewById(R.id.title);
                 final EditText nameEdit = view.findViewById(R.id.name);
                 final EditText valueEdit = view.findViewById(R.id.value);
-                textView.setText("Rom Information");
-                nameEdit.setHint("Enter your Rom Name here");
-                valueEdit.setHint("Enter your Android Version here (Nougat or Oreo)");
+                textView.setText(getString(R.string.rom_info));
+                nameEdit.setHint(getString(R.string.rom_name_hint));
+                valueEdit.setHint(getString(R.string.rom_version_hint));
 
                 builder
                         .setPositiveButton("Send", new DialogInterface.OnClickListener() {
@@ -549,7 +539,7 @@ public class MainActivity extends AppCompatActivity {
                                 List<String> xmlNam = Arrays.asList(xmlNames);
 
                                 if (!xmls.containsAll(xmlNam)){
-                                    shortToast("You don\'t have the necessary Rom files. Run and test K-Klock with Other Roms at least once!");
+                                    shortToast(getString(R.string.files_not_found));
                                     return;
                                 }
                                 List<ZipEntrySource> zipEntrySources = new ArrayList<>();
@@ -577,10 +567,7 @@ public class MainActivity extends AppCompatActivity {
                                     context.startActivity(Intent.createChooser(i,
                                             "Send through..."));
                                 } catch (ActivityNotFoundException ex) {
-                                    Toast.makeText(context,
-                                            "Error sending zip, try again later",
-                                            Toast.LENGTH_LONG)
-                                            .show();
+                                    Toast.makeText(context, getString(R.string.error_sending_zip), Toast.LENGTH_LONG).show();
                                 }
 
                             }
@@ -598,7 +585,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         };
-        listDialogFragment.Instantiate("Other Roms Settings", names, keys, false, true, clickListener);
+        listDialogFragment.Instantiate(getString(R.string.or_settings_title), names, keys, false, true, clickListener);
         listDialogFragment.show(getSupportFragmentManager(), "");
 
     }
@@ -780,9 +767,8 @@ public class MainActivity extends AppCompatActivity {
                     };
                     TextAlertDialogFragment alertDialogFragment = new TextAlertDialogFragment();
                     alertDialogFragment.Instantiate(
-                            "Unfortunately", "Your rom files don't contain the  necessary files for Qs Header Image to work?\n"+
-                                    "Do you want to switch to Other Roms option and extract the necessary file?", "Yes",
-                            "No", dialogClickListener
+                            getString(R.string.important), getString(R.string.files_for_header_404), getString(R.string.okay),
+                            getString(R.string.no), dialogClickListener
                     );
                     FileUtils.deleteDirectory(tempZip);
                     alertDialogFragment.show(getSupportFragmentManager(), "");
@@ -1131,7 +1117,7 @@ public class MainActivity extends AppCompatActivity {
                 isPackageInstalled("org.thunderdog.challegram", context.getPackageManager())){
 
             TextAlertDialogFragment fragment = new TextAlertDialogFragment();
-            fragment.Instantiate("K-Klock Telegram", getString(R.string.joinTelegram), getString(R.string.ok),
+            fragment.Instantiate("K-Klock Telegram", getString(R.string.joinTelegram), getString(R.string.okay),
                     getString(R.string.not_today), new DialogClickListener() {
                 @Override
                 public void onPositiveBtnClick() {
@@ -1170,13 +1156,6 @@ public class MainActivity extends AppCompatActivity {
 
 class CleanupFiles extends AsyncTask<Void, Void, Void>{
 
-    private RelativeLayout relativeLayout;
-    private TextView tv;
-
-    public CleanupFiles(RelativeLayout relativeLayout, TextView tv){
-        this.relativeLayout = relativeLayout;
-        this.tv = tv;
-    }
 
     private void cleanDir (File file){
         if (file.exists()){
@@ -1191,14 +1170,12 @@ class CleanupFiles extends AsyncTask<Void, Void, Void>{
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        relativeLayout.setVisibility(View.VISIBLE);
-        tv.setText("Cleaning residual files...");
+
     }
 
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        relativeLayout.setVisibility(View.GONE);
     }
 
     @Override

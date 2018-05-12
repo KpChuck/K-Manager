@@ -87,6 +87,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         });
 
         final SwitchPreference syncromfiles = (SwitchPreference) findPreference(SYNC_ROM_FILES);
+        syncromfiles.setEnabled(prefUtils.getBoolTrue(SYNC_ROM_FILES));
 
         syncromfiles.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             @Override
@@ -205,12 +206,5 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
         return super.onOptionsItemSelected(item);
     }
-/*
-    @Override
-    public void onBackPressed()
-    {
-        Intent intent = new Intent(this,MainActivity.class);
-        startActivity(intent);
-        finish();
-    }*/
+
 }

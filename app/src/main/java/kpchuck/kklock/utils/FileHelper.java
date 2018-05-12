@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 
 import kpchuck.kklock.BuildConfig;
+import kpchuck.kklock.R;
 
 /**
  * Created by Karol Przestrzelski on 11/08/2017.
@@ -301,9 +302,9 @@ public class FileHelper {
 
         ClipboardManager clipboard = (ClipboardManager) context.getSystemService(CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText(
-                "K-Manager_text", // What should I set for this "label"?
+                "K-Manager_text",
                 text);
         clipboard.setPrimaryClip(clip);
-        Toast.makeText(context, "Saved to clip board", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, context.getString(R.string.saved_clipboard), Toast.LENGTH_SHORT).show();
     }
 }

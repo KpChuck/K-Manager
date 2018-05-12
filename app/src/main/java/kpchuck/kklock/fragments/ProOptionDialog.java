@@ -16,10 +16,7 @@ import kpchuck.kklock.interfaces.DialogClickListener;
 
 public class ProOptionDialog extends DialogFragment {
 
-    private String message = "This is a K-Manager Pro feature. If you want to use it upgrade to K-Manager Pro.";
-    private String title = "Pro Feature";
-    private String positiveButton = "Upgrade";
-    private String cancelButton = "Cancel";
+
     private DialogClickListener dialogClickListener = new DialogClickListener() {
         @Override
         public void onPositiveBtnClick() {
@@ -45,16 +42,16 @@ public class ProOptionDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.simple_text, null);
         builder.setView(view);
         TextView textView = view.findViewById(R.id.simple_text_dialog);
-        textView.setText(message);
-        builder.setTitle(title);
+        textView.setText(getString(R.string.pro_message));
+        builder.setTitle(getString(R.string.pro_title));
         builder
-                .setPositiveButton(positiveButton, new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.upgrade), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialogClickListener.onPositiveBtnClick();
 
                     }
                 })
-                .setNegativeButton(cancelButton, new DialogInterface.OnClickListener() {
+                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // User cancelled the dialog
                                 dialogClickListener.onCancelBtnClick();

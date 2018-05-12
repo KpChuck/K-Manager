@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:layout_gravity="center_horizontal"
-            android:text="StatusBar Options"
+            android:text="@string/statusbar_options"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
 
 
@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Change StatusBar Color"
+            android:text="@string/change_statusbar_bg"
             android:id="@+id/statBarColor"/>
 
 
@@ -74,7 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Make Clock Hideable in Launchers"
+            android:text="@string/clock_hide_launcher"
             android:id="@+id/clockHideable"/>
 
 
@@ -100,7 +100,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Display Custom Text on StatusBar"
+            android:text="@string/text_on_statusbar"
             android:id="@+id/customText"/>
 
         <!-- Edittext view -->
@@ -126,7 +126,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/showLockscreen"
-                    android:text="Only show on lockscreen"
+                    android:text="@string/text_on_lockscreen"
                     android:checked="true"
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="8dp"/>

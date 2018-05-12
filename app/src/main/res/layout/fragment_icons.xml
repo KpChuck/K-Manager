@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:layout_gravity="center_horizontal"
-                android:text="StatusBar Icons Options"
+                android:text="@string/statbar_icon_options"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"/>
 
             <!-- Theme icons -->
@@ -48,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Hide StatusBar Icons on Lockscreen"
+                android:text="@string/hide_icons_lockscreen"
                 android:id="@+id/hideStatusbarIcons"/>
 
             <!-- Custom Icon in StatusBar -->
@@ -56,7 +56,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Add Custom Icon to StatusBar"
+                android:text="@string/custom_icon_statbar"
                 android:id="@+id/customIcon"/>
 
             <Switch
@@ -68,7 +68,7 @@
                 android:layout_marginRight="12dp"
                 android:visibility="gone"
                 android:background="?secondaryBackgroundColor"
-                android:text="Leave Battery, Wifi and Network Icons"
+                android:text="@string/leave_wifi_networks"
                 android:id="@+id/hideStatusbarIconsNotFully"/>
 
             <!-- Lockscreen statusbar height -->

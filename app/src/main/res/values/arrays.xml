@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="included_icons_title">
+        <item>Amber</item>
+        <item>Black</item>
+        <item>Blue</item>
+        <item>Carrot</item>
+        <item>Dodger Blue</item>
+        <item>Monza</item>
+        <item>Ocean Green</item>
+        <item>Purple</item>
+        <item>Scarlet</item>
+        <item>White</item>
+        <item>Wisteria</item>
+
+    </string-array>
+
+    <string-array name="included_icons_value">
+        <item>#CA6924</item>
+        <item>#000000</item>
+        <item>#1E008C</item>
+        <item>#e67e22</item>
+        <item>#19B5FE</item>
+        <item>#CF000F</item>
+        <item>#4DAF7C</item>
+        <item>#6005bc</item>
+        <item>#E3000E</item>
+        <item>#ffffff</item>
+        <item>#6005bc</item>
+    </string-array>
+
+    <string-array name="included_colors_title">
+        <item>White</item>
+        <item>Apple Green</item>
+        <item>Bright Red</item>
+        <item>Byzantine Pink</item>
+        <item>Cyan_Blue</item>
+        <item>Dark Orange</item>
+        <item>Dark Violet</item>
+        <item>Electric Green</item>
+        <item>Electric Ultramarine Blue</item>
+        <item>Golden Yellow</item>
+        <item>Grey</item>
+        <item>Match System Accent</item>
+        <item>Pixel Blue</item>
+        <item>Red</item>
+        <item>AAAmd</item>
+        <item>Karol</item>
+        <item>Whale</item>
+
+    </string-array>
+
+    <string-array name="included_colors_value">
+        <item>#ffffff</item>
+        <item>#ff27e4a0</item>
+        <item>#ffe62020</item>
+        <item>#ffbd33a4</item>
+        <item>#ff00ffff</item>
+        <item>#ffff8c00</item>
+        <item>#ff9400d3</item>
+        <item>#ff00ff00</item>
+        <item>#ff3f00ff</item>
+        <item>#ffffdf00</item>
+        <item>#ff777777</item>
+        <item>#ffffffff</item>
+        <item>#ff4885ed</item>
+        <item>#ffbc052d</item>
+        <item>#ffffffff</item>
+        <item>#ffffffff</item>
+        <item>#ffffffff</item>
+
+    </string-array>
+
+    <string-array name="included_formats_title">
+        <item>Default - Normal Clock</item>
+        <item>Abbreviated Day, Date and Month</item>
+        <item>Abbreviated Day</item>
+        <item>Abbreviated Day and Date</item>
+        <item>Bigger Hour Normal Clock</item>
+        <item>Date and Month</item>
+        <item>Full Day</item>
+        <item>Full Day after Clock</item>
+        <item>Month, Date, Abbreviated Day, and Seconds</item>
+        <item>Normal Clock with no Am/Pm</item>
+        <item>Small Day, Big Hour</item>
+    </string-array>
+
+</resources>

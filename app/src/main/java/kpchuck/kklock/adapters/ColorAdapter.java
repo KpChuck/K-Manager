@@ -11,6 +11,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
 
 import kpchuck.kklock.interfaces.BtnClickListener;
 import kpchuck.kklock.R;
@@ -21,25 +26,28 @@ import kpchuck.kklock.R;
 
 public class ColorAdapter extends ArrayAdapter {
 
-    Context context;
-    ArrayList<String> names;
-    ArrayList<String> values;
-    String prefFile = "prefFileName";
-    ImageView image;
-    TextView text;
-    boolean hide;
+    private boolean hide;
     private BtnClickListener mClickListener = null;
     private BtnClickListener kClickListener = null;
+    private ArrayList<String> names = new ArrayList<>();
+    private ArrayList<String> values = new ArrayList<>();
 
 
     public ColorAdapter(Context context, ArrayList<String> names, ArrayList<String> values,
                         boolean Hide, BtnClickListener listener, BtnClickListener kklistenr) {
         super(context, R.layout.color_list, R.id.colorListTextView, names);
 
+        // Sort colors
+        Map<String, String> sortedValues = new HashMap<>();
+        for (int i=0; i<names.size(); i++){
+            sortedValues.put(names.get(i), values.get(i));
+        }
+        Map<String, String> treeMap = new TreeMap<>(sortedValues);
+        for (String key: treeMap.keySet()){
+            this.names.add(key);
+            this.values.add(treeMap.get(key));
+        }
 
-        this.context=context;
-        this.names=names;
-        this.values=values;
         this.hide=Hide;
 
         mClickListener = listener;
@@ -58,10 +66,6 @@ public class ColorAdapter extends ArrayAdapter {
         final TextView text = (TextView) row.findViewById(R.id.colorListTextView);
         final Button edit = (Button) row.findViewById(R.id.editOverlays);
         final Button delete = (Button) row.findViewById(R.id.deleteOverlays);
-
-
-        this.image=image;
-        this.text=text;
 
         text.setText(names.get(position));
 
@@ -87,7 +91,7 @@ public class ColorAdapter extends ArrayAdapter {
         edit.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
+
                 if(mClickListener != null)
                     mClickListener.onBtnClick((Integer) v.getTag());
             }

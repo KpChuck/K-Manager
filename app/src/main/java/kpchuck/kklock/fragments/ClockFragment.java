@@ -15,10 +15,7 @@ import butterknife.Unbinder;
 import kpchuck.kklock.MainActivity;
 import kpchuck.kklock.R;
 
-/**
- * A simple {@link android.support.v4.app.Fragment} subclass.
- * Activities that contain this fragment must implement the
- */
+
 public class ClockFragment extends Fragment {
 
     private Unbinder unbinder;

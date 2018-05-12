@@ -124,7 +124,7 @@ public class IconsFragment extends Fragment {
             hideIconsLockscreen.setPaintFlags(hideIconsLockscreen.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             hideIconsLockscreen.setBackgroundColor(Color.GRAY);
             String text = hideIconsLockscreen.getText().toString();
-            hideIconsLockscreen.setText(text + " [PRO]");
+            hideIconsLockscreen.setText(String.format("%s [%s]", text, getString(R.string.pro)));
             hideIconsNotFully.setVisibility(View.GONE);
         }
 
@@ -209,11 +209,9 @@ public class IconsFragment extends Fragment {
                         });
             }
         };
-        dialogFragment.Instantiate("Warning :)",
-                "Hiding icons on lockscreen result in more icons appearing or sometimes all of them disappearing." +
-                        "You can use the SystemUI Tuner app from the playstore to backup/restore your icon configuration.\n" +
-                        "You have been and will continue being warned, so I take no responsibility for any icons I may cause",
-                "Okay, I understand", "Cancel", dialogClickListener);
+        dialogFragment.Instantiate(getString(R.string.warning),
+                getString(R.string.hide_icons_warning),
+                getString(R.string.okay), getString(R.string.cancel), dialogClickListener);
         dialogFragment.show(myContext.getSupportFragmentManager(), "");
     }
 
@@ -290,7 +288,7 @@ public class IconsFragment extends Fragment {
             @Override
             public void onPositiveBtnClick() {
                 fileHelper.copyToClipBoard(getContext(),
-                        "adb shell pm grant kpchuck.k_klock android.permission.WRITE_SECURE_SETTINGS");
+                        "adb shell pm grant kpchuck.k_klock.pro android.permission.WRITE_SECURE_SETTINGS");
             }
 
             @Override
@@ -298,11 +296,10 @@ public class IconsFragment extends Fragment {
 
             }
         };
-        dialogFragment.Instantiate("Adb Permissions Required",
-                "You need to grant K-Manager permissions through adb for this function to work" +
-                        "\nRun this command through ADB on your PC\n\n" +
-                        "adb shell pm grant kpchuck.k_klock android.permission.WRITE_SECURE_SETTINGS",
-                "Copy to Clipboard",
+        dialogFragment.Instantiate(getString(R.string.adb_required),
+                getString(R.string.adb_how_to_run) +
+                        "adb shell pm grant kpchuck.k_klock.pro android.permission.WRITE_SECURE_SETTINGS",
+                getString(R.string.copy_to_clipboard),
                 getString(R.string.cancel),
                 dialogClickListener);
         dialogFragment.show(myContext.getSupportFragmentManager(), "klock");

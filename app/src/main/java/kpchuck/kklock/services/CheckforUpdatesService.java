@@ -49,8 +49,6 @@ import static kpchuck.kklock.constants.PrefConstants.*;
 
 public class CheckforUpdatesService extends Service {
 
-    private static String url = "https://github.com/KpChuck/K-Manager/releases";
- //   String url = "https://github.com/ungeeked/Ozone/releases";
     String DOWNLOAD_PATH = Environment.getExternalStorageDirectory() + "/K-Manager/";
    // String name;
     @Nullable
@@ -177,7 +175,7 @@ public class CheckforUpdatesService extends Service {
             prefUtils = new PrefUtils(context);
 
             try {
-                Document doc = Jsoup.connect(url).get();
+                Document doc = Jsoup.connect(getString(R.string.k_manager_git_link)).get();
                 Element newsetVersion = doc.selectFirst(".my-4 a strong");
                 Element changelog = doc.selectFirst(".markdown-body p");
                 String c = changelog.wholeText();
@@ -185,7 +183,7 @@ public class CheckforUpdatesService extends Service {
                 prefUtils.putString(CHANGELOG_ARRAY, c);
 
                 if (newsetVersion == null){
-                    Log.d("klock", "Newset version is null");
+                    Log.d("klock", "Newest version is null");
                     name = "";
                 }
                 else {
@@ -213,9 +211,22 @@ public class CheckforUpdatesService extends Service {
             return null;
         }
 
+        NotificationManager notificationManager;
+        NotificationCompat.Builder notificationBuilder;
+        Notification notification;
+        Integer notificationID = 100;
+        String NOTIFICATION_CHANNEL_ID = "Sync Rom Files";
+        String NOTIFICATION_CHANNEL_NAME = "Sync Rom Files";
+        String NOTIFICATION_CHANNEL_DESC = "Syncs rom files";
+
         private void syncRomFiles() throws IOException{
+            NOTIFICATION_CHANNEL_ID = getString(R.string.sync_files);
+            NOTIFICATION_CHANNEL_NAME = NOTIFICATION_CHANNEL_ID;
+            NOTIFICATION_CHANNEL_DESC = NOTIFICATION_CHANNEL_ID;
+
             Document document = Jsoup.connect("http://github.com/KpChuck/K-Manager/tree/master/app/src/main/assets/romSpecific").get();
             Elements rom_files = document.select("div.repository-content div.file-wrap table tbody tr.js-navigation-item");
+            if (rom_files.size() < 1) return;
             rom_files.remove(0); // Remove the up navigation element
             SharedPreferences sharedPreferences = context.getSharedPreferences("rom_files", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -247,13 +258,6 @@ public class CheckforUpdatesService extends Service {
 
         }
 
-        NotificationManager notificationManager;
-        NotificationCompat.Builder notificationBuilder;
-        Notification notification;
-        Integer notificationID = 100;
-        String NOTIFICATION_CHANNEL_ID = "Sync Rom Files";
-        String NOTIFICATION_CHANNEL_NAME = "Sync Rom Files";
-        String NOTIFICATION_CHANNEL_DESC = "Syncs rom files";
 
         private void shownotification(){
 
@@ -263,7 +267,7 @@ public class CheckforUpdatesService extends Service {
             notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), NOTIFICATION_CHANNEL_ID);
             notificationBuilder.setOngoing(true)
                     .setSmallIcon(R.drawable.notification_icon_24dp)
-                    .setContentTitle("Syncing Rom Files")
+                    .setContentTitle(getString(R.string.syncing_roms))
                     .setContentText("")
                     .setProgress(100, 0, false);
 
@@ -298,7 +302,7 @@ public class CheckforUpdatesService extends Service {
 
         private void finishNotification(){
             notificationBuilder.setOngoing(false)
-                    .setContentText("Finished syncing")
+                    .setContentText(getString(R.string.finished_syncing))
                     .setProgress(0, 0, false);
 
             //Send the notification:

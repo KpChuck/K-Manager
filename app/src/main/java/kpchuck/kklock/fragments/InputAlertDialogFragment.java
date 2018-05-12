@@ -85,7 +85,7 @@ public class InputAlertDialogFragment extends DialogFragment {
             valueEdit.setHint(valueHint);
         }
         builder
-                .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.save), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         String name = nameEdit.getText().toString();
                         String value = valueEdit.getText().toString();

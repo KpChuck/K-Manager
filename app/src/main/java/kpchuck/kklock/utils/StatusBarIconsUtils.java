@@ -23,7 +23,7 @@ public class StatusBarIconsUtils {
 
     public boolean setPerms(){
         if (suUtils.hasRoot()) {
-            suUtils.runSuCommand("pm grant kpchuck.k_klock android.permission.WRITE_SECURE_SETTINGS");
+            suUtils.runSuCommand("pm grant kpchuck.k_klock.pro android.permission.WRITE_SECURE_SETTINGS");
         }else {
             return false;
         }

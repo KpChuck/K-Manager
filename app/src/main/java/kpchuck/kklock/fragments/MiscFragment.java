@@ -101,7 +101,7 @@ public class MiscFragment extends Fragment {
             qsHeaderSwitch.setPaintFlags(qsHeaderSwitch.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             qsHeaderSwitch.setBackgroundColor(Color.GRAY);
             String text = qsHeaderSwitch.getText().toString();
-            qsHeaderSwitch.setText(text + " [PRO]");
+            qsHeaderSwitch.setText(String.format("%s [%s]", text, getString(R.string.pro)));
         }
         //Set position and visibility of switches
         switches.put(PREF_QS, qsSwitch);

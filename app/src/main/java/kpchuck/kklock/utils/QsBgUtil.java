@@ -53,12 +53,12 @@ public class QsBgUtil {
 
             if (prefUtils.getBool(PREF_QS_BG))
                 moveImage(PREF_QS_BG_FILE, "qs_background_primary.png");
-                new XmlUtils().writeType2Desc("Overlay for Qs Background/Headers", attention.getAbsolutePath());
+                new XmlUtils().writeType2Desc(context.getString(R.string.qs_images_attention), attention.getAbsolutePath());
 
             if (prefUtils.getBool(PREF_QS_HEADER)) {
                 if (modQsHeader()){
                     moveImage(PREF_QS_HEADER_FILE, header_png);
-                    new XmlUtils().writeType2Desc("Overlay for Qs Background/Headers", attention.getAbsolutePath());
+                    new XmlUtils().writeType2Desc(context.getString(R.string.qs_images_attention), attention.getAbsolutePath());
                  }
             }
 

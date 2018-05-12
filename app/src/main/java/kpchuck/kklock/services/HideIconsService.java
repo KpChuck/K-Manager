@@ -44,15 +44,15 @@ public class HideIconsService extends Service {
     }
 
     private void startInForeground() {
-        String NOTIFICATION_CHANNEL_ID = "K-Manager Hide Icon Service";
-        String NOTIFICATION_CHANNEL_NAME = "Hide Statusbar Icons";
-        String NOTIFICATION_CHANNEL_DESC = "K-Manager's notification channel to keep hide icons service running in the background";
+        String NOTIFICATION_CHANNEL_ID = getString(R.string.hide_icon_id);
+        String NOTIFICATION_CHANNEL_NAME = getString(R.string.hide_icon_name);
+        String NOTIFICATION_CHANNEL_DESC = getString(R.string.hide_icon_desc);
         Intent notificationIntent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent= PendingIntent.getActivity(this,0,notificationIntent,0);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this,NOTIFICATION_CHANNEL_ID)
                 .setSmallIcon(R.drawable.notification_icon_24dp)
-                .setContentTitle("K-Manager")
-                .setContentText("Hide icons service is running in the background")
+                .setContentTitle(getString(R.string.app_name))
+                .setContentText(getString(R.string.hide_icon_notif_message))
                 .setContentIntent(pendingIntent);
 
         Notification notification=builder.build();

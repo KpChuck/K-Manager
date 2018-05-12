@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import kpchuck.kklock.interfaces.BtnClickListener;
 import kpchuck.kklock.R;
@@ -32,7 +33,8 @@ public class FormatAdapter extends ArrayAdapter{
 
 
         this.context=context;
-        this.names=names;
+        this.names = names;
+        Collections.sort(this.names);
         this.hide=Hide;
 
         mClickListener = listener;
@@ -71,7 +73,7 @@ public class FormatAdapter extends ArrayAdapter{
         edit.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
+
                 if(mClickListener != null)
                     mClickListener.onBtnClick((Integer) v.getTag());
             }

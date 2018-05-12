@@ -7,40 +7,40 @@
         <SwitchPreference
             android:key="installSilently"
             android:defaultValue="true"
-            android:title="Install K-Klock Apk's Silently after building"/>
+            android:title="@string/install_silently"/>
 
         <SwitchPreference
             android:key="chooseredthemewhite"
             android:defaultValue="false"
-            android:title="Set Dark Theme"/>
+            android:title="@string/set_dark_theme"/>
 
         <SwitchPreference
             android:defaultValue="true"
             android:key="sync_rom_files"
-            android:summary="Sync rom files automatically when K-Manager is opened"
-            android:title="Sync Rom Files" />
+            android:summary="@string/sync_files_desc"
+            android:title="@string/sync_files" />
         <Preference
             android:key="deleteSaved"
-            android:title="Delete Saved Clock Formats and Colors"/>
+            android:title="@string/delete_saved_cfs"/>
 
         <Preference
         android:key="deleteApks"
-        android:title="Delete all built K-Klock Apks"/>
+        android:title="@string/delete_kklock_apks"/>
         <SwitchPreference
             android:defaultValue="false"
             android:key="alternate_qs_header"
-            android:summary="Use a different method for showing qs header images. "
-            android:title="Alternate Qs Header" />
+            android:summary="@string/alt_qs_header_desc"
+            android:title="@string/alt_qs_header" />
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="Upgrade to Pro">
+        android:title="@string/upgrade_to_pro">
 
         <Preference
             android:key="goPro"
-            android:title="Get K-Manager Pro"
-            android:summary="Support the developer and get adfree K-Manager"/>
+            android:title="@string/upgrade_to_pro"
+            android:summary="@string/upgrade_to_pro_desc"/>
 
 
     </PreferenceCategory>

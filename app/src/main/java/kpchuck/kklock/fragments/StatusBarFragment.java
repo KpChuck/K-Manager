@@ -228,8 +228,8 @@ public class StatusBarFragment extends Fragment {
 
                 }
             };
-            fragment.Instantiate("Warning :)", "If your Rom already has statusbar customization like changing its position/stuff then don't use this." +
-                "\nIt will cause a SystemUI crash...", "Sounds good, enable", "Cancel", listener);
+            fragment.Instantiate(getString(R.string.warning), getString(R.string.clock_hideable_warning), getString(R.string.enable),
+                    getString(R.string.cancel), listener);
             fragment.show(myContext.getSupportFragmentManager(), "");
         }
         else
@@ -292,9 +292,10 @@ public class StatusBarFragment extends Fragment {
         ListView listView = view.findViewById(R.id.listView);
         final EditText editText = view.findViewById(R.id.editTextValue);
         editText.setVisibility(View.VISIBLE);
-        textView.setText("Select StatusBar Background Color");
+        textView.setText(getString(R.string.select_statbar_bg));
 
-        List<String> names = new ArrayList<>(Arrays.asList("Black", "Black 25% Transparent", "White", "Other(Specify Below)"));
+        List<String> names = new ArrayList<>(Arrays.asList(getString(R.string.black), getString(R.string.black_transparent),
+                getString(R.string.white), getString(R.string.other_specify)));
         List<String> values = new ArrayList<>(Arrays.asList("#ff000000", "#BF000000", "#ffffffff", "other"));
         List<String> keys = new ArrayList<>(Arrays.asList(PREF_STATBAR_COLOR, PREF_STATBAR_COLOR, PREF_STATBAR_COLOR, PREF_STATBAR_COLOR));
 
@@ -302,7 +303,7 @@ public class StatusBarFragment extends Fragment {
         listView.setAdapter(listAdapter);
 
         // Set up buttons
-        builder.setButton(AlertDialog.BUTTON_POSITIVE, "Save", new DialogInterface.OnClickListener() {
+        builder.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.save), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (prefUtils.getString(PREF_STATBAR_COLOR, "").equals("other")){

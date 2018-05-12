@@ -87,7 +87,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             makeDirs();
             ExtractAssets();
             if (!hasAllXmls && isOtherRoms(prefUtils.getString(PREF_SELECTED_ROM, ""))) {
-                publishProgress("Decompiling Apk...");
+                publishProgress(context.getString(R.string.decompiling));
 
                 File sysui = new File(Environment.getExternalStorageDirectory() + "/K-Klock/userInput/SystemUI.apk");
                 SuUtils suUtils = new SuUtils();
@@ -103,29 +103,29 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             dealWivQsBg();
             appendOptionsZip();// Takes long about 10s
             // Takes long about 5s
-            publishProgress("Signing K-Klock...");
+            publishProgress(context.getString(R.string.signing));
             createApkFromDir(new File(mergerFolder, "universalFiles.zip"), apkVersion[0]);
 
-            publishProgress("Cleaning files...");
+            publishProgress(context.getString(R.string.cleaning_files));
 
             cleanup();
 
 
-            publishProgress("Installing K-Klock...");
+            publishProgress(context.getString(R.string.installing_apk));
             File apk = new File(rootFolder + slash + apkVersion[0]);
             SuUtils su = new SuUtils();
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             if (!prefs.getBoolean("installSilently", true) || !su.hasRoot()) {
                 FileHelper fh = new FileHelper();
-                showSnackbar();
                 fh.installApk(apk, context);
             } else {
                 String install = String.format("pm install -r %s/K-Klock/" + apkVersion[0], Environment.getExternalStorageDirectory().getPath());
                 String output = su.runSuCommand(install).toString();
-                if (output.contains("Success")) showSnackbar();
-                else fileHelper.installApk(apk, context);
+                if (!output.contains("Success"))
+                    fileHelper.installApk(apk, context);
             }
+            showSnackbar();
 
         } catch (JadxException e) {
             Log.e("klock", "Error decompiling SystemUI.apk " + e.getMessage());
@@ -204,7 +204,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
     }
 
     private void showSnackbar() {
-        Snackbar snackbar = Snackbar.make(defaultLayout, "Open K-Klock in Substratum", Snackbar.LENGTH_INDEFINITE)
+        Snackbar snackbar = Snackbar.make(defaultLayout, context.getString(R.string.open_in_substratum), Snackbar.LENGTH_INDEFINITE)
                 .setAction("Open", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -441,8 +441,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
     private void doStuff() {
         boolean b = new Checks().getSelfVerifiedPirateTools(context);
         if (b){
-            String eplan = "Hello! I see that you are using Lucky Patcher or another app that could be used for piracy. " +
-                    "Support developers by uninstalling these and paying for apps.";
+            String eplan = context.getString(R.string.lucky_patcher_message);
             String[] e = eplan.split(" ");
             try {
                 for (String k : e) {
