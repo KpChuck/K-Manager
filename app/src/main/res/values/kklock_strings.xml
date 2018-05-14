@@ -1,4 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="qs_images_attention">Overlay for Qs Background/Headers</string>
+
+    <string-array name="font_names">
+
+        <item>Cursive Bold</item>
+        <item>Cursive Italic</item>
+        <item>Cursive Normal</item>
+        <item>Roboto Bold</item>
+        <item>Roboto Italic</item>
+        <item>Roboto Normal</item>
+        <item>Serif Bold</item>
+        <item>Serif Italic</item>
+        <item>Serif Normal</item>
+        <item>Sans-Serif Bold</item>
+        <item>Sans-Serif Italic</item>
+
+    </string-array>
+
+    <string name="right_no_clock">Right: No Clock on Lockscreen</string>
+    <string name="right_clock">Right: Clock on Lockscreen</string>
+    <string name="right_dynamic">Right: Dynamic Clock</string>
+    <string name="right_stock">Right: Stock Clock</string>
+    <string name="left_no_clock">Left: No Clock on Lockscreen</string>
+    <string name="left_clock">Left: Clock on Lockscreen</string>
+    <string name="left_dynamic">Left: Dynamic Clock</string>
+    <string name="left_stock">Left: Stock Clock</string>
+    <string name="center_no_clock">Center: No Clock on Lockscreen</string>
+    <string name="center_clock">Left: Clock on Lockscreen</string>
+    <string name="center_dynamic">Left: Dynamic Clock</string>
+    <string name="center_stock">Center: Stock Clock</string>
+
+    <string name="sysui_type2_center">Clock Position: Style (Default Center: Clock on Lockscreen</string>
+    <string name="sysui_type2_none">Clock Position: Style (Default NONE)</string>
+    <string name="sysui_type1a">Clock Color (White)</string>
+    <string name="sysui_type1b">Custom Clock Format (Clock with Am/Pm)</string>
+    <string name="sysui_type1c">Font Type (Sans-Serif Normal)</string>
+
+    <string-array name="headers_type1a">
+        <item>Seconds 2</item>
+        <item>Seconds 10</item>
+    </string-array>
+    <string-array name="headers_type1b">
+        <item>Hide Lockscreen Clock</item>
+    </string-array>
+    <string name="headers_type1a">Heads-Up Notification Timeout (Default: 5 Seconds)</string>
+    <string name="headers_type1b">Lockscreen Clock (Default: Show)</string>
+
+    <string-array name="statusbars_type2">
+        <item>Remove Traffic Indicators</item>
+    </string-array>
+    <string-array name="statusbars_type1a">
+        <item>Hide Lockscreen StatusBar</item>
+        <item>Same Height as Other StatusBar Icons</item>
+    </string-array>
+    <string-array name="statusbars_type1b">
+        <item>Hide AmPm on Stock Clock</item>
+    </string-array>
+    <string name="statusbars_type1a">Lockscreen StatusBar Height (Default)</string>
+    <string name="statusbars_type1b">Show Am/Pm on Stock Clock</string>
+    <string name="statusbars_type1c">StatusBar Icon Dark Color (Light Color is the Clock Color)</string>
+    <string name="statusbars_type2">Keep Traffic Activity Indicators</string>
+
+    <string-array name="tiles_type2">
+        <item>QS_Tiles_4_icons</item>
+        <item>QS_Tiles_5_icons</item>
+        <item>QS_Tiles_6_icons</item>
+        <item>QS_Tiles_7_icons</item>
+        <item>QS_Tiles_8_icons</item>
+    </string-array>
+    <string-array name="tiles_type1a">
+        <item>Leave Those Alone</item>
+    </string-array>
+    <string-array name="tiles_type1b">
+        <item>Round Recents Normal</item>
+        <item>Round Recents Small</item>
+        <item>Round Recents Xl</item>
+    </string-array>
+    <string-array name="tiles_type1c">
+        <item>Bigger</item>
+        <item>Biggest</item>
+        <item>Smaller</item>
+        <item>Smallest</item>
+    </string-array>
+    <string name="tiles_type1a">Hide Qs Tile Title</string>
+    <string name="tiles_type1b">Recents View (Default)</string>
+    <string name="tiles_type1c">StatusBar Clock Size (Default)</string>
+    <string name="tiles_type2">QS Tiles (default 3 icons)</string>
+
 </resources>

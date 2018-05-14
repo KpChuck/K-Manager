@@ -23,8 +23,8 @@
     <string name="apkBuilderLoading">Building Apk, Please Wait&#8230;</string>
     <string name="decompiling">Decompiling Apk&#8230;</string>
     <string name="signing">Signing K-Klock&#8230;</string>
-    <string name="cleaning_files">Cleaning files&#8320;</string>
-    <string name="installing_apk">Installing K-Klock&#8320;</string>
+    <string name="cleaning_files">Cleaning files&#8230;</string>
+    <string name="installing_apk">Installing K-Klock&#8230;</string>
     <string name="open_in_substratum">Open K-Klock in Substratum</string>
     <string name="lucky_patcher_message">Hello! I see that you are using Lucky Patcher or another app that could be used for piracy. Support developers by uninstalling these and paying for apps.
     </string>

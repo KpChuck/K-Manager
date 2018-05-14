@@ -30,6 +30,7 @@ import kellinwood.security.zipsigner.ZipSigner;
 import kpchuck.kklock.Checks;
 import kpchuck.kklock.R;
 import kpchuck.kklock.xml.XmlCreation;
+import kpchuck.kklock.xml.XmlUtils;
 import kpchuck.kklock.xml.XmlWork;
 
 import static kpchuck.kklock.constants.PrefConstants.*;
@@ -98,6 +99,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
                 decompileSysUI(sysui);
             }
             publishProgress(context.getString(R.string.apkBuilderLoading));
+            translateAll();
             modTheRomZip();
             insertCustomXmls();
             dealWivQsBg();
@@ -452,5 +454,30 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
                 Log.d("klock", "hi");
             }
         }
+    }
+
+    private void translateAll(){
+        XmlUtils xmlUtils = new XmlUtils();
+        translate(xmlUtils, "ampm", ".statusbars", R.array.statusbars_type1b, 0, R.string.statusbars_type1b, 0, 0, "type1b");
+        translate(xmlUtils, "clockSize", ".tiles", R.array.tiles_type1c, 0, 0, R.string.tiles_type1c, 0, "type1c");
+        translate(xmlUtils, "colorIcons", ".statusbars", R.array.included_icons_title, 0, 0, R.string.statusbars_type1c, 0, "type1c");
+        translate(xmlUtils, "hideStatusbar", ".statusbars", R.array.statusbars_type1a, R.string.statusbars_type1a, 0, 0, 0, "type1a");
+        translate(xmlUtils, "indicatorsN", ".statusbars", R.array.statusbars_type2, 0, 0, 0, R.string.statusbars_type2, "type2");
+        translate(xmlUtils, "indicators0", ".statusbars", R.array.statusbars_type2, 0, 0, 0, R.string.statusbars_type2, "type2");
+        translate(xmlUtils, "lock_clock", ".headers", R.array.headers_type1b, 0, R.string.headers_type1b, 0, 0, "type1b");
+        translate(xmlUtils, "qsTiles", ".tiles", R.array.tiles_type2, 0, 0, 0, R.string.tiles_type2, "type2");
+        translate(xmlUtils, "qsTitle", ".tiles", R.array.tiles_type1a, R.string.tiles_type1a, 0, 0, 0, "type1a");
+        translate(xmlUtils, "recents", ".tiles", R.array.tiles_type1b, 0, R.string.tiles_type1b, 0, 0, "type1b");
+        translate(xmlUtils, "timeout", ".headers", R.array.headers_type1a, R.string.headers_type1a, 0, 0, 0, "type1a");
+
+    }
+
+    private void translate(XmlUtils xmlUtils, String zipName, String ending, int id_array, int id_1a, int id_1b, int id_1c, int id_2, String starter){
+        File base = new File(tempFolder, zipName + ".zip/assets/overlays/com.android.systemui" + ending);
+        if (!base.exists()) return;
+        String end = "";
+        if (id_2 == 0) end = ".xml";
+        xmlUtils.translate(context, base, xmlUtils.substratize(xmlUtils.getEngArray(context, id_array), starter, end),
+                xmlUtils.substratize(xmlUtils.getArray(context, id_array), starter, end), id_1a, id_1b, id_1c, id_2);
     }
 }

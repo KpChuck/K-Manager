@@ -1,5 +1,7 @@
 package kpchuck.kklock.xml;
 
+import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Environment;
 import android.util.Log;
 
@@ -18,6 +20,8 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -28,6 +32,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import kpchuck.kklock.R;
 import kpchuck.kklock.utils.FileHelper;
 
 import static kpchuck.kklock.constants.XmlConstants.*;
@@ -301,5 +306,64 @@ public class XmlUtils {
         StreamResult result = new StreamResult(new FileOutputStream(dest));
         transformer.transform(source, result);
 
+    }
+
+    public String getEngString(Context context, int id) {
+        Configuration configuration = new Configuration(context.getResources().getConfiguration());
+        configuration.setLocale(new Locale("en"));
+        return context.createConfigurationContext(configuration).getResources().getString(id);
+    }
+
+    public ArrayList<String> getEngArray(Context context, int id) {
+        Configuration configuration = new Configuration(context.getResources().getConfiguration());
+        configuration.setLocale(new Locale("en"));
+        return new ArrayList<>(Arrays.asList(context.createConfigurationContext(configuration).getResources().getStringArray(id)));
+    }
+
+    public ArrayList<String> getArray(Context context, int id) {
+        return new ArrayList<>(Arrays.asList(context.getResources().getStringArray(id)));
+    }
+
+    public void translate(Context context, File baseFolder, ArrayList<String> filenames, ArrayList<String> translated_filenames,
+                           int id_1a, int id_1b, int id_1c, int id_2){
+        try {
+            FileHelper fileHelper = new FileHelper();
+            File[] files = baseFolder.listFiles();
+            for (File file : files) {
+                if (filenames.contains(file.getName())) {
+                    int index = filenames.indexOf(file.getName());
+                    fileHelper.renameFile(file, translated_filenames.get(index));
+                } else if (file.getName().equals("type1a")) {
+                    FileUtils.write(file, context.getString(id_1a), "utf-8", false);
+                } else if (file.getName().equals("type1b")) {
+                    FileUtils.write(file, context.getString(id_1b), "utf-8", false);
+                } else if (file.getName().equals("type1c")) {
+                    FileUtils.write(file, context.getString(id_1c), "utf-8", false);
+                } else if (file.getName().equals("type2")) {
+                    FileUtils.write(file, context.getString(id_2), "utf-8", false);
+                }
+            }
+        }catch (IOException e){
+            Log.e("klock", "Translation failed. "+ e.getMessage());
+        }
+
+
+    }
+
+    public ArrayList<String> substratize(ArrayList<String> arrayList, String start, String end){
+        ArrayList<String> newArrayList = new ArrayList<>();
+        for (int i=0; i<arrayList.size(); i++){
+            String item = arrayList.get(i);
+            item = start + " " + item + end;
+            item = item.replace(" ", "_");
+            newArrayList.add(item);
+        }
+        return newArrayList;
+    }
+
+    public String getType2(Context context, int id){
+        String string = context.getString(id);
+        String item = "type2 " + string;
+        return item.replace(" ", "_");
     }
 }

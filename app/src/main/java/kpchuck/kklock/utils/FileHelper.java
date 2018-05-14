@@ -307,4 +307,11 @@ public class FileHelper {
         clipboard.setPrimaryClip(clip);
         Toast.makeText(context, context.getString(R.string.saved_clipboard), Toast.LENGTH_SHORT).show();
     }
+
+    public void renameFile(File file, String new_name){
+        String path = FilenameUtils.getFullPath(file.getAbsolutePath());
+        if (!file.renameTo(new File(path + new_name))){
+            Log.d("klock", "Could not rename " + file.getAbsolutePath());
+        }
+    }
 }

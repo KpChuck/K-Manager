@@ -1,11 +1,13 @@
 package kpchuck.kklock.xml;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -14,7 +16,9 @@ import org.w3c.dom.NodeList;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Locale;
 
+import kpchuck.kklock.R;
 import kpchuck.kklock.utils.FileHelper;
 import kpchuck.kklock.utils.PrefUtils;
 import static kpchuck.kklock.constants.PrefConstants.*;
@@ -48,14 +52,14 @@ public class XmlWork {
         this.utils = new XmlUtils();
 
         // Start Modding
-        makeFolders();
+        makeFolders(context);
+        translate(context);
         this.hasAttrs = utils.moveAttrsIfPresent(this.srcFolder);
-        modController();
+        modController(context);
 
     }
 
-
-    private void modController() throws Exception{
+    private void modController(Context context) throws Exception{
 
         File[] folders = baseFolders.listFiles(fileHelper.DIRECTORY);
 
@@ -81,8 +85,10 @@ public class XmlWork {
         carrierText = utils.changeAttribute(carrierText, "android:textColor", "#ffffffff");
         carrierText = utils.changeAttribute(carrierText, "android:textAppearance", "?android:textAppearanceSmall");
 
-        String[] unmodPlaces = {"type2_Right:_No_Clock_on_Lockscreen", "type2_Right:_Dynamic_Clock", "type2_Right:_Stock_Clock",
-                    "type2_Right:_Clock_on_Lockscreen", "type2_Left:_Clock_on_Lockscreen", "type2_Center:_Clock_on_Lockscreen"};
+        String[] unmodPlaces = {utils.getType2(context, R.string.right_no_clock), utils.getType2(context, R.string.right_dynamic),
+                utils.getType2(context, R.string.right_stock), context.getString(R.string.right_clock),
+                utils.getType2(context, R.string.left_clock), utils.getType2(context, R.string.center_clock)};
+
         // Write unmodified keyguard
         for (String s: unmodPlaces){
             if (new File(baseFolders, s).exists())
@@ -97,8 +103,10 @@ public class XmlWork {
         superContainer = utils.changeAttribute(superContainer, X_LAYOUT_WIDTH, "0dip");
         superContainer.setAttribute("android:visibility", "gone");
 
-        String[] modPlaces = {"type2_Center:_No_Clock_on_Lockscreen", "type2_Center:_Dynamic_Clock", "type2_Center:_Stock_Clock",
-                    "type2_Left:_No_Clock_on_Lockscreen", "type2_Left:_Stock_Clock", "type2_Left:_Dynamic_Clock"};
+        String[] modPlaces = {utils.getType2(context, R.string.center_no_clock), utils.getType2(context, R.string.center_dynamic),
+                utils.getType2(context, R.string.center_stock), utils.getType2(context, R.string.left_no_clock),
+                utils.getType2(context, R.string.left_stock), utils.getType2(context, R.string.left_dynamic)};
+
         for (String s: modPlaces){
             if (new File(baseFolders, s).exists())
                 utils.writeDocToFile(keyguard, new File(baseFolders, s + "/layout/keyguard_status_bar.xml"));
@@ -138,13 +146,13 @@ public class XmlWork {
         systemIconArea.insertBefore(customClock, stockClock);
 
         if (removeClock && Build.VERSION.SDK_INT > 25 && prefUtils.getBool(PREF_CLOCK_HIDEABLE)) status.removeChild(stockClock);
-        utils.writeDocToFile(status, new File(baseFolders, "type2_Right:_Clock_on_Lockscreen/layout/" + statusbar));
+        utils.writeDocToFile(status, new File(baseFolders, utils.getType2(context, R.string.right_clock)+"/layout/" + statusbar));
 
         // Now Left Clock
         systemIconArea.removeChild(customClock);
         customClock = createClock(status, false, "left|center", X_WRAP_CONTENT);
         statusBarContents.insertBefore(customClock, utils.getFirstChildElement(statusBarContents));
-        utils.writeDocToFile(status, new File(baseFolders, "type2_Left:_Clock_on_Lockscreen/layout/" + statusbar));
+        utils.writeDocToFile(status, new File(baseFolders, utils.getType2(context, R.string.left_clock)+"/layout/" + statusbar));
 
         // Center Clock
         statusBarContents.removeChild(customClock);
@@ -169,7 +177,7 @@ public class XmlWork {
         status = packToRightOf(status, statusBarContents, "TextClock", null);
 
 
-        if (leaveResBlank()) utils.writeDocToFile(status, new File(baseFolders, "type2_Center:_Clock_on_Lockscreen/layout/" + statusbar));
+        if (leaveResBlank()) utils.writeDocToFile(status, new File(baseFolders, utils.getType2(context, R.string.center_clock)+"/layout/" + statusbar));
         else utils.writeDocToFile(status, new File(baseFolders, "res/layout/" + statusbar));
 
         // All other clocks
@@ -190,15 +198,15 @@ public class XmlWork {
         if (removeClock && Build.VERSION.SDK_INT > 25 && prefUtils.getBool(PREF_CLOCK_HIDEABLE)) systemIconArea.removeChild(stockClock);
 
         hideE.appendChild(customClock);
-        utils.writeDocToFile(status, new File(baseFolders,"type2_Right:_No_Clock_on_Lockscreen/layout/" + statusbar));
+        utils.writeDocToFile(status, new File(baseFolders,utils.getType2(context, R.string.right_no_clock)+"/layout/" + statusbar));
         if (makeDynamic) {
             customClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
-            utils.writeDocToFile(status, new File(baseFolders, "type2_Right:_Dynamic_Clock/layout/" + statusbar));
+            utils.writeDocToFile(status, new File(baseFolders, utils.getType2(context, R.string.right_dynamic)+"/layout/" + statusbar));
         }
         hideE.removeChild(customClock);
         customClock = createClock(status, true, "start|center", X_WRAP_CONTENT);
         hideE.appendChild(customClock);
-        utils.writeDocToFile(status, new File(baseFolders, "type2_Right:_Stock_Clock/layout/" + statusbar));
+        utils.writeDocToFile(status, new File(baseFolders, utils.getType2(context, R.string.right_stock)+"/layout/" + statusbar));
 
         // Left Clocks
         systemIconArea.removeChild(hideE);
@@ -207,15 +215,15 @@ public class XmlWork {
 
         statusBarContents.insertBefore(hideE, utils.getFirstChildElement(statusBarContents));
         hideE.appendChild(customClock);
-        utils.writeDocToFile(status, new File(baseFolders, "type2_Left:_No_Clock_on_Lockscreen/layout/" + statusbar));
+        utils.writeDocToFile(status, new File(baseFolders, utils.getType2(context, R.string.left_no_clock)+"/layout/" + statusbar));
         if (makeDynamic){
             customClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
-            utils.writeDocToFile(status, new File(baseFolders, "type2_Left:_Dynamic_Clock/layout/" + statusbar));
+            utils.writeDocToFile(status, new File(baseFolders, utils.getType2(context, R.string.left_dynamic)+"/layout/" + statusbar));
         }
         hideE.removeChild(customClock);
         customClock = createClock(status, true, "left|center", X_WRAP_CONTENT);
         hideE.appendChild(customClock);
-        utils.writeDocToFile(status, new File(baseFolders, "type2_Left:_Stock_Clock/layout/" + statusbar));
+        utils.writeDocToFile(status, new File(baseFolders, utils.getType2(context, R.string.left_stock)+"/layout/" + statusbar));
 
         // Center Clocks
         statusBarContents.removeChild(hideE);
@@ -242,18 +250,18 @@ public class XmlWork {
         hideE.appendChild(customClock);
         status = packToRightOf(status, statusBarContents, "LinearLayout", "@*com.android.systemui:id/system_icon_area");
 
-        utils.writeDocToFile(status, new File(baseFolders, "type2_Center:_No_Clock_on_Lockscreen/layout/" + statusbar));
+        utils.writeDocToFile(status, new File(baseFolders, utils.getType2(context, R.string.center_no_clock)+"/layout/" + statusbar));
         if (makeDynamic){
             customClock = utils.changeAttribute(customClock, X_ID, "@*com.android.systemui:id/clock");
             customClock.setAttribute(X_ID, "");
-            utils.writeDocToFile(status, new File(baseFolders, "type2_Center:_Dynamic_Clock/layout/" + statusbar));
+            utils.writeDocToFile(status, new File(baseFolders, utils.getType2(context, R.string.center_dynamic)+"/layout/" + statusbar));
         }
         hideE.removeChild(customClock);
         customClock = createClock(status, true, "center", X_WRAP_CONTENT);
         hideE.appendChild(customClock);
-        utils.writeDocToFile(status, new File(baseFolders, "type2_Center:_Stock_Clock/layout/" + statusbar));
+        utils.writeDocToFile(status, new File(baseFolders, utils.getType2(context, R.string.center_stock)+"/layout/" + statusbar));
 
-        utils.writeType2Desc(leaveResBlank() ? "Clock Position: Style (Default NONE)" : "Clock Position: Style (Default Center: Clock on Lockscreen",
+        utils.writeType2Desc(leaveResBlank() ? context.getString(R.string.sysui_type2_none) : context.getString(R.string.sysui_type2_center),
                 baseFolders.getAbsolutePath() + "/type2");
 
     }
@@ -333,7 +341,6 @@ public class XmlWork {
 
         return hideyLayout;
     }
-
 
     private Document setupStatusBar() throws IOException{
         Document status = utils.getDocument(new File(srcFolder + "/" + statusbar));
@@ -520,7 +527,7 @@ public class XmlWork {
         return customTextElement;
     }
 
-    private void makeFolders() {
+    private void makeFolders(Context context) {
 
         fileHelper.newFolder(romzip);
         fileHelper.newFolder(romzip, "assets");
@@ -530,21 +537,21 @@ public class XmlWork {
 
         ArrayList<String> startFolder = new ArrayList<>();
         startFolder.add("res");
-        startFolder.add("type2_Right:_Clock_on_Lockscreen");
-        startFolder.add("type2_Left:_Clock_on_Lockscreen");
-        startFolder.add("type2_Center:_No_Clock_on_Lockscreen");
-        startFolder.add("type2_Right:_No_Clock_on_Lockscreen");
-        startFolder.add("type2_Left:_No_Clock_on_Lockscreen");
-        startFolder.add("type2_Center:_Stock_Clock");
-        startFolder.add("type2_Left:_Stock_Clock");
-        startFolder.add("type2_Right:_Stock_Clock");
+        startFolder.add(utils.getType2(context, R.string.right_clock));
+        startFolder.add(utils.getType2(context, R.string.left_clock));
+        startFolder.add(utils.getType2(context, R.string.center_no_clock));
+        startFolder.add(utils.getType2(context, R.string.right_no_clock));
+        startFolder.add(utils.getType2(context, R.string.left_no_clock));
+        startFolder.add(utils.getType2(context, R.string.center_stock));
+        startFolder.add(utils.getType2(context, R.string.left_stock));
+        startFolder.add(utils.getType2(context, R.string.right_stock));
         if (makeDynamic) {
-            startFolder.add("type2_Right:_Dynamic_Clock");
-            startFolder.add("type2_Left:_Dynamic_Clock");
-            startFolder.add("type2_Center:_Dynamic_Clock");
+            startFolder.add(utils.getType2(context, R.string.right_dynamic));
+            startFolder.add(utils.getType2(context, R.string.left_dynamic));
+            startFolder.add(utils.getType2(context, R.string.center_dynamic));
         }
         if (leaveResBlank()) {
-            startFolder.add("type2_Center:_Clock_on_Lockscreen");startFolder.remove("res");
+            startFolder.add(utils.getType2(context, R.string.center_clock));startFolder.remove("res");
         }
         String slash = "/";
 
@@ -560,4 +567,14 @@ public class XmlWork {
 
     }
 
+    private void translate(Context context){
+        ArrayList<String> filenames = utils.substratize(utils.getEngArray(context, R.array.included_colors_title), "type1a", ".xml");
+        filenames.addAll(utils.substratize(utils.getEngArray(context, R.array.included_formats_title), "type1b", ".xml"));
+        filenames.addAll(utils.substratize(utils.getEngArray(context, R.array.font_names), "type1c", ".xml"));
+        ArrayList<String> translated_filenames = utils.substratize(utils.getArray(context, R.array.included_colors_title), "type1a", ".xml");
+        translated_filenames.addAll(utils.substratize(utils.getArray(context, R.array.included_formats_title), "type1b", ".xml"));
+        translated_filenames.addAll(utils.substratize(utils.getArray(context, R.array.font_names), "type1c", ".xml"));
+
+        utils.translate(context, baseFolders, filenames, translated_filenames, R.string.sysui_type1a, R.string.sysui_type1b, R.string.sysui_type1c, 0);
+    }
 }
