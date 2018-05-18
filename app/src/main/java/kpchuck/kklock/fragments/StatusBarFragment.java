@@ -216,11 +216,13 @@ public class StatusBarFragment extends Fragment {
     @OnClick(R.id.clockHideable)
     public void launchers(){
         if(clockHideableSwitch.isChecked()){
+            clockHideableSwitch.setChecked(false);
             TextAlertDialogFragment fragment = new TextAlertDialogFragment();
             DialogClickListener listener = new DialogClickListener() {
                 @Override
                 public void onPositiveBtnClick() {
                     prefUtils.setSwitchPrefs(clockHideableSwitch, PREF_CLOCK_HIDEABLE);
+                    clockHideableSwitch.setChecked(true);
                 }
 
                 @Override
@@ -279,6 +281,7 @@ public class StatusBarFragment extends Fragment {
     public void statbarClick(){
         prefUtils.setSwitchPrefs(statBarColorSwitch, PREF_CHANGE_STATBAR_COLOR);
         if (!statBarColorSwitch.isChecked()) return;
+        statBarColorSwitch.setChecked(false);
         AlertDialog builder = new AlertDialog.Builder(getContext()).create();
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -308,6 +311,7 @@ public class StatusBarFragment extends Fragment {
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (prefUtils.getString(PREF_STATBAR_COLOR, "").equals("other")){
                     prefUtils.putString(PREF_STATBAR_COLOR, editText.getText().toString());
+                    statBarColorSwitch.setChecked(true);
                 }
             }
         });
