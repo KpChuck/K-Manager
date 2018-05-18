@@ -5,6 +5,8 @@ import android.content.pm.PackageManager;
 import android.provider.Settings;
 import android.util.Log;
 
+import java.util.List;
+
 import static kpchuck.kklock.constants.PrefConstants.*;
 
 /**
@@ -62,7 +64,8 @@ public class StatusBarIconsUtils {
         } catch (Exception e) {
 
             String baseCommand = "settings put secure " + key + " " + value;
-            before = suUtils.runSuCommand("settings get secure " + key).get(0);
+            List<String> result = suUtils.runSuCommand("settings get secure " + key);
+            before =result.size() < 1 ? "" : result.get(0);
             if (suUtils.hasRoot()) {
                 suUtils.runSuCommand(baseCommand);
             }
