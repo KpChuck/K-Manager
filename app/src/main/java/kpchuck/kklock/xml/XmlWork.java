@@ -274,8 +274,9 @@ public class XmlWork {
         linearLayout.setAttribute(X_LAYOUT_WIDTH, "0dp");
         linearLayout.setAttribute(X_WEIGHT, "1.0");
 
-        parentElement.insertBefore(linearLayout, rightElements.get(0));
-       // Collections.reverse(rightElements);
+        parentElement.insertBefore(linearLayout, utils.getFirstChildElement(parentElement));
+        //parentElement.insertBefore(linearLayout, rightElements.get(0));
+
         for (Element element : rightElements){
             parentElement.removeChild(element);
             linearLayout.appendChild(element);
