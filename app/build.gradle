@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply from: 'Constants.gradle'
 
 
 android {
@@ -9,6 +10,8 @@ android {
     def versionPropsFile = file('version.properties')
     def versionBuild
     def versionType
+
+
 
     /*Setting default value for versionBuild which is the last incremented value stored in the file */
     if (versionPropsFile.canRead()) {
@@ -43,9 +46,9 @@ android {
         versionName "27"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
-        ndk {
-            moduleName "LoadingProcess"
-        }
+        buildConfigField "String", "BASE_64_LICENSE_KEY", "\"" + BASE_64_LICENSE_KEY + "\""
+        buildConfigField "String", "APK_SIGNATURE_PRODUCTION", "\"" + APK_SIGNATURE_PRODUCTION + "\""
+
     }
     signingConfigs {
         release {
@@ -80,6 +83,11 @@ android {
     }
     buildTypes {
         release {
+            lintOptions {
+                disable 'MissingTranslation'
+                checkReleaseBuilds false
+                abortOnError false
+            }
             signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -92,11 +100,7 @@ android {
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
-    externalNativeBuild {
-        ndkBuild {
-            path 'src/main/jni/Android.mk'
-        }
-    }
+
 
 
     // Hook to check if the release/debug task is among the tasks to be executed.
@@ -159,7 +163,7 @@ dependencies {
         transitive = true
     }
     // Firebase
-    implementation 'com.google.firebase:firebase-core:15.0.0'
+    implementation 'com.google.firebase:firebase-core:15.0.2'
     // Jsoup
     implementation 'org.jsoup:jsoup:1.11.2'
     // About Libraries
@@ -181,7 +185,7 @@ dependencies {
     // Piracy Checker
     implementation 'com.github.javiersantos:PiracyChecker:1.2.1'
     //Kotlin
-    implementation ("org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"){
+    implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"){
         transitive = true
         exclude group: 'org.jetbrains', module: 'annotations'
     }

@@ -1,5 +1,5 @@
 /build
-/src/main/jni/LoadingProcess.c
+/app/Constants.gradle
 /version.properties
 /debug
 /release

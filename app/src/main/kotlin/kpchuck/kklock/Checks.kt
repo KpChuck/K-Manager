@@ -8,6 +8,7 @@ import com.github.javiersantos.piracychecker.enums.InstallerID
 import com.github.javiersantos.piracychecker.enums.PiracyCheckerCallback
 import com.github.javiersantos.piracychecker.enums.PiracyCheckerError
 import com.github.javiersantos.piracychecker.enums.PirateApp
+import kpchuck.kklock.utils.FileHelper
 
 /**
  * Created by karol on 18/02/18.
@@ -50,7 +51,7 @@ class Checks {
             }
         })
 
-        piracyChecker.enableSigningCertificate(getAPKSignatureProduction())
+        piracyChecker.enableSigningCertificate(BuildConfig.APK_SIGNATURE_PRODUCTION)
 
         piracyChecker.start()
 
@@ -59,6 +60,15 @@ class Checks {
 
     fun isPro(context: Context): Boolean{
         var b = false
+        var thread = Thread(Runnable { b = checkPro(context) })
+        thread.start()
+        return b
+    }
+
+    fun checkPro(context: Context): Boolean{
+
+        var b = false
+        val fileHelper = FileHelper()
         val piracyChecker = PiracyChecker(context)
         piracyChecker.callback(object : PiracyCheckerCallback(){
             override fun allow() {
@@ -68,13 +78,18 @@ class Checks {
                 b = false
             }
         })
-        piracyChecker.enableGooglePlayLicensing(getBase64Key())
-        piracyChecker.enableSigningCertificate(getAPKSignatureProduction())
+        if (fileHelper.hasInternetAccess(context))
+            piracyChecker.enableGooglePlayLicensing(BuildConfig.BASE_64_LICENSE_KEY)
+        piracyChecker.enableSigningCertificate(BuildConfig.APK_SIGNATURE_PRODUCTION)
         piracyChecker.enableInstallerId(InstallerID.GOOGLE_PLAY)
         piracyChecker.start()
-        if (BuildConfig.APPLICATION_ID != "kpchuck.k_klock.pro"){ b = false}
+        if (BuildConfig.APPLICATION_ID != "kpchuck.k_klock.pro")
+            b = false
+
         return b
     }
+
+
 
 
     // Blacklisted APKs to prevent theme launching, these include simple regex formatting, without
@@ -109,13 +124,5 @@ class Checks {
             "com.blackmartalpha",
             "org.blackmart.market"
     )
-
-    // Load up the JNI library
-    init {
-        System.loadLibrary("LoadingProcess")
-    }
-
-    private external fun getBase64Key(): String
-    private external fun getAPKSignatureProduction(): String
 
 }

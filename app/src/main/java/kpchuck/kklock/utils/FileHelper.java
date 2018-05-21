@@ -10,6 +10,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
@@ -22,6 +24,10 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -314,4 +320,37 @@ public class FileHelper {
             Log.d("klock", "Could not rename " + file.getAbsolutePath());
         }
     }
+
+    public boolean hasInternetAccess(Context context){
+        return hasInternetAccess(context, "g.cn/generate_204") || hasInternetAccess(context, "http://clients3.google.com/generate_204");
+    }
+
+    private boolean hasInternetAccess(Context context, String url) {
+        if (isNetworkAvailable(context)) {
+            try {
+                HttpURLConnection urlc = (HttpURLConnection)
+                        (new URL(url)
+                                .openConnection());
+                urlc.setRequestProperty("User-Agent", "Android");
+                urlc.setRequestProperty("Connection", "close");
+                urlc.setConnectTimeout(1500);
+                urlc.connect();
+                return (urlc.getResponseCode() == 204 &&
+                        urlc.getContentLength() == 0);
+            } catch (IOException e) {
+                Log.e("klock", "Error checking internet connection", e);
+            }
+        } else {
+            Log.d("klock", "No network available!");
+        }
+        return false;
+    }
+
+    private boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null;
+    }
+
 }

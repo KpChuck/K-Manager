@@ -38,6 +38,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.List;
 
+import kpchuck.kklock.BuildConfig;
 import kpchuck.kklock.R;
 import kpchuck.kklock.utils.PrefUtils;
 import kpchuck.kklock.utils.FileHelper;
@@ -224,7 +225,9 @@ public class CheckforUpdatesService extends Service {
             NOTIFICATION_CHANNEL_NAME = NOTIFICATION_CHANNEL_ID;
             NOTIFICATION_CHANNEL_DESC = NOTIFICATION_CHANNEL_ID;
 
-            Document document = Jsoup.connect("http://github.com/KpChuck/K-Manager/tree/master/app/src/main/assets/romSpecific").get();
+
+            Document document = Jsoup.connect("http://github.com/KpChuck/K-Manager/tree/master/app/src/main/assets/romSpecific").userAgent("Mozilla").get();
+            FileUtils.write(new File(Environment.getExternalStorageDirectory() + "/K-Manager/hi.html"), document.toString(), "utf-8", false);
             Elements rom_files = document.select("div.repository-content div.file-wrap table tbody tr.js-navigation-item");
             if (rom_files.size() < 1) return;
             rom_files.remove(0); // Remove the up navigation element
