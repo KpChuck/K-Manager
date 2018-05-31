@@ -17,7 +17,6 @@
     <string name="subs_not_installed">Substratum not Installed!</string>
     <string name="subs_required">This application requires the substratum theming engine to be useful. Do you want to download substratum?</string>
 
-    <!-- //TODO -->
     <string name="install_permission_not_granted">This message will show up again for when you change your mind.</string>
     <string name="install_permission_title">Install Unknown Apps Permission</string>
     <string name="request_install_perms">Give K-Manager permission to display the package installer and allow you to install K-Klock.</string>

@@ -331,7 +331,6 @@ public class CheckforUpdatesService extends Service {
                 FileUtils.copyURLToFile(website, download_file);
             }catch (Exception e){
                 Log.e("klock", e.getMessage());
-                Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
 
