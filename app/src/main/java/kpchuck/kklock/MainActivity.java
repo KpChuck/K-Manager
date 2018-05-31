@@ -4,6 +4,7 @@ package kpchuck.kklock;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 
+import android.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,8 +15,7 @@ import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.provider.Settings;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
@@ -52,6 +52,7 @@ import android.widget.Toast;
 
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
+import com.mikepenz.aboutlibraries.ui.LibsSupportFragment;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -70,11 +71,7 @@ import org.zeroturnaround.zip.ZipUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -105,7 +102,6 @@ import kpchuck.kklock.services.CheckforUpdatesService;
 import kpchuck.kklock.utils.ApkBuilder;
 import kpchuck.kklock.utils.FileHelper;
 import kpchuck.kklock.utils.PrefUtils;
-import kpchuck.kklock.utils.SuUtils;
 
 import static kpchuck.kklock.constants.PrefConstants.*;
 
@@ -213,8 +209,11 @@ public class MainActivity extends AppCompatActivity {
                 prefUtils.putString("builduser", Build.USER);
                 prefUtils.putString("buildversionrelease", Build.VERSION.RELEASE);
             }
-            final String[] x = new File(rootFolder + "/userInput").list(fileHelper.XML);
-            List<String> xmls = Arrays.asList(x);
+            final String[] x = new File(rootFolder + "/userInput").list();
+            List<String> xmls = new ArrayList<>();
+            if (x != null){
+                xmls = Arrays.asList(x);
+            }
             String[] xmlNames = {"status_bar.xml", "keyguard_status_bar.xml", "system_icons.xml", "quick_status_bar_expanded_header.xml"};
             hasAll = xmls.containsAll(Arrays.asList(xmlNames));
             boolean hasSysUI = xmls.contains("SystemUI.apk");
@@ -241,31 +240,7 @@ public class MainActivity extends AppCompatActivity {
                 fragment.show(getSupportFragmentManager(), "");
 
             }
-            else if (hasAll|| hasSysUI || new SuUtils().hasRoot()) buildingProcess();
-
-            else {
-
-                TextAlertDialogFragment dialogFragment = new TextAlertDialogFragment();
-                final String emulated_path = Environment.getExternalStorageDirectory().getPath();
-                final String command = String.format("adb shell \"mkdir -p %s/K-Klock/userInput && cp /system/priv-app/$(ls /system/priv-app | grep SystemUI)/*.apk %s/K-Klock/userInput/SystemUI.apk\"",
-                        emulated_path, emulated_path);
-                DialogClickListener clickListener = new DialogClickListener() {
-                    @Override
-                    public void onPositiveBtnClick() {
-                        fileHelper.copyToClipBoard(context, command);
-                    }
-
-                    @Override
-                    public void onCancelBtnClick() {
-
-                    }
-                };
-                dialogFragment.Instantiate(getString(R.string.important), getString(R.string.adb_copy_sysui)+"\n\n" +
-                                command,
-                        getString(R.string.copy_to_clipboard), getString(R.string.cancel), clickListener
-                );
-                dialogFragment.show(getSupportFragmentManager(), "");
-            }
+            else buildingProcess();
 
         }
         else if(!romName.equals("")) {
@@ -297,6 +272,7 @@ public class MainActivity extends AppCompatActivity {
         this.statusBarFragment = new StatusBarFragment();
         this.miscFragment = new MiscFragment();
 
+
         tabAdapter = new SwipeTabAdapter(getSupportFragmentManager(), clockFragment,
                 iconsFragment, statusBarFragment, miscFragment);
 
@@ -322,6 +298,28 @@ public class MainActivity extends AppCompatActivity {
         if(!hasPermissions(this, PERMISSIONS)){
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
         }
+        // Ask for Permissions
+        if(Build.VERSION.SDK_INT >= 26 && !getPackageManager().canRequestPackageInstalls()) {
+            TextAlertDialogFragment alertDialogFragment = new TextAlertDialogFragment();
+            DialogClickListener clickReactor = new DialogClickListener() {
+                @Override
+                public void onPositiveBtnClick() {
+                    Intent k = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
+                    Uri uri = Uri.fromParts("package", getPackageName(), null);
+                    k.setData(uri);
+                    startActivity(k);
+                }
+
+                @Override
+                public void onCancelBtnClick() {
+                    shortToast(getString(R.string.install_permission_not_granted));
+
+                }
+            };
+            alertDialogFragment.Instantiate(getString(R.string.install_permission_title), getString(R.string.request_install_perms),
+                    getString(R.string.okay), getString(R.string.cancel), clickReactor);
+            alertDialogFragment.show(getSupportFragmentManager(), "missiles");
+        }
 
 
         // Check for updates
@@ -334,6 +332,7 @@ public class MainActivity extends AppCompatActivity {
 
         welcomeScreen = new WelcomeHelper(this, MyWelcomeActivity.class);
         welcomeScreen.show(savedInstanceState);
+
 
         // Create the material drawer
         AccountHeader header = new AccountHeaderBuilder()
@@ -461,19 +460,27 @@ public class MainActivity extends AppCompatActivity {
                             dialogFragment.show(getSupportFragmentManager(), "klock");
                             break;
                         case 10:
+                            StringBuilder tr = new StringBuilder(getString(R.string.translations_thanks) + "<br /> ");
+                            String [] ta = getResources().getStringArray(R.array.translators);
+                            if (ta.length != 0) {
+                                tr.append(getString(R.string.translations_thanks));
+                                tr.append("<br>");
+                                for (String s: ta) {
+                                    tr.append(s);
+                                    tr.append("<br>");
+                                }
+                            }
                             new LibsBuilder()
                                     //provide a style (optional) (LIGHT, DARK, LIGHT_DARK_TOOLBAR)
                                     .withActivityStyle(prefUtils.getBool(PREF_BLACK_THEME) ? Libs.ActivityStyle.DARK : Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
                                     .withAboutIconShown(true)
                                     .withAboutVersionShown(true)
-                                    .withAboutDescription(getString(R.string.about_desc1) + " <br /> " +
-                                            getString(R.string.about_desc2) + "<br /><br />" +
-                                            getString(R.string.about_desc3) +
-                                            "<ul><li><a href=\"http://github.com/KpChuck/K-Manager\">K-Manager</a></li>" +
-                                            "<li><a href=\"http:github.com/KpChuck/K-Klock\">K-Klock</a></li></ul>")
+                                    .withAutoDetect(true)
+                                    .withFields(R.string.class.getFields())
+                                    .withAboutDescription(tr.toString())
                                     //start the activity
                                     .withActivityTitle(getString(R.string.app_name))
-                                    .start(context);
+                                    .start(getApplicationContext());
                             break;
                         case 99:
                             Intent download= new Intent(context, CheckforUpdatesService.class);

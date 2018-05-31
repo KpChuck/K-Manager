@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.commons.io.FileUtils;
 import org.zeroturnaround.zip.FileSource;
@@ -92,9 +93,13 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
                 File sysui = new File(Environment.getExternalStorageDirectory() + "/K-Klock/userInput/SystemUI.apk");
                 SuUtils suUtils = new SuUtils();
-                if (!sysui.exists()) {
-                    suUtils.runSuCommand(String.format("cp /system/priv-app/$(ls /system/priv-app | grep SystemUI)/*.apk %s/K-Klock/userInput/SystemUI.apk",
+                if (!sysui.exists()) {/*
+                    List<String> r = suUtils.runCommand(String.format("cp $(find /system/priv-app -name *SystemUI.apk) /sdcard/K-Klock/userInput/SystemUI.apk",
                             Environment.getExternalStorageDirectory().getPath()));
+                    FileUtils.write(new File("/sdcard/K-Klock/error"), r.toString());
+                    Log.d("klock", r.toString());*/
+                    File n_sysui = fileHelper.find("/system/priv-app", "SystemUI.apk").get(0);
+                    FileUtils.copyFile(n_sysui, sysui);
                 }
                 decompileSysUI(sysui);
             }

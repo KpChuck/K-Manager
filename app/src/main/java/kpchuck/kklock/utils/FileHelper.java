@@ -290,6 +290,30 @@ public class FileHelper {
         return filePathList;
     }
 
+    public ArrayList<File> find(String startPath, String filter){
+
+        ArrayList<File> fileList = new ArrayList<>();
+        File root = new File(startPath);
+        if (fileContains(root, filter)) fileList.add(root);
+
+        File[] list = root.listFiles();
+        for (File f: list){
+            if (f.isDirectory()) {
+                ArrayList<File> t = find(f.getAbsolutePath(), filter);
+                fileList.addAll(t);
+            }
+            else{
+                if (fileContains(f, filter)) fileList.add(f);
+            }
+        }
+        return fileList;
+
+    }
+
+    private boolean fileContains(File file, String string){
+        return file.getAbsolutePath().contains(string);
+    }
+
     /*
     kpchuck.k_klock.Checks if the version code of the last checked github apk is the same as the version code
      */
@@ -321,9 +345,6 @@ public class FileHelper {
         }
     }
 
-    public boolean hasInternetAccess(Context context){
-        return hasInternetAccess(context, "g.cn/generate_204") || hasInternetAccess(context, "http://clients3.google.com/generate_204");
-    }
 
     private boolean hasInternetAccess(Context context, String url) {
         if (isNetworkAvailable(context)) {

@@ -58,17 +58,11 @@ class Checks {
         return result
     }
 
+
+
     fun isPro(context: Context): Boolean{
-        var b = false
-        var thread = Thread(Runnable { b = checkPro(context) })
-        thread.start()
-        return b
-    }
-
-    fun checkPro(context: Context): Boolean{
 
         var b = false
-        val fileHelper = FileHelper()
         val piracyChecker = PiracyChecker(context)
         piracyChecker.callback(object : PiracyCheckerCallback(){
             override fun allow() {
@@ -78,8 +72,6 @@ class Checks {
                 b = false
             }
         })
-        if (fileHelper.hasInternetAccess(context))
-            piracyChecker.enableGooglePlayLicensing(BuildConfig.BASE_64_LICENSE_KEY)
         piracyChecker.enableSigningCertificate(BuildConfig.APK_SIGNATURE_PRODUCTION)
         piracyChecker.enableInstallerId(InstallerID.GOOGLE_PLAY)
         piracyChecker.start()

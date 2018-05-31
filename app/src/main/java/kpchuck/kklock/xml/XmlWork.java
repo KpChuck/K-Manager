@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -82,8 +83,10 @@ public class XmlWork {
 
         Element carrierText = utils.findElementById(keyguard.getDocumentElement(),
                 "@*com.android.systemui:id/keyguard_carrier_text");
-        carrierText = utils.changeAttribute(carrierText, "android:textColor", "#ffffffff");
-        carrierText = utils.changeAttribute(carrierText, "android:textAppearance", "?android:textAppearanceSmall");
+        if (carrierText != null) {
+            carrierText = utils.changeAttribute(carrierText, "android:textColor", "#ffffffff");
+            carrierText = utils.changeAttribute(carrierText, "android:textAppearance", "?android:textAppearanceSmall");
+        }
 
         String[] unmodPlaces = {utils.getType2(context, R.string.right_no_clock), utils.getType2(context, R.string.right_dynamic),
                 utils.getType2(context, R.string.right_stock), context.getString(R.string.right_clock),
@@ -102,6 +105,8 @@ public class XmlWork {
                 "@*com.android.systemui:id/system_icons_super_container");
         superContainer = utils.changeAttribute(superContainer, X_LAYOUT_WIDTH, "0dip");
         superContainer.setAttribute("android:visibility", "gone");
+        keyguard = fixForLg(keyguard, false);
+
 
         String[] modPlaces = {utils.getType2(context, R.string.center_no_clock), utils.getType2(context, R.string.center_dynamic),
                 utils.getType2(context, R.string.center_stock), utils.getType2(context, R.string.left_no_clock),
@@ -348,6 +353,8 @@ public class XmlWork {
         status = utils.replaceAt(status);
         status = utils.fixUpForAttrs(status, hasAttrs);
 
+        status = fixForLg(status, true);
+
         Element statusBarContents = utils.findElementById(status,
                 "@*com.android.systemui:id/status_bar_contents");
         Element systemIconArea = utils.findElementById(status, "@*com.android.systemui:id/system_icon_area");
@@ -489,6 +496,9 @@ public class XmlWork {
         customTextElement = createCustomTextElement(customTextElement);
 
         //Insert TextView
+        if (carrierTextElement == null){
+            carrierTextElement = getCarrierTextLike(doc);
+        }
 
         carrierTextElement.getParentNode().insertBefore(customTextElement, carrierTextElement);
         return doc;
@@ -501,11 +511,17 @@ public class XmlWork {
         // Hide the carrier text
         if (carrierTextElement == null){
             Log.w("klock", "Can't hide carrier text - null element");
+            carrierTextElement = getCarrierTextLike(doc);
 
         }
+
         utils.changeAttribute(carrierTextElement, X_LAYOUT_WIDTH, "0dip");
 
         return carrierTextElement;
+    }
+
+    private Element getCarrierTextLike(Document doc){
+        return utils.findElementLikeId(doc, "@*com.android.systemui:id/keyguard_carrier_text");
     }
 
     private Element createCustomTextElement(Element customTextElement){
@@ -526,6 +542,33 @@ public class XmlWork {
         }
 
         return customTextElement;
+    }
+
+    private Document fixForLg(Document doc, boolean isStatusBar){
+
+        Element two = utils.findElementByTag(doc, "com.lge.systemui.widget.StatusIconAnimatorView");
+        Log.d("klock", "Is fix needed " + (two == null));
+        if (two == null) return doc;
+
+        if (isStatusBar){
+            Element system_icon_area = utils.findElementById(doc, "@*com.android.systemui:id/system_icon_area");
+            Element status_bar_contents = utils.findElementById(doc, "@*com.android.systemui:id/status_bar_contents");
+            Element one = utils.findElementByTag(doc, "com.lge.systemui.widget.StatusIconsLinearLayout");
+
+            status_bar_contents.removeChild(one);
+            status_bar_contents.removeChild(two);
+
+            system_icon_area.insertBefore(two, utils.getFirstChildElement(system_icon_area));
+            system_icon_area.insertBefore(one, two);
+        }
+        else {
+            Element one = utils.findElementByTag(doc, "com.lge.systemui.widget.StatusIconsLinearLayout");
+            for (Element s: new Element[]{one, two}){
+                utils.changeAttribute(s, X_LAYOUT_WIDTH, "0dip");
+                utils.changeAttribute(s, "android:visibility", "gone");
+            }
+        }
+        return doc;
     }
 
     private void makeFolders(Context context) {

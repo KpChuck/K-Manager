@@ -58,18 +58,6 @@ public class XmlUtils {
         return myElement;
     }
 
-    public Element findElementInDoc(Document doc, String layoutTag, String idName){
-
-        Element myElement = null;
-
-        Element rootElement = doc.getDocumentElement();
-        if (isTheElement(rootElement, layoutTag, idName)) return rootElement;
-
-        myElement = getElementById(rootElement, layoutTag, idName);
-        if (myElement != null) return myElement;
-
-        return null;
-    }
 
     public Element findElementById(Document document, String idName){
         return findElementById(document.getDocumentElement(), idName);
@@ -96,6 +84,62 @@ public class XmlUtils {
         }
 
         return layout;
+    }
+
+    public Element findElementLikeId(Document document, String idName){
+        return findElementLikeId(document.getDocumentElement(), idName);
+    }
+
+    public Element findElementLikeId(Element parentElement, String idName){
+        if (parentElement.getAttribute(X_ID).equals(idName)) return parentElement;
+
+        NodeList list = parentElement.getChildNodes();
+        Element layout = null;
+        for (int i=0; i<list.getLength(); i++){
+            Node node = list.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                layout = (Element) list.item(i);
+                Attr attr = layout.getAttributeNode(X_ID);
+                if (attr != null && attr.getValue().contains(idName)) break;
+                if (layout.getChildNodes() != null || layout.getChildNodes().getLength() != 0){
+                    layout = findElementById(layout, idName);
+                    if (layout != null) break;
+                }
+                layout = null;
+            }
+        }
+
+        return layout;
+    }
+
+    public Element findElementByTag(Document document, String tagName){
+        return findElementByTag(document.getDocumentElement(), tagName);
+    }
+
+    public Element findElementByTag(Element parentElement, String tagName){
+        if (parentElement.getTagName().equals(tagName)) return parentElement;
+
+        NodeList elements = parentElement.getElementsByTagName(tagName);
+        return (Element) elements.item(0);
+        /*
+
+        NodeList list = parentElement.getChildNodes();
+        Element layout = null;
+        for (int i=0; i<list.getLength(); i++){
+            Node node = list.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                layout = (Element) list.item(i);
+                String tag = layout.getTagName();
+                if (tag.equals(tagName)) break;
+                if (layout.getChildNodes() != null || layout.getChildNodes().getLength() != 0){
+                    layout = findElementById(layout, tagName);
+                    if (layout != null) break;
+                }
+                layout = null;
+            }
+        }
+
+        return layout;*/
     }
 
 
@@ -217,7 +261,7 @@ public class XmlUtils {
         }
     }
 
-    String pathToMerger = Environment.getExternalStorageDirectory() + "/K-Klock/tempF";
+    private String pathToMerger = Environment.getExternalStorageDirectory() + "/K-Klock/tempF";
 
     public boolean moveAttrsIfPresent(String xmlFolder){
         File attrs = new File(xmlFolder + "/attrs.xml");
@@ -251,11 +295,6 @@ public class XmlUtils {
             }
         }
         return document;
-    }
-
-    public Element lastElement(Element parentElement){
-        ArrayList<Element> elements = getChildElements(parentElement);
-        return elements.get(elements.size() -1 );
     }
 
     public boolean isPushyOutElement(Element element){
@@ -306,12 +345,6 @@ public class XmlUtils {
         StreamResult result = new StreamResult(new FileOutputStream(dest));
         transformer.transform(source, result);
 
-    }
-
-    public String getEngString(Context context, int id) {
-        Configuration configuration = new Configuration(context.getResources().getConfiguration());
-        configuration.setLocale(new Locale("en"));
-        return context.createConfigurationContext(configuration).getResources().getString(id);
     }
 
     public ArrayList<String> getEngArray(Context context, int id) {

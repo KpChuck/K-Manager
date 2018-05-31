@@ -50,15 +50,7 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/hide_icons_lockscreen"
                 android:id="@+id/hideStatusbarIcons"/>
-
-            <!-- Custom Icon in StatusBar -->
-            <Switch
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/custom_icon_statbar"
-                android:id="@+id/customIcon"/>
-
+            
             <Switch
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -70,6 +62,15 @@
                 android:background="?secondaryBackgroundColor"
                 android:text="@string/leave_wifi_networks"
                 android:id="@+id/hideStatusbarIconsNotFully"/>
+
+            <!-- Custom Icon in StatusBar -->
+            <Switch
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/custom_icon_statbar"
+                android:id="@+id/customIcon"/>
+
 
             <!-- Lockscreen statusbar height -->
             <Switch
