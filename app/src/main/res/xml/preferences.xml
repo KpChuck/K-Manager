@@ -32,6 +32,10 @@
             android:summary="@string/alt_qs_header_desc"
             android:title="@string/alt_qs_header" />
 
+        <Preference
+            android:key="reportBug"
+            android:title="@string/report_a_bug"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory
