@@ -375,10 +375,7 @@ public class MainActivity extends AppCompatActivity {
                                 .withIdentifier(4),
                         new SecondaryDrawerItem().withName(R.string.qsbgItem)
                                 .withLevel(2)
-                                .withIdentifier(5),
-                        new SecondaryDrawerItem().withName(R.string.leftnetworkItem)
-                                .withLevel(2)
-                                .withIdentifier(6));
+                                .withIdentifier(5));
 
         ExpandableDrawerItem linksItem = new ExpandableDrawerItem()
                 .withName(R.string.usefullLinksTitle)
@@ -427,11 +424,6 @@ public class MainActivity extends AppCompatActivity {
                             Intent qsbg = new Intent(context, InformationWebViewActivity.class);
                             qsbg.putExtra("value", 2);
                             startActivity(qsbg);
-                            break;
-                        case 6:
-                            Intent left = new Intent(context, InformationWebViewActivity.class);
-                            left.putExtra("value", 3);
-                            startActivity(left);
                             break;
                         case 7:
                             Intent rgb = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.rapidtables.com/web/color/RGB_Color.htm"));

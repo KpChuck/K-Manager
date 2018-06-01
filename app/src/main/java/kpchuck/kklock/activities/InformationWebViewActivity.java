@@ -1,15 +1,20 @@
 package kpchuck.kklock.activities;
 
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+
+import java.io.IOException;
+import java.util.Arrays;
 
 import kpchuck.kklock.MainActivity;
 import kpchuck.kklock.R;
@@ -30,9 +35,6 @@ public class InformationWebViewActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        // this.webPath = getApplicationContext().getFilesDir().getPath() + "html";
-        //this.webPath = Environment.getExternalStorageDirectory() + "/K-Manager/html";
 
         int data = 0;
         Intent intent = getIntent();
@@ -55,18 +57,18 @@ public class InformationWebViewActivity extends AppCompatActivity {
             }
         });
 
+        String base = "file:///android_asset/html/" + getFolderLocale();
+
+
         switch (data) {
             case 1:
-                aboutWebView.loadUrl("file:///android_asset/html/index.html");
+                aboutWebView.loadUrl(base + "index.html");
                 break;
             case 2:
-                aboutWebView.loadUrl("file:///android_asset/html/qsbg.html");
-                break;
-            case 3:
-                aboutWebView.loadUrl("file:///android_asset/html/left.html");
+                aboutWebView.loadUrl(base + "qsbg.html");
                 break;
             case 4:
-                aboutWebView.loadUrl("file:///android_asset/html/otherroms.html");
+                aboutWebView.loadUrl(base + "otherroms.html");
                 break;
             default:
                 finish();
@@ -97,6 +99,30 @@ public class InformationWebViewActivity extends AppCompatActivity {
         Intent intent = new Intent(this,MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private String getFolderLocale(){
+        String locale = "";
+        String current_locale = getResources().getConfiguration().getLocales().get(0).getLanguage();
+        shortToast(current_locale);
+        if (!current_locale.equals("en") || folderExistsHtml(current_locale)){
+            locale = current_locale + "/";
+        }
+        return locale;
+
+    }
+
+
+    private boolean folderExistsHtml(String folder){
+        try {
+            AssetManager assetManager = getAssets();
+            String[] files = assetManager.list("html/");
+            return Arrays.asList(files).contains(folder);
+        }catch (IOException e){
+            Log.e("klock", e.getMessage());
+            return false;
+        }
+
     }
 
 
