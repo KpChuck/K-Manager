@@ -27,6 +27,7 @@ import com.kbeanie.multipicker.api.callbacks.ImagePickerCallback;
 import com.kbeanie.multipicker.api.entity.ChosenImage;
 
 import org.apache.commons.io.FileUtils;
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +40,7 @@ import butterknife.Unbinder;
 import kpchuck.kklock.Checks;
 import kpchuck.kklock.MainActivity;
 import kpchuck.kklock.R;
-import kpchuck.kklock.dialogs.InputAlertDialogFragment;
+import kpchuck.kklock.dialogs.ColorPicker;
 import kpchuck.kklock.dialogs.ProOptionDialog;
 import kpchuck.kklock.dialogs.TextAlertDialogFragment;
 import kpchuck.kklock.interfaces.DialogClickListener;
@@ -319,14 +320,16 @@ public class IconsFragment extends Fragment {
         prefUtils.setSwitchPrefs(iconSwitch, PREF_ICON);
     }
 
+
+
     // Handle Clicks for Icon View
     @OnClick(R.id.addIconButton)
     public void addColorListener(View view){
-        InputAlertDialogFragment dialogFragment = new InputAlertDialogFragment();
-        dialogFragment.Instantiate(getString(R.string.add_color_name_title), getString(R.string.add_color_name_hint),
+        ColorPicker colorPicker = new ColorPicker();
+        colorPicker.init(getString(R.string.add_color_name_title), getString(R.string.add_color_name_hint),
                 getString(R.string.add_color_value_hint), false, "icons",
                 false, view);
-        dialogFragment.show(myContext.getSupportFragmentManager(), "klock");
+        colorPicker.show(myContext.getSupportFragmentManager(), "");
     }
 
     @OnClick(R.id.includedIconsButton)

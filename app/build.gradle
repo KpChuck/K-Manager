@@ -165,7 +165,7 @@ dependencies {
         transitive = true
     }
     // Firebase
-    implementation 'com.google.firebase:firebase-core:15.0.2'
+    implementation 'com.google.firebase:firebase-core:16.0.0'
     // Jsoup
     implementation 'org.jsoup:jsoup:1.11.2'
     // About Libraries
@@ -185,12 +185,15 @@ dependencies {
     implementation files('libs/dx-1.14.jar')
 
     // Piracy Checker
-    implementation 'com.github.javiersantos:PiracyChecker:1.2.1'
+    implementation 'com.github.javiersantos:PiracyChecker:1.2.2'
     //Kotlin
     implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"){
         transitive = true
         exclude group: 'org.jetbrains', module: 'annotations'
     }
+    // Color Picker
+    implementation 'com.jaredrummler:colorpicker:1.0.2'
+    implementation 'org.greenrobot:eventbus:3.1.1'
 
 
 }

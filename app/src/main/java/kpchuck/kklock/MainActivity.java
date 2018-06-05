@@ -49,6 +49,7 @@ import android.net.Uri;
 import android.content.Intent;
 import android.widget.Toast;
 
+import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -63,6 +64,9 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.stephentuso.welcome.WelcomeHelper;
 
 import org.apache.commons.io.FileUtils;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.zeroturnaround.zip.FileSource;
 import org.zeroturnaround.zip.ZipEntrySource;
 import org.zeroturnaround.zip.ZipUtil;
@@ -99,12 +103,13 @@ import kpchuck.kklock.interfaces.DialogClickListener;
 import kpchuck.kklock.services.CheckforUpdatesService;
 import kpchuck.kklock.utils.ApkBuilder;
 import kpchuck.kklock.utils.FileHelper;
+import kpchuck.kklock.utils.MessageEvent;
 import kpchuck.kklock.utils.PrefUtils;
 
 import static kpchuck.kklock.constants.PrefConstants.*;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ColorPickerDialogListener{
 
 
     // Bind layouts, spinner
@@ -1106,7 +1111,32 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void colorPicked(MessageEvent event){
 
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+
+
+    @Override
+    public void onColorSelected(int dialogId, int color) {
+        EventBus.getDefault().post(new MessageEvent(dialogId, Integer.toHexString(color)));
+    }
+
+    @Override
+    public void onDialogDismissed(int dialogId) {
+    }
 
     private void promptTelegram(){
         if (isPackageInstalled("org.telegram.messenger", context.getPackageManager()) ||

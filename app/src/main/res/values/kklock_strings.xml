@@ -27,8 +27,8 @@
     <string name="left_dynamic">Left: Dynamic Clock</string>
     <string name="left_stock">Left: Stock Clock</string>
     <string name="center_no_clock">Center: No Clock on Lockscreen</string>
-    <string name="center_clock">Left: Clock on Lockscreen</string>
-    <string name="center_dynamic">Left: Dynamic Clock</string>
+    <string name="center_clock">Center: Clock on Lockscreen</string>
+    <string name="center_dynamic">Center: Dynamic Clock</string>
     <string name="center_stock">Center: Stock Clock</string>
 
     <string name="sysui_type2_center">Clock Position: Style (Default Center: Clock on Lockscreen</string>

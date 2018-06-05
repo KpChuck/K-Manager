@@ -14,6 +14,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import kpchuck.kklock.MainActivity;
 import kpchuck.kklock.R;
+import kpchuck.kklock.dialogs.ColorPicker;
 import kpchuck.kklock.dialogs.InputAlertDialogFragment;
 
 
@@ -50,11 +51,11 @@ public class ClockFragment extends Fragment {
     // Handle Clicks for Icon View
     @OnClick(R.id.addColorButton)
     public void addColorListener(View view){
-        InputAlertDialogFragment dialogFragment = new InputAlertDialogFragment();
-        dialogFragment.Instantiate(getString(R.string.add_color_name_title), getString(R.string.add_color_name_hint),
+        ColorPicker picker = new ColorPicker();
+        picker.init(getString(R.string.add_color_name_title), getString(R.string.add_color_name_hint),
                 getString(R.string.add_color_value_hint), false, "colors",
                 false, view);
-        dialogFragment.show(myContext.getSupportFragmentManager(), "klock");
+        picker.show(myContext.getSupportFragmentManager(), "");
     }
 
     @OnClick(R.id.includedColorsButton)
