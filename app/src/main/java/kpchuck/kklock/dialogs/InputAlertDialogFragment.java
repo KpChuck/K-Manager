@@ -1,4 +1,4 @@
-package kpchuck.kklock.fragments;
+package kpchuck.kklock.dialogs;
 
 
 import android.app.Dialog;

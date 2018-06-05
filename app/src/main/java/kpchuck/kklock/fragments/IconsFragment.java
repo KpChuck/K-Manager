@@ -39,6 +39,9 @@ import butterknife.Unbinder;
 import kpchuck.kklock.Checks;
 import kpchuck.kklock.MainActivity;
 import kpchuck.kklock.R;
+import kpchuck.kklock.dialogs.InputAlertDialogFragment;
+import kpchuck.kklock.dialogs.ProOptionDialog;
+import kpchuck.kklock.dialogs.TextAlertDialogFragment;
 import kpchuck.kklock.interfaces.DialogClickListener;
 import kpchuck.kklock.services.HideIconsService;
 import kpchuck.kklock.utils.FileHelper;
@@ -169,13 +172,13 @@ public class IconsFragment extends Fragment {
         unbinder.unbind();
     }
 
+    @OnClick ({R.id.hideStatusbarIconsNotFully, R.id.blackoutLockscreen, R.id.hideStatusbar, R.id.colorIcons})
+    public void enableGroup(Switch s){
+
+    }
+
     @OnClick (R.id.hideStatusbarIconsNotFully)
     public void notFully(){
-        if(!isPro){
-            new ProOptionDialog().show(myContext.getSupportFragmentManager(), "");
-            hideIconsNotFully.setChecked(false);
-            return;
-        }
         prefUtils.setSwitchPrefs(hideIconsNotFully, PREF_HIDE_ICONS_NOT_FULLY);
     }
     @OnClick (R.id.blackoutLockscreen)
@@ -397,8 +400,6 @@ public class IconsFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-
 
         if(resultCode == RESULT_OK) {
             if(requestCode == Picker.PICK_IMAGE_DEVICE) {

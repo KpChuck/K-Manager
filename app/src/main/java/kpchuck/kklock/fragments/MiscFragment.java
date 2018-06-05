@@ -24,7 +24,6 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -33,6 +32,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import kpchuck.kklock.Checks;
+import kpchuck.kklock.dialogs.ProOptionDialog;
+import kpchuck.kklock.dialogs.TextAlertDialogFragment;
 import kpchuck.kklock.interfaces.DialogClickListener;
 import kpchuck.kklock.R;
 import kpchuck.kklock.utils.FileHelper;

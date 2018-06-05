@@ -6,11 +6,9 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.CardView;
@@ -22,17 +20,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.kbeanie.multipicker.api.ImagePicker;
-import com.kbeanie.multipicker.api.Picker;
-import com.kbeanie.multipicker.api.callbacks.ImagePickerCallback;
-import com.kbeanie.multipicker.api.entity.ChosenImage;
-
-import org.apache.commons.io.FileUtils;
-
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,12 +33,12 @@ import butterknife.Unbinder;
 import kpchuck.kklock.Checks;
 import kpchuck.kklock.R;
 import kpchuck.kklock.adapters.SwitchListAdapter;
+import kpchuck.kklock.dialogs.ProOptionDialog;
+import kpchuck.kklock.dialogs.TextAlertDialogFragment;
 import kpchuck.kklock.interfaces.DialogClickListener;
-import kpchuck.kklock.services.HideIconsService;
 import kpchuck.kklock.utils.FileHelper;
 import kpchuck.kklock.utils.PrefUtils;
 
-import static android.app.Activity.RESULT_OK;
 import static kpchuck.kklock.constants.PrefConstants.PREF_AM;
 import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_CUSTOM_TEXT;
 import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_EVERYWHERE;
@@ -58,10 +46,6 @@ import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_HIDE_NOTIFICAT
 import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_TEXT;
 import static kpchuck.kklock.constants.PrefConstants.PREF_CHANGE_STATBAR_COLOR;
 import static kpchuck.kklock.constants.PrefConstants.PREF_CLOCK_HIDEABLE;
-import static kpchuck.kklock.constants.PrefConstants.PREF_CUSTOM_ICON;
-import static kpchuck.kklock.constants.PrefConstants.PREF_CUSTOM_ICON_FILE;
-import static kpchuck.kklock.constants.PrefConstants.PREF_HIDE_ICONS_NOT_FULLY;
-import static kpchuck.kklock.constants.PrefConstants.PREF_HIDE_ICONS_ON_LOCKSCREEN;
 import static kpchuck.kklock.constants.PrefConstants.PREF_INDICATORS;
 import static kpchuck.kklock.constants.PrefConstants.PREF_MOVE_LEFT;
 import static kpchuck.kklock.constants.PrefConstants.PREF_MOVE_NOTIFICATIONS_RIGHT;

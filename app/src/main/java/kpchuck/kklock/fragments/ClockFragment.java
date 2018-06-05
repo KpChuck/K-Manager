@@ -14,6 +14,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import kpchuck.kklock.MainActivity;
 import kpchuck.kklock.R;
+import kpchuck.kklock.dialogs.InputAlertDialogFragment;
 
 
 public class ClockFragment extends Fragment {
