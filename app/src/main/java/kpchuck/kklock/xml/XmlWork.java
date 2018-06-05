@@ -7,6 +7,8 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.common.util.ArrayUtils;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.Attr;
@@ -17,6 +19,7 @@ import org.w3c.dom.NodeList;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import kpchuck.kklock.R;
@@ -93,12 +96,14 @@ public class XmlWork {
                 utils.getType2(context, R.string.left_clock), utils.getType2(context, R.string.center_clock)};
 
         // Write unmodified keyguard
-        for (String s: unmodPlaces){
-            if (new File(baseFolders, s).exists())
-                utils.writeDocToFile(keyguard, new File(baseFolders, s + "/layout/keyguard_status_bar.xml"));
+        if (prefUtils.getBool(PREF_MOVE_LEFT)) {
+            for (String s : unmodPlaces) {
+                if (new File(baseFolders, s).exists())
+                    utils.writeDocToFile(keyguard, new File(baseFolders, s + "/layout/keyguard_status_bar.xml"));
+            }
+            if (!leaveResBlank())
+                utils.writeDocToFile(keyguard, new File(baseFolders, "res/layout/keyguard_status_bar.xml"));
         }
-        if (!leaveResBlank())
-            utils.writeDocToFile(keyguard, new File(baseFolders, "res/layout/keyguard_status_bar.xml"));
 
         // Write modified keyguard
         Element superContainer = utils.findElementById(keyguard.getDocumentElement(),
@@ -112,6 +117,11 @@ public class XmlWork {
                 utils.getType2(context, R.string.center_stock), utils.getType2(context, R.string.left_no_clock),
                 utils.getType2(context, R.string.left_stock), utils.getType2(context, R.string.left_dynamic)};
 
+        if (prefUtils.getBool(PREF_MOVE_LEFT)){
+            modPlaces = ArrayUtils.concat(modPlaces, unmodPlaces);
+            if (!leaveResBlank())
+                utils.writeDocToFile(keyguard, new File(baseFolders, "res/layout/keyguard_status_bar.xml"));
+        }
         for (String s: modPlaces){
             if (new File(baseFolders, s).exists())
                 utils.writeDocToFile(keyguard, new File(baseFolders, s + "/layout/keyguard_status_bar.xml"));
@@ -146,6 +156,13 @@ public class XmlWork {
                 "@*com.android.systemui:id/clock");
         Element statusBarContents = utils.findElementById(status,
                 "@*com.android.systemui:id/status_bar_contents");
+
+        if (prefUtils.getBool(PREF_MOVE_LEFT)){
+            status.getDocumentElement().insertBefore(
+                    createLLTop(status, X_FILL_PARENT, "center"),
+                    utils.getFirstChildElement(utils.getFirstChildElement(status.getDocumentElement()))
+            );
+        }
         //Insert Right Clock First
         Element customClock = createClock(status, false, "start|center", X_WRAP_CONTENT);
         systemIconArea.insertBefore(customClock, stockClock);
@@ -196,6 +213,12 @@ public class XmlWork {
                 "@*com.android.systemui:id/status_bar_contents");
 
         // Right clocks
+        if (prefUtils.getBool(PREF_MOVE_LEFT)){
+            status.getDocumentElement().insertBefore(
+                    createLLTop(status, X_FILL_PARENT, "center"),
+                    utils.getFirstChildElement(utils.getFirstChildElement(status.getDocumentElement()))
+            );
+        }
         customClock = createClock(status, false, "start|center", X_WRAP_CONTENT);
         Element hideE = createLLTop(status, X_FILL_PARENT, "center");
 
@@ -393,11 +416,9 @@ public class XmlWork {
         }
 
         if (removeClock){
-            Element systemiconarea = utils.findElementById(status,
-                    "@*com.android.systemui:id/system_icon_area");
-            Element stockClock = utils.findElementById(systemiconarea,
-                    "@*com.android.systemui:id/clock");
-            utils.changeAttribute(stockClock, X_LAYOUT_WIDTH, "0dip");
+            List<Element> clock_elements = utils.findElementsById(status, "@*com.android.systemui:id/clock");
+            for (Element e: clock_elements)
+                utils.changeAttribute(e, X_LAYOUT_WIDTH, "0dip");
         }
         if (prefUtils.getBool(PREF_CHANGE_STATBAR_COLOR)){
             statusBarContents = utils.changeAttribute(statusBarContents, "android:background",

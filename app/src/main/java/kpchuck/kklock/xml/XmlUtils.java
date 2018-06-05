@@ -21,6 +21,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -86,6 +88,31 @@ public class XmlUtils {
         return layout;
     }
 
+    public List<Element> findElementsById(Document document, String idName){
+        return findElementsById(document.getDocumentElement(), idName, new ArrayList<Element>());
+    }
+
+    public List<Element> findElementsById(Element parentElement, String idName, List<Element> elements){
+        if (parentElement.getAttribute(X_ID).equals(idName)) elements.add(parentElement);
+
+
+        NodeList list = parentElement.getChildNodes();
+        Element layout;
+        for (int i=0; i<list.getLength(); i++){
+            Node node = list.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                layout = (Element) list.item(i);
+                Attr attr = layout.getAttributeNode(X_ID);
+                if (attr != null && attr.getValue().equals(idName)) elements.add(layout);
+                if (layout.getChildNodes() != null || layout.getChildNodes().getLength() != 0){
+                    elements = findElementsById(layout, idName, elements);
+                }
+            }
+        }
+
+        return elements;
+    }
+
     public Element findElementLikeId(Document document, String idName){
         return findElementLikeId(document.getDocumentElement(), idName);
     }
@@ -116,34 +143,15 @@ public class XmlUtils {
         return findElementByTag(document.getDocumentElement(), tagName);
     }
 
-    public Element findElementByTag(Element parentElement, String tagName){
+    private Element findElementByTag(Element parentElement, String tagName){
         if (parentElement.getTagName().equals(tagName)) return parentElement;
 
         NodeList elements = parentElement.getElementsByTagName(tagName);
         return (Element) elements.item(0);
-        /*
-
-        NodeList list = parentElement.getChildNodes();
-        Element layout = null;
-        for (int i=0; i<list.getLength(); i++){
-            Node node = list.item(i);
-            if (node.getNodeType() == Node.ELEMENT_NODE) {
-                layout = (Element) list.item(i);
-                String tag = layout.getTagName();
-                if (tag.equals(tagName)) break;
-                if (layout.getChildNodes() != null || layout.getChildNodes().getLength() != 0){
-                    layout = findElementById(layout, tagName);
-                    if (layout != null) break;
-                }
-                layout = null;
-            }
-        }
-
-        return layout;*/
     }
 
 
-    public boolean isTheElement(Element element, String layoutTag, String idName){
+    private boolean isTheElement(Element element, String layoutTag, String idName){
         return isTheElement(element, layoutTag, idName, X_ID);
     }
 
