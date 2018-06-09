@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="clock">Clock</string>
+    <string name="icons">Icons</string>
+    <string name="statusbar">StatusBar</string>
+    <string name="misc">Misc</string>
+
     <!-- main_screen -->
     <string name="app_name">K-Manager</string>
     <string name="otherRomsBeta">Other Roms</string>
@@ -21,6 +26,8 @@
     <string name="install_permission_title">Install Unknown Apps Permission</string>
     <string name="request_install_perms">Give K-Manager permission to display the package installer and allow you to install K-Klock.</string>
     <string name="translations_thanks">Thanks to everyone that has helped with translations:</string>
+
+
 
 
 

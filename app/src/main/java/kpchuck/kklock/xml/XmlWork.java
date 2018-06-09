@@ -108,6 +108,9 @@ public class XmlWork {
         // Write modified keyguard
         Element superContainer = utils.findElementById(keyguard.getDocumentElement(),
                 "@*com.android.systemui:id/system_icons_super_container");
+        if (superContainer == null && Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1)
+            superContainer = utils.findElementById(keyguard, "@*com.android.systemui:id/status_icon_area");
+
         superContainer = utils.changeAttribute(superContainer, X_LAYOUT_WIDTH, "0dip");
         superContainer.setAttribute("android:visibility", "gone");
         keyguard = fixForLg(keyguard, false);
