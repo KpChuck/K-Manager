@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="qs_images_attention">Překrytí pro pozadí QS/Záhlaví</string>
+
+    <string-array name="font_names">
+
+        <item>Cursive Bold</item>
+        <item>Cursive Italic</item>
+        <item>Cursive Normal</item>
+        <item>Roboto Bold</item>
+        <item>Roboto Italic</item>
+        <item>Roboto Normal</item>
+        <item>Serif Bold</item>
+        <item>Serif Italic</item>
+        <item>Serif Normal</item>
+        <item>Sans-Serif Bold</item>
+        <item>Sans-Serif Italic</item>
+
+    </string-array>
+
+    <string name="right_no_clock">Vpravo: Žádné hodiny na zamykací obrazovce</string>
+    <string name="right_clock">Vpravo: Hodiny na zamykací obrazovce</string>
+    <string name="right_dynamic">Vpravo: Dynamické hodiny</string>
+    <string name="right_stock">Vpravo: Výchozí hodiny</string>
+    <string name="left_no_clock">Vlevo: Žádné hodiny na zamykací obrazovce</string>
+    <string name="left_clock">Vlevo: Hodiny na zamykací obrazovce</string>
+    <string name="left_dynamic">Vlevo: Dynamické hodiny</string>
+    <string name="left_stock">Vlevo: Výchozí hodiny</string>
+    <string name="center_no_clock">Uprostřed: Žádné hodiny na zamykací obrazovce</string>
+    <string name="center_clock">Uprostřed: Hodiny na zamykací obrazovce</string>
+    <string name="center_dynamic">Uprostřed: Dynamické hodiny</string>
+    <string name="center_stock">Uprostřed: Výchozí hodiny</string>
+
+    <string name="sysui_type2_center">Pozice hodin: Styl (Výchozí uprostřed: Hodiny na zamykací obrazovce</string>
+    <string name="sysui_type2_none">Pozice hodin: Styl (Výchozí NIC)</string>
+    <string name="sysui_type1a">Barva hodin (bílá)</string>
+    <string name="sysui_type1b">Vlastní formát hodin (hodiny s dop./odp.)</string>
+    <string name="sysui_type1c">Typ písma (Sans-Serif Normal)</string>
+
+    <string-array name="headers_type1a">
+        <item>2 sekundy</item>
+        <item>10 sekund</item>
+    </string-array>
+    <string-array name="headers_type1b">
+        <item>Skrýt hodiny na zamykací obrazovce</item>
+    </string-array>
+    <string name="headers_type1a">Časový limit plovoucích oznámení (Výchozí: 5 sekund)</string>
+    <string name="headers_type1b">Hodiny na zamykací obrazovce (Výchozí: zobrazit)</string>
+
+    <string-array name="statusbars_type2">
+        <item>Odstranit indikátor síťového provozu</item>
+    </string-array>
+    <string-array name="statusbars_type1a">
+        <item>Skrýt stavovou lištu na zamykací obrazovce</item>
+        <item>Stejná výška jako ostatní ikony stavové lišty</item>
+    </string-array>
+    <string-array name="statusbars_type1b">
+        <item>Skrýt dop./odp. při výchozích hodinách</item>
+    </string-array>
+    <string name="statusbars_type1a">Výška stavové lišty na zamykací obrazovce (Výchozí)</string>
+    <string name="statusbars_type1b">Zobrazit dop./odp. při výchozích hodinách</string>
+    <string name="statusbars_type1c">Tmavá barva ikon stavové lišty (Světlá barva je barva hodin)</string>
+    <string name="statusbars_type2">Zachovat indikátor síťového provozu</string>
+
+    <string-array name="tiles_type2">
+        <item>Dlaždice QS - 4 ikony</item>
+        <item>Dlaždice QS - 5 ikon</item>
+        <item>Dlaždice QS - 6 ikon</item>
+        <item>Dlaždice QS - 7 ikon</item>
+        <item>Dlaždice QS - 8 ikon</item>
+    </string-array>
+    <string-array name="tiles_type1a">
+        <item>Zachovat jak je</item>
+    </string-array>
+    <string-array name="tiles_type1b">
+        <item>Zakulacené nedávné - Normální</item>
+        <item>Zakulacené nedávné - Malé</item>
+        <item>Zakulacené nedávné - XL</item>
+    </string-array>
+    <string-array name="tiles_type1c">
+        <item>Větší</item>
+        <item>Největší</item>
+        <item>Menší</item>
+        <item>Nejmenší</item>
+    </string-array>
+    <string name="tiles_type1a">Skrýt názvy dlaždic QS</string>
+    <string name="tiles_type1b">Zobrazení nedávných (Výchozí)</string>
+    <string name="tiles_type1c">Velikost hodin stavové lišty (Výchozí)</string>
+    <string name="tiles_type2">Dlaždice QS (výchozí - 3 ikony)</string>
+
+</resources>

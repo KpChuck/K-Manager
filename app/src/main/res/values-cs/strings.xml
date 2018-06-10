@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="clock">Hodiny</string>
+    <string name="icons">Ikony</string>
+    <string name="statusbar">Stavová lišta</string>
+    <string name="misc">Různé</string>
+    
+    <!-- main_screen -->
+    <string name="app_name">K-Manager</string>
+    <string name="otherRomsBeta">Ostatní ROM</string>
+    <string name="changelog">Seznam změn</string>
+    <string name="no_changelog_available">Seznam změn není dostupný</string>
+    <string name="new_version_available">Nová verze K-Manager je dostupná</string>
+    <string name="download">Stáhnout</string>
+    <string name="rom_manager">Správce ROM</string>
+    <string name="chooseRom">Vybrat ROM</string>
+    <string name="selectRomToast">Prosím, vyberte ROM</string>
+    <string name="downloading">Stahování</string>
+    <string name="joinTelegram">Vidím, že máte nainstalovaný Telegram \nTak se připojte k oficiální skupině K-Klock pro podporu atd.</string>
+
+    <string name="subs_not_installed">Substratum není nainstalováno!</string>
+    <string name="subs_required">Tato aplikace vyžaduje Substratum. Chcete jej stáhnout?</string>
+
+    <string name="install_permission_not_granted">Tato zpráva se znovu zobrazí, když změníte názor.</string>
+    <string name="install_permission_title">Oprávnění k instalaci neznámých aplikací.</string>
+    <string name="request_install_perms">Udělte oprávnění aplikaci K-Manager k zobrazení instalačního balíčku a instalaci K-Klock.</string>
+    <string name="translations_thanks">Thanks to everyone that has helped with translations:</string>
+
+
+
+    <!-- Apk building -->
+    <string name="apkBuilderLoading">Vytváření Apk, čekejte prosím&#8230;</string>
+    <string name="decompiling">Dekompilace Apk&#8230;</string>
+    <string name="signing">Podepisování K-Klock&#8230;</string>
+    <string name="cleaning_files">Čištění souborů&#8230;</string>
+    <string name="installing_apk">Instalace K-Klock&#8230;</string>
+    <string name="open_in_substratum">Otevřete K-Klock v Substratum</string>
+    <string name="lucky_patcher_message">Ahoj! Vidím, že používáte Lucky Patcher nebo jinou aplikaci, která by mohla být použita pro pirátství. Podpořte vývojáře zakoupením aplikace a odinstalací pirátských aplikací.
+    </string>
+    <string name="rom_files_updated">Zdá se, že jste mohli mít aktualizaci systému od posledního použití možnosti "Ostatní ROM".
+        Chcete odstranit systémové soubory K-Manager a znovu je extrahovat?
+    </string>
+    <string name="use_ones_have">Ne, použiji ty, které mám.</string>
+    <string name="adb_copy_sysui">Zdá se, že nemáte potřebný soubor a/nebo oprávnění, aby to správně fungovalo.
+                                Spusťte tento příkaz ADB pomocí počítače.</string>
+    <string name="files_for_header_404">Vaše soubory ROM neobsahují potřebné soubory pro práci s obrázky záhlaví QS?
+                                    Chcete přepnout na volbu "Ostatní ROM" a extrahovat potřebný soubor?
+    </string>
+
+    <!-- other rom settings -->
+    <string name="hide_stock">Skrýt výchozí hodiny</string>
+    <string name="make_dynamic">Vytvořit dynamické hodiny (Nougat)</string>
+    <string name="rom_info">Informace ROM</string>
+    <string name="rom_name_hint">Zde zadejte název vaší ROM</string>
+    <string name="rom_version_hint">Zde zadejte verzi systému Android (Nougat nebo Oreo)</string>
+    <string name="files_not_found">Nemáte potřebné soubory ROM. Spusťte a vyzkoušejte K-Klock s jinou ROM alespoň jednou!</string>
+    <string name="error_sending_zip">Chyba při odesílání souboru zip, zkuste to znovu později</string>
+    <string name="or_settings_title">Ostatní ROM - nastavení</string>
+    <string name="send_files">Odeslat soubory "Ostatní ROM" aplikaci K-Manager</string>
+
+
+    <!-- clock fragment -->
+    <string name="error_adding_new_value">Nic nebylo uloženo, musíte zadat dvě hodnoty</string>
+    <string name="cc_manager">Správce barev hodin</string>
+    <string name="cf_manager">Správce formátu hodin</string>
+    <string name="add_color_name_title">Přidat vlastní barvu</string>
+    <string name="add_color">Přidat barvu</string>
+    <string name="add_format">Přidat formáty</string>
+    <string name="add_color_value_hint">Zde zadejte hodnotu barvy RGB. Např. #00ff00</string>
+    <string name="add_color_name_hint">Zde zadejte název barvy. Např. Tmavě modrá</string>
+    <string name="add_format_name_title">Přidat vlastní formát</string>
+    <string name="add_format_value_hint">Zadejte Java formát hodin. Např. EEE HH:mm</string>
+    <string name="add_format_name_hint">Zde zadejte název barevného formátu. Např. Zkrácený den</string>
+    <string name="included_colors">Zahrnuté barvy</string>
+    <string name="added_colors">Přidané barvy</string>
+    <string name="included_formats">Zahrnuté formáty</string>
+    <string name="added_formats">Přidané formáty</string>
+
+    <!-- icons fragment -->
+    <string name="blackout_lockscreen">Zatmavit stavovou lištu na zamykací obrazovce</string>
+    <string name="lockscreen_statusbar_size">Výška stavové lišty na zamykací obrazovce</string>
+    <string name="hide_notifications">Skrýt oznamovací ikony</string>
+    <string name="theme_statusbar_color">Motiv stavové lišty a barva výchozích hodin</string>
+    <string name="si_manager">Správce barev ikon stavové lišty</string>
+    <string name="si_desc">Barvy ikon stavové lišty jsou spojeny s hlavní barvou hodin,
+        takže změna barvy hodin změní barvu ikon.\n\nZde můžete přidat tmavé barvy ikon stavové lišty
+    </string>
+    <string name="hide_icons_warning">
+        Skrytí ikon na zamykací obrazovce může způsobit, že se objeví více ikon nebo někdy všechny zmizí.
+        Pro zálohování/obnovení konfigurace ikon můžete použít aplikaci SystemUI Tuner z Obchodu Play.
+        Byli jste a budete i nadále varováni, takže nenesu žádnou zodpovědnost za problémy s ikonami.
+    </string>
+    <string name="statbar_icon_options">Možnosti ikon stavové lišty</string>
+    <string name="hide_icons_lockscreen">Skrýt ikony stavové lišty na zamykací obrazovce</string>
+    <string name="custom_icon_statbar">Přidat vlastní ikony do stavové lišty</string>
+    <string name="leave_wifi_networks">Ponechat ikonu baterie, Wi-Fi a ikony sítě</string>
+
+
+
+    <!-- statusbar fragment -->
+    <string name="network_icons_left">Přesunout ikony sítě doleva</string>
+    <string name="notification_icons_right">Přesunout oznamovací ikony doprava</string>
+    <string name="ampm_stock_clock">Zobrazit dop./odp. u výchozích hodin</string>
+    <string name="hide_network_indicators">Skrýt indikátor síťového provozu</string>
+    <string name="clock_size">Velikost hodin stavové lišty</string>
+    <string name="enter_text_hint">Zde zadejte váš text</string>
+    <string name="clock_hideable_warning">Pokud má vaše ROM přizpůsobení stavové lišty, jako je změna pozice/ikon pak tuto funkci nepoužívejte.
+            Může to způsobit pád SystemUI&#8230;
+    </string>
+    <string name="select_statbar_bg">Vyberte barvu pozadí stavové lišty</string>
+    <string name="black">Černá</string>
+    <string name="black_transparent">Černá - 25% průhlednost</string>
+    <string name="white">Bílá</string>
+    <string name="other_specify">Jiná(Upřesněno níže)</string>
+    <string name="statusbar_options">Možnosti stavové lišty</string>
+    <string name="change_statusbar_bg">Změna barvy stavové lišty</string>
+    <string name="clock_hide_launcher">Hodiny skryté ve spouštěči</string>
+    <string name="text_on_statusbar">Zobrazit vlastní text ve stavové liště</string>
+    <string name="text_on_lockscreen">Zobrazit pouze na zamykací obrazovce</string>
+
+
+
+    <!-- misc fragment -->
+    <string name="minit_disclaimer">
+        Tato volba NEINSTALUJE 3Minit Battery Mod. Jediné, co dělá je, že zajistí, aby mezi K-Klock a 3Minit nebyly žádné konflikty.\n
+        Tuto volbou byste měli mít pouze tehdy, pokud již máte 3Minit. \n\n
+        <b>Tímto způsobem porušíte svoji ROM, pokud nebudete mít nainstalováno 3Minit.</b>
+    </string>
+    <string name="misc_addon">Různé doplňky</string>
+    <string name="qs_tile_no">Počet dlaždic QS</string>
+    <string name="qs_tile_text">Skrýt názvy dlaždic QS</string>
+    <string name="rounded_recents">Zakulacené nedávné</string>
+    <string name="qs_background">Přidat vlastní pozadí QS</string>
+    <string name="minit_compatibility">Vytvořit kompatibilitu s 3Minit</string>
+    <string name="not_png_error_message">Obrázek, který jste vybrali, není png. Převeďte jej na png a zkuste to znovu</string>
+    <string name="qs_header">Přidat vlastní záhlaví QS</string>
+    <string name="heads_up_timeout">Časový limit plovoucích oznámení</string>
+    <string name="hide_lockscreen_clock">Skrýt hodiny zamykací obrázky</string>
+
+
+    <!-- welcome activity -->
+    <string name="how_to_use">Jak používat</string>
+    <string name="screen1_1">Vaberte ROM a další nastavení v K-Manager.</string>
+    <string name="screen1_2">Potom klepněte na žluté tlačítko pro vytvoření motivu K-Klock s touto konfigurací!</string>
+    <string name="hscreen2_title">Co znamená možnost "Styl hodin" v Substratum</string>
+    <string name="hscreen2_1">První část možnosti stylu hodin určuje, jak se mají hodiny chovat.</string>
+    <string name="hscreen2_2">Můžete zvolit, zda se mají hodiny zobrazit na zamykací obrazovce nebo ne. </string>
+    <string name="hscreen2_3">Výchozí hodiny nebo dynamické hodiny jsou skryty na zamykací obrazovce, aniž byste museli něco vybírat. </string>
+    <string name="hscreen2_4">Tyto dvě jsou různé, protože dělají hodiny dynamické, tj. změní barvu na bílé pozadí. </string>
+    <string name="hscreen3_title">Pomoc a podpora</string>
+    <string name="hscreen3_1">Pokud jste ovšem stále zmateni, podívejte se do nápovědy! </string>
+    <string name="hscreen3_2">Můžete také zkontrolovat poslední změny nebo zkontrolovat, zda není dostupná aktualizace.</string>
+
+    <!-- settings activity -->
+    <string name="title_activity_settings">Nastavení</string>
+    <string name="delete_apk_error">Chyba mazání aplikací: </string>
+    <string name="delete_apk_success">Všechny aplikace smazány</string>
+    <string name="cleared_saved">Uložené hodnoty smazány</string>
+    <string name="install_silently">Instalace aplikací K-Klock na pozadí po dokončení</string>
+    <string name="set_dark_theme">Nastavit tmavý motiv</string>
+    <string name="sync_files_desc">Automaticky synchronizovat soubory ROM při otevření K-Manager</string>
+    <string name="delete_saved_cfs">Smazat uložené formáty hodin a barvy</string>
+    <string name="delete_kklock_apks">Smazat všechny aplikace vytvořené v K-Klock</string>
+    <string name="alt_qs_header">Alternativní záhlaví QS</string>
+    <string name="alt_qs_header_desc">Použít jinou metodu pro zobrazení obrázků záhlaví QS.</string>
+    <string name="report_a_bug">Hlášení o chybě</string>
+
+    <!-- Services -->
+    <string name="syncing_roms">Synchronizace souborů ROM</string>
+    <string name="finished_syncing">Synchronizace dokončena</string>
+    <string name="sync_files">Synchronizovat soubory ROM</string>
+
+    <string name="hide_icon_id">Skrýt ikonu služby K-Manager</string>
+    <string name="hide_icon_name">Skrýt ikony stavové lišty</string>
+    <string name="hide_icon_desc">Oznamovací kanál K-Manager pro skrytí ikon služeb spuštěných na pozadí</string>
+    <string name="hide_icon_notif_message">Skrytí ikony služby běží na pozadí</string>
+
+
+
+    <!-- navdrawer and menu -->
+    <string name="action_settings">Přispět</string>
+    <string name="version">verze</string>
+    <string name="about_desc1">K-Manager vytváří aplikaci Substratum - K-Klock.</string>
+    <string name="about_desc2">Můžete přizpůsobit hodiny stavové lišty i další prvky uživatelského rozhraní v telefonu!</string>
+    <string name="about_desc3">Zdroje GitHubub:</string>
+
+    <string name="telegramItem">Skupina Telegram</string>
+    <string name="faqsTitle">Pomoc a FAQ</string>
+    <string name="faqsItem">FAQ</string>
+    <string name="otherromsItem">Ostatní ROM - pomoc</string>
+    <string name="qsbgItem">Vlastní pozadí QS</string>
+    <string name="leftnetworkItem">Indikátor síťového provozu na levé straně</string>
+    <string name="usefullLinksTitle">Užitečné odkazy</string>
+    <string name="rgbItem">Tabulka barev RGB</string>
+    <string name="formatsItem">Příručka formátů hodin</string>
+    <string name="settings">Nastavení</string>
+    <string name="updateItem">Je k dispozici nová verze</string>
+    <string name="updateDesc">Klikněte pro instalaci</string>
+    <string name="changelogItem">View Changelog</string>
+    <string name="aboutItem">O aplikaci &amp; Licence</string>
+
+    <!-- pro strings -->
+    <string name="pro">PRO verze</string>
+    <string name="pro_message">Jedná se o funkci K-Manager PRO. Chcete-li ji použít, přejděte na K-Manager PRO.</string>
+    <string name="pro_title">PRO funkce</string>
+    <string name="upgrade">Aktualizace</string>
+    <string name="upgrade_to_pro">Aktualizovat na verzi PRO</string>
+    <string name="upgrade_to_pro_desc">Podpořte vývojáře a získejte K-Manager PRO s dalšími funkcemi</string>
+
+
+    <!-- other generic stuff -->
+    <string name="cancel">Zrušit</string>
+    <string name="okay">OK</string>
+    <string name="thanks">Díky</string>
+    <string name="not_today">Dnes ne</string>
+    <string name="remind_me_later">Připomenout později</string>
+    <string name="enable">Povolit</string>
+    <string name="important">DŮLEŽITÉ</string>
+    <string name="enjoy">Užívejte si</string>
+    <string name="warning">Varování :)</string>
+    <string name="copy_to_clipboard">Kopírovat do schránky</string>
+    <string name="saved_clipboard">Uloženo do schránky</string>
+    <string name="save">Uložit</string>
+    <string name="no">Ne</string>
+
+    <string name="adb_required">Vyžadováno oprávnění ADB</string>
+    <string name="adb_how_to_run">Aby tato funkce fungovala, potřebujete udělit oprávnění aplikaci K-Manager prostřednictvím ADB.
+        Spusťte tento příkaz přes ADB v počítači.
+    </string>
+
+
+
+
+
+
+
+
+
+</resources>
