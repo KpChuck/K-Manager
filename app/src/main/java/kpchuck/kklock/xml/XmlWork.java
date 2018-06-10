@@ -419,7 +419,10 @@ public class XmlWork {
         }
 
         if (removeClock){
-            List<Element> clock_elements = utils.findElementsById(status, "@*com.android.systemui:id/clock");
+            List<Element> clock_elements = new ArrayList<>();
+            for (String s : new String[]{"clock", "center_clock", "left_clock"}){
+                clock_elements.addAll(utils.findElementsById(status, "@*com.android.systemui:id/"+s));
+            }
             for (Element e: clock_elements)
                 utils.changeAttribute(e, X_LAYOUT_WIDTH, "0dip");
         }
