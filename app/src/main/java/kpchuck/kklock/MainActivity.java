@@ -10,6 +10,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.content.res.XmlResourceParser;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -40,7 +42,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 
 import java.io.IOException;
@@ -67,6 +72,11 @@ import org.apache.commons.io.FileUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.sax2.Driver;
 import org.zeroturnaround.zip.FileSource;
 import org.zeroturnaround.zip.ZipEntrySource;
 import org.zeroturnaround.zip.ZipUtil;
@@ -74,6 +84,14 @@ import org.zeroturnaround.zip.ZipUtil;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.sax.SAXSource;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -105,6 +123,7 @@ import kpchuck.kklock.utils.ApkBuilder;
 import kpchuck.kklock.utils.FileHelper;
 import kpchuck.kklock.utils.MessageEvent;
 import kpchuck.kklock.utils.PrefUtils;
+import kpchuck.kklock.xml.XmlUtils;
 
 import static kpchuck.kklock.constants.PrefConstants.*;
 
@@ -747,6 +766,8 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
                     InputStream inputStream = context.getAssets().open("romSpecific/" + romName + ".zip");
                     FileUtils.copyInputStreamToFile(inputStream, tempZip);
                 }
+                if (tempZip.exists() && tempZip.isDirectory())
+                    tempZip.delete();
                 ZipUtil.explode(tempZip);
                 File c = new File(tempZip, "quick_status_bar_expanded_header.xml");
                 if (!c.exists()){
