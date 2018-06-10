@@ -38,7 +38,7 @@ public class QsBgUtil {
     File dir;
     FileHelper fileHelper;
     String inputFolder;
-    String header_png = "abc_list_selector_holo_dark.png";
+    String header_png = "abc_list_selector_holo_dark";
 
 
     public QsBgUtil(Context context, File tempFolder, String inputFolder) throws Exception{
@@ -52,7 +52,7 @@ public class QsBgUtil {
             File attention = new File(dir.getAbsolutePath() + "/assets/overlays/com.android.systemui.headers/attention");
 
             if (prefUtils.getBool(PREF_QS_BG))
-                moveImage(PREF_QS_BG_FILE, "qs_background_primary.png");
+                moveImage(PREF_QS_BG_FILE, "qs_background_primary");
                 new XmlUtils().writeType2Desc(context.getString(R.string.qs_images_attention), attention.getAbsolutePath());
 
             if (prefUtils.getBool(PREF_QS_HEADER)) {
@@ -64,6 +64,10 @@ public class QsBgUtil {
 
         }
 
+    }
+
+    private String getExtension(String file){
+        return file.substring(file.lastIndexOf("."), file.length());
     }
 
     private void buildDirs(){
@@ -85,7 +89,7 @@ public class QsBgUtil {
         String filePath = prefUtils.getString(file_pref, "null");
         FileUtils.copyFileToDirectory(new File(filePath), destFolder);
         File qsFile = new File(destFolder, filePath.substring(filePath.lastIndexOf("/")));
-        qsFile.renameTo(new File(destFolder, newName));
+        qsFile.renameTo(new File(destFolder, newName + getExtension(filePath)));
 
     }
 

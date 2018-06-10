@@ -239,8 +239,9 @@ public class MiscFragment extends Fragment {
             public void onImagesChosen(List<ChosenImage> images) {
 
                 String filePath = images.get(0).getOriginalPath();
+                String extension = filePath.substring(filePath.lastIndexOf("."), filePath.length());
 
-                if (!filePath.substring(filePath.lastIndexOf("."), filePath.length()).equals(".png")){
+                if (!extension.equals(".png") || !extension.equals(".xml")){
                     shortToast(getString(R.string.not_png_error_message));
                     prefUtils.putBool(switch_bool, false);
                     ButterKnife.apply(mySwitch, ENABLED, false);
@@ -250,7 +251,7 @@ public class MiscFragment extends Fragment {
                 else{
                     try {
                         File destFolder = fileHelper.newFolder(Environment.getExternalStorageDirectory() + "/K-Manager/qs_images");
-                        File destFile = new File(destFolder, requestId == 0 ? "qs_bg.png" : "qs_header.png");
+                        File destFile = new File(destFolder, requestId == 0 ? "qs_bg" + extension : "qs_header" + extension);
                         if (destFile.exists()) destFile.delete();
                         FileUtils.copyFile(new File(filePath), destFile);
                         prefUtils.putString(file_pref, destFile.getAbsolutePath());

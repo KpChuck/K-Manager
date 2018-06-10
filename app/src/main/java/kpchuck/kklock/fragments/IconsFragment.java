@@ -359,8 +359,9 @@ public class IconsFragment extends Fragment {
             public void onImagesChosen(List<ChosenImage> images) {
 
                 String filePath = images.get(0).getOriginalPath();
+                String extension = filePath.substring(filePath.lastIndexOf("."), filePath.length());
 
-                if (!filePath.substring(filePath.lastIndexOf("."), filePath.length()).equals(".png")){
+                if (!extension.equals(".png") || !extension.equals(".xml")){
                     Toast.makeText(getContext(), getString(R.string.not_png_error_message), Toast.LENGTH_SHORT).show();
                     prefUtils.putBool(switch_bool, false);
                     ButterKnife.apply(mySwitch, ENABLED, false);
@@ -370,7 +371,7 @@ public class IconsFragment extends Fragment {
                 else{
                     try {
                         File destFolder = fileHelper.newFolder(Environment.getExternalStorageDirectory() + "/K-Manager/qs_images");
-                        File destFile = new File(destFolder, "custom_icon.png");
+                        File destFile = new File(destFolder, "custom_icon" + extension);
                         if (destFile.exists()) destFile.delete();
                         FileUtils.copyFile(new File(filePath), destFile);
                         prefUtils.putString(file_pref, destFile.getAbsolutePath());
