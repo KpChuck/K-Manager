@@ -1,11 +1,24 @@
 package jadx.core.codegen;
 
-import jadx.api.IJadxArgs;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import com.android.dx.rop.code.AccessFlags;
+
+import jadx.api.JadxArgs;
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.attributes.AttrNode;
 import jadx.core.dex.attributes.nodes.EnumClassAttr;
 import jadx.core.dex.attributes.nodes.EnumClassAttr.EnumField;
+import jadx.core.dex.attributes.nodes.LineAttrNode;
 import jadx.core.dex.attributes.nodes.SourceFileAttr;
 import jadx.core.dex.info.AccessInfo;
 import jadx.core.dex.info.ClassInfo;
@@ -23,30 +36,7 @@ import jadx.core.utils.ErrorsCounter;
 import jadx.core.utils.Utils;
 import jadx.core.utils.exceptions.CodegenException;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.android.dx.rop.code.AccessFlags;
-
 public class ClassGen {
-	private static final Logger LOG = LoggerFactory.getLogger(ClassGen.class);
-
-	public static final Comparator<MethodNode> METHOD_LINE_COMPARATOR = new Comparator<MethodNode>() {
-		@Override
-		public int compare(MethodNode a, MethodNode b) {
-			return Utils.compare(a.getSourceLine(), b.getSourceLine());
-		}
-	};
 
 	private final ClassNode cls;
 	private final ClassGen parentGen;
@@ -58,8 +48,8 @@ public class ClassGen {
 	private final Set<ClassInfo> imports = new HashSet<>();
 	private int clsDeclLine;
 
-	public ClassGen(ClassNode cls, IJadxArgs jadxArgs) {
-		this(cls, null, jadxArgs.isUsingImports(), jadxArgs.isFallbackMode(), jadxArgs.isShowInconsistentCode());
+	public ClassGen(ClassNode cls, JadxArgs jadxArgs) {
+		this(cls, null, jadxArgs.isUseImports(), jadxArgs.isFallbackMode(), jadxArgs.isShowInconsistentCode());
 	}
 
 	public ClassGen(ClassNode cls, ClassGen parentClsGen) {
@@ -276,7 +266,12 @@ public class ClassGen {
 
 	private static List<MethodNode> sortMethodsByLine(List<MethodNode> methods) {
 		List<MethodNode> out = new ArrayList<>(methods);
-		Collections.sort(out, METHOD_LINE_COMPARATOR);
+		out.sort(new Comparator<MethodNode>() {
+			@Override
+			public int compare(MethodNode o1, MethodNode o2) {
+				return Integer.compare(o1.getSourceLine(), o2.getSourceLine());
+			}
+		});
 		return out;
 	}
 
@@ -445,7 +440,7 @@ public class ClassGen {
 	}
 
 	public void useClass(CodeWriter code, ArgType type) {
-		useClass(code, ClassInfo.extCls(cls.dex(), type));
+		useClass(code, ClassInfo.extCls(cls.root(), type));
 		ArgType[] generics = type.getGenericTypes();
 		if (generics != null) {
 			code.add('<');

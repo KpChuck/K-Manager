@@ -1,5 +1,15 @@
 package jadx.core.utils;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.jetbrains.annotations.TestOnly;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jadx.core.codegen.CodeWriter;
 import jadx.core.codegen.InsnGen;
 import jadx.core.codegen.MethodGen;
@@ -22,15 +32,6 @@ import jadx.core.dex.visitors.regions.TracedRegionVisitor;
 import jadx.core.utils.exceptions.CodegenException;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @Deprecated
 public class DebugUtils {
 	private static final Logger LOG = LoggerFactory.getLogger(DebugUtils.class);
@@ -44,17 +45,17 @@ public class DebugUtils {
 
 	public static void dump(MethodNode mth, String desc) {
 		File out = new File("test-graph" + desc + "-tmp");
-		DotGraphVisitor.dump(out).visit(mth);
-		DotGraphVisitor.dumpRaw(out).visit(mth);
-		DotGraphVisitor.dumpRegions(out).visit(mth);
+		DotGraphVisitor.dump().save(out, mth);
+		DotGraphVisitor.dumpRaw().save(out, mth);
+		DotGraphVisitor.dumpRegions().save(out, mth);
 	}
 
-	public static void printRegionsWithBlock(MethodNode mth, BlockNode block, final BlockNode b) {
+	public static void printRegionsWithBlock(MethodNode mth, final BlockNode block) {
 		final Set<IRegion> regions = new LinkedHashSet<>();
 		DepthRegionTraversal.traverse(mth, new TracedRegionVisitor() {
 			@Override
 			public void processBlockTraced(MethodNode mth, IBlock container, IRegion currentRegion) {
-				if (b.equals(container)) {
+				if (block.equals(container)) {
 					regions.add(currentRegion);
 				}
 			}
@@ -76,7 +77,7 @@ public class DebugUtils {
 	}
 
 	private static void printRegion(MethodNode mth, IRegion region, String indent, boolean printInsns) {
-		LOG.debug("{}{}", indent, region);
+		LOG.debug("{}{} {}", indent, region, region.getAttributesString());
 		indent += "|  ";
 		for (IContainer container : region.getSubBlocks()) {
 			if (container instanceof IRegion) {
@@ -99,9 +100,9 @@ public class DebugUtils {
 				CodeWriter code = new CodeWriter();
 				ig.makeInsn(insn, code);
 				String insnStr = code.toString().substring(CodeWriter.NL.length());
-				LOG.debug("{} - {}", indent, insnStr);
+				LOG.debug("{}> {}\t{}", indent, insnStr, insn.getAttributesString());
 			} catch (CodegenException e) {
-				LOG.debug("{} - {}", indent, insn);
+				LOG.debug("{}>!! {}", indent, insn);
 			}
 		}
 	}

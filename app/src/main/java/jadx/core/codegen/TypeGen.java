@@ -1,15 +1,16 @@
 package jadx.core.codegen;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jadx.api.JadxArgs;
+import jadx.core.deobf.NameMapper;
 import jadx.core.dex.instructions.args.ArgType;
 import jadx.core.dex.instructions.args.PrimitiveType;
 import jadx.core.dex.nodes.IDexNode;
 import jadx.core.utils.StringUtils;
 import jadx.core.utils.Utils;
 import jadx.core.utils.exceptions.JadxRuntimeException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class TypeGen {
 	private static final Logger LOG = LoggerFactory.getLogger(TypeGen.class);
@@ -57,7 +58,11 @@ public class TypeGen {
 			case BOOLEAN:
 				return lit == 0 ? "false" : "true";
 			case CHAR:
-				return stringUtils.unescapeChar((char) lit);
+				char ch = (char) lit;
+				if (!NameMapper.isPrintableChar(ch)) {
+					return Integer.toString(ch);
+				}
+				return stringUtils.unescapeChar(ch);
 			case BYTE:
 				return formatByte((byte) lit);
 			case SHORT:
@@ -171,5 +176,4 @@ public class TypeGen {
 		}
 		return Float.toString(f) + "f";
 	}
-
 }

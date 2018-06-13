@@ -1,15 +1,15 @@
 package jadx.core.dex.regions.conditions;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import jadx.core.dex.nodes.BlockNode;
 import jadx.core.dex.nodes.IBranchRegion;
 import jadx.core.dex.nodes.IContainer;
 import jadx.core.dex.nodes.IRegion;
 import jadx.core.dex.regions.AbstractRegion;
 import jadx.core.utils.exceptions.JadxRuntimeException;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public final class IfRegion extends AbstractRegion implements IBranchRegion {
 
@@ -105,10 +105,12 @@ public final class IfRegion extends AbstractRegion implements IBranchRegion {
 	public boolean replaceSubBlock(IContainer oldBlock, IContainer newBlock) {
 		if (oldBlock == thenRegion) {
 			thenRegion = newBlock;
+			updateParent(thenRegion, this);
 			return true;
 		}
 		if (oldBlock == elseRegion) {
 			elseRegion = newBlock;
+			updateParent(elseRegion, this);
 			return true;
 		}
 		return false;
@@ -128,6 +130,6 @@ public final class IfRegion extends AbstractRegion implements IBranchRegion {
 
 	@Override
 	public String toString() {
-		return "IF " + header + " then " + thenRegion + " else " + elseRegion;
+		return "IF " + header + " then (" + thenRegion + ") else (" + elseRegion + ")";
 	}
 }

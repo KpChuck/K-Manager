@@ -7,6 +7,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -71,6 +73,16 @@ public class FileUtils {
 			throw new JadxRuntimeException("Failed to create temp file with suffix: " + suffix);
 		}
 		return temp;
+	}
+
+	public static File createTempDir(String suffix) {
+		try {
+			Path path = Files.createTempDirectory("jadx-tmp-" + System.nanoTime() + "-" + suffix);
+			path.toFile().deleteOnExit();
+			return path.toFile();
+		} catch (IOException e) {
+			throw new JadxRuntimeException("Failed to create temp directory with suffix: " + suffix);
+		}
 	}
 
 	public static void copyStream(InputStream input, OutputStream output) throws IOException {
@@ -179,20 +191,10 @@ public class FileUtils {
 	}
 
 	private static boolean isZipFileCanBeOpen(File file) {
-		ZipFile zipFile = null;
-		try {
-			zipFile = new ZipFile(file);
+		try (ZipFile zipFile = new ZipFile(file)) {
 			return zipFile.entries().hasMoreElements();
 		} catch (Exception e) {
 			return false;
-		} finally {
-			if (zipFile != null) {
-				try {
-					zipFile.close();
-				} catch (IOException e) {
-					LOG.error(e.getMessage());
-				}
-			}
 		}
 	}
 
@@ -204,8 +206,8 @@ public class FileUtils {
 				makeDirs(testDir);
 				if (caseCheckUpper.createNewFile()) {
 					boolean caseSensitive = !caseCheckLow.exists();
-					LOG.debug("Filesystem at {} is {} case-sensitive", testDir.getAbsolutePath(),
-							(caseSensitive ? "" : "NOT"));
+					LOG.debug("Filesystem at {} is {}case-sensitive", testDir.getAbsolutePath(),
+							(caseSensitive ? "" : "NOT "));
 					return caseSensitive;
 				} else {
 					LOG.debug("Failed to create file: {}", caseCheckUpper.getAbsolutePath());
@@ -214,13 +216,20 @@ public class FileUtils {
 				LOG.debug("Failed to detect filesystem case-sensitivity by file creation", e);
 			} finally {
 				try {
-					caseCheckUpper.delete();
-					caseCheckLow.delete();
+					Files.deleteIfExists(caseCheckUpper.toPath());
+					Files.deleteIfExists(caseCheckLow.toPath());
 				} catch (Exception e) {
 					// ignore
 				}
 			}
 		}
 		return IOCase.SYSTEM.isCaseSensitive();
+	}
+
+	public static File toFile(String path) {
+		if (path == null) {
+			return null;
+		}
+		return new File(path);
 	}
 }

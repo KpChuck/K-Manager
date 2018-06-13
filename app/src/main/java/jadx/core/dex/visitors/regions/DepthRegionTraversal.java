@@ -1,5 +1,7 @@
 package jadx.core.dex.visitors.regions;
 
+import java.util.function.Consumer;
+
 import jadx.core.dex.nodes.IBlock;
 import jadx.core.dex.nodes.IContainer;
 import jadx.core.dex.nodes.IRegion;
@@ -48,15 +50,18 @@ public class DepthRegionTraversal {
 		} while (repeat);
 	}
 
-	private static void traverseInternal(MethodNode mth, IRegionVisitor visitor, IContainer container) {
+	private static void traverseInternal(final MethodNode mth, final IRegionVisitor visitor, IContainer container) {
 		if (container instanceof IBlock) {
 			visitor.processBlock(mth, (IBlock) container);
 		} else if (container instanceof IRegion) {
 			IRegion region = (IRegion) container;
 			if (visitor.enterRegion(mth, region)) {
-				for (IContainer subCont : region.getSubBlocks()) {
-					traverseInternal(mth, visitor, subCont);
-				}
+				region.getSubBlocks().forEach(new Consumer<IContainer>() {
+					@Override
+					public void accept(IContainer iContainer) {
+						traverseInternal(mth, visitor, iContainer);
+					}
+				});
 			}
 			visitor.leaveRegion(mth, region);
 		}

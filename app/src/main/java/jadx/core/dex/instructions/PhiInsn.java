@@ -1,5 +1,10 @@
 package jadx.core.dex.instructions;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import org.jetbrains.annotations.NotNull;
+
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.instructions.args.ArgType;
 import jadx.core.dex.instructions.args.InsnArg;
@@ -10,18 +15,13 @@ import jadx.core.utils.InstructionRemover;
 import jadx.core.utils.Utils;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
-
-import org.jetbrains.annotations.NotNull;
-
 public final class PhiInsn extends InsnNode {
 
 	private final Map<RegisterArg, BlockNode> blockBinds;
 
 	public PhiInsn(int regNum, int predecessors) {
 		super(InsnType.PHI, predecessors);
-		this.blockBinds = new IdentityHashMap<>(predecessors);
+		this.blockBinds = new LinkedHashMap<>(predecessors);
 		setResult(InsnArg.reg(regNum, ArgType.UNKNOWN));
 		add(AFlag.DONT_INLINE);
 	}

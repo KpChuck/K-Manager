@@ -1,5 +1,14 @@
 package jadx.core.dex.nodes;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+import com.android.dx.io.instructions.DecodedInstruction;
+import com.rits.cloning.Cloner;
+
 import jadx.core.dex.attributes.nodes.LineAttrNode;
 import jadx.core.dex.instructions.InsnType;
 import jadx.core.dex.instructions.args.ArgType;
@@ -11,14 +20,6 @@ import jadx.core.dex.instructions.args.RegisterArg;
 import jadx.core.dex.instructions.args.SSAVar;
 import jadx.core.utils.InsnUtils;
 import jadx.core.utils.Utils;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import com.android.dx.io.instructions.DecodedInstruction;
-import com.rits.cloning.Cloner;
 
 public class InsnNode extends LineAttrNode {
 
@@ -251,12 +252,14 @@ public class InsnNode extends LineAttrNode {
 		if (this == other) {
 			return true;
 		}
-		if (insnType != other.insnType
-				|| arguments.size() != other.arguments.size()) {
+		if (insnType != other.insnType) {
+			return false;
+		}
+		int size = arguments.size();
+		if (size != other.arguments.size()) {
 			return false;
 		}
 		// check wrapped instructions
-		int size = arguments.size();
 		for (int i = 0; i < size; i++) {
 			InsnArg arg = arguments.get(i);
 			InsnArg otherArg = other.arguments.get(i);
@@ -272,6 +275,16 @@ public class InsnNode extends LineAttrNode {
 			}
 		}
 		return true;
+	}
+	/**
+	 * 'Hard' equals, compare all arguments
+	 */
+	public boolean isDeepEquals(InsnNode other) {
+		if (this == other) {
+			return true;
+		}
+		return isSame(other)
+				&& Objects.equals(arguments, other.arguments);
 	}
 
 	protected <T extends InsnNode> T copyCommonParams(T copy) {

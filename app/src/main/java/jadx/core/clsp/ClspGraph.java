@@ -1,9 +1,5 @@
 package jadx.core.clsp;
 
-import jadx.core.dex.nodes.ClassNode;
-import jadx.core.utils.exceptions.DecodeException;
-import jadx.core.utils.exceptions.JadxRuntimeException;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,6 +12,10 @@ import java.util.WeakHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jadx.core.dex.nodes.ClassNode;
+import jadx.core.utils.exceptions.DecodeException;
+import jadx.core.utils.exceptions.JadxRuntimeException;
 
 /**
  * Classes hierarchy graph
@@ -120,9 +120,11 @@ public class ClspGraph {
 	}
 
 	private void addAncestorsNames(NClass cls, Set<String> result) {
-		result.add(cls.getName());
-		for (NClass p : cls.getParents()) {
-			addAncestorsNames(p, result);
+		boolean isNew = result.add(cls.getName());
+		if (isNew) {
+			for (NClass p : cls.getParents()) {
+				addAncestorsNames(p, result);
+			}
 		}
 	}
 

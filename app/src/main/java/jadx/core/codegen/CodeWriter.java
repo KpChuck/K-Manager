@@ -1,10 +1,5 @@
 package jadx.core.codegen;
 
-import jadx.api.CodePosition;
-import jadx.core.dex.attributes.nodes.LineAttrNode;
-import jadx.core.utils.files.FileUtils;
-import jadx.core.utils.files.ZipSecurity;
-
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.Collections;
@@ -16,6 +11,11 @@ import java.util.TreeMap;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import jadx.api.CodePosition;
+import jadx.core.dex.attributes.nodes.LineAttrNode;
+import jadx.core.utils.files.FileUtils;
+import jadx.core.utils.files.ZipSecurity;
 
 public class CodeWriter {
 	private static final Logger LOG = LoggerFactory.getLogger(CodeWriter.class);
@@ -254,8 +254,9 @@ public class CodeWriter {
 	}
 
 	private void removeFirstEmptyLine() {
-		if (buf.indexOf(NL) == 0) {
-			buf.delete(0, NL.length());
+		int len = NL.length();
+		if (buf.substring(0, len).equals(NL)) {
+			buf.delete(0, len);
 		}
 	}
 

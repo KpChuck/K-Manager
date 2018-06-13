@@ -1,5 +1,7 @@
 package jadx.core.dex.visitors;
 
+import java.util.Set;
+
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.info.ClassInfo;
 import jadx.core.dex.info.FieldInfo;
@@ -16,8 +18,6 @@ import jadx.core.dex.nodes.FieldNode;
 import jadx.core.dex.nodes.InsnNode;
 import jadx.core.dex.nodes.MethodNode;
 import jadx.core.utils.exceptions.JadxException;
-
-import java.util.Set;
 
 public class DependencyCollector extends AbstractVisitor {
 
@@ -96,7 +96,7 @@ public class DependencyCollector extends AbstractVisitor {
 	private static void addDep(DexNode dex, Set<ClassNode> depList, ArgType type) {
 		if (type != null) {
 			if (type.isObject()) {
-				addDep(dex, depList, ClassInfo.fromName(dex, type.getObject()));
+				addDep(dex, depList, ClassInfo.fromName(dex.root(), type.getObject()));
 				ArgType[] genericTypes = type.getGenericTypes();
 				if (type.isGeneric() && genericTypes != null) {
 					for (ArgType argType : genericTypes) {

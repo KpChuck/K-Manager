@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.jetbrains.annotations.Nullable;
@@ -18,11 +19,11 @@ import jadx.core.xmlgen.ResTableParser;
 public class ValuesParser extends ParserConstants {
 	private static final Logger LOG = LoggerFactory.getLogger(ValuesParser.class);
 
+	private static String[] androidStrings;
+	private static Map<Integer, String> androidResMap;
+
 	private final String[] strings;
 	private final Map<Integer, String> resMap;
-
-	public static String[] androidStrings;
-	public static Map<Integer, String> androidResMap;
 
 	public ValuesParser(String[] strings, Map<Integer, String> resMap) {
 		this.strings = strings;
@@ -31,14 +32,14 @@ public class ValuesParser extends ParserConstants {
 		if (androidStrings == null && androidResMap == null) {
 			try {
 				decodeAndroid();
-			} catch (IOException e) {
-				e.printStackTrace();
+			} catch (Exception e) {
+				LOG.error("Failed to decode Android Resource file", e);
 			}
 		}
 	}
 
-	private void decodeAndroid() throws IOException {
-		InputStream inputStream = new BufferedInputStream(getClass().getResourceAsStream("/resourc.arsc"));
+	private static void decodeAndroid() throws IOException {
+		InputStream inputStream = new BufferedInputStream(ValuesParser.class.getResourceAsStream("/resources.arsc"));
 		ResTableParser androidParser = new ResTableParser();
 		androidParser.decode(inputStream);
 		androidStrings = androidParser.getStrings();
@@ -86,7 +87,7 @@ public class ValuesParser extends ParserConstants {
 			case TYPE_INT_BOOLEAN:
 				return data == 0 ? "false" : "true";
 			case TYPE_FLOAT:
-				return Float.toString(Float.intBitsToFloat(data));
+				return floatToString(Float.intBitsToFloat(data));
 
 			case TYPE_INT_COLOR_ARGB8:
 				return String.format("#%08x", data);
@@ -207,9 +208,17 @@ public class ValuesParser extends ParserConstants {
 			return Integer.toString((int) value);
 		}
 		// remove trailing zeroes
-		NumberFormat f = NumberFormat.getInstance();
+		NumberFormat f = NumberFormat.getInstance(Locale.ROOT);
 		f.setMaximumFractionDigits(4);
 		f.setMinimumIntegerDigits(1);
 		return f.format(value);
+	}
+
+	private static String floatToString(float value) {
+		return doubleToString((double) value);
+	}
+
+	public static Map<Integer, String> getAndroidResMap() {
+		return androidResMap;
 	}
 }

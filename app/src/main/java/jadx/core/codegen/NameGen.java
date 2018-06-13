@@ -1,5 +1,10 @@
 package jadx.core.codegen;
 
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+
 import jadx.core.Consts;
 import jadx.core.deobf.NameMapper;
 import jadx.core.dex.attributes.nodes.LoopLabelAttr;
@@ -17,16 +22,11 @@ import jadx.core.dex.nodes.InsnNode;
 import jadx.core.dex.nodes.MethodNode;
 import jadx.core.utils.StringUtils;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 public class NameGen {
 
 	private static final Map<String, String> OBJ_ALIAS;
 
-	private final Set<String> varNames = new HashSet<>();
+	private final Set<String> varNames = new LinkedHashSet<>();
 	private final MethodNode mth;
 	private final boolean fallback;
 
@@ -158,7 +158,7 @@ public class NameGen {
 			if (alias != null) {
 				return alias;
 			}
-			ClassInfo extClsInfo = ClassInfo.extCls(mth.dex(), type);
+			ClassInfo extClsInfo = ClassInfo.extCls(mth.root(), type);
 			String shortName = extClsInfo.getShortName();
 			String vName = fromName(shortName);
 			if (vName != null) {

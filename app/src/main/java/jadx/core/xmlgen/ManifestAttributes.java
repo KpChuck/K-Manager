@@ -1,15 +1,6 @@
 package jadx.core.xmlgen;
 
-import android.os.Environment;
-
-import jadx.core.utils.exceptions.JadxRuntimeException;
-import jadx.core.utils.files.FileUtils;
-
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -21,6 +12,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import jadx.core.utils.exceptions.JadxRuntimeException;
 
 public class ManifestAttributes {
 	private static final Logger LOG = LoggerFactory.getLogger(ManifestAttributes.class);
@@ -63,7 +56,7 @@ public class ManifestAttributes {
 			try {
 				instance = new ManifestAttributes();
 			} catch (Exception e) {
-				e.printStackTrace();
+				LOG.error("Failed to create ManifestAttributes", e);
 			}
 		}
 		return instance;

@@ -1,5 +1,19 @@
 package jadx.core.dex.instructions;
 
+import java.io.EOFException;
+
+import com.android.dex.Code;
+import com.android.dx.io.OpcodeInfo;
+import com.android.dx.io.Opcodes;
+import com.android.dx.io.instructions.DecodedInstruction;
+import com.android.dx.io.instructions.FillArrayDataPayloadDecodedInstruction;
+import com.android.dx.io.instructions.PackedSwitchPayloadDecodedInstruction;
+import com.android.dx.io.instructions.ShortArrayCodeInput;
+import com.android.dx.io.instructions.SparseSwitchPayloadDecodedInstruction;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jadx.core.dex.info.FieldInfo;
 import jadx.core.dex.info.MethodInfo;
 import jadx.core.dex.instructions.args.ArgType;
@@ -12,16 +26,8 @@ import jadx.core.dex.nodes.MethodNode;
 import jadx.core.utils.InsnUtils;
 import jadx.core.utils.exceptions.DecodeException;
 
-import com.android.dex.Code;
-import com.android.dx.io.OpcodeInfo;
-import com.android.dx.io.Opcodes;
-import com.android.dx.io.instructions.DecodedInstruction;
-import com.android.dx.io.instructions.FillArrayDataPayloadDecodedInstruction;
-import com.android.dx.io.instructions.PackedSwitchPayloadDecodedInstruction;
-import com.android.dx.io.instructions.ShortArrayCodeInput;
-import com.android.dx.io.instructions.SparseSwitchPayloadDecodedInstruction;
-
 public class InsnDecoder {
+	private static final Logger LOG = LoggerFactory.getLogger(InsnDecoder.class);
 
 	private final MethodNode method;
 	private final DexNode dex;
@@ -37,15 +43,27 @@ public class InsnDecoder {
 		int size = encodedInstructions.length;
 		DecodedInstruction[] decoded = new DecodedInstruction[size];
 		ShortArrayCodeInput in = new ShortArrayCodeInput(encodedInstructions);
-
 		try {
 			while (in.hasMore()) {
-				decoded[in.cursor()] = DecodedInstruction.decode(in);
+				decoded[in.cursor()] = decodeRawInsn(in);
 			}
 		} catch (Exception e) {
-			throw new DecodeException(method, "", e);
+			throw new DecodeException(method, e.getMessage(), e);
 		}
 		insnArr = decoded;
+	}
+
+	private DecodedInstruction decodeRawInsn(ShortArrayCodeInput in) throws EOFException {
+		int opcodeUnit = in.read();
+		int opcode = Opcodes.extractOpcodeFromUnit(opcodeUnit);
+		OpcodeInfo.Info opcodeInfo;
+		try {
+			opcodeInfo = OpcodeInfo.get(opcode);
+		} catch (IllegalArgumentException e) {
+			LOG.warn("Ignore decode error: '{}', replace with NOP instruction", e.getMessage());
+			opcodeInfo = OpcodeInfo.NOP;
+		}
+		return opcodeInfo.getFormat().decode(opcodeUnit, in);
 	}
 
 	public InsnNode[] process() throws DecodeException {
@@ -54,9 +72,7 @@ public class InsnDecoder {
 			DecodedInstruction rawInsn = insnArr[i];
 			if (rawInsn != null) {
 				InsnNode insn = decode(rawInsn, i);
-				if (insn != null) {
-					insn.setOffset(i);
-				}
+				insn.setOffset(i);
 				instructions[i] = insn;
 			} else {
 				instructions[i] = null;
@@ -66,13 +82,14 @@ public class InsnDecoder {
 		return instructions;
 	}
 
+	@NotNull
 	private InsnNode decode(DecodedInstruction insn, int offset) throws DecodeException {
 		switch (insn.getOpcode()) {
 			case Opcodes.NOP:
 			case Opcodes.PACKED_SWITCH_PAYLOAD:
 			case Opcodes.SPARSE_SWITCH_PAYLOAD:
 			case Opcodes.FILL_ARRAY_DATA_PAYLOAD:
-				return null;
+				return new InsnNode(InsnType.NOP, 0);
 
 			// move-result will be process in invoke and filled-new-array instructions
 			case Opcodes.MOVE_RESULT:
@@ -306,6 +323,11 @@ public class InsnDecoder {
 				return neg(insn, ArgType.FLOAT);
 			case Opcodes.NEG_DOUBLE:
 				return neg(insn, ArgType.DOUBLE);
+
+			case Opcodes.NOT_INT:
+				return not(insn, ArgType.INT);
+			case Opcodes.NOT_LONG:
+				return not(insn, ArgType.LONG);
 
 			case Opcodes.INT_TO_BYTE:
 				return cast(insn, ArgType.INT, ArgType.BYTE);
@@ -563,9 +585,10 @@ public class InsnDecoder {
 				return insn(InsnType.MONITOR_EXIT,
 						null,
 						InsnArg.reg(insn, 0, ArgType.UNKNOWN_OBJECT));
-		}
 
-		throw new DecodeException("Unknown instruction: '" + OpcodeInfo.getName(insn.getOpcode()) + "'");
+			default:
+				throw new DecodeException("Unknown instruction: '" + OpcodeInfo.getName(insn.getOpcode()) + "'");
+		}
 	}
 
 	private InsnNode decodeSwitch(DecodedInstruction insn, int offset, boolean packed) {
@@ -676,6 +699,13 @@ public class InsnDecoder {
 
 	private InsnNode neg(DecodedInstruction insn, ArgType type) {
 		InsnNode inode = new InsnNode(InsnType.NEG, 1);
+		inode.setResult(InsnArg.reg(insn, 0, type));
+		inode.addArg(InsnArg.reg(insn, 1, type));
+		return inode;
+	}
+
+	private InsnNode not(DecodedInstruction insn, ArgType type) {
+		InsnNode inode = new InsnNode(InsnType.NOT, 1);
 		inode.setResult(InsnArg.reg(insn, 0, type));
 		inode.addArg(InsnArg.reg(insn, 1, type));
 		return inode;

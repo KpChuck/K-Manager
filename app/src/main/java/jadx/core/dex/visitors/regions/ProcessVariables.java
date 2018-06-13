@@ -1,5 +1,15 @@
 package jadx.core.dex.visitors.regions;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.function.Function;
+
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.attributes.nodes.DeclareVariablesAttr;
@@ -8,7 +18,6 @@ import jadx.core.dex.instructions.args.ArgType;
 import jadx.core.dex.instructions.args.RegisterArg;
 import jadx.core.dex.instructions.args.VarName;
 import jadx.core.dex.nodes.IBlock;
-import jadx.core.dex.nodes.IBranchRegion;
 import jadx.core.dex.nodes.IContainer;
 import jadx.core.dex.nodes.IRegion;
 import jadx.core.dex.nodes.InsnNode;
@@ -20,21 +29,7 @@ import jadx.core.dex.visitors.AbstractVisitor;
 import jadx.core.utils.RegionUtils;
 import jadx.core.utils.exceptions.JadxException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class ProcessVariables extends AbstractVisitor {
-	private static final Logger LOG = LoggerFactory.getLogger(ProcessVariables.class);
 
 	private static class Variable {
 		private final int regNum;
@@ -64,7 +59,7 @@ public class ProcessVariables extends AbstractVisitor {
 
 		@Override
 		public String toString() {
-			return regNum + " " + type;
+			return "r" + regNum + ":" + type;
 		}
 	}
 
@@ -72,8 +67,8 @@ public class ProcessVariables extends AbstractVisitor {
 		private RegisterArg arg;
 		private VarName varName;
 		private IRegion argRegion;
-		private final Set<IRegion> usage = new HashSet<>(2);
-		private final Set<IRegion> assigns = new HashSet<>(2);
+		private final Set<IRegion> uses = new LinkedHashSet<>(2);
+		private final Set<IRegion> assigns = new LinkedHashSet<>(2);
 
 		public void setArg(RegisterArg arg) {
 			this.arg = arg;
@@ -104,12 +99,12 @@ public class ProcessVariables extends AbstractVisitor {
 		}
 
 		public Set<IRegion> getUseRegions() {
-			return usage;
+			return uses;
 		}
 
 		@Override
 		public String toString() {
-			return arg + ", a:" + assigns + ", u:" + usage;
+			return arg + ", a:" + assigns + ", u:" + uses;
 		}
 	}
 
@@ -119,12 +114,12 @@ public class ProcessVariables extends AbstractVisitor {
 
 		public CollectUsageRegionVisitor(Map<Variable, Usage> usageMap) {
 			this.usageMap = usageMap;
-			args = new ArrayList<>();
+			this.args = new ArrayList<>();
 		}
 
 		@Override
 		public void processBlockTraced(MethodNode mth, IBlock container, IRegion curRegion) {
-			regionProcess(mth, curRegion);
+			regionProcess(curRegion);
 			int len = container.getInstructions().size();
 			for (int i = 0; i < len; i++) {
 				InsnNode insn = container.getInstructions().get(i);
@@ -136,7 +131,7 @@ public class ProcessVariables extends AbstractVisitor {
 			}
 		}
 
-		private void regionProcess(MethodNode mth, IRegion region) {
+		private void regionProcess(IRegion region) {
 			if (region instanceof LoopRegion) {
 				LoopRegion loopRegion = (LoopRegion) region;
 				LoopType loopType = loopRegion.getType();
@@ -177,8 +172,10 @@ public class ProcessVariables extends AbstractVisitor {
 		if (mth.isNoCode()) {
 			return;
 		}
+		List<RegisterArg> mthArguments = mth.getArguments(true);
+
 		Map<Variable, Usage> usageMap = new LinkedHashMap<>();
-		for (RegisterArg arg : mth.getArguments(true)) {
+		for (RegisterArg arg : mthArguments) {
 			addToUsageMap(arg, usageMap);
 		}
 
@@ -187,8 +184,7 @@ public class ProcessVariables extends AbstractVisitor {
 		DepthRegionTraversal.traverse(mth, collect);
 
 		// reduce assigns map
-		List<RegisterArg> mthArgs = mth.getArguments(true);
-		for (RegisterArg arg : mthArgs) {
+		for (RegisterArg arg : mthArguments) {
 			usageMap.remove(new Variable(arg));
 		}
 
@@ -212,20 +208,16 @@ public class ProcessVariables extends AbstractVisitor {
 			return;
 		}
 
-		Map<IContainer, Integer> regionsOrder = new HashMap<>();
-		calculateOrder(mth.getRegion(), regionsOrder, 0, true);
-
 		for (Iterator<Entry<Variable, Usage>> it = usageMap.entrySet().iterator(); it.hasNext(); ) {
 			Entry<Variable, Usage> entry = it.next();
 			Usage u = entry.getValue();
 			// check if variable can be declared at current assigns
 			for (IRegion assignRegion : u.getAssigns()) {
 				if (u.getArgRegion() == assignRegion
-						&& canDeclareInRegion(u, assignRegion, regionsOrder)) {
-					if (declareAtAssign(u)) {
-						it.remove();
-						break;
-					}
+						&& canDeclareInRegion(u, assignRegion)
+						&& declareAtAssign(u)) {
+					it.remove();
+					break;
 				}
 			}
 		}
@@ -258,7 +250,7 @@ public class ProcessVariables extends AbstractVisitor {
 			IRegion parent = region;
 			boolean declared = false;
 			while (parent != null) {
-				if (canDeclareInRegion(u, region, regionsOrder)) {
+				if (canDeclareInRegion(u, region)) {
 					declareVar(region, u.getArg());
 					declared = true;
 					break;
@@ -274,11 +266,12 @@ public class ProcessVariables extends AbstractVisitor {
 
 	private static Usage addToUsageMap(RegisterArg arg, Map<Variable, Usage> usageMap) {
 		Variable varId = new Variable(arg);
-		Usage usage = usageMap.get(varId);
-		if (usage == null) {
-			usage = new Usage();
-			usageMap.put(varId, usage);
-		}
+		Usage usage = usageMap.computeIfAbsent(varId, new Function<Variable, Usage>() {
+			@Override
+			public Usage apply(Variable variable) {
+				return new Usage();
+			}
+		});
 		// merge variables names
 		if (usage.getVarName() == null) {
 			VarName argVN = arg.getSVar().getVarName();
@@ -296,6 +289,9 @@ public class ProcessVariables extends AbstractVisitor {
 	private static boolean declareAtAssign(Usage u) {
 		RegisterArg arg = u.getArg();
 		InsnNode parentInsn = arg.getParentInsn();
+		if (parentInsn == null) {
+			return false;
+		}
 		if (!arg.equals(parentInsn.getResult())) {
 			return false;
 		}
@@ -312,39 +308,7 @@ public class ProcessVariables extends AbstractVisitor {
 		dv.addVar(arg);
 	}
 
-	private static int calculateOrder(IContainer container, Map<IContainer, Integer> regionsOrder,
-			int id, boolean inc) {
-		if (!(container instanceof IRegion)) {
-			return id;
-		}
-		IRegion region = (IRegion) container;
-		Integer previous = regionsOrder.put(region, id);
-		if (previous != null) {
-			return id;
-		}
-		for (IContainer c : region.getSubBlocks()) {
-			if (c instanceof IBranchRegion) {
-				// on branch set for all inner regions same order id
-				id = calculateOrder(c, regionsOrder, inc ? id + 1 : id, false);
-			} else {
-				List<IContainer> handlers = RegionUtils.getExcHandlersForRegion(c);
-				if (!handlers.isEmpty()) {
-					for (IContainer handler : handlers) {
-						id = calculateOrder(handler, regionsOrder, inc ? id + 1 : id, inc);
-					}
-				}
-				id = calculateOrder(c, regionsOrder, inc ? id + 1 : id, inc);
-			}
-		}
-		return id;
-	}
-
-	private static boolean canDeclareInRegion(Usage u, IRegion region, Map<IContainer, Integer> regionsOrder) {
-		Integer pos = regionsOrder.get(region);
-		if (pos == null) {
-			LOG.debug("TODO: Not found order for region {} for {}", region, u);
-			return false;
-		}
+	private static boolean canDeclareInRegion(Usage u, IRegion region) {
 		// workaround for declare variables used in several loops
 		if (region instanceof LoopRegion) {
 			for (IRegion r : u.getAssigns()) {
@@ -353,32 +317,16 @@ public class ProcessVariables extends AbstractVisitor {
 				}
 			}
 		}
-		return isAllRegionsAfter(region, pos, u.getAssigns(), regionsOrder)
-				&& isAllRegionsAfter(region, pos, u.getUseRegions(), regionsOrder);
-	}
-
-	private static boolean isAllRegionsAfter(IRegion region, int pos,
-			Set<IRegion> regions, Map<IContainer, Integer> regionsOrder) {
-		for (IRegion r : regions) {
-			if (r == region) {
-				continue;
-			}
-			Integer rPos = regionsOrder.get(r);
-			if (rPos == null) {
-				LOG.debug("TODO: Not found order for region {} in {}", r, regionsOrder);
-				return false;
-			}
-			if (pos > rPos) {
-				return false;
-			}
-			if (pos == rPos) {
-				return isAllRegionsAfterRecursive(region, regions);
-			}
+		// can't declare in else-if chain between 'else' and next 'if'
+		if (region.contains(AFlag.ELSE_IF_CHAIN)) {
+			return false;
 		}
-		return true;
+		// TODO: make index for faster search
+		return isAllRegionsAfter(region, u.getAssigns())
+				&& isAllRegionsAfter(region, u.getUseRegions());
 	}
 
-	private static boolean isAllRegionsAfterRecursive(IRegion region, Set<IRegion> others) {
+	private static boolean isAllRegionsAfter(IRegion region, Set<IRegion> others) {
 		for (IRegion r : others) {
 			if (!RegionUtils.isRegionContainsRegion(region, r)) {
 				return false;

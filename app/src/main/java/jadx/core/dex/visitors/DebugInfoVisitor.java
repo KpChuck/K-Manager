@@ -1,5 +1,8 @@
 package jadx.core.dex.visitors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jadx.core.dex.instructions.args.ArgType;
 import jadx.core.dex.instructions.args.RegisterArg;
 import jadx.core.dex.nodes.BlockNode;
@@ -11,9 +14,6 @@ import jadx.core.utils.ErrorsCounter;
 import jadx.core.utils.exceptions.DecodeException;
 import jadx.core.utils.exceptions.JadxException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class DebugInfoVisitor extends AbstractVisitor {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DebugInfoVisitor.class);
@@ -22,7 +22,7 @@ public class DebugInfoVisitor extends AbstractVisitor {
 	public void visit(MethodNode mth) throws JadxException {
 		try {
 			int debugOffset = mth.getDebugInfoOffset();
-			if (debugOffset > 0) {
+			if (debugOffset > 0 && mth.dex().checkOffset(debugOffset)) {
 				processDebugInfo(mth, debugOffset);
 			}
 		} catch (Exception e) {

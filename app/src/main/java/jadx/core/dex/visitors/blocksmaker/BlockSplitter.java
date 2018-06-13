@@ -1,10 +1,19 @@
 package jadx.core.dex.visitors.blocksmaker;
 
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.attributes.nodes.JumpInfo;
 import jadx.core.dex.instructions.IfNode;
 import jadx.core.dex.instructions.InsnType;
+import jadx.core.dex.instructions.TargetInsnNode;
 import jadx.core.dex.nodes.BlockNode;
 import jadx.core.dex.nodes.InsnNode;
 import jadx.core.dex.nodes.MethodNode;
@@ -12,14 +21,8 @@ import jadx.core.dex.trycatch.CatchAttr;
 import jadx.core.dex.trycatch.ExceptionHandler;
 import jadx.core.dex.trycatch.SplitterBlockAttr;
 import jadx.core.dex.visitors.AbstractVisitor;
+import jadx.core.utils.BlockUtils;
 import jadx.core.utils.exceptions.JadxRuntimeException;
-
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class BlockSplitter extends AbstractVisitor {
 
@@ -43,6 +46,23 @@ public class BlockSplitter extends AbstractVisitor {
 		mth.initBasicBlocks();
 		splitBasicBlocks(mth);
 		removeInsns(mth);
+		removeEmptyDetachedBlocks(mth);
+		initBlocksInTargetNodes(mth);
+	}
+
+	/**
+	 * Init 'then' and 'else' blocks for 'if' instruction.
+	 */
+	private static void initBlocksInTargetNodes(MethodNode mth) {
+		mth.getBasicBlocks().forEach(new Consumer<BlockNode>() {
+			@Override
+			public void accept(BlockNode block) {
+				InsnNode lastInsn = BlockUtils.getLastInsn(block);
+				if (lastInsn instanceof TargetInsnNode) {
+					((TargetInsnNode) lastInsn).initBlocks(block);
+				}
+			}
+		});
 	}
 
 	private static void splitBasicBlocks(MethodNode mth) {
@@ -133,13 +153,29 @@ public class BlockSplitter extends AbstractVisitor {
 		to.getPredecessors().remove(from);
 	}
 
+	static void replaceConnection(BlockNode source, BlockNode oldDest, BlockNode newDest) {
+		removeConnection(source, oldDest);
+		connect(source, newDest);
+		replaceTarget(source, oldDest, newDest);
+	}
+
 	static BlockNode insertBlockBetween(MethodNode mth, BlockNode source, BlockNode target) {
 		BlockNode newBlock = startNewBlock(mth, target.getStartOffset());
 		newBlock.add(AFlag.SYNTHETIC);
 		removeConnection(source, target);
 		connect(source, newBlock);
 		connect(newBlock, target);
+		replaceTarget(source, target, newBlock);
+		source.updateCleanSuccessors();
+		newBlock.updateCleanSuccessors();
 		return newBlock;
+	}
+
+	static void replaceTarget(BlockNode source, BlockNode oldTarget, BlockNode newTarget) {
+		InsnNode lastInsn = BlockUtils.getLastInsn(source);
+		if (lastInsn instanceof TargetInsnNode) {
+			((TargetInsnNode) lastInsn).replaceTargetBlock(oldTarget, newTarget);
+		}
 	}
 
 	private static void setupConnections(MethodNode mth, Map<Integer, BlockNode> blocksMap) {
@@ -197,14 +233,12 @@ public class BlockSplitter extends AbstractVisitor {
 
 	private static boolean isDoWhile(Map<Integer, BlockNode> blocksMap, BlockNode curBlock, InsnNode insn) {
 		// split 'do-while' block (last instruction: 'if', target this block)
-		if (insn.getType() == InsnType.IF) {
-			IfNode ifs = (IfNode) insn;
-			BlockNode targetBlock = blocksMap.get(ifs.getTarget());
-			if (targetBlock == curBlock) {
-				return true;
-			}
+		if (insn.getType() != InsnType.IF) {
+			return false;
 		}
-		return false;
+		IfNode ifs = (IfNode) insn;
+		BlockNode targetBlock = blocksMap.get(ifs.getTarget());
+		return targetBlock == curBlock;
 	}
 
 	private static BlockNode getBlock(int offset, Map<Integer, BlockNode> blocksMap) {
@@ -217,14 +251,24 @@ public class BlockSplitter extends AbstractVisitor {
 
 	private static void removeInsns(MethodNode mth) {
 		for (BlockNode block : mth.getBasicBlocks()) {
-			Iterator<InsnNode> it = block.getInstructions().iterator();
-			while (it.hasNext()) {
-				InsnType insnType = it.next().getType();
-				if (insnType == InsnType.GOTO || insnType == InsnType.NOP) {
-					it.remove();
+			block.getInstructions().removeIf(new Predicate<InsnNode>() {
+				@Override
+				public boolean test(InsnNode insn) {
+					InsnType insnType = insn.getType();
+					return insnType == InsnType.GOTO || insnType == InsnType.NOP;
 				}
-			}
+			});
 		}
 	}
 
+	static boolean removeEmptyDetachedBlocks(MethodNode mth) {
+		return mth.getBasicBlocks().removeIf(new Predicate<BlockNode>() {
+			@Override
+			public boolean test(BlockNode block) {
+				return block.getInstructions().isEmpty()
+						&& block.getPredecessors().isEmpty()
+						&& block.getSuccessors().isEmpty();
+			}
+		});
+	}
 }

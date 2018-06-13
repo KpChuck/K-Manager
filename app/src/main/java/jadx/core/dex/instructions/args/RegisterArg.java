@@ -1,14 +1,14 @@
 package jadx.core.dex.instructions.args;
 
+import java.util.Objects;
+
+import org.jetbrains.annotations.NotNull;
+
 import jadx.core.dex.instructions.InsnType;
 import jadx.core.dex.instructions.PhiInsn;
 import jadx.core.dex.nodes.DexNode;
 import jadx.core.dex.nodes.InsnNode;
 import jadx.core.utils.InsnUtils;
-
-import java.util.Objects;
-
-import org.jetbrains.annotations.NotNull;
 
 public class RegisterArg extends InsnArg implements Named {
 
@@ -61,6 +61,21 @@ public class RegisterArg extends InsnArg implements Named {
 			return false;
 		}
 		return n.equals(((Named) arg).getName());
+	}
+
+	public void mergeName(InsnArg arg) {
+		if (arg instanceof Named) {
+			Named otherArg = (Named) arg;
+			String otherName = otherArg.getName();
+			String name = getName();
+			if (!Objects.equals(name, otherName)) {
+				if (name == null) {
+					setName(otherName);
+				} else if (otherName == null) {
+					otherArg.setName(name);
+				}
+			}
+		}
 	}
 
 	@Override

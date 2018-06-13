@@ -1,5 +1,13 @@
 package jadx.core.dex.visitors.ssa;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.Deque;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.attributes.nodes.PhiListAttr;
@@ -18,14 +26,6 @@ import jadx.core.utils.InsnList;
 import jadx.core.utils.InstructionRemover;
 import jadx.core.utils.exceptions.JadxException;
 import jadx.core.utils.exceptions.JadxRuntimeException;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
-import java.util.Deque;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
 @JadxVisitor(
 		name = "SSATransform",
@@ -141,14 +141,7 @@ public class SSATransform extends AbstractVisitor {
 		PhiListAttr phiList = enterBlock.get(AType.PHI_LIST);
 		if (phiList != null) {
 			for (PhiInsn phiInsn : phiList.getList()) {
-				int regNum = phiInsn.getResult().getRegNum();
-				SSAVar var = vars[regNum];
-				if (var == null) {
-					continue;
-				}
-				RegisterArg arg = phiInsn.bindArg(enterBlock);
-				var.use(arg);
-				var.setUsedInPhi(phiInsn);
+				bindPhiArg(vars, enterBlock, phiInsn);
 			}
 		}
 	}
@@ -183,20 +176,24 @@ public class SSATransform extends AbstractVisitor {
 				continue;
 			}
 			for (PhiInsn phiInsn : phiList.getList()) {
-				int regNum = phiInsn.getResult().getRegNum();
-				SSAVar var = vars[regNum];
-				if (var == null) {
-					continue;
-				}
-				RegisterArg arg = phiInsn.bindArg(block);
-				var.use(arg);
-				var.setUsedInPhi(phiInsn);
+				bindPhiArg(vars, block, phiInsn);
 			}
 		}
 		for (BlockNode domOn : block.getDominatesOn()) {
 			renameVar(mth, vars, vers, domOn);
 		}
 		System.arraycopy(inputVars, 0, vars, 0, vars.length);
+	}
+
+	private static void bindPhiArg(SSAVar[] vars, BlockNode block, PhiInsn phiInsn) {
+		int regNum = phiInsn.getResult().getRegNum();
+		SSAVar var = vars[regNum];
+		if (var == null) {
+			return;
+		}
+		RegisterArg arg = phiInsn.bindArg(block);
+		var.use(arg);
+		var.setUsedInPhi(phiInsn);
 	}
 
 	/**
