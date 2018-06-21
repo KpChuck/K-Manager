@@ -241,7 +241,7 @@ public class MiscFragment extends Fragment {
                 String filePath = images.get(0).getOriginalPath();
                 String extension = filePath.substring(filePath.lastIndexOf("."), filePath.length());
 
-                if (!extension.equals(".png") || !extension.equals(".xml")){
+                if (!extension.equals(".png") && !extension.equals(".xml")){
                     shortToast(getString(R.string.not_png_error_message));
                     prefUtils.putBool(switch_bool, false);
                     ButterKnife.apply(mySwitch, ENABLED, false);

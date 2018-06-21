@@ -53,6 +53,22 @@
             android:text="@string/ampm_stock_clock"
             android:id="@+id/ampm"/>
 
+        <!-- Hide stock clock -->
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/hide_stock"
+            android:id="@+id/hide_stock"/>
+
+        <!-- Make dynamic -->
+        <Switch
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/make_dynamic"
+            android:id="@+id/make_dynamic"/>
+
         <!-- Statusbar clock size -->
         <Switch
             android:layout_width="match_parent"

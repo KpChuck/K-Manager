@@ -39,6 +39,8 @@ import kpchuck.kklock.interfaces.DialogClickListener;
 import kpchuck.kklock.utils.FileHelper;
 import kpchuck.kklock.utils.PrefUtils;
 
+import static kpchuck.kklock.constants.PrefConstants.DEV_HIDE_CLOCK;
+import static kpchuck.kklock.constants.PrefConstants.DEV_MAKE_DYNAMIC;
 import static kpchuck.kklock.constants.PrefConstants.PREF_AM;
 import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_CUSTOM_TEXT;
 import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_EVERYWHERE;
@@ -82,6 +84,8 @@ public class StatusBarFragment extends Fragment {
     @BindView(R.id.notifsRight) Switch notifsRightSwitch;
     @BindView(R.id.statBarColor) Switch statBarColorSwitch;
     @BindView(R.id.clockHideable) Switch clockHideableSwitch;
+    @BindView(R.id.hide_stock) Switch hideStockSwitch;
+    @BindView(R.id.make_dynamic) Switch makeDynamicSwitch;
 
     private boolean isPro = false;
 
@@ -138,6 +142,11 @@ public class StatusBarFragment extends Fragment {
         ButterKnife.apply(statBarColorSwitch, ENABLED, prefUtils.getBool(PREF_CHANGE_STATBAR_COLOR));
         ButterKnife.apply(clockHideableSwitch, ENABLED, prefUtils.getBool(PREF_CLOCK_HIDEABLE));
 
+        ButterKnife.apply(hideStockSwitch, ENABLED, prefUtils.getBool(DEV_HIDE_CLOCK));
+        ButterKnife.apply(makeDynamicSwitch, ENABLED, prefUtils.getBool(DEV_MAKE_DYNAMIC));
+
+        otherRomHide(prefUtils.getString(PREF_SELECTED_ROM, getString(R.string.chooseRom)).equals(getString(R.string.otherRomsBeta)));
+
 
         if (prefUtils.getBool(PREF_CARRIER_EVERYWHERE)) ButterKnife.apply(carrierView, SetVisibility, View.VISIBLE);
         if (!fileHelper.getOos(prefUtils.getString(PREF_SELECTED_ROM, getString(R.string.chooseRom))).equals("OxygenOS"))
@@ -150,6 +159,14 @@ public class StatusBarFragment extends Fragment {
 
     public void oosIndicators(boolean show){
         if (indicatorSwitch != null)ButterKnife.apply(indicatorSwitch, SetVisibility, show ? View.VISIBLE : View.GONE);
+
+    }
+
+    public void otherRomHide(boolean show){
+
+        ButterKnife.apply(hideStockSwitch, SetVisibility, show ? View.VISIBLE : View.GONE);
+        ButterKnife.apply(makeDynamicSwitch, SetVisibility, show ? View.VISIBLE : View.GONE);
+
 
     }
 

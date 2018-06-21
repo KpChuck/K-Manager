@@ -361,7 +361,7 @@ public class IconsFragment extends Fragment {
                 String filePath = images.get(0).getOriginalPath();
                 String extension = filePath.substring(filePath.lastIndexOf("."), filePath.length());
 
-                if (!extension.equals(".png") || !extension.equals(".xml")){
+                if (!extension.equals(".png") && !extension.equals(".xml")){
                     Toast.makeText(getContext(), getString(R.string.not_png_error_message), Toast.LENGTH_SHORT).show();
                     prefUtils.putBool(switch_bool, false);
                     ButterKnife.apply(mySwitch, ENABLED, false);

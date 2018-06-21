@@ -295,8 +295,7 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
         this.miscFragment = new MiscFragment();
 
 
-        tabAdapter = new SwipeTabAdapter(getSupportFragmentManager(), clockFragment,
-                iconsFragment, statusBarFragment, miscFragment);
+        tabAdapter = new SwipeTabAdapter(getSupportFragmentManager(), clockFragment, iconsFragment, statusBarFragment, miscFragment);
 
         // Set the adapter onto the view pager
         final ViewPager viewPager = findViewById(R.id.pager);
@@ -511,6 +510,7 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
 
 
         if (isOtherRoms()) questionMark.setVisibility(View.VISIBLE);
+        statusBarFragment.otherRomHide(isOtherRoms());
         orSettingsButton.setVisibility(isOtherRoms() ? View.VISIBLE : View.GONE);
 
 
@@ -526,88 +526,79 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
 
     @OnClick (R.id.orSettings)
     public void orSettingsClick(){
-        ListDialogFragment listDialogFragment = new ListDialogFragment();
-        List<String> names = new ArrayList<>(Arrays.asList(getString(R.string.hide_stock), getString(R.string.make_dynamic)));
-        List<String> keys = new ArrayList<>(Arrays.asList(DEV_HIDE_CLOCK, DEV_MAKE_DYNAMIC));
-        BtnClickListener clickListener = new BtnClickListener() {
-            @Override
-            public void onBtnClick(int position) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                // Get the layout inflater
-                LayoutInflater inflater = getLayoutInflater();
 
-                // Inflate and set the layout for the dialog
-                // Pass null as the parent view because its going in the dialog layout
-                View view = inflater.inflate(R.layout.input_menu_dialog, null);
-                builder.setView(view);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        // Get the layout inflater
+        LayoutInflater inflater = getLayoutInflater();
 
-                TextView textView = view.findViewById(R.id.title);
-                final EditText nameEdit = view.findViewById(R.id.name);
-                final EditText valueEdit = view.findViewById(R.id.value);
-                textView.setText(getString(R.string.rom_info));
-                nameEdit.setHint(getString(R.string.rom_name_hint));
-                valueEdit.setHint(getString(R.string.rom_version_hint));
+        // Inflate and set the layout for the dialog
+        // Pass null as the parent view because its going in the dialog layout
+        View view = inflater.inflate(R.layout.input_menu_dialog, null);
+        builder.setView(view);
 
-                builder
-                        .setPositiveButton("Send", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                File zip = new File(rootFolder, nameEdit.getText() + " " + valueEdit.getText() + ".zip");
-                                if (zip.exists()) zip.delete();
-                                // Zip the xmls
-                                String[] x = new File(rootFolder + "/userInput").list(fileHelper.XML);
-                                List<String> xmls = Arrays.asList(x);
-                                String[] xmlNames = {"status_bar.xml", "keyguard_status_bar.xml", "system_icons.xml", "quick_status_bar_expanded_header.xml"};
-                                List<String> xmlNam = Arrays.asList(xmlNames);
+        TextView textView = view.findViewById(R.id.title);
+        final EditText nameEdit = view.findViewById(R.id.name);
+        final EditText valueEdit = view.findViewById(R.id.value);
+        textView.setText(getString(R.string.rom_info));
+        nameEdit.setHint(getString(R.string.rom_name_hint));
+        valueEdit.setHint(getString(R.string.rom_version_hint));
 
-                                if (!xmls.containsAll(xmlNam)){
-                                    shortToast(getString(R.string.files_not_found));
-                                    return;
-                                }
-                                List<ZipEntrySource> zipEntrySources = new ArrayList<>();
-                                for (String f : xmlNam){
-                                    zipEntrySources.add(new FileSource("/"+f, new File(rootFolder + "/userInput/"+f)));
+        builder
+                .setPositiveButton(getString(R.string.send), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        File zip = new File(rootFolder, nameEdit.getText() + " " + valueEdit.getText() + ".zip");
+                        if (zip.exists()) zip.delete();
+                        // Zip the xmls
+                        String[] x = new File(rootFolder + "/userInput").list(fileHelper.XML);
+                        List<String> xmls = Arrays.asList(x);
+                        String[] xmlNames = {"status_bar.xml", "keyguard_status_bar.xml", "system_icons.xml", "quick_status_bar_expanded_header.xml"};
+                        List<String> xmlNam = Arrays.asList(xmlNames);
 
-                                }
-                                ZipEntrySource[] addedEntries = new ZipEntrySource[zipEntrySources.size()];
-                                for (int i = 0; i< zipEntrySources.size(); i++){
-                                    addedEntries[i] = zipEntrySources.get(i);
-                                }
-                                ZipUtil.pack(addedEntries, zip);
-                                // Send the zip file
-                                Intent i = new Intent(Intent.ACTION_SEND);
-                                i.setType("message/rfc822");
-                                String message = String.format("Hi, here are the rom files for %s %s.\nI'm %s making the clock dynamic and %s the stock clock.\nI would love it if you added them to K-Manager :)",
-                                        nameEdit.getText(), valueEdit.getText(),
-                                        prefUtils.getBool(DEV_MAKE_DYNAMIC) ? "" : "not",
-                                        prefUtils.getBool(DEV_HIDE_CLOCK) ? "I\'m hiding" : "not hiding");
-                                i.putExtra(Intent.EXTRA_EMAIL, new String[]{"przestrzelski.com@gmail.com"});
-                                i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name) + " Other Roms");
-                                i.putExtra(Intent.EXTRA_TEXT, (message));
-                                i.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileprovider", zip));
-                                try {
-                                    context.startActivity(Intent.createChooser(i,
-                                            "Send through..."));
-                                } catch (ActivityNotFoundException ex) {
-                                    Toast.makeText(context, getString(R.string.error_sending_zip), Toast.LENGTH_LONG).show();
-                                }
+                        if (!xmls.containsAll(xmlNam)){
+                            shortToast(getString(R.string.files_not_found));
+                            return;
+                        }
+                        List<ZipEntrySource> zipEntrySources = new ArrayList<>();
+                        for (String f : xmlNam){
+                            zipEntrySources.add(new FileSource("/"+f, new File(rootFolder + "/userInput/"+f)));
 
-                            }
-                        })
-                        .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // User cancelled the dialog
-                                dialog.cancel();
-                            }}
+                        }
+                        ZipEntrySource[] addedEntries = new ZipEntrySource[zipEntrySources.size()];
+                        for (int i = 0; i< zipEntrySources.size(); i++){
+                            addedEntries[i] = zipEntrySources.get(i);
+                        }
+                        ZipUtil.pack(addedEntries, zip);
+                        // Send the zip file
+                        Intent i = new Intent(Intent.ACTION_SEND);
+                        i.setType("message/rfc822");
+                        String message = String.format("Hi, here are the rom files for %s %s.\nI'm %s making the clock dynamic and %s the stock clock.\nI would love it if you added them to K-Manager :)",
+                                nameEdit.getText(), valueEdit.getText(),
+                                prefUtils.getBool(DEV_MAKE_DYNAMIC) ? "" : "not",
+                                prefUtils.getBool(DEV_HIDE_CLOCK) ? "I\'m hiding" : "not hiding");
+                        i.putExtra(Intent.EXTRA_EMAIL, new String[]{"przestrzelski.com@gmail.com"});
+                        i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name) + " Other Roms");
+                        i.putExtra(Intent.EXTRA_TEXT, (message));
+                        i.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileprovider", zip));
+                        try {
+                            context.startActivity(Intent.createChooser(i,
+                                    "Send through..."));
+                        } catch (ActivityNotFoundException ex) {
+                            Toast.makeText(context, getString(R.string.error_sending_zip), Toast.LENGTH_LONG).show();
+                        }
 
-                        );
+                    }
+                })
+                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                        dialog.cancel();
+                    }}
 
-                // Create the AlertDialog object and return it
-                builder.create().show();
+                );
 
-            }
-        };
-        listDialogFragment.Instantiate(getString(R.string.or_settings_title), names, keys, false, true, clickListener);
-        listDialogFragment.show(getSupportFragmentManager(), "");
+        // Create the AlertDialog object and return it
+        builder.create().show();
+
 
     }
 

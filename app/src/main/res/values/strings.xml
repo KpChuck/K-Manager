@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    
     <string name="clock">Clock</string>
     <string name="icons">Icons</string>
     <string name="statusbar">StatusBar</string>
@@ -26,8 +26,6 @@
     <string name="install_permission_title">Install Unknown Apps Permission</string>
     <string name="request_install_perms">Give K-Manager permission to display the package installer and allow you to install K-Klock.</string>
     <string name="translations_thanks">Thanks to everyone that has helped with translations:</string>
-
-
 
 
 
@@ -148,8 +146,7 @@
     <string name="hscreen2_title">What the Clock Style option means in Substratum</string>
     <string name="hscreen2_1">The first part of the clock style option specifies how the clock should behave.</string>
     <string name="hscreen2_2">You can choose whether the clock should appear on the lockscreen or not. </string>
-    <string name="hscreen2_3">Stock Clock or Dynamic Clock are hidden on the lockscreen without needing to select anything. </string>
-    <string name="hscreen2_4">These two are different because they make the clock dynamic, ie. it changes color against white backgrounds. </string>
+    <string name="hscreen2_3">Stock Clock or Dynamic Clock are hidden on the lockscreen without needing to select anything and they make the clock dynamic, ie. it changes color against white backgrounds. </string>
     <string name="hscreen3_title">Help and Support</string>
     <string name="hscreen3_1">If you\'re still confused about anything check the navdrawer! </string>
     <string name="hscreen3_2">You can also check the latest Changelog or check if there\'s an update.</string>
@@ -225,6 +222,8 @@
     <string name="saved_clipboard">Saved to clipboard</string>
     <string name="save">Save</string>
     <string name="no">No</string>
+    <string name="skip">Skip</string>
+    <string name="send">Send</string>
 
     <string name="adb_required">Adb Permissions Required</string>
     <string name="adb_how_to_run">You need to grant K-Manager permissions through adb for this function to work.
