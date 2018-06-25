@@ -1,6 +1,24 @@
 package jadx.api;
 
+import jadx.core.Jadx;
+import jadx.core.ProcessClass;
+import jadx.core.codegen.CodeGen;
+import jadx.core.dex.attributes.AFlag;
+import jadx.core.dex.nodes.ClassNode;
+import jadx.core.dex.nodes.FieldNode;
+import jadx.core.dex.nodes.MethodNode;
+import jadx.core.dex.nodes.RootNode;
+import jadx.core.dex.visitors.IDexTreeVisitor;
+import jadx.core.dex.visitors.SaveCode;
+import jadx.core.export.ExportGradleProject;
+import jadx.core.utils.exceptions.JadxException;
+import jadx.core.utils.exceptions.JadxRuntimeException;
+import jadx.core.utils.files.InputFile;
+import jadx.core.xmlgen.BinaryXMLParser;
+import jadx.core.xmlgen.ResourcesSaver;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -16,35 +34,16 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import jadx.core.Jadx;
-import jadx.core.ProcessClass;
-import jadx.core.codegen.CodeGen;
-import jadx.core.dex.attributes.AFlag;
-import jadx.core.dex.nodes.ClassNode;
-import jadx.core.dex.nodes.FieldNode;
-import jadx.core.dex.nodes.MethodNode;
-import jadx.core.dex.nodes.RootNode;
-import jadx.core.dex.visitors.IDexTreeVisitor;
-import jadx.core.dex.visitors.SaveCode;
-import jadx.core.export.ExportGradleProject;
-import jadx.core.utils.exceptions.JadxRuntimeException;
-import jadx.core.utils.files.InputFile;
-import jadx.core.xmlgen.BinaryXMLParser;
-import jadx.core.xmlgen.ResourcesSaver;
-
 /**
  * Jadx API usage example:
  * <pre><code>
- * JadxArgs args = new JadxArgs();
- * args.getInputFiles().add(new File("test.apk"));
- * args.setOutDir(new File("jadx-test-output"));
- *
- * JadxDecompiler jadx = new JadxDecompiler(args);
- * jadx.load();
- * jadx.save();
+ *  JadxDecompiler jadx = new JadxDecompiler();
+ *  jadx.loadFile(new File("classes.dex"));
+ *  jadx.setOutputDir(new File("out"));
+ *  jadx.save();
  * </code></pre>
  * <p/>
- * Instead of 'save()' you can iterate over decompiled classes:
+ * Instead of 'save()' you can get list of decompiled classes:
  * <pre><code>
  *  for(JavaClass cls : jadx.getClasses()) {
  *      System.out.println(cls.getCode());
@@ -54,9 +53,12 @@ import jadx.core.xmlgen.ResourcesSaver;
 public final class JadxDecompiler {
 	private static final Logger LOG = LoggerFactory.getLogger(JadxDecompiler.class);
 
-	private JadxArgs args;
-
+	private final IJadxArgs args;
 	private final List<InputFile> inputFiles = new ArrayList<>();
+
+	private File outDir;
+	private File outDirRes;
+	private File outDirSrc;
 
 	private RootNode root;
 	private List<IDexTreeVisitor> passes;
@@ -71,35 +73,60 @@ public final class JadxDecompiler {
 	private Map<MethodNode, JavaMethod> methodsMap = new ConcurrentHashMap<>();
 	private Map<FieldNode, JavaField> fieldsMap = new ConcurrentHashMap<>();
 
-	public JadxDecompiler() {
+	private boolean noSrc = false;
+
+	public JadxDecompiler() throws JadxException {
 		this(new JadxArgs());
 	}
 
-	public JadxDecompiler(JadxArgs args) {
-		this.args = args;
-	}
-
-	public void load() {
+	public JadxDecompiler(IJadxArgs jadxArgs) throws JadxException {
+		this.args = jadxArgs;
+		this.outDir = jadxArgs.getOutDir();
+		this.outDirSrc = jadxArgs.getOutDirSrc();
+		this.outDirRes = jadxArgs.getOutDirRes();
 		reset();
-		JadxArgsValidator.validate(args);
 		init();
-		LOG.info("loading ...");
-
-		loadFiles(args.getInputFiles());
-
-		root = new RootNode(args);
-		root.load(inputFiles);
-
-		root.initClassPath();
-		root.loadResources(getResources());
-		root.initAppResClass();
-
-		initVisitors();
 	}
 
-	void init() {
-		this.passes = Jadx.getPassesList(args);
-		this.codeGen = new CodeGen();
+	public void setSources(boolean sources){
+		this.noSrc=sources;
+	}
+
+	public void setOutputDir(File outDir) throws JadxException {
+		this.outDir = outDir;
+		init();
+	}
+
+	public void setOutputDirSrc(File outDirSrc) throws JadxException {
+		this.outDirSrc = outDirSrc;
+		init();
+	}
+
+	public void setOutputDirRes(File outDirRes) throws JadxException {
+		this.outDirRes = outDirRes;
+		init();
+	}
+
+	void init() throws JadxException {
+		if(outDir == null && outDirSrc == null) {
+			outDirSrc = new JadxArgs().getOutDirSrc();
+		}
+		if(outDir == null && outDirRes == null) {
+			outDirRes = new JadxArgs().getOutDirRes();
+		}
+		if (outDir == null) {
+			outDir = new JadxArgs().getOutDir();
+		}
+		else {
+			if(outDirSrc == null && outDirRes != null && !args.isSkipSources()) {
+				throw new JadxException("--output-dir-src must be specified");
+			}
+			if(outDirSrc != null && outDirRes == null && !args.isSkipResources()) {
+				throw new JadxException("--output-dir-res must be specified");
+			}
+		}
+		this.passes = Jadx.getPassesList(args, outDir);
+		this.codeGen = new CodeGen(args);
 	}
 
 	void reset() {
@@ -115,18 +142,23 @@ public final class JadxDecompiler {
 		return Jadx.getVersion();
 	}
 
-	private void loadFiles(List<File> files) {
+	public void loadFile(File file) throws JadxException {
+		loadFiles(Collections.singletonList(file));
+	}
+
+	public void loadFiles(List<File> files) throws JadxException {
 		if (files.isEmpty()) {
-			throw new JadxRuntimeException("Empty file list");
+			throw new JadxException("Empty file list");
 		}
 		inputFiles.clear();
 		for (File file : files) {
 			try {
-				InputFile.addFilesFrom(file, inputFiles, args.isSkipSources());
-			} catch (Exception e) {
-				throw new JadxRuntimeException("Error load file: " + file, e);
+				InputFile.addFilesFrom(file, inputFiles, noSrc);
+			} catch (IOException e) {
+				throw new JadxException("Error load file: " + file, e);
 			}
 		}
+		parse();
 	}
 
 	public void save() {
@@ -169,13 +201,13 @@ public final class JadxDecompiler {
 		File sourcesOutDir;
 		File resOutDir;
 		if (args.isExportAsGradleProject()) {
-			ExportGradleProject export = new ExportGradleProject(root, args.getOutDir());
+			ExportGradleProject export = new ExportGradleProject(root, outDir);
 			export.init();
 			sourcesOutDir = export.getSrcOutDir();
 			resOutDir = export.getResOutDir();
 		} else {
-			sourcesOutDir = args.getOutDirSrc();
-			resOutDir = args.getOutDirRes();
+			sourcesOutDir = outDirSrc;
+			resOutDir = outDirRes;
 		}
 		if (saveSources) {
 			appendSourcesSave(executor, sourcesOutDir);
@@ -192,23 +224,23 @@ public final class JadxDecompiler {
 		}
 	}
 
-	private File outDirs;
-	private JavaClass clss;
+	private JavaClass javaClass;
+	private File outDirn;
 
 	private void appendSourcesSave(ExecutorService executor, File outDir) {
-	    this.outDirs=outDir;
 		for (JavaClass cls : getClasses()) {
 			if (cls.getClassNode().contains(AFlag.DONT_GENERATE)) {
 				continue;
 			}
-			this.clss = cls;
+			this.javaClass=cls;
+			this.outDirn=outDir;
 			executor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    clss.decompile();
-                    SaveCode.save(outDirs, args, clss.getClassNode());
-                }
-            });
+				@Override
+				public void run() {
+					javaClass.decompile();
+					SaveCode.save(outDirn, args, javaClass.getClassNode());
+				}
+			});
 		}
 	}
 
@@ -249,11 +281,11 @@ public final class JadxDecompiler {
 		for (JavaClass javaClass : classList) {
 			String pkg = javaClass.getPackage();
 			List<JavaClass> clsList = map.computeIfAbsent(pkg, new Function<String, List<JavaClass>>() {
-                @Override
-                public List<JavaClass> apply(String s) {
-                    return new ArrayList<>();
-                }
-            });
+				@Override
+				public List<JavaClass> apply(String s) {
+					return new ArrayList<>();
+				}
+			});
 			clsList.add(javaClass);
 		}
 		List<JavaPackage> packages = new ArrayList<>(map.size());
@@ -261,20 +293,10 @@ public final class JadxDecompiler {
 			packages.add(new JavaPackage(entry.getKey(), entry.getValue()));
 		}
 		Collections.sort(packages);
-
+		/*
 		for (JavaPackage pkg : packages) {
-            pkg.getClasses().sort(new Comparator<JavaClass>() {
-                @Override
-                public int compare(JavaClass o1, JavaClass o2) {
-                    int res = String.CASE_INSENSITIVE_ORDER.compare(o1.getName(), o2.getName());
-                    if (res == 0) {
-                        res = o1.getName().compareTo(o2.getName());
-                    }
-                    return res;
-                }
-            });
-		}
-
+			pkg.getClasses().sort(Comparator.comparing(JavaClass::getName));
+		}*/
 		return Collections.unmodifiableList(packages);
 	}
 
@@ -291,6 +313,21 @@ public final class JadxDecompiler {
 		}
 		root.getClsp().printMissingClasses();
 		root.getErrorsCounter().printReport();
+	}
+
+	void parse() throws JadxException {
+		reset();
+		init();
+
+		root = new RootNode(args);
+		LOG.info("loading ...");
+		root.load(inputFiles);
+
+		root.initClassPath();
+		root.loadResources(getResources());
+		root.initAppResClass();
+
+		initVisitors();
 	}
 
 	private void initVisitors() {
@@ -330,7 +367,7 @@ public final class JadxDecompiler {
 		return fieldsMap;
 	}
 
-	public JadxArgs getArgs() {
+	public IJadxArgs getArgs() {
 		return args;
 	}
 
@@ -338,4 +375,5 @@ public final class JadxDecompiler {
 	public String toString() {
 		return "jadx decompiler " + getVersion();
 	}
+
 }

@@ -1,5 +1,7 @@
 package jadx.core.export;
 
+import jadx.core.utils.exceptions.JadxRuntimeException;
+
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -13,8 +15,6 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import jadx.core.utils.exceptions.JadxRuntimeException;
 
 import static jadx.core.utils.files.FileUtils.close;
 

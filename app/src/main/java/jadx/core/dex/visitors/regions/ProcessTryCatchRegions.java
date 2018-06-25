@@ -1,15 +1,5 @@
 package jadx.core.dex.visitors.regions;
 
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.nodes.BlockNode;
 import jadx.core.dex.nodes.IBranchRegion;
@@ -28,6 +18,16 @@ import jadx.core.utils.BlockUtils;
 import jadx.core.utils.ErrorsCounter;
 import jadx.core.utils.RegionUtils;
 import jadx.core.utils.exceptions.JadxRuntimeException;
+
+import java.util.BitSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Extract blocks to separate try/catch region
@@ -72,13 +72,10 @@ public class ProcessTryCatchRegions extends AbstractRegionVisitor {
 			}
 			BitSet bs = new BitSet(mth.getBasicBlocks().size());
 			for (ExceptionHandler excHandler : tb.getHandlers()) {
-				BlockNode handlerBlock = excHandler.getHandlerBlock();
-				if (handlerBlock != null) {
-					SplitterBlockAttr splitter = handlerBlock.get(AType.SPLITTER_BLOCK);
-					if (splitter != null) {
-						BlockNode block = splitter.getBlock();
-						bs.set(block.getId());
-					}
+				SplitterBlockAttr splitter = excHandler.getHandlerBlock().get(AType.SPLITTER_BLOCK);
+				if (splitter != null) {
+					BlockNode block = splitter.getBlock();
+					bs.set(block.getId());
 				}
 			}
 			List<BlockNode> domBlocks = BlockUtils.bitSetToBlocks(mth, bs);
@@ -167,9 +164,7 @@ public class ProcessTryCatchRegions extends AbstractRegionVisitor {
 
 	private static boolean isHandlerPath(TryCatchBlock tb, IContainer cont) {
 		for (ExceptionHandler h : tb.getHandlers()) {
-			BlockNode handlerBlock = h.getHandlerBlock();
-			if (handlerBlock != null
-					&& RegionUtils.hasPathThroughBlock(handlerBlock, cont)) {
+			if (RegionUtils.hasPathThroughBlock(h.getHandlerBlock(), cont)) {
 				return true;
 			}
 		}

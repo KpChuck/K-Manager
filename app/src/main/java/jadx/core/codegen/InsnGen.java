@@ -1,16 +1,5 @@
 package jadx.core.codegen;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.attributes.nodes.FieldReplaceAttr;
@@ -51,6 +40,17 @@ import jadx.core.utils.ErrorsCounter;
 import jadx.core.utils.RegionUtils;
 import jadx.core.utils.exceptions.CodegenException;
 import jadx.core.utils.exceptions.JadxRuntimeException;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static jadx.core.utils.android.AndroidResourcesUtils.handleAppResField;
 
@@ -270,13 +270,18 @@ public class InsnGen {
 				makeArith((ArithNode) insn, code, state);
 				break;
 
-			case NEG:
-				oneArgInsn(code, insn, state, '-');
+			case NEG: {
+				boolean wrap = state.contains(Flags.BODY_ONLY);
+				if (wrap) {
+					code.add('(');
+				}
+				code.add('-');
+				addArg(code, insn.getArg(0));
+				if (wrap) {
+					code.add(')');
+				}
 				break;
-
-			case NOT:
-				oneArgInsn(code, insn, state, '~');
-				break;
+			}
 
 			case RETURN:
 				if (insn.getArgsCount() != 0) {
@@ -520,18 +525,6 @@ public class InsnGen {
 		}
 	}
 
-	private void oneArgInsn(CodeWriter code, InsnNode insn, Set<Flags> state, char op) throws CodegenException {
-		boolean wrap = state.contains(Flags.BODY_ONLY);
-		if (wrap) {
-			code.add('(');
-		}
-		code.add(op);
-		addArg(code, insn.getArg(0));
-		if (wrap) {
-			code.add(')');
-		}
-	}
-
 	private void fallbackOnlyInsn(InsnNode insn) throws CodegenException {
 		if (!fallback) {
 			throw new CodegenException(insn.getType() + " can be used only in fallback mode");
@@ -612,7 +605,7 @@ public class InsnGen {
 		MethodInfo callMth = insn.getCallMth();
 
 		// inline method
-		MethodNode callMthNode = mth.root().deepResolveMethod(callMth);
+		MethodNode callMthNode = mth.dex().deepResolveMethod(callMth);
 		if (callMthNode != null) {
 			if (inlineMethod(callMthNode, insn, code)) {
 				return;

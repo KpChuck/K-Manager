@@ -1,10 +1,10 @@
 package jadx.core.dex.regions;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import jadx.core.dex.nodes.IContainer;
 import jadx.core.dex.nodes.IRegion;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class Region extends AbstractRegion {
 
@@ -21,7 +21,9 @@ public final class Region extends AbstractRegion {
 	}
 
 	public void add(IContainer region) {
-		updateParent(region, this);
+		if (region instanceof AbstractRegion) {
+			((AbstractRegion) region).setParent(this);
+		}
 		blocks.add(region);
 	}
 
@@ -30,7 +32,6 @@ public final class Region extends AbstractRegion {
 		int i = blocks.indexOf(oldBlock);
 		if (i != -1) {
 			blocks.set(i, newBlock);
-			updateParent(newBlock, this);
 			return true;
 		}
 		return false;

@@ -1,15 +1,6 @@
 package jadx.core;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.jar.Manifest;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import jadx.api.JadxArgs;
+import jadx.api.IJadxArgs;
 import jadx.core.dex.visitors.ClassModifier;
 import jadx.core.dex.visitors.CodeShrinker;
 import jadx.core.dex.visitors.ConstInlineVisitor;
@@ -42,6 +33,16 @@ import jadx.core.dex.visitors.ssa.SSATransform;
 import jadx.core.dex.visitors.typeinference.FinishTypeInference;
 import jadx.core.dex.visitors.typeinference.TypeInference;
 
+import java.io.File;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.jar.Manifest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Jadx {
 	private static final Logger LOG = LoggerFactory.getLogger(Jadx.class);
 
@@ -54,7 +55,7 @@ public class Jadx {
 		}
 	}
 
-	public static List<IDexTreeVisitor> getPassesList(JadxArgs args) {
+	public static List<IDexTreeVisitor> getPassesList(IJadxArgs args, File outDir) {
 		List<IDexTreeVisitor> passes = new ArrayList<>();
 		if (args.isFallbackMode()) {
 			passes.add(new FallbackModeVisitor());
@@ -70,7 +71,7 @@ public class Jadx {
 			passes.add(new TypeInference());
 
 			if (args.isRawCFGOutput()) {
-				passes.add(DotGraphVisitor.dumpRaw());
+				passes.add(DotGraphVisitor.dumpRaw(outDir));
 			}
 
 			passes.add(new ConstInlineVisitor());
@@ -82,8 +83,8 @@ public class Jadx {
 			passes.add(new CodeShrinker());
 			passes.add(new ReSugarCode());
 
-			if (args.isCfgOutput()) {
-				passes.add(DotGraphVisitor.dump());
+			if (args.isCFGOutput()) {
+				passes.add(DotGraphVisitor.dump(outDir));
 			}
 
 			passes.add(new RegionMakerVisitor());
@@ -94,6 +95,10 @@ public class Jadx {
 			passes.add(new SimplifyVisitor());
 			passes.add(new CheckRegions());
 
+			if (args.isCFGOutput()) {
+				passes.add(DotGraphVisitor.dumpRegions(outDir));
+			}
+
 			passes.add(new MethodInlineVisitor());
 			passes.add(new ExtractFieldInit());
 			passes.add(new ClassModifier());
@@ -101,10 +106,6 @@ public class Jadx {
 			passes.add(new PrepareForCodeGen());
 			passes.add(new LoopRegionVisitor());
 			passes.add(new ProcessVariables());
-
-			if (args.isCfgOutput()) {
-				passes.add(DotGraphVisitor.dumpRegions());
-			}
 
 			passes.add(new DependencyCollector());
 

@@ -1,5 +1,10 @@
 package jadx.core.xmlgen;
 
+import jadx.api.ResourceFile;
+import jadx.api.ResourceType;
+import jadx.core.codegen.CodeWriter;
+
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -7,10 +12,6 @@ import java.util.List;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import jadx.api.ResourceFile;
-import jadx.api.ResourceType;
-import jadx.core.codegen.CodeWriter;
 
 import static jadx.core.utils.files.FileUtils.prepareFile;
 

@@ -1,13 +1,13 @@
 package jadx.core.utils;
 
-import jadx.api.JadxArgs;
+import jadx.api.IJadxArgs;
 
 public class StringUtils {
 
 	private final boolean escapeUnicode;
 
-	public StringUtils(JadxArgs args) {
-		this.escapeUnicode = args.isEscapeUnicode();
+	public StringUtils(IJadxArgs args) {
+		this.escapeUnicode = args.escapeUnicode();
 	}
 
 	public String unescapeString(String str) {
@@ -149,9 +149,6 @@ public class StringUtils {
 	}
 
 	private static String escapeXmlChar(char c) {
-		if(c >= 0 && c <= 0x1F) {
-			return "\\" + (int) c;
-		}
 		switch (c) {
 			case '&':
 				return "&amp;";
@@ -163,8 +160,6 @@ public class StringUtils {
 				return "&quot;";
 			case '\'':
 				return "&apos;";
-			case '\\':
-				return "\\\\";
 			default:
 				return null;
 		}

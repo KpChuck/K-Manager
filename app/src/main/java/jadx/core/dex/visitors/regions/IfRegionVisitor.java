@@ -1,9 +1,8 @@
 package jadx.core.dex.visitors.regions;
 
-import java.util.List;
-
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.instructions.args.ArgType;
+import jadx.core.dex.nodes.IBlock;
 import jadx.core.dex.nodes.IContainer;
 import jadx.core.dex.nodes.IRegion;
 import jadx.core.dex.nodes.MethodNode;
@@ -14,24 +13,22 @@ import jadx.core.dex.regions.conditions.IfRegion;
 import jadx.core.dex.visitors.AbstractVisitor;
 import jadx.core.utils.RegionUtils;
 
+import java.util.List;
+
 import static jadx.core.utils.RegionUtils.insnsCount;
 
-public class IfRegionVisitor extends AbstractVisitor {
+public class IfRegionVisitor extends AbstractVisitor implements IRegionVisitor, IRegionIterativeVisitor {
 
 	private static final TernaryVisitor TERNARY_VISITOR = new TernaryVisitor();
-	private static final ProcessIfRegionVisitor PROCESS_IF_REGION_VISITOR = new ProcessIfRegionVisitor();
-	private static final RemoveRedundantElseVisitor REMOVE_REDUNDANT_ELSE_VISITOR = new RemoveRedundantElseVisitor();
 
 	@Override
 	public void visit(MethodNode mth) {
+		// collapse ternary operators
 		DepthRegionTraversal.traverseIterative(mth, TERNARY_VISITOR);
-		DepthRegionTraversal.traverse(mth, PROCESS_IF_REGION_VISITOR);
-		DepthRegionTraversal.traverseIterative(mth, REMOVE_REDUNDANT_ELSE_VISITOR);
+		DepthRegionTraversal.traverse(mth, this);
+		DepthRegionTraversal.traverseIterative(mth, this);
 	}
 
-	/**
-	 * Collapse ternary operators
-	 */
 	private static class TernaryVisitor implements IRegionIterativeVisitor {
 		@Override
 		public boolean visitRegion(MethodNode mth, IRegion region) {
@@ -40,28 +37,35 @@ public class IfRegionVisitor extends AbstractVisitor {
 		}
 	}
 
-	private static class ProcessIfRegionVisitor extends AbstractRegionVisitor {
-		@Override
-		public boolean enterRegion(MethodNode mth, IRegion region) {
-			if (region instanceof IfRegion) {
-				IfRegion ifRegion = (IfRegion) region;
-				simplifyIfCondition(ifRegion);
-				moveReturnToThenBlock(mth, ifRegion);
-				moveBreakToThenBlock(ifRegion);
-				markElseIfChains(ifRegion);
-			}
-			return true;
+	@Override
+	public boolean enterRegion(MethodNode mth, IRegion region) {
+		if (region instanceof IfRegion) {
+			processIfRegion(mth, (IfRegion) region);
 		}
+		return true;
 	}
 
-	private static class RemoveRedundantElseVisitor implements IRegionIterativeVisitor {
-		@Override
-		public boolean visitRegion(MethodNode mth, IRegion region) {
-			if (region instanceof IfRegion) {
-				return removeRedundantElseBlock(mth, (IfRegion) region);
-			}
-			return false;
+	@Override
+	public boolean visitRegion(MethodNode mth, IRegion region) {
+		if (region instanceof IfRegion) {
+			return removeRedundantElseBlock(mth, (IfRegion) region);
 		}
+		return false;
+	}
+
+	@Override
+	public void processBlock(MethodNode mth, IBlock container) {
+	}
+
+	@Override
+	public void leaveRegion(MethodNode mth, IRegion region) {
+	}
+
+	private static void processIfRegion(MethodNode mth, IfRegion ifRegion) {
+		simplifyIfCondition(ifRegion);
+		moveReturnToThenBlock(mth, ifRegion);
+		moveBreakToThenBlock(ifRegion);
+		markElseIfChains(ifRegion);
 	}
 
 	private static void simplifyIfCondition(IfRegion ifRegion) {
@@ -86,6 +90,7 @@ public class IfRegionVisitor extends AbstractVisitor {
 					&& !isIfRegion(elseRegion)) {
 				invertIfRegion(ifRegion);
 			}
+
 		}
 	}
 

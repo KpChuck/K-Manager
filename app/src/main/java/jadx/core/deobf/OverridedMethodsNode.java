@@ -1,10 +1,10 @@
 package jadx.core.deobf;
 
-import java.util.Set;
-
 import jadx.core.dex.info.MethodInfo;
 
-class OverridedMethodsNode {
+import java.util.Set;
+
+/* package */ class OverridedMethodsNode {
 
 	private Set<MethodInfo> methods;
 

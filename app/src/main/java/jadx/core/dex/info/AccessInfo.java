@@ -1,8 +1,8 @@
 package jadx.core.dex.info;
 
-import com.android.dx.rop.code.AccessFlags;
-
 import jadx.core.Consts;
+
+import com.android.dx.rop.code.AccessFlags;
 
 public class AccessInfo {
 
@@ -140,8 +140,10 @@ public class AccessInfo {
 				if (isBridge()) {
 					code.append("/* bridge */ ");
 				}
-				if (Consts.DEBUG && isVarArgs()) {
-					code.append("/* varargs */ ");
+				if (Consts.DEBUG) {
+					if (isVarArgs()) {
+						code.append("/* varargs */ ");
+					}
 				}
 				break;
 

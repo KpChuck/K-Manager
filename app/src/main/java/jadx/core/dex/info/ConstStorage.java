@@ -1,14 +1,6 @@
 package jadx.core.dex.info;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.jetbrains.annotations.Nullable;
-
-import jadx.api.JadxArgs;
+import jadx.api.IJadxArgs;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.instructions.args.LiteralArg;
 import jadx.core.dex.instructions.args.PrimitiveType;
@@ -17,6 +9,14 @@ import jadx.core.dex.nodes.DexNode;
 import jadx.core.dex.nodes.FieldNode;
 import jadx.core.dex.nodes.ResRefField;
 import jadx.core.dex.nodes.parser.FieldInitAttr;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.jetbrains.annotations.Nullable;
 
 public class ConstStorage {
 
@@ -60,7 +60,7 @@ public class ConstStorage {
 
 	private Map<Integer, String> resourcesNames = new HashMap<>();
 
-	public ConstStorage(JadxArgs args) {
+	public ConstStorage(IJadxArgs args) {
 		this.replaceEnabled = args.isReplaceConsts();
 	}
 

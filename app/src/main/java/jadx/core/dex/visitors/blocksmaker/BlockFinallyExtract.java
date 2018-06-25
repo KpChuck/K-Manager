@@ -1,20 +1,5 @@
 package jadx.core.dex.visitors.blocksmaker;
 
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import jadx.core.Jadx;
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.attributes.nodes.IgnoreEdgeAttr;
@@ -29,14 +14,25 @@ import jadx.core.dex.trycatch.ExceptionHandler;
 import jadx.core.dex.trycatch.SplitterBlockAttr;
 import jadx.core.dex.trycatch.TryCatchBlock;
 import jadx.core.dex.visitors.AbstractVisitor;
-import jadx.core.dex.visitors.DepthTraversal;
-import jadx.core.dex.visitors.IDexTreeVisitor;
 import jadx.core.dex.visitors.blocksmaker.helpers.BlocksPair;
 import jadx.core.dex.visitors.blocksmaker.helpers.BlocksRemoveInfo;
 import jadx.core.dex.visitors.ssa.LiveVarAnalysis;
 import jadx.core.utils.BlockUtils;
-import jadx.core.utils.ErrorsCounter;
 import jadx.core.utils.exceptions.JadxRuntimeException;
+
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static jadx.core.dex.visitors.blocksmaker.BlockSplitter.connect;
 import static jadx.core.dex.visitors.blocksmaker.BlockSplitter.insertBlockBetween;
@@ -50,34 +46,16 @@ public class BlockFinallyExtract extends AbstractVisitor {
 		if (mth.isNoCode() || mth.isNoExceptionHandlers()) {
 			return;
 		}
-		try {
-			boolean reloadBlocks = false;
-			for (ExceptionHandler excHandler : mth.getExceptionHandlers()) {
-				if (processExceptionHandler(mth, excHandler)) {
-					reloadBlocks = true;
-				}
+
+		boolean reloadBlocks = false;
+		for (ExceptionHandler excHandler : mth.getExceptionHandlers()) {
+			if (processExceptionHandler(mth, excHandler)) {
+				reloadBlocks = true;
 			}
-			if (reloadBlocks) {
-				mergeReturnBlocks(mth);
-				BlockProcessor.rerun(mth);
-			}
-		} catch (Exception e) {
-			LOG.warn("Undo finally extract visitor, mth: {}", mth, e);
-			try {
-				// reload method without applying this visitor
-				// TODO: make more common and less hacky
-				mth.unload();
-				mth.load();
-				List<IDexTreeVisitor> passes = Jadx.getPassesList(mth.root().getArgs());
-				for (IDexTreeVisitor visitor : passes) {
-					if (visitor instanceof BlockFinallyExtract) {
-						break;
-					}
-					DepthTraversal.visit(visitor, mth);
-				}
-			} catch (Exception ee) {
-				LOG.error("Undo finally extract failed, mth: {}", mth, e);
-			}
+		}
+		if (reloadBlocks) {
+			mergeReturnBlocks(mth);
+			BlockProcessor.rerun(mth);
 		}
 	}
 
@@ -243,7 +221,7 @@ public class BlockFinallyExtract extends AbstractVisitor {
 	}
 
 	private static void performVariablesReMap(MethodNode mth, List<BlocksRemoveInfo> removes,
-	                                          LiveVarAnalysis laBefore, LiveVarAnalysis laAfter) {
+			LiveVarAnalysis laBefore, LiveVarAnalysis laAfter) {
 		BitSet processed = new BitSet(mth.getRegsCount());
 		for (BlocksRemoveInfo removeInfo : removes) {
 			processed.clear();
@@ -412,7 +390,7 @@ public class BlockFinallyExtract extends AbstractVisitor {
 	}
 
 	private static boolean checkInsns(List<InsnNode> remInsns, List<InsnNode> startInsns, int delta,
-	                                  @Nullable BlocksRemoveInfo removeInfo) {
+			@Nullable BlocksRemoveInfo removeInfo) {
 		for (int i = startInsns.size() - 1; i >= 0; i--) {
 			InsnNode startInsn = startInsns.get(i);
 			InsnNode remInsn = remInsns.get(delta + i);
@@ -424,7 +402,7 @@ public class BlockFinallyExtract extends AbstractVisitor {
 	}
 
 	private static boolean checkBlocksTree(BlockNode remBlock, BlockNode startBlock,
-	                                       @NotNull BlocksRemoveInfo removeInfo, BitSet bs) {
+			@NotNull BlocksRemoveInfo removeInfo, BitSet bs) {
 		// skip check on start block
 		if (!removeInfo.getProcessed().isEmpty()
 				&& !sameBlocks(remBlock, startBlock, removeInfo)) {
@@ -458,7 +436,7 @@ public class BlockFinallyExtract extends AbstractVisitor {
 	}
 
 	private static boolean sameBlocks(BlockNode remBlock, BlockNode finallyBlock,
-	                                  @NotNull BlocksRemoveInfo removeInfo) {
+			@NotNull BlocksRemoveInfo removeInfo) {
 		List<InsnNode> first = remBlock.getInstructions();
 		List<InsnNode> second = finallyBlock.getInstructions();
 		if (first.size() < second.size()) {
@@ -517,12 +495,6 @@ public class BlockFinallyExtract extends AbstractVisitor {
 			LOG.warn("Finally extract failed: remBlock pred: {}, {}, method: {}", remBlock, remBlock.getPredecessors(), mth);
 			return false;
 		}
-		if (removeInfo.getOuts().isEmpty()) {
-			ErrorsCounter.methodError(mth, "Failed to extract finally block: empty outs");
-			return false;
-		}
-		// safe checks finished, altering blocks tree
-		// all error must throw exception to undo changes
 
 		BlockNode remBlockPred = remBlock.getPredecessors().get(0);
 		removeInfo.setStartPredecessor(remBlockPred);
@@ -562,11 +534,7 @@ public class BlockFinallyExtract extends AbstractVisitor {
 			}
 		}
 
-		Set<BlocksPair> outs = removeInfo.getOuts();
-		if (outs.isEmpty()) {
-			throw new JadxRuntimeException("Failed to extract finally block: all outs is deleted");
-		}
-		BlocksPair out = outs.iterator().next();
+		BlocksPair out = removeInfo.getOuts().iterator().next();
 		BlockNode rOut = out.getFirst();
 		BlockNode sOut = out.getSecond();
 
@@ -577,7 +545,8 @@ public class BlockFinallyExtract extends AbstractVisitor {
 			BlockNode newPred = BlockSplitter.insertBlockBetween(mth, pred, sOut);
 			for (BlockNode predBlock : new ArrayList<>(sOut.getPredecessors())) {
 				if (predBlock != newPred) {
-					BlockSplitter.replaceConnection(predBlock, sOut, newPred);
+					removeConnection(predBlock, sOut);
+					connect(predBlock, newPred);
 				}
 			}
 			rOut.getPredecessors().clear();
@@ -587,7 +556,8 @@ public class BlockFinallyExtract extends AbstractVisitor {
 			BlockNode pred = filtPreds.get(0);
 			BlockNode repl = removeInfo.getBySecond(pred);
 			if (repl == null) {
-				throw new JadxRuntimeException("Block not found by " + pred + ", in " + removeInfo);
+				LOG.error("Block not found by {}, in {}, method: {}", pred, removeInfo, mth);
+				return false;
 			}
 			removeConnection(pred, rOut);
 			addIgnoredEdge(repl, rOut);
@@ -604,7 +574,6 @@ public class BlockFinallyExtract extends AbstractVisitor {
 			connect(middle, startBlock);
 			addIgnoredEdge(middle, startBlock);
 			connect(middle, rOut);
-			BlockSplitter.replaceTarget(middle, remBlock, rOut);
 		}
 
 		// mark blocks for remove

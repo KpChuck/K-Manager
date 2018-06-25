@@ -1,10 +1,20 @@
 package jadx.core.dex.nodes;
 
+import jadx.core.dex.info.ClassInfo;
+import jadx.core.dex.info.FieldInfo;
+import jadx.core.dex.info.MethodInfo;
+import jadx.core.dex.instructions.args.ArgType;
+import jadx.core.utils.exceptions.DecodeException;
+import jadx.core.utils.files.DexFile;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import com.android.dex.ClassData;
 import com.android.dex.ClassData.Method;
@@ -16,14 +26,6 @@ import com.android.dex.FieldId;
 import com.android.dex.MethodId;
 import com.android.dex.ProtoId;
 import com.android.dex.TypeList;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import jadx.core.dex.info.ClassInfo;
-import jadx.core.dex.info.FieldInfo;
-import jadx.core.dex.info.MethodInfo;
-import jadx.core.dex.instructions.args.ArgType;
-import jadx.core.utils.files.DexFile;
 
 public class DexNode implements IDexNode {
 
@@ -44,7 +46,7 @@ public class DexNode implements IDexNode {
 		this.dexId = dexId;
 	}
 
-	public void loadClasses() {
+	public void loadClasses() throws DecodeException {
 		for (ClassDef cls : dexBuf.classDefs()) {
 			ClassNode clsNode = new ClassNode(this, cls);
 			classes.add(clsNode);
@@ -65,7 +67,7 @@ public class DexNode implements IDexNode {
 			ClassNode parent = resolveClass(clsInfo.getParentClass());
 			if (parent == null) {
 				clsMap.remove(clsInfo);
-				clsInfo.notInner(root);
+				clsInfo.notInner(cls.dex());
 				clsMap.put(clsInfo, cls);
 			} else {
 				parent.addInnerClass(cls);
@@ -78,13 +80,8 @@ public class DexNode implements IDexNode {
 	}
 
 	@Nullable
-	ClassNode resolveClassLocal(ClassInfo clsInfo) {
-		return clsMap.get(clsInfo);
-	}
-
-	@Nullable
 	public ClassNode resolveClass(ClassInfo clsInfo) {
-		return root.resolveClass(clsInfo);
+		return clsMap.get(clsInfo);
 	}
 
 	@Nullable
@@ -92,7 +89,7 @@ public class DexNode implements IDexNode {
 		if (type.isGeneric()) {
 			type = ArgType.object(type.getObject());
 		}
-		return resolveClass(ClassInfo.fromType(root, type));
+		return resolveClass(ClassInfo.fromType(this, type));
 	}
 
 	@Nullable
@@ -104,8 +101,20 @@ public class DexNode implements IDexNode {
 		return null;
 	}
 
+	/**
+	 * Search method in class hierarchy.
+	 */
 	@Nullable
-	MethodNode deepResolveMethod(@NotNull ClassNode cls, String signature) {
+	public MethodNode deepResolveMethod(@NotNull MethodInfo mth) {
+		ClassNode cls = resolveClass(mth.getDeclClass());
+		if (cls == null) {
+			return null;
+		}
+		return deepResolveMethod(cls, mth.makeSignature(false));
+	}
+
+	@Nullable
+	private MethodNode deepResolveMethod(@NotNull ClassNode cls, String signature) {
 		for (MethodNode m : cls.getMethods()) {
 			if (m.getMethodInfo().getShortId().startsWith(signature)) {
 				return m;
@@ -190,10 +199,6 @@ public class DexNode implements IDexNode {
 		return dexBuf.open(offset);
 	}
 
-	public boolean checkOffset(int dataOffset) {
-		return dataOffset >= 0 && dataOffset < dexBuf.getLength();
-	}
-
 	@Override
 	public RootNode root() {
 		return root;
@@ -210,7 +215,6 @@ public class DexNode implements IDexNode {
 
 	@Override
 	public String toString() {
-		return "DEX: " + file;
+		return "DEX";
 	}
-
 }

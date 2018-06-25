@@ -1,14 +1,5 @@
 package jadx.core.dex.visitors;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jadx.core.codegen.TypeGen;
 import jadx.core.deobf.NameMapper;
 import jadx.core.dex.attributes.AFlag;
@@ -45,6 +36,15 @@ import jadx.core.utils.ErrorsCounter;
 import jadx.core.utils.InsnUtils;
 import jadx.core.utils.InstructionRemover;
 import jadx.core.utils.exceptions.JadxRuntimeException;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Visitor for modify method instructions
@@ -249,9 +249,14 @@ public class ModVisitor extends AbstractVisitor {
 				|| !parentClass.getInnerClasses().contains(classNode)) {
 			return;
 		}
+		if (!classNode.getAccessFlags().isStatic()
+				&& (callMth.getArgsCount() == 0
+				|| !callMth.getArgumentsTypes().get(0).equals(parentClass.getClassInfo().getType()))) {
+			return;
+		}
 		// TODO: calculate this constructor and other constructor usage
 		Map<InsnArg, FieldNode> argsMap = getArgsToFieldsMapping(callMthNode, co);
-		if (argsMap.isEmpty() && !callMthNode.getArguments(true).isEmpty()) {
+		if (argsMap.isEmpty()) {
 			return;
 		}
 
@@ -280,14 +285,9 @@ public class ModVisitor extends AbstractVisitor {
 
 	private static Map<InsnArg, FieldNode> getArgsToFieldsMapping(MethodNode callMthNode, ConstructorInsn co) {
 		Map<InsnArg, FieldNode> map = new LinkedHashMap<>();
-		MethodInfo callMth = callMthNode.getMethodInfo();
-		ClassNode cls = callMthNode.getParentClass();
-		ClassNode parentClass = cls.getParentClass();
+		ClassNode parentClass = callMthNode.getParentClass();
 		List<RegisterArg> argList = callMthNode.getArguments(false);
-		int startArg = 0;
-		if (callMth.getArgsCount() != 0 && callMth.getArgumentsTypes().get(0).equals(parentClass.getClassInfo().getType())) {
-			startArg = 1;
-		}
+		int startArg = parentClass.getAccessFlags().isStatic() ? 0 : 1;
 		int argsCount = argList.size();
 		for (int i = startArg; i < argsCount; i++) {
 			RegisterArg arg = argList.get(i);
@@ -298,7 +298,7 @@ public class ModVisitor extends AbstractVisitor {
 			FieldNode fieldNode = null;
 			if (useInsn.getType() == InsnType.IPUT) {
 				FieldInfo field = (FieldInfo) ((IndexInsnNode) useInsn).getIndex();
-				fieldNode = cls.searchField(field);
+				fieldNode = parentClass.searchField(field);
 				if (fieldNode == null || !fieldNode.getAccessFlags().isSynthetic()) {
 					return Collections.emptyMap();
 				}

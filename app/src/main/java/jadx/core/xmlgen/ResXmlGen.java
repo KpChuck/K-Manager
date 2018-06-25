@@ -1,19 +1,12 @@
 package jadx.core.xmlgen;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import jadx.core.codegen.CodeWriter;
 import jadx.core.utils.StringUtils;
 import jadx.core.xmlgen.entry.RawNamedValue;
 import jadx.core.xmlgen.entry.ResourceEntry;
 import jadx.core.xmlgen.entry.ValuesParser;
+
+import java.util.*;
 
 public class ResXmlGen {
 
@@ -128,6 +121,7 @@ public class ResXmlGen {
 		return s.substring(1);
 	}
 
+
 	private void addItem(CodeWriter cw, String itemTag, String typeName, RawNamedValue value) {
 		String nameStr = vp.decodeNameRef(value.getNameRef());
 		String valueStr = vp.decodeValue(value.getRawValue());
@@ -142,8 +136,7 @@ public class ResXmlGen {
 					if (newVal != null) {
 						valueStr = newVal;
 					}
-				} catch (NumberFormatException e) {
-					// ignore
+				} catch (NumberFormatException ignored) {
 				}
 			}
 		}

@@ -1,11 +1,5 @@
 package jadx.core.dex.visitors.regions;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.nodes.BlockNode;
@@ -17,8 +11,16 @@ import jadx.core.dex.visitors.AbstractVisitor;
 import jadx.core.utils.ErrorsCounter;
 import jadx.core.utils.exceptions.JadxException;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class CheckRegions extends AbstractVisitor {
 	private static final Logger LOG = LoggerFactory.getLogger(CheckRegions.class);
+
+	private Set<BlockNode> blocksInRegions;
 
 	@Override
 	public void visit(MethodNode mth) throws JadxException {
@@ -29,7 +31,7 @@ public class CheckRegions extends AbstractVisitor {
 		}
 
 		// check if all blocks included in regions
-		final Set<BlockNode> blocksInRegions = new HashSet<>();
+		;blocksInRegions = new HashSet<>();
 		DepthRegionTraversal.traverse(mth, new AbstractRegionVisitor() {
 			@Override
 			public void processBlock(MethodNode mth, IBlock container) {

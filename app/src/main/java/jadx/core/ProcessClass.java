@@ -1,15 +1,14 @@
 package jadx.core;
 
-import java.util.List;
-import java.util.function.Consumer;
-
-import org.jetbrains.annotations.Nullable;
-
 import jadx.core.codegen.CodeGen;
 import jadx.core.dex.nodes.ClassNode;
 import jadx.core.dex.visitors.DepthTraversal;
 import jadx.core.dex.visitors.IDexTreeVisitor;
 import jadx.core.utils.ErrorsCounter;
+
+import java.util.List;
+
+import org.jetbrains.annotations.Nullable;
 
 import static jadx.core.dex.nodes.ProcessState.GENERATED;
 import static jadx.core.dex.nodes.ProcessState.NOT_LOADED;
@@ -26,7 +25,7 @@ public final class ProcessClass {
 		if (codeGen == null && cls.getState() == PROCESSED) {
 			return;
 		}
-		synchronized (getSyncObj(cls)) {
+		synchronized (cls.getClassInfo()) {
 			try {
 				if (cls.getState() == NOT_LOADED) {
 					cls.load();
@@ -52,16 +51,9 @@ public final class ProcessClass {
 		}
 	}
 
-	public static Object getSyncObj(ClassNode cls) {
-		return cls.getClassInfo();
-	}
-
-	private static void processDependencies(ClassNode cls, final List<IDexTreeVisitor> passes) {
-		cls.getDependencies().forEach(new Consumer<ClassNode>() {
-			@Override
-			public void accept(ClassNode depCls) {
-				process(depCls, passes, null);
-			}
-		});
+	private static void processDependencies(ClassNode cls, List<IDexTreeVisitor> passes) {
+		for (ClassNode depCls : cls.getDependencies()) {
+			process(depCls, passes, null);
+		}
 	}
 }

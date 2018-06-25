@@ -1,7 +1,5 @@
 package jadx.core.dex.visitors;
 
-import java.util.List;
-
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.nodes.MethodInlineAttr;
 import jadx.core.dex.info.AccessInfo;
@@ -13,6 +11,8 @@ import jadx.core.dex.nodes.BlockNode;
 import jadx.core.dex.nodes.InsnNode;
 import jadx.core.dex.nodes.MethodNode;
 import jadx.core.utils.exceptions.JadxException;
+
+import java.util.List;
 
 /**
  * Inline synthetic methods.

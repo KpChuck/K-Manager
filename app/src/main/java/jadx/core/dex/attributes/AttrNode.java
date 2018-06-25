@@ -1,8 +1,8 @@
 package jadx.core.dex.attributes;
 
-import java.util.List;
-
 import jadx.core.dex.attributes.annotations.Annotation;
+
+import java.util.List;
 
 public abstract class AttrNode implements IAttributeNode {
 
@@ -95,9 +95,5 @@ public abstract class AttrNode implements IAttributeNode {
 	@Override
 	public String getAttributesString() {
 		return storage.toString();
-	}
-
-	public boolean isAttrStorageEmpty() {
-		return storage.isEmpty();
 	}
 }

@@ -1,9 +1,5 @@
 package jadx.core.codegen;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Queue;
-
 import jadx.core.dex.instructions.ArithNode;
 import jadx.core.dex.instructions.IfOp;
 import jadx.core.dex.instructions.InsnType;
@@ -19,7 +15,15 @@ import jadx.core.utils.ErrorsCounter;
 import jadx.core.utils.exceptions.CodegenException;
 import jadx.core.utils.exceptions.JadxRuntimeException;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ConditionGen extends InsnGen {
+	private static final Logger LOG = LoggerFactory.getLogger(ConditionGen.class);
 
 	private static class CondStack {
 		private final Queue<IfCondition> stack = new LinkedList<>();
@@ -122,7 +126,7 @@ public class ConditionGen extends InsnGen {
 				wrap(code, firstArg);
 				return;
 			}
-			ErrorsCounter.methodError(mth, "Unsupported boolean condition " + op.getSymbol());
+			LOG.warn(ErrorsCounter.formatErrorMsg(mth, "Unsupported boolean condition " + op.getSymbol()));
 		}
 
 		addArg(code, firstArg, isArgWrapNeeded(firstArg));
@@ -175,9 +179,6 @@ public class ConditionGen extends InsnGen {
 				case DIV:
 				case REM:
 					return false;
-
-				default:
-					return true;
 			}
 		} else {
 			switch (insnType) {
@@ -188,10 +189,10 @@ public class ConditionGen extends InsnGen {
 				case CONST:
 				case ARRAY_LENGTH:
 					return false;
-
 				default:
 					return true;
 			}
 		}
+		return true;
 	}
 }

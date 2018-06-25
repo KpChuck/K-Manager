@@ -1,11 +1,5 @@
 package jadx.core.codegen;
 
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.attributes.AType;
 import jadx.core.dex.attributes.nodes.DeclareVariablesAttr;
@@ -37,6 +31,12 @@ import jadx.core.utils.ErrorsCounter;
 import jadx.core.utils.RegionUtils;
 import jadx.core.utils.exceptions.CodegenException;
 import jadx.core.utils.exceptions.JadxRuntimeException;
+
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RegionGen extends InsnGen {
 	private static final Logger LOG = LoggerFactory.getLogger(RegionGen.class);
@@ -134,16 +134,17 @@ public class RegionGen extends InsnGen {
 	 * Connect if-else-if block
 	 */
 	private boolean connectElseIf(CodeWriter code, IContainer els) throws CodegenException {
-		if (els.contains(AFlag.ELSE_IF_CHAIN) && els instanceof Region) {
-			List<IContainer> subBlocks = ((Region) els).getSubBlocks();
-			if (subBlocks.size() == 1) {
-				IContainer elseBlock = subBlocks.get(0);
-				if (elseBlock instanceof IfRegion) {
-					declareVars(code, elseBlock);
-					makeIf((IfRegion) elseBlock, code, false);
-					return true;
-				}
-			}
+		if (!els.contains(AFlag.ELSE_IF_CHAIN)) {
+			return false;
+		}
+		if (!(els instanceof Region)) {
+			return false;
+		}
+		List<IContainer> subBlocks = ((Region) els).getSubBlocks();
+		if (subBlocks.size() == 1
+				&& subBlocks.get(0) instanceof IfRegion) {
+			makeIf((IfRegion) subBlocks.get(0), code, false);
+			return true;
 		}
 		return false;
 	}
@@ -206,13 +207,11 @@ public class RegionGen extends InsnGen {
 		if (region.isConditionAtEnd()) {
 			code.startLine("do {");
 			makeRegionIndent(code, region.getBody());
-			code.startLineWithNum(region.getConditionSourceLine());
-			code.add("} while (");
+			code.startLine("} while (");
 			conditionGen.add(code, condition);
 			code.add(");");
 		} else {
-			code.startLineWithNum(region.getConditionSourceLine());
-			code.add("while (");
+			code.startLine("while (");
 			conditionGen.add(code, condition);
 			code.add(") {");
 			makeRegionIndent(code, region.getBody());

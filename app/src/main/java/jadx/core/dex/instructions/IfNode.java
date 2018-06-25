@@ -1,13 +1,13 @@
 package jadx.core.dex.instructions;
 
-import com.android.dx.io.instructions.DecodedInstruction;
-
 import jadx.core.dex.instructions.args.ArgType;
 import jadx.core.dex.instructions.args.InsnArg;
 import jadx.core.dex.instructions.args.PrimitiveType;
 import jadx.core.dex.nodes.BlockNode;
 import jadx.core.dex.nodes.InsnNode;
 import jadx.core.utils.InsnUtils;
+
+import com.android.dx.io.instructions.DecodedInstruction;
 
 import static jadx.core.utils.BlockUtils.getBlockByOffset;
 import static jadx.core.utils.BlockUtils.selectOther;
@@ -56,7 +56,6 @@ public class IfNode extends GotoNode {
 		setArg(1, arg2);
 	}
 
-	@Override
 	public void initBlocks(BlockNode curBlock) {
 		thenBlock = getBlockByOffset(target, curBlock.getSuccessors());
 		if (curBlock.getSuccessors().size() == 1) {
@@ -64,19 +63,6 @@ public class IfNode extends GotoNode {
 		} else {
 			elseBlock = selectOther(thenBlock, curBlock.getSuccessors());
 		}
-	}
-
-	@Override
-	public boolean replaceTargetBlock(BlockNode origin, BlockNode replace) {
-		if (thenBlock == origin) {
-			thenBlock = replace;
-			return true;
-		}
-		if (elseBlock == origin) {
-			elseBlock = replace;
-			return true;
-		}
-		return false;
 	}
 
 	public BlockNode getThenBlock() {

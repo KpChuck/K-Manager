@@ -7,12 +7,15 @@ import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
 
-import jadx.api.JadxArgs;
+import jadx.api.IJadxArgs;
 import jadx.core.Consts;
+import jadx.core.codegen.TypeGen;
 import jadx.core.deobf.Deobfuscator;
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.info.ClassInfo;
 import jadx.core.dex.info.FieldInfo;
+import jadx.core.dex.info.MethodInfo;
+import jadx.core.dex.instructions.args.ArgType;
 import jadx.core.dex.nodes.ClassNode;
 import jadx.core.dex.nodes.DexNode;
 import jadx.core.dex.nodes.FieldNode;
@@ -28,6 +31,8 @@ public class RenameVisitor extends AbstractVisitor {
 
 	@Override
 	public void init(RootNode root) {
+		IJadxArgs args = root.getArgs();
+
 		List<DexNode> dexNodes = root.getDexNodes();
 		if (dexNodes.isEmpty()) {
 			return;
@@ -38,7 +43,6 @@ public class RenameVisitor extends AbstractVisitor {
 		String inputName = FilenameUtils.getBaseName(firstInputFileName);
 
 		File deobfMapFile = new File(inputPath, inputName + ".jobf");
-		JadxArgs args = root.getArgs();
 		deobfuscator = new Deobfuscator(args, dexNodes, deobfMapFile);
 		boolean deobfuscationOn = args.isDeobfuscationOn();
 		if (deobfuscationOn) {
@@ -68,7 +72,7 @@ public class RenameVisitor extends AbstractVisitor {
 				if (!clsNames.add(clsFileName.toLowerCase())) {
 					String newShortName = deobfuscator.getClsAlias(cls);
 					String newFullName = classInfo.makeFullClsName(newShortName, true);
-					classInfo.rename(cls.root(), newFullName);
+					classInfo.rename(cls.dex(), newFullName);
 					clsNames.add(classInfo.getAlias().getFullPath().toLowerCase());
 				}
 			}
@@ -86,12 +90,12 @@ public class RenameVisitor extends AbstractVisitor {
 			newShortName = "C" + clsName;
 		}
 		if (newShortName != null) {
-			classInfo.rename(cls.root(), classInfo.makeFullClsName(newShortName, true));
+			classInfo.rename(cls.dex(), classInfo.makeFullClsName(newShortName, true));
 		}
 		if (classInfo.getAlias().getPackage().isEmpty()) {
 			String fullName = classInfo.makeFullClsName(classInfo.getAlias().getShortName(), true);
 			String newFullName = Consts.DEFAULT_PACKAGE_NAME + "." + fullName;
-			classInfo.rename(cls.root(), newFullName);
+			classInfo.rename(cls.dex(), newFullName);
 		}
 	}
 
@@ -100,7 +104,7 @@ public class RenameVisitor extends AbstractVisitor {
 		for (FieldNode field : cls.getFields()) {
 			FieldInfo fieldInfo = field.getFieldInfo();
 			if (!names.add(fieldInfo.getAlias())) {
-				deobfuscator.renameField(field);
+				fieldInfo.setAlias(deobfuscator.makeFieldAlias(field));
 			}
 		}
 	}
@@ -111,10 +115,22 @@ public class RenameVisitor extends AbstractVisitor {
 			if (mth.contains(AFlag.DONT_GENERATE)) {
 				continue;
 			}
-			String signature = mth.getMethodInfo().makeSignature(false);
+			MethodInfo methodInfo = mth.getMethodInfo();
+			String signature = makeMethodSignature(methodInfo);
 			if (!names.add(signature)) {
-				deobfuscator.renameMethod(mth);
+				methodInfo.setAlias(deobfuscator.makeMethodAlias(mth));
 			}
 		}
+	}
+
+	private static String makeMethodSignature(MethodInfo methodInfo) {
+		StringBuilder signature = new StringBuilder();
+		signature.append(methodInfo.getAlias());
+		signature.append('(');
+		for (ArgType arg : methodInfo.getArgumentsTypes()) {
+			signature.append(TypeGen.signature(arg));
+		}
+		signature.append(')');
+		return signature.toString();
 	}
 }

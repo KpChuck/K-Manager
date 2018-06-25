@@ -1,10 +1,10 @@
 package jadx.core.dex.info;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import jadx.core.dex.instructions.args.ArgType;
 import jadx.core.dex.nodes.DexNode;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class InfoStorage {
 

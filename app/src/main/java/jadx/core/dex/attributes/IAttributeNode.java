@@ -1,8 +1,8 @@
 package jadx.core.dex.attributes;
 
-import java.util.List;
-
 import jadx.core.dex.attributes.annotations.Annotation;
+
+import java.util.List;
 
 public interface IAttributeNode {
 

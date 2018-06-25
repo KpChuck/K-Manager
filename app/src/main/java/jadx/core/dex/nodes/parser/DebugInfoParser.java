@@ -1,9 +1,5 @@
 package jadx.core.dex.nodes.parser;
 
-import java.util.List;
-
-import com.android.dex.Dex.Section;
-
 import jadx.core.dex.attributes.nodes.SourceFileAttr;
 import jadx.core.dex.instructions.args.InsnArg;
 import jadx.core.dex.instructions.args.RegisterArg;
@@ -13,8 +9,16 @@ import jadx.core.dex.nodes.InsnNode;
 import jadx.core.dex.nodes.MethodNode;
 import jadx.core.utils.exceptions.DecodeException;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.android.dex.Dex.Section;
+
 public class DebugInfoParser {
 
+	private static final Logger LOG = LoggerFactory.getLogger(DebugInfoParser.class);
 	private static final int DBG_END_SEQUENCE = 0x00;
 	private static final int DBG_ADVANCE_PC = 0x01;
 	private static final int DBG_ADVANCE_LINE = 0x02;
@@ -78,8 +82,6 @@ public class DebugInfoParser {
 		addrChange(-1, 1, line);
 		setLine(addr, line);
 
-		boolean varsInfoFound = false;
-
 		int c = section.readByte() & 0xFF;
 		while (c != DBG_END_SEQUENCE) {
 			switch (c) {
@@ -100,7 +102,6 @@ public class DebugInfoParser {
 					int type = section.readUleb128() - 1;
 					LocalVar var = new LocalVar(dex, regNum, nameId, type, DexNode.NO_INDEX);
 					startVar(var, addr, line);
-					varsInfoFound = true;
 					break;
 				}
 				case DBG_START_LOCAL_EXTENDED: {
@@ -110,7 +111,6 @@ public class DebugInfoParser {
 					int sign = section.readUleb128() - 1;
 					LocalVar var = new LocalVar(dex, regNum, nameId, type, sign);
 					startVar(var, addr, line);
-					varsInfoFound = true;
 					break;
 				}
 				case DBG_RESTART_LOCAL: {
@@ -122,7 +122,6 @@ public class DebugInfoParser {
 						}
 						var.start(addr, line);
 					}
-					varsInfoFound = true;
 					break;
 				}
 				case DBG_END_LOCAL: {
@@ -132,7 +131,6 @@ public class DebugInfoParser {
 						var.end(addr, line);
 						setVar(var);
 					}
-					varsInfoFound = true;
 					break;
 				}
 
@@ -166,12 +164,10 @@ public class DebugInfoParser {
 			c = section.readByte() & 0xFF;
 		}
 
-		if (varsInfoFound) {
-			for (LocalVar var : locals) {
-				if (var != null && !var.isEnd()) {
-					var.end(mth.getCodeSize() - 1, line);
-					setVar(var);
-				}
+		for (LocalVar var : locals) {
+			if (var != null && !var.isEnd()) {
+				var.end(mth.getCodeSize() - 1, line);
+				setVar(var);
 			}
 		}
 		setSourceLines(addr, insnByOffset.length, line);

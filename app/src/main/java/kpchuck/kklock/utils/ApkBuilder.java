@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import jadx.api.JadxArgs;
 import jadx.api.JadxDecompiler;
 import jadx.core.utils.exceptions.JadxException;
 import kellinwood.security.zipsigner.ZipSigner;
@@ -180,9 +181,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
     }
 
-    private void decompileSysUI(File sysui) throws JadxException, IOException{
-
-        JadxDecompiler jadx = new JadxDecompiler();
+    private void decompileSysUI(File sysui) throws IOException, JadxException{
 
         File kManager = fileHelper.newFolder(Environment.getExternalStorageDirectory() + "/K-Manager/");
 
@@ -191,12 +190,15 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         }
 
         File resOut = new File(kManager, "res_out");
-        jadx.setSources(true);
+
+        JadxArgs args = new JadxArgs();
+        args.setSkipSources(true);
+        args.setOutDirRes(resOut);
+
+        JadxDecompiler jadx = new JadxDecompiler(args);
         jadx.loadFile(sysui);
-        jadx.setOutputDir(kManager);
-        jadx.setOutputDirRes(resOut);
-       // jadx.setWhichXmls(new String[]{"status_bar.xml", "system_icons.xml", "keyguard_status_bar.xml", "resources.arsc"});
         jadx.save();
+
         List<File> xmls = new ArrayList<>();
         xmls.add(new File(resOut, "res/layout/status_bar.xml"));
         xmls.add(new File(resOut, "res/layout/keyguard_status_bar.xml"));

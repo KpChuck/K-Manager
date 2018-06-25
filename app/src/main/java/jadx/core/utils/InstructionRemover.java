@@ -1,9 +1,5 @@
 package jadx.core.utils;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import jadx.core.dex.attributes.AFlag;
 import jadx.core.dex.instructions.InsnType;
 import jadx.core.dex.instructions.PhiInsn;
@@ -15,11 +11,20 @@ import jadx.core.dex.nodes.BlockNode;
 import jadx.core.dex.nodes.InsnNode;
 import jadx.core.dex.nodes.MethodNode;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Helper class for correct instructions removing,
  * can be used while iterating over instructions list
  */
 public class InstructionRemover {
+
+	private static final Logger LOG = LoggerFactory.getLogger(InstructionRemover.class);
 
 	private final MethodNode mth;
 	private final List<InsnNode> toRemove;
@@ -154,4 +159,5 @@ public class InstructionRemover {
 		unbindInsn(mth, instructions.get(index));
 		instructions.remove(index);
 	}
+
 }

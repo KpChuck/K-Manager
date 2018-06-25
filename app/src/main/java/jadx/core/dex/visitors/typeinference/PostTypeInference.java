@@ -1,7 +1,5 @@
 package jadx.core.dex.visitors.typeinference;
 
-import java.util.List;
-
 import jadx.core.dex.info.MethodInfo;
 import jadx.core.dex.instructions.IndexInsnNode;
 import jadx.core.dex.instructions.InvokeNode;
@@ -12,6 +10,8 @@ import jadx.core.dex.instructions.args.RegisterArg;
 import jadx.core.dex.nodes.DexNode;
 import jadx.core.dex.nodes.InsnNode;
 import jadx.core.dex.nodes.MethodNode;
+
+import java.util.List;
 
 public class PostTypeInference {
 

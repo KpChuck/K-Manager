@@ -1,31 +1,21 @@
 package jadx.api;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
-public class JadxArgs {
+public class JadxArgs implements IJadxArgs {
 
-	public static final int DEFAULT_THREADS_COUNT = Math.max(1, Runtime.getRuntime().availableProcessors() / 2);
-
-	public static final String DEFAULT_OUT_DIR = "jadx-output";
-	public static final String DEFAULT_SRC_DIR = "sources";
-	public static final String DEFAULT_RES_DIR = "resources";
-
-	private List<File> inputFiles = new ArrayList<>(1);
-
-	private File outDir;
-	private File outDirSrc;
-	private File outDirRes;
-
-	private int threadsCount = DEFAULT_THREADS_COUNT;
+	private File outDir = new File("jadx-output");
+	private File outDirSrc = new File(outDir, "source");
+	private File outDirRes = new File(outDir, "res");
+	private int threadsCount = Math.max(1, Runtime.getRuntime().availableProcessors() - 1);
 
 	private boolean cfgOutput = false;
 	private boolean rawCFGOutput = false;
 
+	private boolean isVerbose = false;
 	private boolean fallbackMode = false;
 	private boolean showInconsistentCode = false;
-
+	
 	private boolean useImports = true;
 
 	private boolean isSkipResources = false;
@@ -42,24 +32,7 @@ public class JadxArgs {
 	private boolean replaceConsts = true;
 	private boolean exportAsGradleProject = false;
 
-	public JadxArgs() {
-		// use default options
-	}
-
-	public void setRootDir(File rootDir) {
-		setOutDir(rootDir);
-		setOutDirSrc(new File(rootDir, DEFAULT_SRC_DIR));
-		setOutDirRes(new File(rootDir, DEFAULT_RES_DIR));
-	}
-
-	public List<File> getInputFiles() {
-		return inputFiles;
-	}
-
-	public void setInputFiles(List<File> inputFiles) {
-		this.inputFiles = inputFiles;
-	}
-
+	@Override
 	public File getOutDir() {
 		return outDir;
 	}
@@ -68,6 +41,7 @@ public class JadxArgs {
 		this.outDir = outDir;
 	}
 
+	@Override
 	public File getOutDirSrc() {
 		return outDirSrc;
 	}
@@ -76,6 +50,7 @@ public class JadxArgs {
 		this.outDirSrc = outDirSrc;
 	}
 
+	@Override
 	public File getOutDirRes() {
 		return outDirRes;
 	}
@@ -84,6 +59,7 @@ public class JadxArgs {
 		this.outDirRes = outDirRes;
 	}
 
+	@Override
 	public int getThreadsCount() {
 		return threadsCount;
 	}
@@ -92,7 +68,8 @@ public class JadxArgs {
 		this.threadsCount = threadsCount;
 	}
 
-	public boolean isCfgOutput() {
+	@Override
+	public boolean isCFGOutput() {
 		return cfgOutput;
 	}
 
@@ -100,6 +77,7 @@ public class JadxArgs {
 		this.cfgOutput = cfgOutput;
 	}
 
+	@Override
 	public boolean isRawCFGOutput() {
 		return rawCFGOutput;
 	}
@@ -108,6 +86,7 @@ public class JadxArgs {
 		this.rawCFGOutput = rawCFGOutput;
 	}
 
+	@Override
 	public boolean isFallbackMode() {
 		return fallbackMode;
 	}
@@ -116,6 +95,7 @@ public class JadxArgs {
 		this.fallbackMode = fallbackMode;
 	}
 
+	@Override
 	public boolean isShowInconsistentCode() {
 		return showInconsistentCode;
 	}
@@ -124,7 +104,8 @@ public class JadxArgs {
 		this.showInconsistentCode = showInconsistentCode;
 	}
 
-	public boolean isUseImports() {
+	@Override
+	public boolean isUsingImports() {
 		return useImports;
 	}
 
@@ -132,6 +113,16 @@ public class JadxArgs {
 		this.useImports = useImports;
 	}
 
+	@Override
+	public boolean isVerbose() {
+		return isVerbose;
+	}
+
+	public void setVerbose(boolean verbose) {
+		isVerbose = verbose;
+	}
+
+	@Override
 	public boolean isSkipResources() {
 		return isSkipResources;
 	}
@@ -140,6 +131,7 @@ public class JadxArgs {
 		isSkipResources = skipResources;
 	}
 
+	@Override
 	public boolean isSkipSources() {
 		return isSkipSources;
 	}
@@ -148,6 +140,7 @@ public class JadxArgs {
 		isSkipSources = skipSources;
 	}
 
+	@Override
 	public boolean isDeobfuscationOn() {
 		return isDeobfuscationOn;
 	}
@@ -156,6 +149,7 @@ public class JadxArgs {
 		isDeobfuscationOn = deobfuscationOn;
 	}
 
+	@Override
 	public boolean isDeobfuscationForceSave() {
 		return isDeobfuscationForceSave;
 	}
@@ -164,7 +158,8 @@ public class JadxArgs {
 		isDeobfuscationForceSave = deobfuscationForceSave;
 	}
 
-	public boolean isUseSourceNameAsClassAlias() {
+	@Override
+	public boolean useSourceNameAsClassAlias() {
 		return useSourceNameAsClassAlias;
 	}
 
@@ -172,6 +167,7 @@ public class JadxArgs {
 		this.useSourceNameAsClassAlias = useSourceNameAsClassAlias;
 	}
 
+	@Override
 	public int getDeobfuscationMinLength() {
 		return deobfuscationMinLength;
 	}
@@ -180,6 +176,7 @@ public class JadxArgs {
 		this.deobfuscationMinLength = deobfuscationMinLength;
 	}
 
+	@Override
 	public int getDeobfuscationMaxLength() {
 		return deobfuscationMaxLength;
 	}
@@ -188,7 +185,8 @@ public class JadxArgs {
 		this.deobfuscationMaxLength = deobfuscationMaxLength;
 	}
 
-	public boolean isEscapeUnicode() {
+	@Override
+	public boolean escapeUnicode() {
 		return escapeUnicode;
 	}
 
@@ -196,6 +194,7 @@ public class JadxArgs {
 		this.escapeUnicode = escapeUnicode;
 	}
 
+	@Override
 	public boolean isReplaceConsts() {
 		return replaceConsts;
 	}
@@ -204,38 +203,12 @@ public class JadxArgs {
 		this.replaceConsts = replaceConsts;
 	}
 
+	@Override
 	public boolean isExportAsGradleProject() {
 		return exportAsGradleProject;
 	}
 
 	public void setExportAsGradleProject(boolean exportAsGradleProject) {
 		this.exportAsGradleProject = exportAsGradleProject;
-	}
-
-	@Override
-	public String toString() {
-		final StringBuilder sb = new StringBuilder("JadxArgs{");
-		sb.append("inputFiles=").append(inputFiles);
-		sb.append(", outDir=").append(outDir);
-		sb.append(", outDirSrc=").append(outDirSrc);
-		sb.append(", outDirRes=").append(outDirRes);
-		sb.append(", threadsCount=").append(threadsCount);
-		sb.append(", cfgOutput=").append(cfgOutput);
-		sb.append(", rawCFGOutput=").append(rawCFGOutput);
-		sb.append(", fallbackMode=").append(fallbackMode);
-		sb.append(", showInconsistentCode=").append(showInconsistentCode);
-		sb.append(", useImports=").append(useImports);
-		sb.append(", isSkipResources=").append(isSkipResources);
-		sb.append(", isSkipSources=").append(isSkipSources);
-		sb.append(", isDeobfuscationOn=").append(isDeobfuscationOn);
-		sb.append(", isDeobfuscationForceSave=").append(isDeobfuscationForceSave);
-		sb.append(", useSourceNameAsClassAlias=").append(useSourceNameAsClassAlias);
-		sb.append(", deobfuscationMinLength=").append(deobfuscationMinLength);
-		sb.append(", deobfuscationMaxLength=").append(deobfuscationMaxLength);
-		sb.append(", escapeUnicode=").append(escapeUnicode);
-		sb.append(", replaceConsts=").append(replaceConsts);
-		sb.append(", exportAsGradleProject=").append(exportAsGradleProject);
-		sb.append('}');
-		return sb.toString();
 	}
 }
