@@ -146,8 +146,7 @@
     <string name="hscreen2_title">Co znamená možnost "Styl hodin" v Substratum</string>
     <string name="hscreen2_1">První část možnosti stylu hodin určuje, jak se mají hodiny chovat.</string>
     <string name="hscreen2_2">Můžete zvolit, zda se mají hodiny zobrazit na zamykací obrazovce nebo ne. </string>
-    <string name="hscreen2_3">Výchozí hodiny nebo dynamické hodiny jsou skryty na zamykací obrazovce, aniž byste museli něco vybírat. </string>
-    <string name="hscreen2_4">Tyto dvě jsou různé, protože dělají hodiny dynamické, tj. změní barvu na bílé pozadí. </string>
+    <string name="hscreen2_3">Výchozí hodiny nebo dynamické hodiny jsou skryty na zamykací obrazovce, aniž byste museli něco vybírat. \nTyto dvě jsou různé, protože dělají hodiny dynamické, tj. změní barvu na bílé pozadí. </string>
     <string name="hscreen3_title">Pomoc a podpora</string>
     <string name="hscreen3_1">Pokud jste ovšem stále zmateni, podívejte se do nápovědy! </string>
     <string name="hscreen3_2">Můžete také zkontrolovat poslední změny nebo zkontrolovat, zda není dostupná aktualizace.</string>

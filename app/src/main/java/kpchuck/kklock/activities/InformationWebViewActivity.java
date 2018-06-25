@@ -105,7 +105,7 @@ public class InformationWebViewActivity extends AppCompatActivity {
         String locale = "";
         String current_locale = getResources().getConfiguration().getLocales().get(0).getLanguage();
         shortToast(current_locale);
-        if (!current_locale.equals("en") || folderExistsHtml(current_locale)){
+        if (!current_locale.equals("en") && folderExistsHtml(current_locale)){
             locale = current_locale + "/";
         }
         return locale;

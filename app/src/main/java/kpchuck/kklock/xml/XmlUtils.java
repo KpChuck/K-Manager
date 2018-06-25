@@ -1,9 +1,17 @@
 package kpchuck.kklock.xml;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.content.res.XmlResourceParser;
 import android.os.Environment;
 import android.util.Log;
+import android.util.Pair;
+import android.util.Xml;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Attr;
@@ -13,15 +21,25 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.sax2.Driver;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -31,7 +49,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 
 import kpchuck.kklock.R;
@@ -406,5 +426,196 @@ public class XmlUtils {
         String string = context.getString(id);
         String item = "type2 " + string;
         return item.replace(" ", "_");
+    }
+
+    public Document getDocument(XmlResourceParser resourceParser, Context context) throws Exception{
+
+        DocumentBuilderFactory d = DocumentBuilderFactory.newInstance();
+        DocumentBuilder documentBuilder = d.newDocumentBuilder();
+        Document document = documentBuilder.newDocument();
+        Resources resources = context.getPackageManager().getResourcesForApplication("com.android.systemui");
+
+        int eventType = resourceParser.getEventType();
+
+        Element beforeElement = null;
+        Element currentElement = null;
+        document.appendChild(document.createTextNode("\n"));
+
+        while (eventType != XmlPullParser.END_DOCUMENT){
+            if (eventType == XmlPullParser.START_TAG){
+
+                currentElement = document.createElement(resourceParser.getName());
+                if (beforeElement == null){
+                    document.appendChild(currentElement);
+                    currentElement.appendChild(document.createTextNode("\n"));
+                    currentElement = getAttributes(context, resourceParser, resources, currentElement);
+
+                    beforeElement = currentElement;
+                }
+                else{
+                    beforeElement.appendChild(currentElement);
+                    beforeElement.appendChild(document.createTextNode("\n"));
+                    currentElement = getAttributes(context, resourceParser, resources, currentElement);
+                }
+            }
+            else if (eventType == XmlPullParser.END_TAG){
+                try {
+                    beforeElement = (Element) currentElement.getParentNode();
+                }catch (NullPointerException e){
+                    beforeElement = null;
+                }
+            }
+            eventType = resourceParser.next();
+        }
+
+        return document;
+    }
+
+    private Element getAttributes(Context context, XmlResourceParser resourceParser, Resources resources, Element currentElement) throws Exception{
+
+        int count = resourceParser.getAttributeCount();
+        for (int i=0; i<count; i++){
+            String name = "android:" + resourceParser.getAttributeName(i);
+            String value = resourceParser.getAttributeValue(i);
+            String h = resourceParser.getAttributeNamespace(i);
+
+
+            if (value.startsWith("@")){
+                value = getAttribute(resources, value);
+            }
+            else if (value.startsWith("?")){
+                value = getReference(context, value);
+            }
+            else if (name.endsWith("gravity")){
+                value = parseGravity(value);
+            }
+            else if (name.contains("width") || name.contains("height")){
+                value = getWidth(value);
+            }
+            currentElement.setAttribute(name, value);
+
+        }
+        return currentElement;
+    }
+
+    private String getAttribute(Resources res, String value){
+        int v = Integer.valueOf(value.substring(1));
+        value = res.getResourceEntryName(v);
+        String s = res.getResourceTypeName(v);
+        return "@"+s+"/"+value;
+    }
+
+    private String getReference(Context context, String value) throws PackageManager.NameNotFoundException{
+        int v = Integer.valueOf(value.substring(1));
+        Resources android = context.getPackageManager().getResourcesForApplication("android");
+        Resources sysui = context.getPackageManager().getResourcesForApplication("com.android.systemui");
+        String r;
+        try{
+            r = "android:"+android.getResourceEntryName(v);
+        }catch (Exception e){
+            r = sysui.getResourceEntryName(v);
+        }
+        return "?"+r;
+    }
+
+    private HashMap<Integer, String> getConstants(Class o) throws Exception{
+        HashMap<Integer, String> constants = new HashMap<>();
+        Field[] fields = o.getDeclaredFields();
+        for (Field f : fields) {
+            if (Modifier.isStatic(f.getModifiers()) && f.getName().equals(f.getName().toUpperCase())) {
+                try {
+                    Integer i = (int) f.get(null);
+                    constants.put(i, f.getName());
+                }catch (Exception e){}
+            }
+        }
+        return constants;
+    }
+
+    private String getWidth(String value) {
+        try {
+            switch (Integer.valueOf(value)) {
+                case LinearLayout.LayoutParams.MATCH_PARENT:
+                    return "MATCH_PARENT";
+                case LinearLayout.LayoutParams.WRAP_CONTENT:
+                    return "WRAP_CONTENT";
+            }
+        }catch (Exception e){}
+        return value;
+    }
+
+    private String parseGravity(String value) throws Exception{
+
+        int v = Integer.decode(value);
+        HashMap<Integer, String> modifiers = getConstants(Gravity.class);
+        List<String> p = new ArrayList<>();
+        if (v < 1000)
+            p = partition(v);
+        else {
+            List<Integer> big = new ArrayList<>();
+            for (Integer i : modifiers.keySet()){
+                if (i > 1000) big.add(i);
+            }
+            for (Integer i: big){
+                if (v > i) {
+                    List<String> q = partition(v - i);
+                    for (String s : q){
+                        p.add(s + " " + String.valueOf(i));
+                    }
+                }
+            }
+
+        }
+        List<List<Integer>> left = new ArrayList<>();
+        for (String line: p){
+            line = line.substring(1);
+            List<String> number = Arrays.asList(line.split(" "));
+            if (number.size() < modifiers.size()){
+                List<Integer> numbers = new ArrayList<>();
+                for (String l : number){
+                    try{
+                        numbers.add(Integer.valueOf(l));
+                    }catch (Exception e){}
+                }
+
+                if (new HashSet<Integer>(numbers).size() == numbers.size() && modifiers.keySet().containsAll(numbers)){
+                    left.add(numbers);
+                }
+            }
+        }
+        if (left.size() > 0) {
+            int index =0;
+            int largest =left.get(0).size();
+            for (int i=0; i<left.size();i++){
+                List<Integer> u = left.get(i);
+                if (u.size() < largest){
+                    largest = u.size();
+                    index = i;
+                }
+            }
+            StringBuilder result = new StringBuilder();
+            for (Integer i: left.get(index)){
+                result.append(modifiers.get(i));
+                result.append("|");
+            }
+            result.reverse().delete(0, 1).reverse();
+            return result.toString();
+        }
+        return "";
+    }
+
+    private List<String> partition(int n) {
+        return partition(n, n, "", new ArrayList<String>());
+    }
+    private List<String> partition(int n, int max, String prefix, List<String> strings) {
+        if (n == 0) {
+            strings.add(prefix);
+            return strings;
+        }
+
+        for (int i = Math.min(max, n); i >= 1; i--) {
+            strings = partition(n-i, i, prefix + " " + i, strings);
+        }
+        return strings;
     }
 }

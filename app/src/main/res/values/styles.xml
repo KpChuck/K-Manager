@@ -31,6 +31,11 @@
 
     </style>
 
+     <!-- Welcome Screen -->
+    <style name="CustomWelcome" parent="WelcomeScreenTheme">
+        <item name="welcomeButtonSkipText">@string/skip</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >
 
     </style>

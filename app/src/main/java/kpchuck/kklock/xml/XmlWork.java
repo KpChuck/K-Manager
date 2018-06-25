@@ -604,7 +604,6 @@ public class XmlWork {
         fileHelper.newFolder(romzip, "assets");
         fileHelper.newFolder(romzip, "/assets/overlays");
         File s = fileHelper.newFolder(romzip, "/assets/overlays/com.android.systemui");
-        String t = s.getAbsolutePath();
 
         ArrayList<String> startFolder = new ArrayList<>();
         startFolder.add("res");
@@ -624,11 +623,10 @@ public class XmlWork {
         if (leaveResBlank()) {
             startFolder.add(utils.getType2(context, R.string.center_clock));startFolder.remove("res");
         }
-        String slash = "/";
 
         for (String k : startFolder) {
-            fileHelper.newFolder(t + slash + k);
-            fileHelper.newFolder(t + slash + k + "/layout");
+            fileHelper.newFolder(s, k);
+            fileHelper.newFolder(s, k + "/layout");
 
         }
     }

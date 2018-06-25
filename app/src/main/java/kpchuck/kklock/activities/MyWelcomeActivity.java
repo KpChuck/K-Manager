@@ -27,13 +27,13 @@ public class MyWelcomeActivity extends WelcomeActivity {
                         getString(R.string.hscreen2_title),
                         "\t\t" + getString(R.string.hscreen2_1) + "\n" +
                                 getString(R.string.hscreen2_2) + "\n\n" +
-                                "\t\t" + getString(R.string.hscreen2_3) + "\n" +
-                                getString(R.string.hscreen2_4))
+                                "\t\t" + getString(R.string.hscreen2_3))
                 ).page(new BasicPage(R.drawable.transparent,
                         getString(R.string.hscreen3_title),
                         getString(R.string.hscreen3_1) + "\n" +
                                 getString(R.string.hscreen3_2)))
                 .swipeToDismiss(true)
+
                 .build();
     }
 }

@@ -163,7 +163,7 @@ public class StatusBarFragment extends Fragment {
     }
 
     public void otherRomHide(boolean show){
-
+        if (hideStockSwitch == null || makeDynamicSwitch == null) return;
         ButterKnife.apply(hideStockSwitch, SetVisibility, show ? View.VISIBLE : View.GONE);
         ButterKnife.apply(makeDynamicSwitch, SetVisibility, show ? View.VISIBLE : View.GONE);
 
