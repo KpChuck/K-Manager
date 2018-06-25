@@ -229,13 +229,7 @@
     <string name="adb_how_to_run">You need to grant K-Manager permissions through adb for this function to work.
         Run this command through ADB on your PC.
     </string>
-
-
-
-
-
-
-
+    <string name="open">Open</string>
 
 
 </resources>

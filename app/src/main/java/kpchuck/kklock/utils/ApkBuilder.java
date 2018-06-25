@@ -191,13 +191,12 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
         File resOut = new File(kManager, "res_out");
 
-        JadxArgs args = new JadxArgs();
-        args.setSkipSources(true);
-        args.setOutDirRes(resOut);
-
-        JadxDecompiler jadx = new JadxDecompiler(args);
+        JadxDecompiler jadx = new JadxDecompiler();
+        jadx.setSources(true);
         jadx.loadFile(sysui);
-        jadx.save();
+        jadx.setOutputDirRes(resOut);
+
+        jadx.saveResources();
 
         List<File> xmls = new ArrayList<>();
         xmls.add(new File(resOut, "res/layout/status_bar.xml"));
@@ -214,7 +213,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
     private void showSnackbar() {
         Snackbar snackbar = Snackbar.make(defaultLayout, context.getString(R.string.open_in_substratum), Snackbar.LENGTH_INDEFINITE)
-                .setAction("Open", new View.OnClickListener() {
+                .setAction(R.string.open, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
