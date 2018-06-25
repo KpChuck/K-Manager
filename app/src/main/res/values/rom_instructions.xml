@@ -24,8 +24,9 @@
 
     <string-array name="hide_clock">
 
-
+        <item>ABC-ROM Oreo</item>
         <item>AICP Oreo</item>
+        <item>Android One Oreo 8.1</item>
         <item>AOKP Oreo</item>
         <item>AOSCP Oreo</item>
         <item>AOSIP Oreo</item>
@@ -38,12 +39,15 @@
         <item>CrDroid Oreo</item>
         <item>Dirty Unicorns 12</item>
         <item>GZOSP</item>
+        <item>HavocOS Oreo</item>
         <item>JDC Nougat</item>
         <item>LineageOS Nougat</item>
         <item>LineageOS Oreo</item>
         <item>Liquid Remix Oreo</item>
+        <item>MSM Extended Oreo</item>
         <item>NitrogenOS Oreo</item>
         <item>Omni Oreo</item>
+        <item>Omni Treskmod Oreo</item>
         <item>OxygenOS Nougat</item>
         <item>OxygenOS Oreo</item>
         <item>OxygenOS Oreo 8.1</item>
