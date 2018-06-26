@@ -121,7 +121,7 @@ public class QsBgUtil {
             Element image = xml.createElement("View");
             image.setAttribute(X_LAYOUT_WIDTH, "match_parent");
             image.setAttribute(X_LAYOUT_HEIGHT, "124dip");
-            image.setAttribute("android:background", "@*com.android.systemui:drawable/" + header_png.substring(0, header_png.lastIndexOf(".")));
+            image.setAttribute("android:background", "@*com.android.systemui:drawable/" + header_png);
             image.setAttribute("android:alpha", "0.8");
             image.setAttribute("android:paddingStart", "0dip");
             image.setAttribute("android:paddingEnd", "0dip");
@@ -134,7 +134,7 @@ public class QsBgUtil {
 
             rootElement = xmlUtils.changeAttribute(rootElement, "android:alpha", "0.8");
             rootElement = xmlUtils.changeAttribute(rootElement, X_LAYOUT_HEIGHT, "124dip");
-            rootElement = xmlUtils.changeAttribute(rootElement, "android:background", "@*com.android.systemui:drawable/" + header_png.substring(0, header_png.lastIndexOf(".")));
+            rootElement = xmlUtils.changeAttribute(rootElement, "android:background", "@*com.android.systemui:drawable/" + header_png);
         }
 
 
