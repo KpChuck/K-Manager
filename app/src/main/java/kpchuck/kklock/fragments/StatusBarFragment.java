@@ -214,6 +214,16 @@ public class StatusBarFragment extends Fragment {
         prefUtils.setCheckboxPrefs(showLockscreen, PREF_CARRIER_TEXT);
     }
 
+    @OnClick(R.id.make_dynamic)
+    public void checkClicka(){
+        prefUtils.setSwitchPrefs(makeDynamicSwitch, DEV_MAKE_DYNAMIC);
+    }
+
+    @OnClick(R.id.hide_stock)
+    public void checkClickc(){
+        prefUtils.setSwitchPrefs(hideStockSwitch, DEV_HIDE_CLOCK);
+    }
+
     @OnClick(R.id.clockHideable)
     public void launchers(){
         if(clockHideableSwitch.isChecked()){
@@ -312,8 +322,9 @@ public class StatusBarFragment extends Fragment {
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (prefUtils.getString(PREF_STATBAR_COLOR, "").equals("other")){
                     prefUtils.putString(PREF_STATBAR_COLOR, editText.getText().toString());
-                    statBarColorSwitch.setChecked(true);
+
                 }
+                statBarColorSwitch.setChecked(true);
             }
         });
 

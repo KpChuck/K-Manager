@@ -173,11 +173,6 @@ public class IconsFragment extends Fragment {
         unbinder.unbind();
     }
 
-    @OnClick ({R.id.hideStatusbarIconsNotFully, R.id.blackoutLockscreen, R.id.hideStatusbar, R.id.colorIcons})
-    public void enableGroup(Switch s){
-
-    }
-
     @OnClick (R.id.hideStatusbarIconsNotFully)
     public void notFully(){
         prefUtils.setSwitchPrefs(hideIconsNotFully, PREF_HIDE_ICONS_NOT_FULLY);
