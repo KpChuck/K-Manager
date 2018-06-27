@@ -6,12 +6,15 @@ package kpchuck.kklock.xml;
 import android.content.Context;
 import java.io.File;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class XmlCreation {
 
@@ -110,6 +113,19 @@ public class XmlCreation {
 
         }
 
+    }
+
+    public void createStringDoc(File dest, String name, String value)throws Exception{
+        XmlUtils utils = new XmlUtils();
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document doc = db.newDocument();
+        Element docElement = doc.createElement("resources");
+        doc.appendChild(docElement);
+        Element string = doc.createElement("string");
+        string.setAttribute("name", name);
+        string.setTextContent(value);
+        utils.writeDocToFile(doc, dest);
     }
 
 }

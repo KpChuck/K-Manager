@@ -374,7 +374,7 @@ public class XmlWork {
         return hideyLayout;
     }
 
-    private Document setupStatusBar() throws IOException{
+    private Document setupStatusBar() throws Exception{
         Document status = utils.getDocument(new File(srcFolder + "/" + statusbar));
         status = utils.replaceAt(status);
         status = utils.fixUpForAttrs(status, hasAttrs);
@@ -427,8 +427,9 @@ public class XmlWork {
                 utils.changeAttribute(e, X_LAYOUT_WIDTH, "0dip");
         }
         if (prefUtils.getBool(PREF_CHANGE_STATBAR_COLOR)){
-            statusBarContents = utils.changeAttribute(statusBarContents, "android:background",
-                    prefUtils.getString(PREF_STATBAR_COLOR, ""));
+            String bg = prefUtils.getString(PREF_STATBAR_COLOR, "");
+            if (bg.equals("")) bg = "#00ffffff";
+            statusBarContents = utils.changeAttribute(statusBarContents, "android:background",bg);
         }
         status = addCustomIcon(status);
         return status;
@@ -468,7 +469,7 @@ public class XmlWork {
         return doc;
     }
 
-    private Document addCustomTextEverywhere(Document doc){
+    private Document addCustomTextEverywhere(Document doc) throws Exception{
         Element statusBarContents = utils.findElementById(doc, "@*com.android.systemui:id/status_bar_contents");
 
         Element customTextElement = doc.createElement("TextView");
@@ -476,8 +477,12 @@ public class XmlWork {
 
         // Insert TextView
         Element insertBeforeElement = utils.getFirstChildElement(statusBarContents);
-
         statusBarContents.insertBefore(customTextElement, insertBeforeElement);
+
+        // Write string to strings.xml
+        new XmlCreation().createStringDoc(new File(baseFolders, "res/values/strings.xml"), "legacy_vpn_name",
+                prefUtils.getString(PREF_CARRIER_CUSTOM_TEXT, ""));
+
         return doc;
     }
 
@@ -557,7 +562,8 @@ public class XmlWork {
         customTextElement.setAttribute(X_GRAVITY, X_GRAVITY_CENTER_VERTICAL);
         customTextElement.setAttribute("android:singleLine", "true");
         customTextElement.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
-        customTextElement.setAttribute("android:text", prefUtils.getString(PREF_CARRIER_CUSTOM_TEXT, ""));
+        customTextElement.setAttribute("android:text", "@string/legacy_vpn_name");
+       // customTextElement.setAttribute("android:text", prefUtils.getString(PREF_CARRIER_CUSTOM_TEXT, ""));
 
         if (prefUtils.getBool(PREF_CARRIER_EVERYWHERE)) {
             customTextElement.setAttribute(X_LAYOUT_WIDTH, X_WRAP_CONTENT);
