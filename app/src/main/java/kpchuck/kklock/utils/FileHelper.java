@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import kpchuck.kklock.BuildConfig;
 import kpchuck.kklock.R;
@@ -310,8 +312,10 @@ public class FileHelper {
 
     }
 
-    private boolean fileContains(File file, String string){
-        return file.getAbsolutePath().contains(string);
+    private boolean fileContains(File file, String filter){
+        Pattern pattern = Pattern.compile(filter);
+        Matcher matcher = pattern.matcher(file.getName());
+        return matcher.find();
     }
 
     /*
