@@ -480,7 +480,7 @@ public class XmlWork {
         statusBarContents.insertBefore(customTextElement, insertBeforeElement);
 
         // Write string to strings.xml
-        new XmlCreation().createStringDoc(new File(baseFolders, "res/values/strings.xml"), "clock_12hr_format",
+        new XmlCreation().createStringDoc(new File(baseFolders, "res/values/strings.xml"), "legacy_vpn_name",
                 prefUtils.getString(PREF_CARRIER_CUSTOM_TEXT, ""));
 
         return doc;
@@ -562,7 +562,7 @@ public class XmlWork {
         customTextElement.setAttribute(X_GRAVITY, X_GRAVITY_CENTER_VERTICAL);
         customTextElement.setAttribute("android:singleLine", "true");
         customTextElement.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
-        customTextElement.setAttribute("android:text", "@*com.android.systemui:string/clock_12hr_format");
+        customTextElement.setAttribute("android:text", "@*com.android.systemui:string/legacy_vpn_name");
        // customTextElement.setAttribute("android:text", prefUtils.getString(PREF_CARRIER_CUSTOM_TEXT, ""));
 
         if (prefUtils.getBool(PREF_CARRIER_EVERYWHERE)) {
