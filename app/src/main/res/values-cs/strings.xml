@@ -7,7 +7,6 @@
     <string name="misc">Různé</string>
     
     <!-- main_screen -->
-    <string name="app_name">K-Manager</string>
     <string name="otherRomsBeta">Ostatní ROM</string>
     <string name="changelog">Seznam změn</string>
     <string name="no_changelog_available">Seznam změn není dostupný</string>

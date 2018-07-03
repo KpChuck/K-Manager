@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="qs_images_attention">Наложение для фона/заголовков быстрых настроек</string>
+
+    <string-array name="font_names">
+
+        <item>Cursive Bold</item>
+        <item>Cursive Italic</item>
+        <item>Cursive Normal</item>
+        <item>Roboto Bold</item>
+        <item>Roboto Italic</item>
+        <item>Roboto Normal</item>
+        <item>Serif Bold</item>
+        <item>Serif Italic</item>
+        <item>Serif Normal</item>
+        <item>Sans-Serif Bold</item>
+        <item>Sans-Serif Italic</item>
+
+    </string-array>
+
+    <string name="right_no_clock">Справа: нет часов на экране блокировки</string>
+    <string name="right_clock">Справа: часы на экране блокировки</string>
+    <string name="right_dynamic">Справа: динамические часы</string>
+    <string name="right_stock">Справа: стоковые часы</string>
+    <string name="left_no_clock">Слева: нет часов на экране блокировки</string>
+    <string name="left_clock">Слеваt: часы на экране блокировки</string>
+    <string name="left_dynamic">Слева: динамические часы</string>
+    <string name="left_stock">Слева: стоковые часы</string>
+    <string name="center_no_clock">По центру: нет часов на экране блокировки</string>
+    <string name="center_clock">По центру: часы на экране блокировки</string>
+    <string name="center_dynamic">По центру: динамические часы</string>
+    <string name="center_stock">По центру: стоковые часы</string>
+
+    <string name="sysui_type2_center">Расположение часов: стиль (по умолчанию в центре: часы на экране блокировки</string>
+    <string name="sysui_type2_none">Расположение часов: стиль (по умолчанию НЕТ)</string>
+    <string name="sysui_type1a">Цвет часов (белый)</string>
+    <string name="sysui_type1b">Пользовательский формат часов (часы с Am/Pm)</string>
+    <string name="sysui_type1c">Тип шрифта (Sans-Serif Normal)</string>
+
+    <string-array name="headers_type1a">
+        <item>Секунд 2</item>
+        <item>Секунд 10</item>
+    </string-array>
+    <string-array name="headers_type1b">
+        <item>Скрыть часы на экране блокировки</item>
+    </string-array>
+    <string name="headers_type1a">Задержка уведомления всплытия (heads up) (по умолчанию: 5 с)</string>
+    <string name="headers_type1b">Часы на экране блокировки (по умолчанию: показывать)</string>
+
+    <string-array name="statusbars_type2">
+        <item>Убрать индикаторы трафика</item>
+    </string-array>
+    <string-array name="statusbars_type1a">
+        <item>Скрыть строку состояния на экране блокировки</item>
+        <item>Высота как у других значков строки состояния</item>
+    </string-array>
+    <string-array name="statusbars_type1b">
+        <item>Скрыть AmPm в стоковых часах</item>
+    </string-array>
+    <string name="statusbars_type1a">Высота строки состояния на экране блокировки (по умолчанию)</string>
+    <string name="statusbars_type1b">Показывать Am/Pm на стоковых часах</string>
+    <string name="statusbars_type1c">Тёмный цвет значков строки состояния (светлый - цвет часов)</string>
+    <string name="statusbars_type2">Сщхранить индикаторы активности траффика</string>
+
+    <string-array name="tiles_type2">
+        <item>Быстрые настройки_4_значка</item>
+        <item>Быстрые настройки_5_значка</item>
+        <item>Быстрые настройки_6_значка</item>
+        <item>Быстрые настройки_7_значка</item>
+        <item>Быстрые настройки_8_значка</item>
+    </string-array>
+    <string-array name="tiles_type1a">
+        <item>Оставить</item>
+    </string-array>
+    <string-array name="tiles_type1b">
+        <item>Круглые недавние нормальные</item>
+        <item>Круглые недавние маленькие</item>
+        <item>Круглые недавние большие</item>
+    </string-array>
+    <string-array name="tiles_type1c">
+        <item>Больше</item>
+        <item>Самый большой</item>
+        <item>Меньше</item>
+        <item>Самый маленький</item>
+    </string-array>
+    <string name="tiles_type1a">Скрыть подпись к плитке</string>
+    <string name="tiles_type1b">Вид недавних (по умолчанию)</string>
+    <string name="tiles_type1c">Размер часов в строке состояния (по умолчанию)</string>
+    <string name="tiles_type2">Быстрые настройки (по умолчанию 3 значка)</string>
+
+</resources>
