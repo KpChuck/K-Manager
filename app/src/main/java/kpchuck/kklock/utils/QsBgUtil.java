@@ -114,6 +114,7 @@ public class QsBgUtil {
         }
 
         rootElement.setAttribute("xmlns:systemui", "http://schemas.android.com/apk/res/com.android.systemui");
+        rootElement = xmlUtils.changeAttribute(rootElement, "android:layout_gravity", "@*com.android.systemui:integer/notification_panel_layout_gravity");
 
         boolean alternate_qs_header = prefUtils.getBool("alternate_qs_header");
 
