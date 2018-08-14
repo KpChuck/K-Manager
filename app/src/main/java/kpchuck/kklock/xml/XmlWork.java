@@ -14,6 +14,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.io.File;
@@ -45,6 +47,8 @@ public class XmlWork {
     private String statusbar = "status_bar.xml";
     private String systemicons = "system_icons.xml";
     private boolean hasAttrs = false;
+    private boolean newIconStyle = false;
+    private Element newIconElement = null;
 
     public XmlWork(Context context, String srcFolder, boolean removeClock, boolean makeDynamic) throws Exception{
 
@@ -140,8 +144,14 @@ public class XmlWork {
             if(prefUtils.getBool(PREF_MOVE_LEFT)) {
                 NodeList list = rootElement.getElementsByTagName("include");
                 Element includeElement = (Element) list.item(0);
-
-                utils.changeAttribute(includeElement, X_LAYOUT_WIDTH, "0dip");
+                if (includeElement != null)
+                    utils.changeAttribute(includeElement, X_LAYOUT_WIDTH, "0dip");
+                else {
+                    newIconStyle = true;
+                    includeElement = utils.findElementById(sysicons, "@*com.android.systemui:id/statusIcons");
+                    newIconElement = includeElement;
+                    utils.changeAttribute(includeElement, X_WEIGHT, "0");
+                }
             }
 
             fileHelper.newFolder(baseFolders, "res/");
@@ -234,6 +244,7 @@ public class XmlWork {
             customClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
             utils.writeDocToFile(status, new File(baseFolders, utils.getType2(context, R.string.right_dynamic)+"/layout/" + statusbar));
         }
+
         hideE.removeChild(customClock);
         customClock = createClock(status, true, "start|center", X_WRAP_CONTENT);
         hideE.appendChild(customClock);
@@ -332,24 +343,25 @@ public class XmlWork {
 
         if (stock) {
             textClock = doc.createElement("com.android.systemui.statusbar.policy.Clock");
-            textClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
+           // textClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
         }
         else {
             textClock = doc.createElement("TextClock");
+            textClock.setAttribute("android:format12Hour", "@*com.android.systemui:string/keyguard_widget_12_hours_format");
+            textClock.setAttribute("android:format24Hour", "@*com.android.systemui:string/keyguard_widget_24_hours_format");
+
+            if (Build.VERSION.SDK_INT > 26 && prefUtils.getBool(PREF_CLOCK_HIDEABLE))
+                textClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
         }
-        textClock.setAttribute("android:format12Hour", "@*com.android.systemui:string/keyguard_widget_12_hours_format");
-        textClock.setAttribute("android:format24Hour", "@*com.android.systemui:string/keyguard_widget_24_hours_format");
+
         textClock.setAttribute("android:textAppearance", "@*com.android.systemui:style/TextAppearance.StatusBar.Clock");
         textClock.setAttribute("android:textColor", "@*com.android.systemui:color/status_bar_clock_color");
         textClock.setAttribute("android:layout_height", "fill_parent");
         textClock.setAttribute("android:singleLine", "true");
-
-        if (Build.VERSION.SDK_INT > 26 && prefUtils.getBool(PREF_CLOCK_HIDEABLE)) textClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
-
         textClock.setAttribute("android:layout_width", width);
         textClock.setAttribute("android:gravity", gravity);
-        setPadding(textClock);
 
+        setPadding(textClock);
 
         return textClock;
     }
@@ -480,7 +492,9 @@ public class XmlWork {
         statusBarContents.insertBefore(customTextElement, insertBeforeElement);
 
         // Write string to strings.xml
-        new XmlCreation().createStringDoc(new File(baseFolders, "res/values/strings.xml"), "legacy_vpn_name",
+        File stringsF = new File(baseFolders, "res/values/");
+        stringsF.mkdirs();
+        new XmlCreation().createStringDoc(new File(stringsF, "strings.xml"), "legacy_vpn_name",
                 prefUtils.getString(PREF_CARRIER_CUSTOM_TEXT, ""));
 
         return doc;
@@ -490,7 +504,6 @@ public class XmlWork {
         Element layout = utils.findElementById(doc, "@*com.android.systemui:id/status_bar_contents");
         // Might have to complicate this if netwrok icons on extreme left aren't good
         Element insertBeforeElement = utils.getFirstChildElement(layout);
-
         Element toInclude = doc.createElement("include");
         toInclude.setAttribute("android:layout_width", "wrap_content");
         toInclude.setAttribute("android:layout_height", "fill_parent");

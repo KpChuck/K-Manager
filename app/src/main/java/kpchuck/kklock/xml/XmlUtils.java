@@ -48,6 +48,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
@@ -207,6 +209,23 @@ public class XmlUtils {
         return elements;
 
     }
+
+    public String elementString(Element element) throws TransformerException{
+        TransformerFactory transformerFactory = TransformerFactory
+                .newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        DOMSource source = new DOMSource(element);
+        StreamResult result = new StreamResult(new StringWriter());
+
+
+
+        transformer.transform(source, result);
+
+        String k = result.getWriter().toString();
+        k=k.substring("<?xml version=\"1.0\" encoding=\"UTF-8\"?>".length());
+        return k;
+    }
+
 
     public Element getElementById (Element parentElement, String layoutTag, String idName){
 

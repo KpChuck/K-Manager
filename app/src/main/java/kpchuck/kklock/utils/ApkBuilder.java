@@ -14,16 +14,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.commons.io.FileUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.zeroturnaround.zip.FileSource;
 import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.annotation.Documented;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import javax.xml.transform.TransformerException;
 
 import jadx.api.JadxArgs;
 import jadx.api.JadxDecompiler;
@@ -176,7 +183,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
     }
 
-    private void decompileSysUI(File sysui) throws IOException, JadxException{
+    private void decompileSysUI(File sysui) throws Exception{
 
         File kManager = fileHelper.newFolder(Environment.getExternalStorageDirectory() + "/K-Manager/");
 
@@ -197,12 +204,13 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         xmls.add(new File(resOut, "res/layout/status_bar.xml"));
         xmls.add(new File(resOut, "res/layout/keyguard_status_bar.xml"));
         xmls.add(new File(resOut, "res/layout/system_icons.xml"));
-        xmls.add(new File(resOut, "res/values/attrs.xml"));
         xmls.add(new File(resOut, "res/layout/quick_status_bar_expanded_header.xml"));
         File userInput = sysui.getParentFile();
         for (File f : xmls){
             FileUtils.copyFileToDirectory(f, userInput);
         }
+        fixAttrsDec(new File(resOut, "res/values/attrs.xml"), new File(userInput, "attrs.xml"));
+
 
     }
 
@@ -245,6 +253,19 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         fileHelper.newFolder(mergerFolder.getAbsolutePath());
         fileHelper.newFolder(tempFolder.getAbsolutePath());
 
+    }
+
+    private void fixAttrsDec(File attrs, File outfile) throws Exception{
+
+        XmlUtils utils = new XmlUtils();
+        Document document = utils.getDocument(attrs);
+        Element parent = document.getDocumentElement();
+        ArrayList<Element> list = utils.getChildElements(parent);
+        for (Element child : list){
+            if (utils.elementString(child).contains("?"))
+                parent.removeChild(child);
+        }
+        utils.writeDocToFile(document, outfile);
     }
 
     public void ExtractAssets () throws IOException{
