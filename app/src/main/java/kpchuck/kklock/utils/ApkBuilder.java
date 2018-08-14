@@ -3,6 +3,7 @@ package kpchuck.kklock.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.preference.PreferenceManager;
@@ -101,8 +102,9 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
                 File sysui = new File(Environment.getExternalStorageDirectory() + "/K-Klock/userInput/SystemUI.apk");
                 if (!sysui.exists()) {
-                    File n_sysui = fileHelper.find("/system/priv-app", "(.*)SystemUI(.*).apk").get(0);
-                    FileUtils.copyFile(n_sysui, sysui);
+                    PackageInfo m = context.getPackageManager().getPackageInfo("com.android.systemui", 0);
+                    String src = m.applicationInfo.sourceDir;
+                    FileUtils.copyFile(new File(src), sysui);
                 }
                 decompileSysUI(sysui);
             }
