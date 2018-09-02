@@ -76,16 +76,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             }
         });
 
-        final SwitchPreference syncromfiles = (SwitchPreference) findPreference(SYNC_ROM_FILES);
-        syncromfiles.setEnabled(prefUtils.getBoolTrue(SYNC_ROM_FILES));
-
-        syncromfiles.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object o) {
-                prefUtils.putBool(SYNC_ROM_FILES, syncromfiles.isChecked());
-                return true;
-            }
-        });
 
         Preference upgrade = (Preference) findPreference("goPro");
         if (new Checks().isPro(getApplicationContext())) upgrade.setEnabled(false);

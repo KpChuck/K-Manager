@@ -67,9 +67,6 @@ public class InformationWebViewActivity extends AppCompatActivity {
             case 2:
                 aboutWebView.loadUrl(base + "qsbg.html");
                 break;
-            case 4:
-                aboutWebView.loadUrl(base + "otherroms.html");
-                break;
             default:
                 finish();
                 Intent i = new Intent(this, MainActivity.class);
@@ -104,7 +101,6 @@ public class InformationWebViewActivity extends AppCompatActivity {
     private String getFolderLocale(){
         String locale = "";
         String current_locale = getResources().getConfiguration().getLocales().get(0).getLanguage();
-        shortToast(current_locale);
         if (!current_locale.equals("en") && folderExistsHtml(current_locale)){
             locale = current_locale + "/";
         }

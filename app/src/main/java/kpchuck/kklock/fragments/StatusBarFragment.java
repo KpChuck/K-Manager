@@ -51,7 +51,6 @@ import static kpchuck.kklock.constants.PrefConstants.PREF_CLOCK_HIDEABLE;
 import static kpchuck.kklock.constants.PrefConstants.PREF_INDICATORS;
 import static kpchuck.kklock.constants.PrefConstants.PREF_MOVE_LEFT;
 import static kpchuck.kklock.constants.PrefConstants.PREF_MOVE_NOTIFICATIONS_RIGHT;
-import static kpchuck.kklock.constants.PrefConstants.PREF_SELECTED_ROM;
 import static kpchuck.kklock.constants.PrefConstants.PREF_STATBAR_COLOR;
 import static kpchuck.kklock.constants.PrefConstants.PREF_STATUSBAR_CLOCK_SIZE;
 
@@ -74,7 +73,6 @@ public class StatusBarFragment extends Fragment {
     @BindView(R.id.ampm)
     Switch amSwitch;
     @BindView (R.id.moveNetworkLeft) Switch leftSwitch;
-    @BindView (R.id.networkSignalIndicatorSwitch) Switch indicatorSwitch;
     @BindView (R.id.customText) Switch customText;
     @BindView (R.id.carrierCardView) CardView carrierView;
     @BindView (R.id.editCarrierText) EditText carrierEditText;
@@ -127,13 +125,12 @@ public class StatusBarFragment extends Fragment {
             amSwitch.setPaintFlags(amSwitch.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             amSwitch.setBackgroundColor(Color.GRAY);
             String text = amSwitch.getText().toString();
-            amSwitch.setText(text + " [PRO]");
+            amSwitch.setText(String.format("%s [%s]", text, getString(R.string.pro)));
         }
 
 
         //Set position and visibility of switches
         ButterKnife.apply(clockSizeSwitch, ENABLED, prefUtils.getBool(PREF_STATUSBAR_CLOCK_SIZE));
-        ButterKnife.apply(indicatorSwitch, ENABLED, prefUtils.getBool(PREF_INDICATORS));
         ButterKnife.apply(leftSwitch, ENABLED, prefUtils.getBool(PREF_MOVE_LEFT));
         ButterKnife.apply(showLockscreen, ENABLEDCheckBox, prefUtils.getBool(PREF_CARRIER_TEXT));
         ButterKnife.apply(customText, ENABLED, prefUtils.getBool(PREF_CARRIER_EVERYWHERE));
@@ -141,34 +138,17 @@ public class StatusBarFragment extends Fragment {
         ButterKnife.apply(notifsRightSwitch, ENABLED, prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT));
         ButterKnife.apply(statBarColorSwitch, ENABLED, prefUtils.getBool(PREF_CHANGE_STATBAR_COLOR));
         ButterKnife.apply(clockHideableSwitch, ENABLED, prefUtils.getBool(PREF_CLOCK_HIDEABLE));
-
         ButterKnife.apply(hideStockSwitch, ENABLED, prefUtils.getBool(DEV_HIDE_CLOCK));
         ButterKnife.apply(makeDynamicSwitch, ENABLED, prefUtils.getBool(DEV_MAKE_DYNAMIC));
 
-        otherRomHide(prefUtils.getString(PREF_SELECTED_ROM, getString(R.string.chooseRom)).equals(getString(R.string.otherRomsBeta)));
-
 
         if (prefUtils.getBool(PREF_CARRIER_EVERYWHERE)) ButterKnife.apply(carrierView, SetVisibility, View.VISIBLE);
-        if (!fileHelper.getOos(prefUtils.getString(PREF_SELECTED_ROM, getString(R.string.chooseRom))).equals("OxygenOS"))
-            ButterKnife.apply(indicatorSwitch, SetVisibility, View.GONE);
 
         ButterKnife.apply(carrierEditText, SetText, prefUtils.getString(PREF_CARRIER_CUSTOM_TEXT, ""));
 
         return v;
     }
 
-    public void oosIndicators(boolean show){
-        if (indicatorSwitch != null)ButterKnife.apply(indicatorSwitch, SetVisibility, show ? View.VISIBLE : View.GONE);
-
-    }
-
-    public void otherRomHide(boolean show){
-        if (hideStockSwitch == null || makeDynamicSwitch == null) return;
-        ButterKnife.apply(hideStockSwitch, SetVisibility, show ? View.VISIBLE : View.GONE);
-        ButterKnife.apply(makeDynamicSwitch, SetVisibility, show ? View.VISIBLE : View.GONE);
-
-
-    }
 
     @OnTextChanged(R.id.editCarrierText)
     public void saveEditText(CharSequence s){
@@ -282,11 +262,6 @@ public class StatusBarFragment extends Fragment {
 
     }
 
-    @OnClick(R.id.networkSignalIndicatorSwitch)
-    public void indicatorClick(){
-        prefUtils.setSwitchPrefs(indicatorSwitch, PREF_INDICATORS);
-
-    }
 
     @OnClick(R.id.statBarColor)
     public void statbarClick(){

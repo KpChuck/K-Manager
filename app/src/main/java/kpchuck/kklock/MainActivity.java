@@ -134,12 +134,8 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
     // Bind layouts, spinner
     @BindView (R.id.loadingId) RelativeLayout loadingLayout;
     @BindView (R.id.loadingTextView) TextView loadingTextView;
-    @BindView (R.id.romSelectionSpinner) SearchableSpinner searchableSpinner;
     @BindView (R.id.defaultLayout) RelativeLayout defaultLayout;
-    @BindView (R.id.spinnerLinearLayout) LinearLayout SpinnerLayout;
-    @BindView(R.id.otherRomsQm) ImageButton questionMark;
     SwipeTabAdapter tabAdapter;
-    @BindView(R.id.orSettings) Button orSettingsButton;
     // Fragment Stuff
     private ClockFragment clockFragment;
     private IconsFragment iconsFragment;
@@ -147,7 +143,6 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
     private MiscFragment miscFragment;
 
     // Call Strings, Arraylists and Classes for later use
-    ArrayList<String> roms = new ArrayList<>();
     ArrayList<String> colorsTitles = new ArrayList<>();
     ArrayList<String> formatsTitles = new ArrayList<>();
     ArrayList<String> colorsValues = new ArrayList<>();
@@ -161,12 +156,9 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
     String[] PERMISSIONS = {android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
     WelcomeHelper welcomeScreen;
     Drawer drawer;
-    @BindString (R.string.otherRomsBeta) String betaString;
-
 
     PrimaryDrawerItem updateNotif;
     DrawerBuilder builder;
-    private boolean spinnerOpen = false;
     private boolean hasAll = false;
     private boolean isPro = false;
     private boolean installed_from_playstore = true;
@@ -215,59 +207,50 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
         if (prefUtils.getBool("gsBgPref") && !fileHelper.checkQsFile(prefUtils)) {
             prefUtils.putBool("qsBgPref", false);
         }
-        String romName = prefUtils.getString("selectedRom", getString(R.string.chooseRom));
-        if(romName.equals(getString(R.string.chooseRom))){
-            shortToast(getString(R.string.selectRomToast));
-            return;
+
+        // Check for new version
+        boolean osVersion = !(System.getProperty("os.version")).equals(prefUtils.getString("osversion", ""));
+        boolean buildUser = !(Build.USER).equals(prefUtils.getString("builduser", ""));
+        boolean releaseVersion = !(Build.VERSION.RELEASE).equals(prefUtils.getString("buildversionrelease", ""));
+        boolean newVersion = osVersion || buildUser || releaseVersion;
+        if (newVersion) {
+            prefUtils.putString("osversion", System.getProperty("os.version"));
+            prefUtils.putString("builduser", Build.USER);
+            prefUtils.putString("buildversionrelease", Build.VERSION.RELEASE);
         }
-        if(romName.equals(betaString)) {
-            // Check for new version
-            boolean osVersion = !(System.getProperty("os.version")).equals(prefUtils.getString("osversion", ""));
-            boolean buildUser = !(Build.USER).equals(prefUtils.getString("builduser", ""));
-            boolean releaseVersion = !(Build.VERSION.RELEASE).equals(prefUtils.getString("buildversionrelease", ""));
-            boolean newVersion = osVersion || buildUser || releaseVersion;
-            if (newVersion){
-                prefUtils.putString("osversion", System.getProperty("os.version"));
-                prefUtils.putString("builduser", Build.USER);
-                prefUtils.putString("buildversionrelease", Build.VERSION.RELEASE);
-            }
-            final String[] x = new File(rootFolder + "/userInput").list();
-            List<String> xmls = new ArrayList<>();
-            if (x != null){
-                xmls = Arrays.asList(x);
-            }
-            String[] xmlNames = {"status_bar.xml", "keyguard_status_bar.xml", "system_icons.xml", "quick_status_bar_expanded_header.xml"};
-            hasAll = xmls.containsAll(Arrays.asList(xmlNames));
-            boolean hasSysUI = xmls.contains("SystemUI.apk");
+        final String[] x = new File(rootFolder + "/userInput").list();
+        List<String> xmls = new ArrayList<>();
+        if (x != null) {
+            xmls = Arrays.asList(x);
+        }
+        String[] xmlNames = {"status_bar.xml", "keyguard_status_bar.xml", "system_icons.xml", "quick_status_bar_expanded_header.xml"};
+        hasAll = xmls.containsAll(Arrays.asList(xmlNames));
+        boolean hasSysUI = xmls.contains("SystemUI.apk");
 
-            if (newVersion && (hasAll || hasSysUI)) {
+        if (newVersion && (hasAll || hasSysUI)) {
 
-                TextAlertDialogFragment fragment = new TextAlertDialogFragment();
-                DialogClickListener clickListener = new DialogClickListener() {
-                    @Override
-                    public void onPositiveBtnClick() {
-                        for (String f : x){
-                            new File(rootFolder + "/userInput/" + f).delete();
-                        }
-                        hasAll = false;
-                        buildingProcess();
+            TextAlertDialogFragment fragment = new TextAlertDialogFragment();
+            DialogClickListener clickListener = new DialogClickListener() {
+                @Override
+                public void onPositiveBtnClick() {
+                    for (String f : x) {
+                        new File(rootFolder + "/userInput/" + f).delete();
                     }
-                    @Override
-                    public void onCancelBtnClick() {
-                        buildingProcess();
-                    }
-                };
-                fragment.Instantiate(getString(R.string.warning), getString(R.string.rom_files_updated),
-                        getString(R.string.okay), getString(R.string.use_ones_have), clickListener);
-                fragment.show(getSupportFragmentManager(), "");
+                    hasAll = false;
+                    buildingProcess();
+                }
 
-            }
-            else buildingProcess();
+                @Override
+                public void onCancelBtnClick() {
+                    buildingProcess();
+                }
+            };
+            fragment.Instantiate(getString(R.string.warning), getString(R.string.rom_files_updated),
+                    getString(R.string.okay), getString(R.string.use_ones_have), clickListener);
+            fragment.show(getSupportFragmentManager(), "");
 
         }
-        else if(!romName.equals("")) {
-            buildingProcess();
-        }
+
     }
 
     @Override
@@ -391,9 +374,6 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
                         new SecondaryDrawerItem().withName(R.string.faqsItem)
                                 .withLevel(2)
                                 .withIdentifier(3),
-                        new SecondaryDrawerItem().withName(R.string.otherromsItem)
-                                .withLevel(2)
-                                .withIdentifier(4),
                         new SecondaryDrawerItem().withName(R.string.qsbgItem)
                                 .withLevel(2)
                                 .withIdentifier(5));
@@ -435,11 +415,6 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
                             Intent faq = new Intent(context, InformationWebViewActivity.class);
                             faq.putExtra("value", 1);
                             startActivity(faq);
-                            break;
-                        case 4:
-                            Intent rom = new Intent(context, InformationWebViewActivity.class);
-                            rom.putExtra("value", 4);
-                            startActivity(rom);
                             break;
                         case 5:
                             Intent qsbg = new Intent(context, InformationWebViewActivity.class);
@@ -508,106 +483,9 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
         builder.withSelectedItem(99);
         drawer = builder.build();
 
-
-        if (isOtherRoms()) questionMark.setVisibility(View.VISIBLE);
-        statusBarFragment.otherRomHide(isOtherRoms());
-        orSettingsButton.setVisibility(isOtherRoms() ? View.VISIBLE : View.GONE);
-
-
         new CleanupFiles().execute();
-        loadSpinner();
-
     }
 
-    private boolean isOtherRoms(){
-        String rom = prefUtils.getString(PREF_SELECTED_ROM, betaString);
-        return rom.equals(context.getString(R.string.otherRomsBeta));
-    }
-
-    @OnClick (R.id.orSettings)
-    public void orSettingsClick(){
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        // Get the layout inflater
-        LayoutInflater inflater = getLayoutInflater();
-
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
-        View view = inflater.inflate(R.layout.input_menu_dialog, null);
-        builder.setView(view);
-
-        TextView textView = view.findViewById(R.id.title);
-        final EditText nameEdit = view.findViewById(R.id.name);
-        final EditText valueEdit = view.findViewById(R.id.value);
-        textView.setText(getString(R.string.rom_info));
-        nameEdit.setHint(getString(R.string.rom_name_hint));
-        valueEdit.setHint(getString(R.string.rom_version_hint));
-
-        builder
-                .setPositiveButton(getString(R.string.send), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        File zip = new File(rootFolder, nameEdit.getText() + " " + valueEdit.getText() + ".zip");
-                        if (zip.exists()) zip.delete();
-                        // Zip the xmls
-                        String[] x = new File(rootFolder + "/userInput").list(fileHelper.XML);
-                        List<String> xmls = Arrays.asList(x);
-                        String[] xmlNames = {"status_bar.xml", "keyguard_status_bar.xml", "system_icons.xml", "quick_status_bar_expanded_header.xml"};
-                        List<String> xmlNam = Arrays.asList(xmlNames);
-
-                        if (!xmls.containsAll(xmlNam)){
-                            shortToast(getString(R.string.files_not_found));
-                            return;
-                        }
-                        List<ZipEntrySource> zipEntrySources = new ArrayList<>();
-                        for (String f : xmlNam){
-                            zipEntrySources.add(new FileSource("/"+f, new File(rootFolder + "/userInput/"+f)));
-
-                        }
-                        ZipEntrySource[] addedEntries = new ZipEntrySource[zipEntrySources.size()];
-                        for (int i = 0; i< zipEntrySources.size(); i++){
-                            addedEntries[i] = zipEntrySources.get(i);
-                        }
-                        ZipUtil.pack(addedEntries, zip);
-                        // Send the zip file
-                        Intent i = new Intent(Intent.ACTION_SEND);
-                        i.setType("message/rfc822");
-                        String message = String.format("Hi, here are the rom files for %s %s.\nI'm %s making the clock dynamic and %s the stock clock.\nI would love it if you added them to K-Manager :)",
-                                nameEdit.getText(), valueEdit.getText(),
-                                prefUtils.getBool(DEV_MAKE_DYNAMIC) ? "" : "not",
-                                prefUtils.getBool(DEV_HIDE_CLOCK) ? "I\'m hiding" : "not hiding");
-                        i.putExtra(Intent.EXTRA_EMAIL, new String[]{"przestrzelski.com@gmail.com"});
-                        i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name) + " Other Roms");
-                        i.putExtra(Intent.EXTRA_TEXT, (message));
-                        i.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileprovider", zip));
-                        try {
-                            context.startActivity(Intent.createChooser(i,
-                                    "Send through..."));
-                        } catch (ActivityNotFoundException ex) {
-                            Toast.makeText(context, getString(R.string.error_sending_zip), Toast.LENGTH_LONG).show();
-                        }
-
-                    }
-                })
-                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
-                        dialog.cancel();
-                    }}
-
-                );
-
-        // Create the AlertDialog object and return it
-        builder.create().show();
-
-
-    }
-
-    @OnClick (R.id.otherRomsQm)
-    public void onClick(){
-        Intent rom = new Intent(context, InformationWebViewActivity.class);
-        rom.putExtra("value", 4);
-        startActivity(rom);
-    }
     private boolean alreadyRan = false;
 
     private void notifyOnUpdate(){
@@ -660,64 +538,9 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
                         drawer.addItemAtPosition(updateNotif, 1);
                     } else drawer.removeItem(99);
                     break;
-                case 2:
-                    loadSpinner();
-                    break;
             }
         }
     };
-
-    private void loadSpinner(){
-        getArrayForRoms();
-        // Initialize the spinner
-        final SimpleListAdapter simpleListAdapter = new SimpleListAdapter(this, roms);
-        searchableSpinner.setAdapter(simpleListAdapter);
-        searchableSpinner.setSelectedItem(prefUtils.getString("selectedRom", getString(R.string.chooseRom)));
-        searchableSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(View view, int position, long id) {
-                String selectedItem = simpleListAdapter.getItem(position).toString();
-                prefUtils.putString("selectedRom", selectedItem);
-
-                statusBarFragment.oosIndicators(fileHelper.getOos(selectedItem).equals("OxygenOS"));
-                miscFragment.oosBg(fileHelper.getOos(selectedItem).equals("OxygenOS"));
-
-                orSettingsButton.setVisibility(isOtherRoms() ? View.VISIBLE : View.GONE);
-                questionMark.setVisibility(isOtherRoms() ? View.VISIBLE : View.GONE);
-
-            } // to close the onItemSelected
-
-            @Override
-            public void onNothingSelected() {
-
-            }
-        });
-        searchableSpinner.setStatusListener(new IStatusListener() {
-            @Override
-            public void spinnerIsOpening() {
-                spinnerOpen = true;
-            }
-
-            @Override
-            public void spinnerIsClosing() {
-                spinnerOpen = false;
-            }
-        });
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (touchEventInsideEditText(ev))
-            searchableSpinner.hideEdit();
-        return super.dispatchTouchEvent(ev);
-    }
-
-    public boolean touchEventInsideEditText(MotionEvent event){
-        Rect editTextRect = new Rect();
-        SpinnerLayout.getHitRect(editTextRect);
-
-        return  (editTextRect.contains((int)event.getX(), (int)event.getY()));
-    }
 
 
     protected void onResume(){
@@ -745,55 +568,8 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
         String[] check = new File(rootFolder).list(fileHelper.APK);
         int k = fileHelper.decreaseToLowest(check);
         final String apkVersion = "K-Klock_v" + k + ".apk";
-        String romName = prefUtils.getString("selectedRom", getString(R.string.chooseRom));
-        boolean dontdoit = false;
-        try {
-            if (!isOtherRoms() && prefUtils.getBool(PREF_QS_HEADER)) {
-                File romZip = new File(Environment.getExternalStorageDirectory() + "/K-Manager/romSpecific/" + romName + ".zip");
-                File tempZip = new File(Environment.getExternalStorageDirectory() + "/K-Manager/temp.zip");
-                if (romZip.exists()) {
-                    FileUtils.copyFile(romZip, tempZip);
-                } else {
-                    InputStream inputStream = context.getAssets().open("romSpecific/" + romName + ".zip");
-                    FileUtils.copyInputStreamToFile(inputStream, tempZip);
-                }
-                if (tempZip.exists() && tempZip.isDirectory())
-                    tempZip.delete();
-                ZipUtil.explode(tempZip);
-                File c = new File(tempZip, "quick_status_bar_expanded_header.xml");
-                if (!c.exists()){
-                    dontdoit = true;
-                    DialogClickListener dialogClickListener = new DialogClickListener() {
-                        @Override
-                        public void onPositiveBtnClick() {
-                            prefUtils.putString("selectedRom", getString(R.string.otherRomsBeta));
-                            if (isOtherRoms()) questionMark.setVisibility(View.VISIBLE);
-                            orSettingsButton.setVisibility(isOtherRoms() ? View.VISIBLE : View.GONE);
-                            loadSpinner();
-                            new ApkBuilder(context, loadingLayout, loadingTextView, defaultLayout, hasAll).execute(apkVersion, apkVersion, apkVersion);
-                        }
 
-                        @Override
-                        public void onCancelBtnClick() {
-                            new ApkBuilder(context, loadingLayout, loadingTextView, defaultLayout, hasAll).execute(apkVersion, apkVersion, apkVersion);
-
-                        }
-                    };
-                    TextAlertDialogFragment alertDialogFragment = new TextAlertDialogFragment();
-                    alertDialogFragment.Instantiate(
-                            getString(R.string.important), getString(R.string.files_for_header_404), getString(R.string.okay),
-                            getString(R.string.no), dialogClickListener
-                    );
-                    FileUtils.deleteDirectory(tempZip);
-                    alertDialogFragment.show(getSupportFragmentManager(), "");
-                }
-            }
-        }catch (IOException e){
-            Log.e("klock", e.getMessage());
-        }
-
-
-        if (!dontdoit)new ApkBuilder(context, loadingLayout, loadingTextView, defaultLayout, hasAll).execute(apkVersion, apkVersion, apkVersion);
+        new ApkBuilder(context, loadingLayout, loadingTextView, defaultLayout, hasAll).execute(apkVersion, apkVersion, apkVersion);
 
     }
 
@@ -1056,32 +832,6 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
 
     }
 
-    public void getArrayForRoms(){
-
-        roms.add(betaString);
-        try {
-            String[] t = getAssets().list("romSpecific");
-            List<String> temp = Arrays.asList(t);
-            String[] notAssetsTemp = new File(Environment.getExternalStorageDirectory() + "/K-Manager/romSpecific").list(fileHelper.XML);
-            if (notAssetsTemp != null) {
-                for (String s : notAssetsTemp) {
-                    if (!temp.contains(s)) {
-                        temp.add(s);
-                    }
-                }
-            }
-            Collections.sort(temp);
-            for(String s:temp){
-                s = s.substring(0, s.lastIndexOf('.'));
-                roms.add(s);
-            };
-        }catch(Exception e){
-            shortToast(e.getMessage());
-        }
-
-    }
-
-
     public void shortToast(String message){
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
@@ -1091,9 +841,6 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
         RelativeLayout rv = findViewById(R.id.listViewLayout);
         if (rv.getVisibility() == View.VISIBLE){
             hideLayout(rv);
-        }
-        else if (spinnerOpen){
-            searchableSpinner.hideEdit();
         }
         else {
             super.onBackPressed();

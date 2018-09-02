@@ -7,8 +7,6 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.common.util.ArrayUtils;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.Attr;
@@ -21,6 +19,8 @@ import org.w3c.dom.NodeList;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -101,8 +101,7 @@ public class XmlWork {
                 if (new File(baseFolders, s).exists())
                     utils.writeDocToFile(keyguard, new File(baseFolders, s + "/layout/keyguard_status_bar.xml"));
             }
-            if (!leaveResBlank())
-                utils.writeDocToFile(keyguard, new File(baseFolders, "res/layout/keyguard_status_bar.xml"));
+            utils.writeDocToFile(keyguard, new File(baseFolders, "res/layout/keyguard_status_bar.xml"));
         }
 
         // Write modified keyguard
@@ -116,14 +115,14 @@ public class XmlWork {
         keyguard = fixForLg(keyguard, false);
 
 
-        String[] modPlaces = {utils.getType2(context, R.string.center_no_clock), utils.getType2(context, R.string.center_dynamic),
+        List<String> modPlaces = Arrays.asList(utils.getType2(context, R.string.center_no_clock), utils.getType2(context, R.string.center_dynamic),
                 utils.getType2(context, R.string.center_stock), utils.getType2(context, R.string.left_no_clock),
-                utils.getType2(context, R.string.left_stock), utils.getType2(context, R.string.left_dynamic)};
+                utils.getType2(context, R.string.left_stock), utils.getType2(context, R.string.left_dynamic));
 
         if (prefUtils.getBool(PREF_MOVE_LEFT)){
-            modPlaces = ArrayUtils.concat(modPlaces, unmodPlaces);
-            if (!leaveResBlank())
-                utils.writeDocToFile(keyguard, new File(baseFolders, "res/layout/keyguard_status_bar.xml"));
+
+            Collections.addAll(Arrays.asList(unmodPlaces));
+            utils.writeDocToFile(keyguard, new File(baseFolders, "res/layout/keyguard_status_bar.xml"));
         }
         for (String s: modPlaces){
             if (new File(baseFolders, s).exists())
@@ -205,9 +204,7 @@ public class XmlWork {
 
         status = packToRightOf(status, statusBarContents, "TextClock", null);
 
-
-        if (leaveResBlank()) utils.writeDocToFile(status, new File(baseFolders, utils.getType2(context, R.string.center_clock)+"/layout/" + statusbar));
-        else utils.writeDocToFile(status, new File(baseFolders, "res/layout/" + statusbar));
+        utils.writeDocToFile(status, new File(baseFolders, "res/layout/" + statusbar));
 
         // All other clocks
         status = setupStatusBar();
@@ -297,7 +294,7 @@ public class XmlWork {
         hideE.appendChild(customClock);
         utils.writeDocToFile(status, new File(baseFolders, utils.getType2(context, R.string.center_stock)+"/layout/" + statusbar));
 
-        utils.writeType2Desc(leaveResBlank() ? context.getString(R.string.sysui_type2_none) : context.getString(R.string.sysui_type2_center),
+        utils.writeType2Desc(context.getString(R.string.sysui_type2_center),
                 baseFolders.getAbsolutePath() + "/type2");
 
     }
@@ -633,20 +630,12 @@ public class XmlWork {
             startFolder.add(utils.getType2(context, R.string.left_dynamic));
             startFolder.add(utils.getType2(context, R.string.center_dynamic));
         }
-        if (leaveResBlank()) {
-            startFolder.add(utils.getType2(context, R.string.center_clock));startFolder.remove("res");
-        }
 
         for (String k : startFolder) {
             fileHelper.newFolder(s, k);
             fileHelper.newFolder(s, k + "/layout");
 
         }
-    }
-
-    private boolean leaveResBlank(){
-        return ((prefUtils.getString(PREF_SELECTED_ROM, "").contains("OxygenOS") && prefUtils.getString(PREF_SELECTED_ROM, "").contains("Nougat")));
-
     }
 
     private void translate(Context context){

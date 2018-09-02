@@ -110,23 +110,15 @@ public class MiscFragment extends Fragment {
         switches.put(PREF_QS_BG, qsBgSwitch);
         switches.put(PREF_MINIT, minitSwitch);
         switches.put(PREF_QS_LABEL, titleSwitch);
-        switches.put(PREF_QS, qsSwitch);
         switches.put(PREF_LOCK_CLOCK, lockscreenClock);
         switches.put(PREF_HEADS_UP, headsUpTimeout);
         for (String key: switches.keySet()){
             ButterKnife.apply(switches.get(key), ENABLED, prefUtils.getBool(key));
         }
 
-        if (fileHelper.getOos(prefUtils.getString(PREF_SELECTED_ROM, getString(R.string.chooseRom))).equals("OxygenOS"))
-            ButterKnife.apply(qsBgSwitch, SetVisibility, View.GONE);
-
         return v;
     }
 
-    public void oosBg(boolean show){
-        if (qsBgSwitch != null) ButterKnife.apply(qsBgSwitch, SetVisibility, !show ? View.VISIBLE : View.GONE);
-
-    }
 
     // ButterKnife Methods
 

@@ -100,21 +100,6 @@ public class FileHelper {
         return tempList;
 
     }
-    public void deleteItems(String title, String value, String titleArrayKey, String valueArrayKey, Context context){
-        PrefUtils prefUtils = new PrefUtils(context);
-        title = title.replace(" ", "_")+".xml";
-
-        ArrayList<String> titles = prefUtils.loadArray(titleArrayKey);
-        ArrayList<String> values = prefUtils.loadArray(valueArrayKey);
-
-        titles = deleteItemFromArray(title, titles);
-        values = deleteItemFromArray(value, values);
-
-        prefUtils.saveArray(titles, titleArrayKey);
-        prefUtils.saveArray(values, valueArrayKey);
-
-
-    }
 
     public FilenameFilter APK = new java.io.FilenameFilter() {
         @Override
@@ -184,11 +169,6 @@ public class FileHelper {
         }
     };
 
-    public String getOos(String oos){
-        if (oos.length() < 8) return "thisIsNotOxygenOS";
-        oos = oos.substring(0, 8);
-        return oos;
-    }
 
     public int decreaseToLowest(String[] testStringArray){
         int kk;
@@ -292,25 +272,6 @@ public class FileHelper {
         return filePathList;
     }
 
-    public ArrayList<File> find(String startPath, String filter){
-
-        ArrayList<File> fileList = new ArrayList<>();
-        File root = new File(startPath);
-        if (fileContains(root, filter)) fileList.add(root);
-
-        File[] list = root.listFiles();
-        for (File f: list){
-            if (f.isDirectory()) {
-                ArrayList<File> t = find(f.getAbsolutePath(), filter);
-                fileList.addAll(t);
-            }
-            else{
-                if (fileContains(f, filter)) fileList.add(f);
-            }
-        }
-        return fileList;
-
-    }
 
     private boolean fileContains(File file, String filter){
         Pattern pattern = Pattern.compile(filter);
@@ -348,34 +309,4 @@ public class FileHelper {
             Log.d("klock", "Could not rename " + file.getAbsolutePath());
         }
     }
-
-
-    private boolean hasInternetAccess(Context context, String url) {
-        if (isNetworkAvailable(context)) {
-            try {
-                HttpURLConnection urlc = (HttpURLConnection)
-                        (new URL(url)
-                                .openConnection());
-                urlc.setRequestProperty("User-Agent", "Android");
-                urlc.setRequestProperty("Connection", "close");
-                urlc.setConnectTimeout(1500);
-                urlc.connect();
-                return (urlc.getResponseCode() == 204 &&
-                        urlc.getContentLength() == 0);
-            } catch (IOException e) {
-                Log.e("klock", "Error checking internet connection", e);
-            }
-        } else {
-            Log.d("klock", "No network available!");
-        }
-        return false;
-    }
-
-    private boolean isNetworkAvailable(Context context) {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null;
-    }
-
 }

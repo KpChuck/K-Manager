@@ -14,11 +14,7 @@
             android:defaultValue="false"
             android:title="@string/set_dark_theme"/>
 
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="sync_rom_files"
-            android:summary="@string/sync_files_desc"
-            android:title="@string/sync_files" />
+
         <Preference
             android:key="deleteSaved"
             android:title="@string/delete_saved_cfs"/>

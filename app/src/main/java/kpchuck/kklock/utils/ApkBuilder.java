@@ -97,7 +97,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         try {
             makeDirs();
             ExtractAssets();
-            if (!hasAllXmls && isOtherRoms(prefUtils.getString(PREF_SELECTED_ROM, ""))) {
+            if (!hasAllXmls) {
                 publishProgress(context.getString(R.string.decompiling));
 
                 File sysui = new File(Environment.getExternalStorageDirectory() + "/K-Klock/userInput/SystemUI.apk");
@@ -157,7 +157,14 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             } catch (IOException q){
                  Log.e("klock", q.getMessage());
             }
-            throw new RuntimeException("Error modding rom I think: \n" + e);
+            StackTraceElement[] message = e.getStackTrace();
+            StringBuilder builder = new StringBuilder();
+            for (StackTraceElement stackTraceElement : message) {
+                builder.append(stackTraceElement);
+                builder.append("\n");
+            }
+
+            throw new RuntimeException("Error modding rom I think: \n" + builder.toString() + e);
 
         }
 
@@ -270,9 +277,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         utils.writeDocToFile(document, outfile);
     }
 
-    public void ExtractAssets () throws IOException{
-        File customInput = new File(rootFolder + "/customInput");
-        String romName = prefUtils.getString(PREF_SELECTED_ROM, context.getString(R.string.chooseRom));
+    public void ExtractAssets () {
         // Copy files used for every apk first
         fileHelper.copyFromAssets(univ, "universalFiles.zip", mergerFolder, context, false);
         // Copy optional files into the tempfolder
@@ -291,27 +296,6 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         for (String key: hashMap.keySet()){
             checkPrefAndCopy(key, hashMap.get(key));
         }
-
-        if(prefUtils.getBool(PREF_INDICATORS) && romName.equals("OxygenOS Nougat"))
-            fileHelper.copyFromAssets(univ, "indicatorsN.zip".trim(), tempFolder, context, true);
-        if(prefUtils.getBool(PREF_INDICATORS) && romName.startsWith("OxygenOS Oreo"))
-            fileHelper.copyFromAssets(univ, "indicatorsO.zip".trim(), tempFolder, context, true);
-
-        // Copy the rom specific file if a rom was selected
-        if (!romName.equals(context.getString(R.string.otherRomsBeta))) {
-            File romFile = new File(Environment.getExternalStorageDirectory() + "/K-Manager/romSpecific/" + romName + ".zip");
-            if (romFile.exists()){
-                ZipUtil.unpack(romFile, new File(customInput, romName + ".zip"));
-            }
-            else {
-                fileHelper.copyFromAssets("romSpecific", romName + ".zip".trim(), customInput, context, true);
-            }
-            File zip = new File(customInput, romName + ".zip");
-            for (File x : zip.listFiles()){
-                FileUtils.copyFileToDirectory(x, customInput);
-            }
-            FileUtils.deleteDirectory(zip);
-        }
     }
 
     private void checkPrefAndCopy(String key, String zipName){
@@ -320,28 +304,10 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
     }
 
     private void modTheRomZip() throws Exception{
-        String rom = prefUtils.getString(PREF_SELECTED_ROM, "");
-
         new XmlWork(context,
-                isOtherRoms(rom) ? "userInput" : "customInput",
-                hideClock(rom),
-                shouldBeDynamic(rom));
-    }
-
-    private boolean shouldBeDynamic(String rom){
-        boolean inWhitelist = Arrays.asList(context.getResources().getStringArray(R.array.dynamic_clocks)).contains(rom);
-        boolean enabledInSettings = prefUtils.getBool(DEV_MAKE_DYNAMIC) && isOtherRoms(rom);
-        return inWhitelist || enabledInSettings;
-    }
-
-    private boolean hideClock(String rom){
-        boolean inWhitelist = Arrays.asList(context.getResources().getStringArray(R.array.hide_clock)).contains(rom);
-        boolean enabledInSettings = prefUtils.getBool(DEV_HIDE_CLOCK) && isOtherRoms(rom);
-        return inWhitelist || enabledInSettings;
-    }
-
-    private boolean isOtherRoms(String rom){
-        return rom.equals(context.getString(R.string.otherRomsBeta));
+                "userInput",
+                prefUtils.getBool(DEV_HIDE_CLOCK),
+                prefUtils.getBool(DEV_MAKE_DYNAMIC));
     }
 
     public void xmlBuilder(){
@@ -416,8 +382,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         }
 
     public void dealWivQsBg() throws Exception{
-        String rom = prefUtils.getString(PREF_SELECTED_ROM, "");
-        new QsBgUtil(context, tempFolder, isOtherRoms(rom) ? "userInput" : "customInput");
+        new QsBgUtil(context, tempFolder, "userInput");
     }
 
     public void appendOptionsZip (){

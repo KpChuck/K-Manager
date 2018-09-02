@@ -32,17 +32,15 @@ import static kpchuck.kklock.constants.XmlConstants.*;
 
 public class QsBgUtil {
 
-    Context context;
-    PrefUtils prefUtils;
-    File tempFolder;
-    File dir;
-    FileHelper fileHelper;
-    String inputFolder;
-    String header_png = "abc_list_selector_holo_dark";
+    private PrefUtils prefUtils;
+    private File tempFolder;
+    private File dir;
+    private FileHelper fileHelper;
+    private String inputFolder;
+    private String header_png = "abc_list_selector_holo_dark";
 
 
     public QsBgUtil(Context context, File tempFolder, String inputFolder) throws Exception{
-        this.context=context;
         this.inputFolder = inputFolder;
         this.tempFolder = tempFolder;
         this.fileHelper = new FileHelper();

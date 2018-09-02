@@ -16,6 +16,7 @@ public class MyWelcomeActivity extends WelcomeActivity {
                 .page(new TitlePage(R.drawable.ic_watch_black_24dp,
                         "K-Klock")
                 )
+                //TODO fix for without rom selection option
                 .page(new BasicPage(R.drawable.transparent,
                         getString(R.string.how_to_use),
                         getString(R.string.screen1_1) + "\n" +

@@ -15,7 +15,6 @@ public class PrefConstants {
     public static final String DEV_MAKE_DYNAMIC = "devMakeDynamicClock";
 
     // SharedPreferences Keys
-    public static final String PREF_SELECTED_ROM = "selectedRom";
     public static final String PREF_RECENTS = "recentsPref";
     public static final String PREF_QS = "qsPref";
     public static final String PREF_ICON = "iconPref";
@@ -66,7 +65,5 @@ public class PrefConstants {
     public static final String PREF_CUSTOM_ICON = "customIconPref";
     public static final String PREF_CUSTOM_ICON_FILE = "customIconFilePath";
 
-    //
-    public static final String SYNC_ROM_FILES ="sync_rom_files";
 
 }
