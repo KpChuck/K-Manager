@@ -42,8 +42,8 @@ android {
         applicationId "kpchuck.k_klock"
         minSdkVersion 24
         targetSdkVersion 27
-        versionCode 22
-        versionName "29"
+        versionCode 26
+        versionName "31"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "BASE_64_LICENSE_KEY", "\"" + BASE_64_LICENSE_KEY + "\""
@@ -185,7 +185,7 @@ dependencies {
     implementation files('libs/dx-1.14.jar')
 
     // Piracy Checker
-    implementation 'com.github.javiersantos:PiracyChecker:1.2.2'
+    implementation 'com.github.javiersantos:PiracyChecker:1.2.3'
     //Kotlin
     implementation ("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"){
         transitive = true

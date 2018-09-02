@@ -47,8 +47,7 @@ public class XmlWork {
     private String statusbar = "status_bar.xml";
     private String systemicons = "system_icons.xml";
     private boolean hasAttrs = false;
-    private boolean newIconStyle = false;
-    private Element newIconElement = null;
+
 
     public XmlWork(Context context, String srcFolder, boolean removeClock, boolean makeDynamic) throws Exception{
 
@@ -68,9 +67,6 @@ public class XmlWork {
     }
 
     private void modController(Context context) throws Exception{
-
-        File[] folders = baseFolders.listFiles(fileHelper.DIRECTORY);
-
 
         // Start with keyguard_status_bar.xml
         Document keyguard = utils.getDocument(new File(srcFolder + "/keyguard_status_bar.xml"));
@@ -147,9 +143,7 @@ public class XmlWork {
                 if (includeElement != null)
                     utils.changeAttribute(includeElement, X_LAYOUT_WIDTH, "0dip");
                 else {
-                    newIconStyle = true;
                     includeElement = utils.findElementById(sysicons, "@*com.android.systemui:id/statusIcons");
-                    newIconElement = includeElement;
                     utils.changeAttribute(includeElement, X_WEIGHT, "0");
                 }
             }
