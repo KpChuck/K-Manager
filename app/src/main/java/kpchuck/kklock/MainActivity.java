@@ -244,12 +244,12 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
                 public void onCancelBtnClick() {
                     buildingProcess();
                 }
-            };
+                };
             fragment.Instantiate(getString(R.string.warning), getString(R.string.rom_files_updated),
                     getString(R.string.okay), getString(R.string.use_ones_have), clickListener);
             fragment.show(getSupportFragmentManager(), "");
-
         }
+        else buildingProcess();
 
     }
 

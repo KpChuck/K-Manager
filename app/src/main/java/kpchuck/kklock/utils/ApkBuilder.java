@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
@@ -13,6 +14,8 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+
 
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
@@ -26,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.annotation.Documented;
 import java.security.GeneralSecurityException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -109,7 +113,8 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
                 decompileSysUI(sysui);
             }
             publishProgress(context.getString(R.string.apkBuilderLoading));
-            translateAll();
+            //TODO Fix translating signing
+           // translateAll();
             modTheRomZip();
             insertCustomXmls();
             dealWivQsBg();
@@ -418,6 +423,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         zipSigner.setKeymode("auto-testkey");
         zipSigner.signZip(universalZip.getAbsolutePath(), signedApk.getAbsolutePath());
         Log.d("ZipUtils", "signedZip() : file present -> " + signedApk.exists() + " at " + signedApk.getAbsolutePath());
+
     }
 
     public void cleanup () throws IOException{
