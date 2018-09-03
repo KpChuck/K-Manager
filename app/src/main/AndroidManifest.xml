@@ -3,11 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="kpchuck.kklock">
 
+    <permission android:name="kpchuck.k_klock.LicenseCheck" android:protectionLevel="signature"/>
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="kpchuck.k_klock.LicenseCheck"/>
     <uses-permission
         android:name="android.permission.WRITE_SECURE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
@@ -18,7 +21,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
-            android:name="kpchuck.kklock.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme">
             <intent-filter>
@@ -27,11 +30,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-       
         <activity
-            android:name="kpchuck.kklock.activities.SettingsActivity"
+            android:name=".activities.SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName="kpchuck.kklock.MainActivity"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme" />
 
         <provider
@@ -45,7 +47,7 @@
         </provider>
 
         <service
-            android:name="kpchuck.kklock.services.QuickSettingsService"
+            android:name=".services.QuickSettingsService"
             android:icon="@android:drawable/ic_menu_revert"
             android:label="Restart SystemUI"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
@@ -54,21 +56,21 @@
             </intent-filter>
         </service>
         <service
-            android:name="kpchuck.kklock.services.CheckforUpdatesService"
+            android:name=".services.CheckforUpdatesService"
             android:icon="@android:drawable/arrow_up_float"
             android:label="Check for Updates Service" />
 
         <activity
-            android:name="kpchuck.kklock.activities.InformationWebViewActivity"
+            android:name=".activities.InformationWebViewActivity"
             android:label="@string/app_name"
-            android:parentActivityName="kpchuck.kklock.MainActivity"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="kpchuck.kklock.MainActivity" />
         </activity>
         <activity
-            android:name="kpchuck.kklock.activities.MyWelcomeActivity"
+            android:name=".activities.MyWelcomeActivity"
             android:theme="@style/WelcomeScreenTheme" />
         <activity
             android:name="cat.ereza.customactivityoncrash.activity.DefaultErrorActivity"
@@ -76,21 +78,27 @@
             android:theme="@style/AppTheme.Dark" />
 
         <service
-            android:name="kpchuck.kklock.services.HideIconsService"
+            android:name=".services.HideIconsService"
             android:label="Hide Icon on Lockscreen Service" />
 
         <receiver
-            android:name="kpchuck.kklock.services.OnBootReceiver"
+            android:name=".services.OnBootReceiver"
             android:enabled="true"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
-
-            android:exported="true">
+            android:exported="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
-                <!--For HTC devices-->
-                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <!-- For HTC devices -->
+                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".services.ProReceiver" android:permission="kpchuck.k_klock.LicenseCheck">
+            <intent-filter>
+                <action android:name="kpchuck.k_klock.pro.check"/>
             </intent-filter>
         </receiver>
     </application>

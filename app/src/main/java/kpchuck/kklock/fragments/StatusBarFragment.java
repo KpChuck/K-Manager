@@ -115,18 +115,7 @@ public class StatusBarFragment extends Fragment {
 
         unbinder = ButterKnife.bind(this, v);
 
-        if (isPro){
-            ButterKnife.apply(amSwitch, ENABLED, prefUtils.getBool(PREF_AM));
-
-        }
-        else {
-            prefUtils.putBool(PREF_AM, false);
-            ButterKnife.apply(amSwitch, ENABLED, false);
-            amSwitch.setPaintFlags(amSwitch.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            amSwitch.setBackgroundColor(Color.GRAY);
-            String text = amSwitch.getText().toString();
-            amSwitch.setText(String.format("%s [%s]", text, getString(R.string.pro)));
-        }
+        initPro(isPro);
 
 
         //Set position and visibility of switches
@@ -147,6 +136,23 @@ public class StatusBarFragment extends Fragment {
         ButterKnife.apply(carrierEditText, SetText, prefUtils.getString(PREF_CARRIER_CUSTOM_TEXT, ""));
 
         return v;
+    }
+
+    public void initPro(boolean p) {
+        PrefUtils prefUtils = new PrefUtils(getContext());
+
+        if (p){
+            ButterKnife.apply(amSwitch, ENABLED, prefUtils.getBool(PREF_AM));
+
+        }
+        else {
+            prefUtils.putBool(PREF_AM, false);
+            ButterKnife.apply(amSwitch, ENABLED, false);
+            amSwitch.setPaintFlags(amSwitch.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            amSwitch.setBackgroundColor(Color.GRAY);
+            String text = amSwitch.getText().toString();
+            amSwitch.setText(String.format("%s [%s]", text, getString(R.string.pro)));
+        }
     }
 
 

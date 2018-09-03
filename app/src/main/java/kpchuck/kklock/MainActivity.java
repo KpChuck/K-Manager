@@ -163,6 +163,9 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
     private boolean isPro = false;
     private boolean installed_from_playstore = true;
 
+    private ViewPager viewPager;
+    private TabLayout tabLayout;
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -277,16 +280,18 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
         this.statusBarFragment = new StatusBarFragment();
         this.miscFragment = new MiscFragment();
 
+        new Checks().checkPro(this);
+        LocalBroadcastManager.getInstance(this).registerReceiver(BReceiver, new IntentFilter("message"));
 
         tabAdapter = new SwipeTabAdapter(getSupportFragmentManager(), clockFragment, iconsFragment, statusBarFragment, miscFragment);
 
         // Set the adapter onto the view pager
-        final ViewPager viewPager = findViewById(R.id.pager);
+        viewPager = findViewById(R.id.pager);
         viewPager.setAdapter(tabAdapter);
 
         // Give the TabLayout the ViewPager
-        TabLayout tabLayout = findViewById(R.id.sliding_tabs);
-        tabLayout.setupWithViewPager(viewPager);
+        tabLayout = findViewById(R.id.sliding_tabs);
+        tabLayout.setupWithViewPager(viewPager, true);
 
         // Setup Custom Crash Activity
         CaocConfig.Builder.create()
@@ -294,10 +299,6 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
                 .trackActivities(true) //default: false
                 .restartActivity(MainActivity.class) //default: null (your app's launch activity)
                 .apply();
-
-
-
-        LocalBroadcastManager.getInstance(this).registerReceiver(BReceiver, new IntentFilter("message"));
 
         if(!hasPermissions(this, PERMISSIONS)){
             ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
@@ -529,16 +530,21 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
         @Override
         public void onReceive(Context context, Intent intent) {
             int key = intent.getIntExtra("key", 0);
-            switch(key) {
-                case 1:
-                    boolean newVersion = fileHelper.newVersion(context);
+            if (key == 1) {
+                boolean newVersion = fileHelper.newVersion(context);
 
-                    if (newVersion) {
-                        if (!alreadyRan) notifyOnUpdate();
-                        drawer.addItemAtPosition(updateNotif, 1);
-                    } else drawer.removeItem(99);
-                    break;
+                if (newVersion) {
+                    if (!alreadyRan) notifyOnUpdate();
+                    drawer.addItemAtPosition(updateNotif, 1);
+                } else drawer.removeItem(99);
+
             }
+            boolean p = intent.getBooleanExtra("perm", false);
+            if(p) Log.d("klock", "Received answer from receiver, updating fragments");
+
+            viewPager.setAdapter(tabAdapter);
+            tabLayout.setupWithViewPager(viewPager);
+
         }
     };
 

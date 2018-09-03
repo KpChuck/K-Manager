@@ -110,7 +110,22 @@ public class IconsFragment extends Fragment {
         unbinder = ButterKnife.bind(this, v);
 
         isPro = new Checks().isPro(getContext());
-        if (isPro) {
+        initPro(isPro);
+
+        //Set position and visibility of switches
+        ButterKnife.apply(iconSwitch, ENABLED, prefUtils.getBool(PREF_ICON));
+        ButterKnife.apply(lockSwitch, ENABLED, prefUtils.getBool(PREF_LOCKSCREEN_STATUSBAR_SIZE));
+        ButterKnife.apply(blackoutSwitch, ENABLED, prefUtils.getBool(PREF_BLACKOUT_LOCKSCREEN));
+        ButterKnife.apply(customIconSwitch, ENABLED, prefUtils.getBool(PREF_CUSTOM_ICON));
+
+
+        return v;
+    }
+
+    public void initPro(boolean p) {
+        PrefUtils prefUtils = new PrefUtils(getContext());
+
+        if (p) {
 
             if (prefUtils.getBool(PREF_HIDE_ICONS_ON_LOCKSCREEN)) {
                 Intent i = new Intent(getContext(), HideIconsService.class);
@@ -131,15 +146,6 @@ public class IconsFragment extends Fragment {
             hideIconsLockscreen.setText(String.format("%s [%s]", text, getString(R.string.pro)));
             hideIconsNotFully.setVisibility(View.GONE);
         }
-
-        //Set position and visibility of switches
-        ButterKnife.apply(iconSwitch, ENABLED, prefUtils.getBool(PREF_ICON));
-        ButterKnife.apply(lockSwitch, ENABLED, prefUtils.getBool(PREF_LOCKSCREEN_STATUSBAR_SIZE));
-        ButterKnife.apply(blackoutSwitch, ENABLED, prefUtils.getBool(PREF_BLACKOUT_LOCKSCREEN));
-        ButterKnife.apply(customIconSwitch, ENABLED, prefUtils.getBool(PREF_CUSTOM_ICON));
-
-
-        return v;
     }
 
     // Butterknife Apply Methods

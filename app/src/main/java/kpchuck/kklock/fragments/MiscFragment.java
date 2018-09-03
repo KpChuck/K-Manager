@@ -93,17 +93,7 @@ public class MiscFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_misc__add__on_, container, false);
 
         unbinder = ButterKnife.bind(this, v);
-        if (isPro)
-            ButterKnife.apply(qsHeaderSwitch, ENABLED, prefUtils.getBool(PREF_QS_HEADER));
-        else {
-            prefUtils.putBool(PREF_QS_HEADER, false);
-            prefUtils.remove(PREF_QS_HEADER_FILE);
-            ButterKnife.apply(qsHeaderSwitch, ENABLED, false);
-            qsHeaderSwitch.setPaintFlags(qsHeaderSwitch.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            qsHeaderSwitch.setBackgroundColor(Color.GRAY);
-            String text = qsHeaderSwitch.getText().toString();
-            qsHeaderSwitch.setText(String.format("%s [%s]", text, getString(R.string.pro)));
-        }
+        initPro(isPro);
         //Set position and visibility of switches
         switches.put(PREF_QS, qsSwitch);
         switches.put(PREF_RECENTS, recentsSwitch);
@@ -117,6 +107,22 @@ public class MiscFragment extends Fragment {
         }
 
         return v;
+    }
+
+    public void initPro(boolean p) {
+        PrefUtils prefUtils = new PrefUtils(getContext());
+
+        if (p)
+            ButterKnife.apply(qsHeaderSwitch, ENABLED, prefUtils.getBool(PREF_QS_HEADER));
+        else {
+            prefUtils.putBool(PREF_QS_HEADER, false);
+            prefUtils.remove(PREF_QS_HEADER_FILE);
+            ButterKnife.apply(qsHeaderSwitch, ENABLED, false);
+            qsHeaderSwitch.setPaintFlags(qsHeaderSwitch.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            qsHeaderSwitch.setBackgroundColor(Color.GRAY);
+            String text = qsHeaderSwitch.getText().toString();
+            qsHeaderSwitch.setText(String.format("%s [%s]", text, getString(R.string.pro)));
+        }
     }
 
 
