@@ -4,6 +4,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.support.v4.content.LocalBroadcastManager
 import android.util.Log
 import android.widget.Toast
 import com.github.javiersantos.piracychecker.PiracyChecker
@@ -51,6 +52,11 @@ class Checks {
             i.component = ComponentName("kpchuck.k_klock.pro", "kpchuck.k_klock.pro.CheckProReceiver")
             Log.d("klock", "Sending broadcast to pro app")
             context.sendBroadcast(i)
+        }
+        else {
+            val i = Intent("splash") //put the same message as in the filter you used in the activity when registering the receiver
+            i.putExtra("perm", false)
+            LocalBroadcastManager.getInstance(context).sendBroadcast(i)
         }
     }
 
