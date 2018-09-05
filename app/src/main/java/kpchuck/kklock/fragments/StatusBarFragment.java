@@ -218,8 +218,9 @@ public class StatusBarFragment extends Fragment {
             DialogClickListener listener = new DialogClickListener() {
                 @Override
                 public void onPositiveBtnClick() {
-                    prefUtils.setSwitchPrefs(clockHideableSwitch, PREF_CLOCK_HIDEABLE);
                     clockHideableSwitch.setChecked(true);
+                    prefUtils.setSwitchPrefs(clockHideableSwitch, PREF_CLOCK_HIDEABLE);
+
                 }
 
                 @Override

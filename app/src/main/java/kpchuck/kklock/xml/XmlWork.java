@@ -163,6 +163,12 @@ public class XmlWork {
         Element statusBarContents = utils.findElementById(status,
                 "@*com.android.systemui:id/status_bar_contents");
 
+        boolean properStock = false;
+        if (stockClock == null){
+            stockClock = utils.findElementById(status, "@*com.android.systemui:id/clock");
+            properStock = true;
+        }
+
         if (prefUtils.getBool(PREF_MOVE_LEFT)){
             status.getDocumentElement().insertBefore(
                     createLLTop(status, X_FILL_PARENT, "center"),
@@ -171,9 +177,12 @@ public class XmlWork {
         }
         //Insert Right Clock First
         Element customClock = createClock(status, false, "start|center", X_WRAP_CONTENT);
-        systemIconArea.insertBefore(customClock, stockClock);
+        if (properStock) systemIconArea.appendChild(customClock);
+        else systemIconArea.insertBefore(customClock, stockClock);
 
-        if (removeClock && Build.VERSION.SDK_INT > 25 && prefUtils.getBool(PREF_CLOCK_HIDEABLE)) status.removeChild(stockClock);
+        if (removeClock && Build.VERSION.SDK_INT > 25 && prefUtils.getBool(PREF_CLOCK_HIDEABLE))
+            stockClock.getParentNode().removeChild(stockClock);
+
         utils.writeDocToFile(status, new File(baseFolders, utils.getType2(context, R.string.right_clock)+"/layout/" + statusbar));
 
         // Now Left Clock
@@ -216,6 +225,12 @@ public class XmlWork {
         statusBarContents = utils.findElementById(status,
                 "@*com.android.systemui:id/status_bar_contents");
 
+        properStock = false;
+        if (stockClock == null){
+            stockClock = utils.findElementById(status, "@*com.android.systemui:id/clock");
+            properStock = true;
+        }
+
         // Right clocks
         if (prefUtils.getBool(PREF_MOVE_LEFT)){
             status.getDocumentElement().insertBefore(
@@ -226,8 +241,11 @@ public class XmlWork {
         customClock = createClock(status, false, "start|center", X_WRAP_CONTENT);
         Element hideE = createLLTop(status, X_FILL_PARENT, "center");
 
-        systemIconArea.insertBefore(hideE, stockClock);
-        if (removeClock && Build.VERSION.SDK_INT > 25 && prefUtils.getBool(PREF_CLOCK_HIDEABLE)) systemIconArea.removeChild(stockClock);
+        if (properStock) systemIconArea.appendChild(hideE);
+        else systemIconArea.insertBefore(hideE, stockClock);
+
+        if (removeClock && Build.VERSION.SDK_INT > 25 && prefUtils.getBool(PREF_CLOCK_HIDEABLE))
+            stockClock.getParentNode().removeChild(stockClock);
 
         hideE.appendChild(customClock);
         utils.writeDocToFile(status, new File(baseFolders,utils.getType2(context, R.string.right_no_clock)+"/layout/" + statusbar));
@@ -334,7 +352,7 @@ public class XmlWork {
 
         if (stock) {
             textClock = doc.createElement("com.android.systemui.statusbar.policy.Clock");
-           // textClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
+            textClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
         }
         else {
             textClock = doc.createElement("TextClock");
