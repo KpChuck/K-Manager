@@ -259,14 +259,12 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
         this.context = this;
         this.fileHelper = new FileHelper();
         this.prefUtils = new PrefUtils(context);
-
-        super.onCreate(savedInstanceState);
-
-        setTheme(prefUtils.getBool(PREF_BLACK_THEME) ? R.style.AppTheme_Dark : R.style.AppTheme);
-        setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
 
@@ -282,6 +280,8 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
 
         new Checks().checkPro(this);
         LocalBroadcastManager.getInstance(this).registerReceiver(BReceiver, new IntentFilter("message"));
+
+       // setTheme(prefUtils.getBool(PREF_BLACK_THEME) ? R.style.AppTheme_Dark : R.style.AppTheme);
 
         tabAdapter = new SwipeTabAdapter(getSupportFragmentManager(), clockFragment, iconsFragment, statusBarFragment, miscFragment);
 
@@ -544,6 +544,8 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
 
             viewPager.setAdapter(tabAdapter);
             tabLayout.setupWithViewPager(viewPager);
+            setTheme(prefUtils.getBool(PREF_BLACK_THEME) ? R.style.AppTheme_Dark : R.style.AppTheme);
+
 
         }
     };
