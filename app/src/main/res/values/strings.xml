@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    
+
     <string name="clock">Clock</string>
     <string name="icons">Icons</string>
     <string name="statusbar">StatusBar</string>
@@ -26,7 +26,6 @@
     <string name="install_permission_title">Install Unknown Apps Permission</string>
     <string name="request_install_perms">Give K-Manager permission to display the package installer and allow you to install K-Klock.</string>
     <string name="translations_thanks">Thanks to everyone that has helped with translations:</string>
-
 
 
     <!-- Apk building -->
@@ -97,7 +96,6 @@
     <string name="leave_wifi_networks">Leave Battery, Wifi and Network Icons</string>
 
 
-
     <!-- statusbar fragment -->
     <string name="network_icons_left">Move Network Icons to the Left</string>
     <string name="notification_icons_right">Move Notification Icons to the Right</string>
@@ -118,7 +116,6 @@
     <string name="clock_hide_launcher">Make Clock Hideable in Launchers</string>
     <string name="text_on_statusbar">Display Custom Text on StatusBar</string>
     <string name="text_on_lockscreen">Only show on Lockscreen</string>
-
 
 
     <!-- misc fragment -->
@@ -174,7 +171,6 @@
     <string name="hide_icon_name">Hide Statusbar Icons</string>
     <string name="hide_icon_desc">K-Manager\'s notification channel to keep hide icons service running in the background</string>
     <string name="hide_icon_notif_message">Hide icons service is running in the background</string>
-
 
 
     <!-- navdrawer and menu -->

@@ -12,6 +12,7 @@
         <item name="textColor">#ff000000</item>
         <item name="textColorInverse">#ffffffff</item>
         <item name="transparentBackgroundColor">#bf808080</item>
+        <item name="android:windowBackground">@android:drawable/screen_background_light</item>
 
     </style>
 
@@ -27,6 +28,8 @@
         <item name="textColor">#ffffffff</item>
         <item name="textColorInverse">#ff000000</item>
         <item name="transparentBackgroundColor">#bf333333</item>
+        <item name="android:windowBackground">@android:drawable/screen_background_dark</item>
+
 
 
     </style>
