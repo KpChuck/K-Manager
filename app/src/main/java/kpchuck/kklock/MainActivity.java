@@ -282,6 +282,8 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
        // new Checks().checkPro(this);
         //LocalBroadcastManager.getInstance(this).registerReceiver(BReceiver, new IntentFilter("message"));
 
+       // setTheme(prefUtils.getBool(PREF_BLACK_THEME) ? R.style.AppTheme_Dark : R.style.AppTheme);
+
         tabAdapter = new SwipeTabAdapter(getSupportFragmentManager(), clockFragment, iconsFragment, statusBarFragment, miscFragment);
 
         // Set the adapter onto the view pager
@@ -538,12 +540,6 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
                 } else drawer.removeItem(99);
 
             }
-            boolean p = intent.getBooleanExtra("perm", false);
-            if(p) Log.d("klock", "Received answer from receiver, updating fragments");
-
-            viewPager.setAdapter(tabAdapter);
-            tabLayout.setupWithViewPager(viewPager);
-
         }
     };
 

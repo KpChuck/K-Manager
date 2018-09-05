@@ -16,6 +16,10 @@
 
     </style>
 
+    <style name="SplashTheme" parent="AppTheme.Dark">
+        <item name="android:windowBackground">@drawable/splash</item>
+    </style>
+
     <!-- Base application theme. -->
     <style name="AppTheme.Dark" parent="MaterialDrawerTheme.ActionBar">
         <item name="windowNoTitle">true</item>
