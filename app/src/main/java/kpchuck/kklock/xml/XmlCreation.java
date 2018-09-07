@@ -5,6 +5,7 @@ package kpchuck.kklock.xml;
  */
 import android.content.Context;
 import java.io.File;
+import java.io.FileOutputStream;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -40,7 +41,7 @@ public class XmlCreation {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             DOMSource source = new DOMSource(doc);
-            StreamResult result = new StreamResult(new File(rootFolder));
+            StreamResult result = new StreamResult(new FileOutputStream(rootFolder));
 
             // Output to console for testing
             // StreamResult result = new StreamResult(System.out);
