@@ -112,40 +112,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             }
         });
 
-
-        Preference deleteApks = findPreference("deleteApks");
-        deleteApks.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
-            @Override
-            public boolean onPreferenceClick(Preference preference) {
-                File folder = new File(Environment.getExternalStorageDirectory() + "/K-Klock");
-                if(folder.exists()){
-                    String[] apks = folder.list(new FilenameFilter() {
-                        @Override
-                        public boolean accept(File file, String s) {
-                            if(s.lastIndexOf('.')>0) {
-                                // get last index for '.' char
-                                int lastIndex = s.lastIndexOf('.');
-                                // get extension
-                                String str = s.substring(lastIndex);
-                                // match path name extension
-                                return str.equals(".apk");
-                            }return false;}
-                    });
-                    for(String s: apks){
-                        File apk = new File(folder, s);
-                        try{
-                            FileUtils.forceDelete(apk);
-                        }catch (IOException e){
-                            Log.e("klock", getString(R.string.delete_apk_error) + e.getMessage());
-                        }
-                    }
-                    Toast.makeText(getApplicationContext(), getString(R.string.delete_apk_success), Toast.LENGTH_SHORT).show();
-
-                }
-                return true;
-            }
-        });
-
         final SwitchPreference alternate_qs_header = (SwitchPreference) findPreference("alternate_qs_header");
         if (!new Checks().isPro(getApplicationContext())){
             alternate_qs_header.setEnabled(false);
@@ -154,6 +120,18 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             @Override
             public boolean onPreferenceChange(Preference preference, Object o) {
                 prefUtils.putBool("alternate_qs_header", alternate_qs_header.isChecked());
+                return true;
+            }
+        });
+
+        final SwitchPreference opaque_header = (SwitchPreference) findPreference("opaque_qs_header");
+        if (!new Checks().isPro(getApplicationContext())){
+            opaque_header.setEnabled(false);
+        }
+        opaque_header.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object o) {
+                prefUtils.putBool("opaque_qs_header", opaque_header.isChecked());
                 return true;
             }
         });

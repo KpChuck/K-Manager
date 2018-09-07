@@ -121,7 +121,7 @@ public class QsBgUtil {
             image.setAttribute(X_LAYOUT_WIDTH, "match_parent");
             image.setAttribute(X_LAYOUT_HEIGHT, "124dip");
             image.setAttribute("android:background", "@*com.android.systemui:drawable/" + header_png);
-            image.setAttribute("android:alpha", "0.8");
+            if (!prefUtils.getBool("opaque_qs_header") )image.setAttribute("android:alpha", "0.8");
             image.setAttribute("android:paddingStart", "0dip");
             image.setAttribute("android:paddingEnd", "0dip");
             image.setAttribute("android:layout_alignParentRight", "true");
@@ -131,7 +131,7 @@ public class QsBgUtil {
 
         } else {
 
-            rootElement = xmlUtils.changeAttribute(rootElement, "android:alpha", "0.8");
+            if (!prefUtils.getBool("opaque_qs_header"))rootElement = xmlUtils.changeAttribute(rootElement, "android:alpha", "0.8");
             rootElement = xmlUtils.changeAttribute(rootElement, X_LAYOUT_HEIGHT, "124dip");
             rootElement = xmlUtils.changeAttribute(rootElement, "android:background", "@*com.android.systemui:drawable/" + header_png);
         }
