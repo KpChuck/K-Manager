@@ -22,8 +22,9 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
 
-        new Checks().checkPro(this);
         LocalBroadcastManager.getInstance(this).registerReceiver(BReceiver, new IntentFilter("splash"));
+        new Checks().checkPro(this);
+
     }
 
     private BroadcastReceiver BReceiver = new BroadcastReceiver(){

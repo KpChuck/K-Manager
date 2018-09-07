@@ -44,6 +44,14 @@ class Checks {
         Log.d("klock", "Starting pro check")
         PrefUtils(context).putBool("hellothere", false)
         val manager = context.packageManager
+
+        if (!isPackageInstalled(context, "kpchuck.k_klock.pro")){
+            val i = Intent("splash") //put the same message as in the filter you used in the activity when registering the receiver
+            i.putExtra("perm", false)
+            LocalBroadcastManager.getInstance(context).sendBroadcast(i)
+            return
+        }
+
         if (manager.checkSignatures("kpchuck.k_klock", "kpchuck.k_klock.pro") == PackageManager.SIGNATURE_MATCH) {
 
             val i = Intent()
@@ -52,11 +60,6 @@ class Checks {
             i.component = ComponentName("kpchuck.k_klock.pro", "kpchuck.k_klock.pro.CheckProReceiver")
             Log.d("klock", "Sending broadcast to pro app")
             context.sendBroadcast(i)
-        }
-        else {
-            val i = Intent("splash") //put the same message as in the filter you used in the activity when registering the receiver
-            i.putExtra("perm", false)
-            LocalBroadcastManager.getInstance(context).sendBroadcast(i)
         }
     }
 
@@ -67,8 +70,6 @@ class Checks {
         }
         return false
     }
-
-
 
 
     // Blacklisted APKs to prevent theme launching, these include simple regex formatting, without
