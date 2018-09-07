@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import org.apache.commons.io.FileUtils;
@@ -193,7 +194,7 @@ public class XmlWork {
 
         // Center Clock
         statusBarContents.removeChild(customClock);
-        systemIconArea = utils.changeAttribute(systemIconArea, X_LAYOUT_WIDTH, "0dip");
+       /* systemIconArea = utils.changeAttribute(systemIconArea, X_LAYOUT_WIDTH, "0dip");
         systemIconArea.setAttribute(X_WEIGHT, "1");
 
         ArrayList<Element> systemIconElements = utils.getChildElements(systemIconArea);
@@ -201,16 +202,17 @@ public class XmlWork {
             if (e.getAttribute(X_LAYOUT_WIDTH).equals(X_FILL_PARENT) || e.getAttribute(X_LAYOUT_WIDTH).equals("match_parent")){
                 utils.changeAttribute(e, X_LAYOUT_WIDTH, X_WRAP_CONTENT);
             }
-        }
+        }*/
 
         customClock = createClock(status, false, "center", X_WRAP_CONTENT);
         statusBarContents.insertBefore(customClock, systemIconArea);
 
-        if (!utils.isPushyOutElement(utils.getFirstChildElement(systemIconArea))) {
+       /* if (!utils.isPushyOutElement(utils.getFirstChildElement(systemIconArea))) {
             Element view = createViewElement(status);
             systemIconArea.insertBefore(view, utils.getFirstChildElement(systemIconArea));
-        }
+        }*/
 
+        packToLeftOf(status, statusBarContents, "TextClock", null);
         status = packToRightOf(status, statusBarContents, "TextClock", null);
 
         utils.writeDocToFile(status, new File(baseFolders, "res/layout/" + statusbar));
@@ -278,27 +280,28 @@ public class XmlWork {
 
         // Center Clocks
         statusBarContents.removeChild(hideE);
-        systemIconArea = utils.changeAttribute(systemIconArea, X_LAYOUT_WIDTH, "0dip");
+        /*systemIconArea = utils.changeAttribute(systemIconArea, X_LAYOUT_WIDTH, "0dip");
         systemIconArea.setAttribute(X_WEIGHT, "1");
         systemIconElements = utils.getChildElements(systemIconArea);
         for (Element e : systemIconElements){
             if (e.getAttribute(X_LAYOUT_WIDTH).equals(X_FILL_PARENT) || e.getAttribute(X_LAYOUT_WIDTH).equals("match_parent")){
                 utils.changeAttribute(e, X_LAYOUT_WIDTH, X_WRAP_CONTENT);
             }
-        }
+        }*/
 
         customClock = createClock(status, false, "center", X_WRAP_CONTENT);
         hideE = createLLTop(status, X_WRAP_CONTENT, "center");
 
         statusBarContents.insertBefore(hideE, systemIconArea);
-
+/*
         if (!utils.isPushyOutElement(utils.getFirstChildElement(systemIconArea))) {
 
             Element view = createViewElement(status);
             systemIconArea.insertBefore(view, utils.getFirstChildElement(systemIconArea));
-        }
+        }*/
 
         hideE.appendChild(customClock);
+        packToLeftOf(status, statusBarContents, "LinearLayout", "@*com.android.systemui:id/system_icon_area");
         status = packToRightOf(status, statusBarContents, "LinearLayout", "@*com.android.systemui:id/system_icon_area");
 
         utils.writeDocToFile(status, new File(baseFolders, utils.getType2(context, R.string.center_no_clock)+"/layout/" + statusbar));
@@ -326,12 +329,29 @@ public class XmlWork {
         linearLayout.setAttribute(X_WEIGHT, "1.0");
 
         parentElement.insertBefore(linearLayout, utils.getFirstChildElement(parentElement));
-        //parentElement.insertBefore(linearLayout, rightElements.get(0));
 
         for (Element element : rightElements){
             parentElement.removeChild(element);
             linearLayout.appendChild(element);
 
+        }
+        return doc;
+    }
+
+    private Document packToLeftOf(Document doc, Element parentElement, String tagName, String idName){
+        ArrayList<Element> leftElements = utils.getLeftElementsTo(parentElement, tagName, idName);
+
+        Element linearLayout = doc.createElement("LinearLayout");
+        linearLayout.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
+        linearLayout.setAttribute(X_LAYOUT_WIDTH, "0dp");
+        linearLayout.setAttribute(X_WEIGHT, "1.0");
+
+        parentElement.insertBefore(linearLayout, leftElements.get(0));
+        linearLayout.appendChild(createViewElement(doc));
+
+        for (Element element : leftElements){
+            parentElement.removeChild(element);
+            linearLayout.appendChild(element);
         }
         return doc;
     }

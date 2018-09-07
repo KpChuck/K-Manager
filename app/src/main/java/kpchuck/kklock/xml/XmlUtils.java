@@ -369,6 +369,20 @@ public class XmlUtils {
         return rightElements;
     }
 
+    public ArrayList<Element> getLeftElementsTo(Element parentElement, String tagName, String idName){
+        ArrayList<Element> elements = getChildElements(parentElement);
+        ArrayList<Element> leftElements = new ArrayList<>();
+
+        for (int i = elements.size() - 1; i >= 0; i--) {
+            Element element = elements.get(i);
+            if (idName == null && element.getTagName().equals(tagName)) break;
+            else if (isTheElement(element, tagName, idName)) break;
+            leftElements.add(element);
+        }
+        Collections.reverse(leftElements);
+        return leftElements;
+    }
+
     public Document getDocument(File file){
         Document doc = null;
         try {
