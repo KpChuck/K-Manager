@@ -164,36 +164,6 @@ public class FileHelper {
     };
 
 
-    public int decreaseToLowest(String[] testStringArray){
-        int kk;
-
-        if (testStringArray == null || testStringArray.length == 0) return 1;
-        Arrays.sort(testStringArray);
-        List<String> list = Arrays.asList(testStringArray);
-        Collections.reverse(list);
-
-        ArrayList<String> klockArray = new ArrayList<>();
-        for (String s: list) if (s.substring(0, 7).equals("K-Klock")) klockArray.add(s);
-
-        if(klockArray.size() != 0) {
-            ArrayList<Integer> listOfVersions = new ArrayList<>();
-
-            for(String s : klockArray){
-                    String toInt = s.substring(s.indexOf("v") + 1, s.lastIndexOf("."));
-                    int bleh = Integer.parseInt(toInt);
-                    listOfVersions.add(bleh);
-
-            }
-            Integer[] intArray = listOfVersions.toArray(new Integer[listOfVersions.size()]);
-            Arrays.sort(intArray);
-            List<Integer> li = Arrays.asList(intArray);
-            Collections.reverse(li);
-            intArray = (Integer[]) li.toArray();
-            kk = intArray[0]+1;
-        }else{ kk = 1; }
-        return kk;
-    }
-
     public boolean checkQsFile(PrefUtils prefUtils){
         String path = prefUtils.getString("qsBgFilePath", "null");
         if (path == null) return  false;

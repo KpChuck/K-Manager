@@ -19,14 +19,17 @@
             android:key="deleteSaved"
             android:title="@string/delete_saved_cfs"/>
 
-        <Preference
-        android:key="deleteApks"
-        android:title="@string/delete_kklock_apks"/>
         <SwitchPreference
             android:defaultValue="false"
             android:key="alternate_qs_header"
             android:summary="@string/alt_qs_header_desc"
             android:title="@string/alt_qs_header" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="opaque_qs_header"
+            android:title="@string/opaque_qs_header"
+            />
 
         <Preference
             android:key="reportBug"

@@ -566,10 +566,7 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
 
     private void buildingProcess() {
 
-        String[] check = new File(rootFolder).list(fileHelper.APK);
-        int k = fileHelper.decreaseToLowest(check);
-        final String apkVersion = "K-Klock_v" + k + ".apk";
-
+        final String apkVersion = "K-Klock.apk";
         new ApkBuilder(context, loadingLayout, loadingTextView, defaultLayout, hasAll).execute(apkVersion, apkVersion, apkVersion);
 
     }

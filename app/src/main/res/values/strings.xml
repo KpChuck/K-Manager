@@ -161,6 +161,7 @@
     <string name="alt_qs_header">Alternate Qs Header</string>
     <string name="alt_qs_header_desc">Use a different method for showing qs header images.</string>
     <string name="report_a_bug">Report a bug</string>
+    <string name="opaque_qs_header">Make Qs Header Opaque</string>
 
     <!-- Services -->
     <string name="syncing_roms">Syncing Rom Files</string>

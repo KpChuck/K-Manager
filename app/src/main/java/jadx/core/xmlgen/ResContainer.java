@@ -42,11 +42,8 @@ public class ResContainer implements Comparable<ResContainer> {
 		if (name.endsWith(".9.png")) {
 			Res9patchStreamDecoder decoder = new Res9patchStreamDecoder();
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			try {
-				decoder.decode(content, os);
-			} catch (JadxException e) {
-				e.printStackTrace();
-			}
+			decoder.decode(content, os);
+
 			newContent = new ByteArrayInputStream(os.toByteArray());
 		}
 		try {
