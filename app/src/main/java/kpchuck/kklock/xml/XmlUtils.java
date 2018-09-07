@@ -182,8 +182,7 @@ public class XmlUtils {
         if (!element.hasAttribute(attributeName)) return false;
 
         Attr attr = element.getAttributeNode(attributeName);
-        if (attr != null && attr.getValue().equals(idName))return true;
-        else return false;
+        return attr != null && attr.getValue().equals(idName);
     }
 
     public Element changeAttribute(Element element, String attribute, String value){
@@ -413,13 +412,13 @@ public class XmlUtils {
                 if (filenames.contains(file.getName())) {
                     int index = filenames.indexOf(file.getName());
                     fileHelper.renameFile(file, translated_filenames.get(index));
-                } else if (file.getName().equals("type1a")) {
+                } else if (file.getName().equals("type1a") && id_1a != 0) {
                     FileUtils.write(file, context.getString(id_1a), "utf-8", false);
-                } else if (file.getName().equals("type1b")) {
+                } else if (file.getName().equals("type1b") && id_1b != 0) {
                     FileUtils.write(file, context.getString(id_1b), "utf-8", false);
-                } else if (file.getName().equals("type1c")) {
+                } else if (file.getName().equals("type1c") && id_1c != 0) {
                     FileUtils.write(file, context.getString(id_1c), "utf-8", false);
-                } else if (file.getName().equals("type2")) {
+                } else if (file.getName().equals("type2") && id_2 != 0) {
                     FileUtils.write(file, context.getString(id_2), "utf-8", false);
                 }
             }
@@ -537,7 +536,7 @@ public class XmlUtils {
         return "?"+r;
     }
 
-    private HashMap<Integer, String> getConstants(Class o) throws Exception{
+    private HashMap<Integer, String> getConstants(Class o) {
         HashMap<Integer, String> constants = new HashMap<>();
         Field[] fields = o.getDeclaredFields();
         for (Field f : fields) {

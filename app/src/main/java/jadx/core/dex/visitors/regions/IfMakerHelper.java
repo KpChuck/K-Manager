@@ -311,11 +311,8 @@ public class IfMakerHelper {
 		if (block.getPredecessors().size() == 1) {
 			return true;
 		}
-		if (info.getMergedBlocks().containsAll(block.getPredecessors())) {
-			return true;
-		}
-		return false;
-	}
+        return info.getMergedBlocks().containsAll(block.getPredecessors());
+    }
 
 	private static BlockNode getNextIfNode(BlockNode block) {
 		if (block == null || block.contains(AType.LOOP) || block.contains(AFlag.SKIP)) {

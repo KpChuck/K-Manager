@@ -18,7 +18,7 @@ public class SaveCode extends AbstractVisitor {
 	}
 
 	@Override
-	public boolean visit(ClassNode cls) throws CodegenException {
+	public boolean visit(ClassNode cls) {
 		save(dir, args, cls);
 		return false;
 	}

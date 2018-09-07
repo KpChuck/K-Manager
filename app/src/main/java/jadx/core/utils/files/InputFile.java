@@ -38,7 +38,7 @@ public class InputFile {
 		list.add(inputFile);
 	}
 
-	private InputFile(File file) throws IOException, DecodeException {
+	private InputFile(File file) throws IOException {
 		if (!file.exists()) {
 			throw new IOException("File not found: " + file.getAbsolutePath());
 		}
@@ -84,7 +84,7 @@ public class InputFile {
 		addDexFile("", dexBuf);
 	}
 
-	private void addDexFile(String fileName, Dex dexBuf) throws IOException {
+	private void addDexFile(String fileName, Dex dexBuf) {
 		dexFiles.add(new DexFile(this, fileName, dexBuf));
 	}
 

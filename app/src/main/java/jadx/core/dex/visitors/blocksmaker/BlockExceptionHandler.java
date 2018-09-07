@@ -105,9 +105,7 @@ public class BlockExceptionHandler extends AbstractVisitor {
 	private static boolean onlyAllHandler(TryCatchBlock tryBlock) {
 		if (tryBlock.getHandlersCount() == 1) {
 			ExceptionHandler eh = tryBlock.getHandlers().iterator().next();
-			if (eh.isCatchAll() || eh.isFinally()) {
-				return true;
-			}
+            return eh.isCatchAll() || eh.isFinally();
 		}
 		return false;
 	}

@@ -71,12 +71,12 @@
         <item>Abbreviated Day, Date and Month</item>
         <item>Abbreviated Day</item>
         <item>Abbreviated Day and Date</item>
-        <item>Bigger Hour Normal Clock</item>
+        <item>Big Hour with AmPm</item>
         <item>Date and Month</item>
         <item>Full Day</item>
-        <item>Full Day after Clock</item>
-        <item>Month, Date, Abbreviated Day, and Seconds</item>
-        <item>Normal Clock with no Am/Pm</item>
+        <item>Full Day After Clock</item>
+        <item>Month, Date, Abbreviated Day and Seconds</item>
+        <item>Normal no AmPm</item>
         <item>Small Day, Big Hour</item>
     </string-array>
 

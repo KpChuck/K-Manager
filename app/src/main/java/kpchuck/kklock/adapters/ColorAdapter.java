@@ -62,10 +62,10 @@ public class ColorAdapter extends ArrayAdapter {
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row = inflater.inflate(R.layout.color_list, parent, false);
 
-        final ImageView image = (ImageView) row.findViewById(R.id.colorImage);
-        final TextView text = (TextView) row.findViewById(R.id.colorListTextView);
-        final Button edit = (Button) row.findViewById(R.id.editOverlays);
-        final Button delete = (Button) row.findViewById(R.id.deleteOverlays);
+        final ImageView image = row.findViewById(R.id.colorImage);
+        final TextView text = row.findViewById(R.id.colorListTextView);
+        final Button edit = row.findViewById(R.id.editOverlays);
+        final Button delete = row.findViewById(R.id.deleteOverlays);
 
         text.setText(names.get(position));
 

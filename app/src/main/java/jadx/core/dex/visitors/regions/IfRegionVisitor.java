@@ -100,9 +100,7 @@ public class IfRegionVisitor extends AbstractVisitor implements IRegionVisitor, 
 		}
 		if (container instanceof IRegion) {
 			List<IContainer> subBlocks = ((IRegion) container).getSubBlocks();
-			if (subBlocks.size() == 1 && subBlocks.get(0) instanceof IfRegion) {
-				return true;
-			}
+            return subBlocks.size() == 1 && subBlocks.get(0) instanceof IfRegion;
 		}
 		return false;
 	}

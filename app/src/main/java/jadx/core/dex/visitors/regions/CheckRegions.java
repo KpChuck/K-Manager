@@ -31,7 +31,7 @@ public class CheckRegions extends AbstractVisitor {
 		}
 
 		// check if all blocks included in regions
-		;blocksInRegions = new HashSet<>();
+        blocksInRegions = new HashSet<>();
 		DepthRegionTraversal.traverse(mth, new AbstractRegionVisitor() {
 			@Override
 			public void processBlock(MethodNode mth, IBlock container) {

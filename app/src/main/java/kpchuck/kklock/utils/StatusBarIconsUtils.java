@@ -35,8 +35,7 @@ public class StatusBarIconsUtils {
 
     public boolean hasPerms(Context context){
         String permission = "android.permission.WRITE_SECURE_SETTINGS";
-        if (context.checkCallingOrSelfPermission(permission) != PackageManager.PERMISSION_GRANTED)return false;
-        return true;
+        return context.checkCallingOrSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
 
 
     }

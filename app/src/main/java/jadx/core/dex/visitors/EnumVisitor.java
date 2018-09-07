@@ -178,9 +178,7 @@ public class EnumVisitor extends AbstractVisitor {
 	private boolean isEnumArrayField(ClassInfo classInfo, FieldNode fieldNode) {
 		if (fieldNode.getAccessFlags().isSynthetic()) {
 			ArgType fType = fieldNode.getType();
-			if (fType.isArray() && fType.getArrayRootElement().equals(classInfo.getType())) {
-				return true;
-			}
+            return fType.isArray() && fType.getArrayRootElement().equals(classInfo.getType());
 		}
 		return false;
 	}

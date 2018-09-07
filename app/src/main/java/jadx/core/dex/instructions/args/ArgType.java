@@ -571,12 +571,9 @@ public abstract class ArgType {
 		if (from.equals(to)) {
 			return false;
 		}
-		if (from.isObject() && to.isObject()
-				&& dex.root().getClsp().isImplements(from.getObject(), to.getObject())) {
-			return false;
-		}
-		return true;
-	}
+        return !from.isObject() || !to.isObject()
+                || !dex.root().getClsp().isImplements(from.getObject(), to.getObject());
+    }
 
 	public static boolean isInstanceOf(DexNode dex, ArgType type, ArgType of) {
 		if (type.equals(of)) {

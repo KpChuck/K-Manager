@@ -41,7 +41,7 @@ public class TextAlertDialogFragment extends DialogFragment {
         // Pass null as the parent view because its going in the dialog layout
         View view = inflater.inflate(R.layout.simple_text, null);
         builder.setView(view);
-        TextView textView = (TextView) view.findViewById(R.id.simple_text_dialog);
+        TextView textView = view.findViewById(R.id.simple_text_dialog);
         textView.setText(message);
         builder.setTitle(title);
         builder

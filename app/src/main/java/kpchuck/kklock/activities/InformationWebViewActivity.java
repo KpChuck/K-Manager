@@ -31,7 +31,7 @@ public class InformationWebViewActivity extends AppCompatActivity {
         PrefUtils prefUtils = new PrefUtils(getApplicationContext());
         setTheme(prefUtils.getBool(PREF_BLACK_THEME) ? R.style.AppTheme_Dark : R.style.AppTheme);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

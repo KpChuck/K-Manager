@@ -77,7 +77,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         });
 
 
-        Preference upgrade = (Preference) findPreference("goPro");
+        Preference upgrade = findPreference("goPro");
         if (new Checks().isPro(getApplicationContext())) upgrade.setEnabled(false);
         else {
             upgrade.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -90,7 +90,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             });
         }
 
-        Preference report_bug = (Preference) findPreference("reportBug");
+        Preference report_bug = findPreference("reportBug");
         report_bug.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -100,7 +100,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             }
         });
 
-        Preference deletePref = (Preference) findPreference("deleteSaved");
+        Preference deletePref = findPreference("deleteSaved");
         deletePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 
             @Override
@@ -113,7 +113,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         });
 
 
-        Preference deleteApks = (Preference) findPreference("deleteApks");
+        Preference deleteApks = findPreference("deleteApks");
         deleteApks.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener(){
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -128,9 +128,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
                                 // get extension
                                 String str = s.substring(lastIndex);
                                 // match path name extension
-                                if(str.equals(".apk")) {
-                                    return true;
-                                }
+                                return str.equals(".apk");
                             }return false;}
                     });
                     for(String s: apks){
@@ -164,13 +162,13 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
 
     private void setupActionBar() {
-        ViewGroup rootView = (ViewGroup)findViewById(R.id.action_bar_root); //id from appcompat
+        ViewGroup rootView = findViewById(R.id.action_bar_root); //id from appcompat
 
         if (rootView != null) {
             View view = getLayoutInflater().inflate(R.layout.app_bar_layout, rootView, false);
             rootView.addView(view, 0);
 
-            Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+            Toolbar toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
         }
 

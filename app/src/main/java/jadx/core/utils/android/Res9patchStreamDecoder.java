@@ -32,7 +32,7 @@ import jadx.core.utils.exceptions.JadxException;
  */
 public class Res9patchStreamDecoder {
 
-    public void decode(InputStream in, OutputStream out) throws JadxException {
+    public void decode(InputStream in, OutputStream out) {
 
     }
 

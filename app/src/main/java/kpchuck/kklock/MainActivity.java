@@ -746,12 +746,12 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
     }
 
     public void showIncludedFormats(final View v){
-        RelativeLayout bgLayout = (RelativeLayout) findViewById(R.id.listViewLayout);
-        TextView oneTv = (TextView) findViewById(R.id.firstTextView);
-        TextView twoTv = (TextView) findViewById(R.id.secondTextView);
-        ListView oneLv = (ListView) findViewById(R.id.firstListView);
-        ListView twoLv = (ListView) findViewById(R.id.secondListView);
-        Button button = (Button) findViewById(R.id.addButton);
+        RelativeLayout bgLayout = findViewById(R.id.listViewLayout);
+        TextView oneTv = findViewById(R.id.firstTextView);
+        TextView twoTv = findViewById(R.id.secondTextView);
+        ListView oneLv = findViewById(R.id.firstListView);
+        ListView twoLv = findViewById(R.id.secondListView);
+        Button button = findViewById(R.id.addButton);
 
 
         formatsTitles = prefUtils.loadArray(FORMAT_TITLES);

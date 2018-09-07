@@ -16,6 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.android.apksig.ApkSigner;
+import com.android.apksig.ApkSignerEngine;
+import com.android.apksig.apk.ApkFormatException;
 
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
@@ -26,9 +29,12 @@ import org.zeroturnaround.zip.FileSource;
 import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.annotation.Documented;
 import java.security.GeneralSecurityException;
+import java.security.KeyStore;
+import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,7 +46,6 @@ import javax.xml.transform.TransformerException;
 import jadx.api.JadxArgs;
 import jadx.api.JadxDecompiler;
 import jadx.core.utils.exceptions.JadxException;
-import kellinwood.security.zipsigner.ZipSigner;
 import kpchuck.kklock.Checks;
 import kpchuck.kklock.R;
 import kpchuck.kklock.xml.XmlCreation;
@@ -114,7 +119,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             }
             publishProgress(context.getString(R.string.apkBuilderLoading));
             //TODO Fix translating signing
-           // translateAll();
+            translateAll();
             modTheRomZip();
             insertCustomXmls();
             dealWivQsBg();
@@ -284,7 +289,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
     public void ExtractAssets () {
         // Copy files used for every apk first
-        fileHelper.copyFromAssets(univ, "universalFiles.zip", mergerFolder, context, false);
+        fileHelper.copyFromAssets(univ, "universalFiles.zip", mergerFolder, context, true);
         // Copy optional files into the tempfolder
         LinkedHashMap<String, String> hashMap = new LinkedHashMap<String, String>(){{
             put(PREF_RECENTS, "recents.zip");
@@ -390,39 +395,51 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         new QsBgUtil(context, tempFolder, "userInput");
     }
 
-    public void appendOptionsZip (){
+    public void appendOptionsZip () throws IOException{
 
         File[] zipFiles = tempFolder.listFiles(fileHelper.ZIP);
+        File univF = new File(mergerFolder, "universalFiles.zip");
 
-        ArrayList<String> fileNames = new ArrayList<>();
-        ArrayList<File> pathsToFile = new ArrayList<>();
+        for (File f : zipFiles){
+            for (File file : f.listFiles()){
+                if (file.isDirectory()) FileUtils.copyDirectoryToDirectory(file, univF);
+                else FileUtils.copyFileToDirectory(file, univF);
 
-        for (File z: zipFiles) {
-            String filePath = z.getAbsolutePath();
-            ArrayList<String[]> filePaths = fileHelper.walk(filePath);
-
-            for (String[] aFile: filePaths) {
-                String fileName = (aFile[0]); //Filename
-                String path = (aFile[1]); //Path from zip ie. assets/overlays/com.android.systemui/
-                String absFilePath = aFile[2]; //Absolute path to file
-
-                pathsToFile.add(new File(absFilePath));
-                fileNames.add(path + fileName);
             }
         }
-        ZipUtil.addOrReplaceEntries(
-                new File(mergerFolder, "universalFiles.zip"),
-                FileSource.pair(pathsToFile.toArray(new File[pathsToFile.size()]), fileNames.toArray(new String[fileNames.size()])));
+        ZipUtil.unexplode(univF);
     }
 
-    public void createApkFromDir(File universalZip, String apkVersion) throws IOException, ClassNotFoundException, IllegalAccessException,
-            InstantiationException, GeneralSecurityException{
+    public void createApkFromDir(File universalZip, String apkVersion) throws IOException, GeneralSecurityException, ApkFormatException{
 
         File signedApk = new File(rootFolder + slash + apkVersion);
-        ZipSigner zipSigner = new ZipSigner();
-        zipSigner.setKeymode("auto-testkey");
-        zipSigner.signZip(universalZip.getAbsolutePath(), signedApk.getAbsolutePath());
-        Log.d("ZipUtils", "signedZip() : file present -> " + signedApk.exists() + " at " + signedApk.getAbsolutePath());
+
+        File key = new File(Environment.getExternalStorageDirectory() + "/K-Manager/key");
+        char[] keyPass = "overlay".toCharArray();
+
+        if (!key.exists()) {
+            Log.d("klock", "Loading keystore...");
+            fileHelper.copyFromAssets(context, "key", key);
+        }
+
+        KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+        keyStore.load(new FileInputStream(key), keyPass);
+        PrivateKey privateKey = (PrivateKey) keyStore.getKey("key", keyPass);
+        List<X509Certificate> certs = new ArrayList<>();
+        certs.add((X509Certificate) keyStore.getCertificateChain("key")[0]);
+
+        ApkSigner.SignerConfig signerConfig =
+                new ApkSigner.SignerConfig.Builder("overlay", privateKey, certs).build();
+        List<ApkSigner.SignerConfig> signerConfigs = new ArrayList<>();
+        signerConfigs.add(signerConfig);
+        new ApkSigner.Builder(signerConfigs)
+                .setV1SigningEnabled(false)
+                .setV2SigningEnabled(true)
+                .setInputApk(new File(universalZip.getAbsolutePath()))
+                .setOutputApk(new File(signedApk.getAbsolutePath()))
+                .setMinSdkVersion(Build.VERSION.SDK_INT)
+                .build()
+                .sign();
 
     }
 
@@ -465,10 +482,19 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         translate(xmlUtils, "recents", ".tiles", R.array.tiles_type1b, 0, R.string.tiles_type1b, 0, 0, "type1b");
         translate(xmlUtils, "timeout", ".headers", R.array.headers_type1a, R.string.headers_type1a, 0, 0, 0, "type1a");
 
+        translate(xmlUtils, mergerFolder, "universalFiles", "", R.array.included_colors_title, R.string.sysui_type1a, 0, 0, 0, "type1a");
+        translate(xmlUtils, mergerFolder, "universalFiles", "", R.array.included_formats_title, 0, R.string.sysui_type1b, 0, 0, "type1b");
+        translate(xmlUtils, mergerFolder, "universalFiles", "", R.array.font_names, 0, 0, R.string.sysui_type1c, 0, "type1c");
+
+
     }
 
     private void translate(XmlUtils xmlUtils, String zipName, String ending, int id_array, int id_1a, int id_1b, int id_1c, int id_2, String starter){
-        File base = new File(tempFolder, zipName + ".zip/assets/overlays/com.android.systemui" + ending);
+        translate(xmlUtils, tempFolder, zipName, ending, id_array, id_1a, id_1b, id_1c, id_2, starter);
+    }
+
+    private void translate(XmlUtils xmlUtils, File folderName, String zipName, String ending, int id_array, int id_1a, int id_1b, int id_1c, int id_2, String starter){
+        File base = new File(folderName, zipName + ".zip/assets/overlays/com.android.systemui" + ending);
         if (!base.exists()) return;
         String end = "";
         if (id_2 == 0) end = ".xml";

@@ -8,7 +8,7 @@ import jadx.core.utils.exceptions.JadxException;
 public class AbstractVisitor implements IDexTreeVisitor {
 
 	@Override
-	public void init(RootNode root) throws JadxException {
+	public void init(RootNode root) {
 		// no op implementation
 	}
 

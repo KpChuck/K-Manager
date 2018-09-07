@@ -5,7 +5,7 @@ package kpchuck.kklock.interfaces;
  */
 
 public interface DialogClickListener {
-    public abstract void onPositiveBtnClick();
-    public abstract void onCancelBtnClick();
+    void onPositiveBtnClick();
+    void onCancelBtnClick();
 
 }

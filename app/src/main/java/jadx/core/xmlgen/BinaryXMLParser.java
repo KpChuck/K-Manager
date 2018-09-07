@@ -247,7 +247,7 @@ public class BinaryXMLParser extends CommonBinaryParser {
 				writer.add(" xmlns:" + entry.getValue() + "=\"").add(entry.getKey()).add("\"");
 			}
 		}
-		boolean attrNewLine = attributeCount == 1 ? false : ATTR_NEW_LINE;
+		boolean attrNewLine = attributeCount != 1 && ATTR_NEW_LINE;
 		for (int i = 0; i < attributeCount; i++) {
 			parseAttribute(i, attrNewLine);
 		}

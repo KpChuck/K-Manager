@@ -107,9 +107,7 @@ public class FileHelper {
             if (name.lastIndexOf('.') > 0) {
                 int lastIndex = name.lastIndexOf('.');
                 String str = name.substring(lastIndex);
-                if (str.equals(".apk")) {
-                    return true;
-                }
+                return str.equals(".apk");
             }
             return false;
         }
@@ -129,9 +127,7 @@ public class FileHelper {
                 String str = name.substring(lastIndex);
 
                 // match path name extension
-                if(str.equals(".zip")) {
-                    return true;
-                }
+                return str.equals(".zip");
             }
 
             return false;
@@ -152,9 +148,7 @@ public class FileHelper {
 
                 //    String typeCheck = name.substring(0, 5);
                 // match path name extension
-                if(str.equals(".xml")) {
-                    return true;
-                }
+                return str.equals(".xml");
             }
 
             return false;
@@ -244,6 +238,12 @@ public class FileHelper {
         }
     }
 
+    public void copyFromAssets(Context context, String assetPath, File outDir) throws IOException{
+
+        AssetManager assetManager = context.getAssets();
+        FileUtils.copyInputStreamToFile(assetManager.open(assetPath), outDir);
+    }
+
     public ArrayList<String[]> walk( String path ) {
 
         ArrayList<String[]> filePathList = new ArrayList<>();
@@ -303,10 +303,12 @@ public class FileHelper {
         Toast.makeText(context, context.getString(R.string.saved_clipboard), Toast.LENGTH_SHORT).show();
     }
 
-    public void renameFile(File file, String new_name){
-        String path = FilenameUtils.getFullPath(file.getAbsolutePath());
-        if (!file.renameTo(new File(path + new_name))){
-            Log.d("klock", "Could not rename " + file.getAbsolutePath());
-        }
+    public void renameFile(File file, String new_name) throws IOException{
+        //String path = FilenameUtils.getFullPath(file.getAbsolutePath());
+        FileUtils.copyFile(file, new File(file.getParentFile(), new_name));
+        file.delete();
+        //if (!file.renameTo(new File(path + new_name))){
+        //    Log.d("klock", "Could not rename " + file.getAbsolutePath());
+        //}
     }
 }

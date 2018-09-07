@@ -31,13 +31,13 @@ public class ResContainer implements Comparable<ResContainer> {
 	}
 
 	public static ResContainer singleFile(String name, CodeWriter content) {
-		ResContainer resContainer = new ResContainer(name, Collections.<ResContainer>emptyList());
+		ResContainer resContainer = new ResContainer(name, Collections.emptyList());
 		resContainer.content = content;
 		return resContainer;
 	}
 
 	public static ResContainer singleImageFile(String name, InputStream content) {
-		ResContainer resContainer = new ResContainer(name, Collections.<ResContainer>emptyList());
+		ResContainer resContainer = new ResContainer(name, Collections.emptyList());
 		InputStream newContent = content;
 		if (name.endsWith(".9.png")) {
 			Res9patchStreamDecoder decoder = new Res9patchStreamDecoder();

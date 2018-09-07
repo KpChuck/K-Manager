@@ -33,7 +33,7 @@ public class XmlCreation {
             String fullColorXml = start + colorCode + end;
 
             XmlUtils utils = new XmlUtils();
-            Document doc = utils.stringToDom(fullColorXml);
+            Document doc = XmlUtils.stringToDom(fullColorXml);
 
             String slash = "/";
             String rootFolder = android.os.Environment.getExternalStorageDirectory() + slash + "K-Klock" + slash + "type1a_"+xmlFilename;
@@ -63,7 +63,7 @@ public class XmlCreation {
             String fullXmlString = start + formatCode + middle + formatCode + end;
 
             XmlUtils utils = new XmlUtils();
-            Document doc = utils.stringToDom(fullXmlString);
+            Document doc = XmlUtils.stringToDom(fullXmlString);
 
             String slash = "/";
             String rootFolder = android.os.Environment.getExternalStorageDirectory() + slash + "K-Klock" + slash + "type1b_"+xmlFilename;
@@ -94,7 +94,7 @@ public class XmlCreation {
 
         try{
             XmlUtils utils = new XmlUtils();
-            Document doc = utils.stringToDom(fullXml);
+            Document doc = XmlUtils.stringToDom(fullXml);
 
             String slash = "/";
             String rootFolder = android.os.Environment.getExternalStorageDirectory() + slash + "K-Klock" + slash + "type1c_"+filename;
@@ -122,7 +122,7 @@ public class XmlCreation {
 
         String start = String.format("<?xml version=\"1.0\" encoding=\"utf-8\"?><resources><string name=\"%s\"> ", name);
         String end = " </string></resources>";
-        Document doc = utils.stringToDom(start + value + end);
+        Document doc = XmlUtils.stringToDom(start + value + end);
         utils.writeDocToFile(doc, dest);
     }
 

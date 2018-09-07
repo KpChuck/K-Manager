@@ -49,9 +49,9 @@ public class FormatAdapter extends ArrayAdapter{
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row = inflater.inflate(R.layout.format_list, parent, false);
 
-        final TextView text = (TextView) row.findViewById(R.id.formatListTextView);
-        final Button edit = (Button) row.findViewById(R.id.feditOverlays);
-        final Button delete = (Button) row.findViewById(R.id.fdeleteOverlays);
+        final TextView text = row.findViewById(R.id.formatListTextView);
+        final Button edit = row.findViewById(R.id.feditOverlays);
+        final Button delete = row.findViewById(R.id.fdeleteOverlays);
 
         this.text=text;
 

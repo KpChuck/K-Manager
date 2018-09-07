@@ -200,9 +200,7 @@ public class BlockSplitter extends AbstractVisitor {
 		if (insn.getType() == InsnType.IF) {
 			IfNode ifs = (IfNode) insn;
 			BlockNode targetBlock = blocksMap.get(ifs.getTarget());
-			if (targetBlock == curBlock) {
-				return true;
-			}
+            return targetBlock == curBlock;
 		}
 		return false;
 	}

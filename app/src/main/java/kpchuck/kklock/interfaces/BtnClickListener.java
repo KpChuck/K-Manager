@@ -5,5 +5,5 @@ package kpchuck.kklock.interfaces;
  */
 
 public interface BtnClickListener {
-    public abstract void onBtnClick(int position);
+    void onBtnClick(int position);
 }

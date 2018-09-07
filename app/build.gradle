@@ -13,7 +13,7 @@ android {
 
     /*Setting default value for versionBuild which is the last incremented value stored in the file */
     if (versionPropsFile.canRead()) {
-        def Properties versionProps = new Properties()
+        Properties versionProps = new Properties()
         versionProps.load(new FileInputStream(versionPropsFile))
         versionBuild = versionProps['VERSION_BUILD'].toInteger()
         versionType = versionProps['VERSION_VARIANT']
@@ -25,7 +25,7 @@ android {
     ext.autoIncrementBuildNumber = {
 
         if (versionPropsFile.canRead()) {
-            def Properties versionProps = new Properties()
+            Properties versionProps = new Properties()
             versionProps.load(new FileInputStream(versionPropsFile))
             if (versionType.equals("beta")) {
                 versionBuild = versionBuild + 1
@@ -66,7 +66,7 @@ android {
             } else if (versionType.equals("stable")) {
                 outputFileName = "K-Manager-v$versionName" + ".apk"
                 if (versionPropsFile.canRead()) {
-                    def Properties versionProps = new Properties()
+                    Properties versionProps = new Properties()
                     versionProps.load(new FileInputStream(versionPropsFile))
                     versionBuild = 0
                     versionProps['VERSION_BUILD'] = versionBuild.toString()
@@ -195,6 +195,9 @@ dependencies {
     // Color Picker
     implementation 'com.jaredrummler:colorpicker:1.0.2'
     implementation 'org.greenrobot:eventbus:3.1.1'
+    // APK Signer
+    implementation 'com.android.tools.build:apksig:3.1.4'
+
 
 
 }
