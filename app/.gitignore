@@ -1,6 +1,6 @@
 /build
-/app/Constants.gradle
 /version.properties
 /debug
 /release
-/Constants.gradle
+#/app/Constants.gradle
+#/Constants.gradle
