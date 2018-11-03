@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="@string/statusbar"
+        >
+
+        <SwitchPreference
+            android:key="changeStatusbarColor"
+            android:title="@string/change_statusbar_bg"/>
+
+        <com.jaredrummler.android.colorpicker.ColorPreference
+            android:dependency="changeStatusbarColor"
+            android:key="newStatBarColor"
+            android:title="Statusbar Color"
+            app:cpv_allowCustom="true"
+            app:cpv_showAlphaSlider="true"
+            app:cpv_allowPresets="true"
+            app:cpv_showDialog="true"/>
+
+        <kpchuck.kklock.preferences.ImagePickerPreference
+            android:title="@string/custom_icon_statbar"
+            android:key="customIconPref"
+            app:imageFilePath="custom__icons"
+            app:imageFilePref="customIconFilePath"/>
+
+        <kpchuck.kklock.preferences.SpinnerPreference
+            android:defaultValue="2"
+            android:key="moveLeftPref"
+            app:keys="@array/positions_keys_center"
+            app:names="@array/positions_center"
+            android:title="Network Icon Position" />
+
+        <kpchuck.kklock.preferences.SpinnerPreference
+            android:defaultValue="0"
+            app:names="@array/positions"
+            app:keys="@array/positions_keys"
+            android:key="moveNotificationsRightPref"
+            android:title="Notification Icons Position"
+            android:summary="This might not work great all the time. So if you have any issues, check if they're still present without this."/>
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="hideNotificationIconsEverywhere"
+            android:title="@string/hide_notifications"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Custom Text in StatusBar">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_carrier_text_enable"
+            android:title="@string/text_on_statusbar" />
+
+        <EditTextPreference
+            android:title="Enter Custom Text Here"
+            android:key="inputtedCarrierText"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:dependency="@string/key_carrier_text_enable"/>
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="customCarrierTextPref"
+            android:title="@string/text_on_lockscreen"
+            android:dependency="@string/key_carrier_text_enable"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/si_manager">
+
+        <kpchuck.kklock.preferences.ColorPickerPreference
+            android:title="Add a Color"
+            app:keyNames="iconsTitles"
+            app:keyValues="iconsValues"
+            app:nameHint="Add a Color"/>
+
+        <kpchuck.kklock.preferences.ListDialogPreference
+            app:showColors="true"
+            app:textArray="@array/included_icons_title"
+            app:colorArray="@array/included_icons_value"
+            android:title="See Included Icon Colors"
+            android:dialogTitle="Icon Colors"/>
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Icon Workarounds"
+        android:summary="Different ways to deal with icons on lockscreen not hiding"
+        >
+
+        <kpchuck.kklock.preferences.DialogSwitchPreference
+            android:defaultValue="false"
+            android:key="@string/pref_hide_icons_lockscreen"
+            android:title="@string/hide_icons_lockscreen"
+            android:summary="Hide the statusbar icons like SystemUI tuner would everytime the lockscreen is on."
+            app:title="@string/warning"
+            app:message="@string/hide_icons_warning"
+            app:confirmButton="@string/okay"
+            app:confirmButtonClickListener="kpchuck.kklock.utils.ListenerCollection.hide_icons"
+            />
+
+        <SwitchPreference
+            android:dependency="@string/pref_hide_icons_lockscreen"
+            android:defaultValue="false"
+            android:key="hideStatusBarIconsOnLockscreenButNotFully"
+            android:title="@string/leave_wifi_networks"
+            />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="hideStatusBarPref"
+            android:title="@string/lockscreen_statusbar_size"
+            android:summary="You can make the lockscreen the same size as the normal statusbar - aligns carrier text and stuff.\nYou can make the size 0 - hides everything so nothing will overlap with the normal statusbar."/>
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="blackoutTheLockscreenStatusbar"
+            android:title="@string/blackout_lockscreen"
+            android:summary="Leaves you with just a black bar at the top of the lockscreen. Very effective for hiding everything, particularly if your lockscreen wallpaper is black at the top."/>
+
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

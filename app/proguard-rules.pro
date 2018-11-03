@@ -38,3 +38,6 @@
     @org.greenrobot.eventbus.Subscribe <methods>;
 }
 -keep enum org.greenrobot.eventbus.ThreadMode { *; }
+
+-keep public class * extends android.support.v7.preference.Preference
+

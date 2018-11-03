@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginTop="4dp">
+
+    <ImageView
+        android:layout_weight="0"
+        android:layout_width="22dip"
+        android:layout_height="22dip"
+        android:id="@+id/colorImage"
+        android:layout_marginStart="10dp"
+        android:contentDescription="Color"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/circle"/>
+
+    <EditText
+        android:hint="Add a Color"
+        android:id="@+id/colorListEditTextView"
+        android:layout_width="fill_parent"
+        android:layout_weight="6.0"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:singleLine="true"
+        android:textColor="?textColor"
+        android:textAppearance="@style/ListViewStyle"
+        android:layout_gravity="center_vertical"
+        android:inputType="text" />
+
+    <View android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:layout_width="0dip"/>
+
+    <Button
+        android:layout_width="25dip"
+        android:layout_height="25dip"
+        android:id="@+id/editOverlays"
+        android:layout_marginEnd="10dp"
+        android:layout_gravity="center_vertical|end"
+        android:layout_weight="0"
+        android:background="@android:drawable/ic_menu_add"/>
+
+    <Button
+        android:layout_width="25dip"
+        android:layout_height="25dip"
+        android:background="@android:drawable/ic_menu_delete"
+        android:id="@+id/deleteOverlays"
+        android:layout_gravity="center_vertical|end"
+        android:layout_weight="0"
+        android:layout_marginEnd="10dp"/>
+
+</LinearLayout>

@@ -4,33 +4,22 @@ package kpchuck.kklock;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
-import android.content.res.XmlResourceParser;
-import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.FileProvider;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
+import android.util.Pair;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -42,10 +31,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
 
 import java.io.IOException;
@@ -72,47 +57,25 @@ import org.apache.commons.io.FileUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.sax2.Driver;
-import org.zeroturnaround.zip.FileSource;
-import org.zeroturnaround.zip.ZipEntrySource;
-import org.zeroturnaround.zip.ZipUtil;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMResult;
-import javax.xml.transform.sax.SAXSource;
-
-import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cat.ereza.customactivityoncrash.config.CaocConfig;
-import gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner;
-import gr.escsoft.michaelprimez.searchablespinner.interfaces.IStatusListener;
-import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener;
 
 import kpchuck.kklock.activities.InformationWebViewActivity;
 import kpchuck.kklock.activities.MyWelcomeActivity;
 import kpchuck.kklock.activities.SettingsActivity;
 import kpchuck.kklock.adapters.ColorAdapter;
 import kpchuck.kklock.adapters.FormatAdapter;
-import kpchuck.kklock.adapters.SimpleListAdapter;
 import kpchuck.kklock.adapters.SwipeTabAdapter;
 import kpchuck.kklock.fragments.ClockFragment;
+import kpchuck.kklock.preferences.SettingsFragment;
 import kpchuck.kklock.fragments.IconsFragment;
 import kpchuck.kklock.dialogs.InputAlertDialogFragment;
-import kpchuck.kklock.dialogs.ListDialogFragment;
 import kpchuck.kklock.fragments.MiscFragment;
 import kpchuck.kklock.fragments.StatusBarFragment;
 import kpchuck.kklock.dialogs.TextAlertDialogFragment;
@@ -123,7 +86,6 @@ import kpchuck.kklock.utils.ApkBuilder;
 import kpchuck.kklock.utils.FileHelper;
 import kpchuck.kklock.utils.MessageEvent;
 import kpchuck.kklock.utils.PrefUtils;
-import kpchuck.kklock.xml.XmlUtils;
 
 import static kpchuck.kklock.constants.PrefConstants.*;
 
@@ -279,13 +241,21 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
         this.statusBarFragment = new StatusBarFragment();
         this.miscFragment = new MiscFragment();
 
+
        // new Checks().checkPro(this);
         //LocalBroadcastManager.getInstance(this).registerReceiver(BReceiver, new IntentFilter("message"));
 
        // setTheme(prefUtils.getBool(PREF_BLACK_THEME) ? R.style.AppTheme_Dark : R.style.AppTheme);
 
-        tabAdapter = new SwipeTabAdapter(getSupportFragmentManager(), clockFragment, iconsFragment, statusBarFragment, miscFragment);
+        //tabAdapter = new SwipeTabAdapter(getSupportFragmentManager(), clockFragment, iconsFragment, statusBarFragment, miscFragment);
+        List<Pair<String, Integer>> fragments = new ArrayList<>();
+        fragments.add(new Pair<>("Clock", R.xml.clock));
+        fragments.add(new Pair<>("StatusBar", R.xml.statusbar));
+        fragments.add(new Pair<>("Lockscreen", R.xml.lockscreen));
+        fragments.add(new Pair<>("Qs & Misc", R.xml.qs));
+        fragments.add(new Pair<>("Settings", R.xml.app_settings));
 
+        tabAdapter = new SwipeTabAdapter(getFragmentManager(), fragments);
         // Set the adapter onto the view pager
         viewPager = findViewById(R.id.pager);
         viewPager.setAdapter(tabAdapter);

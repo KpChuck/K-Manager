@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="General Clock"
+        >
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_statusbar_clock_size"
+            android:title="@string/clock_size" />
+
+        <kpchuck.kklock.preferences.DialogSwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_clock_hideable"
+            android:title="@string/clock_hide_launcher"
+            app:title="@string/warning"
+            app:message="@string/clock_hideable_warning"
+            app:confirmButton="@string/enable"
+            app:confirmButtonClickListener="kpchuck.kklock.utils.ListenerCollection.doNothing"/>
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_am_everywhere"
+            android:title="@string/ampm_stock_clock" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_no_clock_option"
+            android:title="@string/no_clock_added" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="@string/key_hide_stock"
+            android:title="@string/hide_stock" />
+
+        <kpchuck.kklock.preferences.ApiSwitchPreference
+            android:defaultValue="false"
+            android:key="devMakeDynamicClock"
+            android:title="@string/make_dynamic"
+            android:summary="Lets the clock switch between dark and light colors depending on the background."
+            app:maxApi="26"/>
+
+    </PreferenceCategory>
+
+
+    <PreferenceCategory android:title="Custom Clock Formats">
+
+       <!-- TODO needs format adder -->
+
+        <kpchuck.kklock.preferences.ListDialogPreference
+            app:textArray="@array/included_formats_title"
+            app:colorArray="@array/included_formats_title"
+            app:showColors="false"
+            android:title="See Included Clock Formats"
+            android:dialogTitle="Included Formats"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Custom Clock Colors">
+
+        <kpchuck.kklock.preferences.ColorPickerPreference
+            android:title="Add a color"
+            app:keyNames="colorsTitles"
+            app:keyValues="colorsValues"
+            app:nameHint="Add a Color"/>
+
+        <kpchuck.kklock.preferences.ListDialogPreference
+            app:showColors="true"
+            app:textArray="@array/included_colors_title"
+            app:colorArray="@array/included_colors_value"
+            android:title="See Included Stock Colors"
+            android:dialogTitle="Clock Colors"/>
+    </PreferenceCategory>
+
+
+
+    <PreferenceCategory
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Stock-Like Clock"
+        >
+
+        <kpchuck.kklock.preferences.SpinnerPreference
+            android:defaultValue="2"
+            android:title="Clock Am/Pm Style"
+            android:key="clockAmStyle"
+            app:keys="@array/positions_keys_center"
+            app:names="@array/clock_am_style"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Stock-Like Clock and Icon Colors">
+
+        <kpchuck.kklock.preferences.ColorPickerPreference
+            app:keyValues="iconsValues"
+            app:keyNames="iconsTitles"
+            app:nameHint="Add a Color"/>
+
+        <kpchuck.kklock.preferences.ListDialogPreference
+            app:textArray="@array/included_icons_title"
+            app:colorArray="@array/included_icons_value"
+            app:showColors="true"
+            android:title="See Included Icon Colors"
+            android:dialogTitle="Icon Colors"/>
+
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

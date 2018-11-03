@@ -2,5 +2,5 @@
 /version.properties
 /debug
 /release
-#/app/Constants.gradle
-#/Constants.gradle
+/app/Constants.gradle
+/Constants.gradle

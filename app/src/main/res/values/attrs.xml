@@ -7,5 +7,42 @@
     <attr name="transparentBackgroundColor" format="color"/>
     <attr name="prefName" format="string"/>
 
+    <declare-styleable name="ColorPickerPreference">
+        <attr name="keyNames" format="string"/>
+        <attr name="keyValues" format="string"/>
+        <attr name="nameHint" format="string"/>
+    </declare-styleable>
 
+    <declare-styleable name="DialogSwitch">
+        <attr name="message" format="string"/>
+        <attr name="title" format="string"/>
+        <attr name="confirmButton" format="string"/>
+        <attr name="confirmButtonClickListener" format="string"/>
+        <attr name="only_checked" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="ActionSwitch">
+        <attr name="switchListener" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="ListDialogPreference">
+        <attr name="textArray" format="reference"/>
+        <attr name="colorArray" format="reference"/>
+        <attr name="showColors" format="boolean"/>
+    </declare-styleable>
+
+    <declare-styleable name="ApiSwitchPreference">
+        <attr name="maxApi" format="integer"/>
+        <attr name="minApi" format="integer"/>
+    </declare-styleable>
+
+    <declare-styleable name="ImagePickerPreference">
+        <attr name="imageFilePath" format="string"/>
+        <attr name="imageFilePref" format="string"/>
+    </declare-styleable>
+
+    <declare-styleable name="SpinnerPreference">
+        <attr name="names" format="reference"/>
+        <attr name="keys" format="reference"/>
+    </declare-styleable>
 </resources>

@@ -100,8 +100,8 @@ public class QsBgUtil {
         XmlUtils xmlUtils = new XmlUtils();
 
         Document xml = xmlUtils.getDocument(qsHeader);
-        xml = xmlUtils.replaceAt(xml);
-        xml = xmlUtils.replaceStuffInXml(xml, "?attr/wallpaperTextColorSecondary", "#ffffffff");
+        xmlUtils.replaceAt(xml);
+        xmlUtils.replaceStuffInXml(xml, "?attr/wallpaperTextColorSecondary", "#ffffffff");
 
         Element rootElement = xml.getDocumentElement();
 
@@ -112,7 +112,7 @@ public class QsBgUtil {
         }
 
         rootElement.setAttribute("xmlns:systemui", "http://schemas.android.com/apk/res/com.android.systemui");
-        rootElement = xmlUtils.changeAttribute(rootElement, "android:layout_gravity", "@*com.android.systemui:integer/notification_panel_layout_gravity");
+        xmlUtils.changeAttribute(rootElement, "android:layout_gravity", "@*com.android.systemui:integer/notification_panel_layout_gravity");
 
         boolean alternate_qs_header = prefUtils.getBool("alternate_qs_header");
 
@@ -131,9 +131,9 @@ public class QsBgUtil {
 
         } else {
 
-            if (!prefUtils.getBool("opaque_qs_header"))rootElement = xmlUtils.changeAttribute(rootElement, "android:alpha", "0.8");
-            rootElement = xmlUtils.changeAttribute(rootElement, X_LAYOUT_HEIGHT, "124dip");
-            rootElement = xmlUtils.changeAttribute(rootElement, "android:background", "@*com.android.systemui:drawable/" + header_png);
+            if (!prefUtils.getBool("opaque_qs_header"))xmlUtils.changeAttribute(rootElement, "android:alpha", "0.8");
+            xmlUtils.changeAttribute(rootElement, X_LAYOUT_HEIGHT, "124dip");
+            xmlUtils.changeAttribute(rootElement, "android:background", "@*com.android.systemui:drawable/" + header_png);
         }
 
 

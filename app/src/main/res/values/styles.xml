@@ -12,6 +12,9 @@
         <item name="textColor">#ff000000</item>
         <item name="textColorInverse">#ffffffff</item>
         <item name="transparentBackgroundColor">#bf808080</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+
+
 
     </style>
 
@@ -27,6 +30,9 @@
         <item name="textColor">#ffffffff</item>
         <item name="textColorInverse">#ff000000</item>
         <item name="transparentBackgroundColor">#bf333333</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+
+
 
     </style>
 

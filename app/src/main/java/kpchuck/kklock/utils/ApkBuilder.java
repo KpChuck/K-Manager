@@ -13,25 +13,19 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import com.android.apksig.ApkSigner;
-import com.android.apksig.ApkSignerEngine;
 import com.android.apksig.apk.ApkFormatException;
 
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.zeroturnaround.zip.FileSource;
 import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.annotation.Documented;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.PrivateKey;
@@ -41,9 +35,6 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import javax.xml.transform.TransformerException;
-
-import jadx.api.JadxArgs;
 import jadx.api.JadxDecompiler;
 import jadx.core.utils.exceptions.JadxException;
 import kpchuck.kklock.Checks;
@@ -314,10 +305,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
     }
 
     private void modTheRomZip() throws Exception{
-        new XmlWork(context,
-                "userInput",
-                prefUtils.getBool(DEV_HIDE_CLOCK),
-                prefUtils.getBool(DEV_MAKE_DYNAMIC));
+        new XmlWork(context);
     }
 
     public void xmlBuilder(){
@@ -330,6 +318,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         int colorLimit = colorsTitles.size();
         for (int i = 0; i < colorLimit; i++) {
             String colorTitle = colorsTitles.get(i);
+            colorTitle = colorTitle.replace(" ", "_") + ".xml";
             String colorValue = colorsValues.get(i);
             XmlCreation xmlCreator = new XmlCreation();
             xmlCreator.putContext(context);
@@ -339,6 +328,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         int formatLimit = formatsTitles.size();
         for (int i = 0; i < formatLimit; i++) {
             String formatTitle = formatsTitles.get(i);
+            formatTitle = formatTitle.replace(" ", "_") + ".xml";
             String formatValue = formatsValues.get(i);
             XmlCreation xmlCreator = new XmlCreation();
             xmlCreator.putContext(context);
@@ -350,6 +340,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             ArrayList<String> values = prefUtils.loadArray(ICON_VALUES);
             for (int i = 0; i < titles.size(); i ++){
                 String title = titles.get(i);
+                title = title.replace(" ", "_") + ".xml";
                 String value = values.get(i);
                 XmlCreation xmlcreation = new XmlCreation();
                 xmlcreation.putContext(context);

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Lockscreen"
+        >
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="prefhidelockscreenclock"
+            android:title="@string/hide_lockscreen_clock" />
+
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/font_names"
+            android:entryValues="@array/font_names"
+            android:key="lockFont"
+            android:title="Lockscreen Clock Font" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Lockscreen Clock Colors">
+
+        <kpchuck.kklock.preferences.ColorPickerPreference
+            app:keyValues="lockValues"
+            app:keyNames="lockTitles"
+            app:nameHint="Add a Color"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Custom Lockscreen Clock"
+        >
+        <!-- TODO create custom format picker with help dialog or something-->
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="changeLockClockMod"
+            android:title="Change Lockscreen Clock Format" />
+
+        <EditTextPreference
+            android:dependency="changeLockClockMod"
+            android:defaultValue="Lockscreen Format"
+            android:key="lockClockFormat"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="changeLockDateMod"
+            android:title="Change Lockscreen Date Format" />
+
+        <EditTextPreference
+            android:dependency="changeLockDateMod"
+            android:defaultValue="Lockscreen Format"
+            android:key="lockDateFormat"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            />
+
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

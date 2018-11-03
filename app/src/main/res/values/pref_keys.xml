@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="key_hide_stock">devHideStockClock</string>
+    <string name="key_no_clock_option">prefshowoptionwithnoclock</string>
+    <string name="key_statusbar_clock_size">statusBarClockSizePref</string>
+    <string name="key_clock_hideable">makeclockhideableinlaunchers</string>
+    <string name="key_am_everywhere">amPref</string>
+    <string name="pref_hide_icons_lockscreen">hideStatusBaronLockscreen</string>
+    <string name="key_carrier_text_enable">showCarrierEverywhereNotJustOnLockscren</string>
+    <string name="key_qs_header_switch">qsHeaderSwitchPref</string>
+</resources>

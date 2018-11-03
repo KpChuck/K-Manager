@@ -67,6 +67,9 @@ import static kpchuck.kklock.constants.XmlConstants.*;
 
 public class XmlUtils {
 
+    public File romzip = new File(Environment.getExternalStorageDirectory() + "/K-Klock/tempF/Rom.zip");
+    public File baseFolders = new File(romzip, "assets/overlays/com.android.systemui");
+
     public Element getFirstChildElement(Node parent) {
         Element myElement = null;
         NodeList childs = parent.getChildNodes();
@@ -178,7 +181,7 @@ public class XmlUtils {
     }
 
     private boolean isTheElement(Element element, String layoutTag, String idName, String attributeName){
-        if (!element.getTagName().equals(layoutTag)) return false;
+        if (element.hasAttribute("android:tag") && !element.getTagName().equals(layoutTag)) return false;
         if (!element.hasAttribute(attributeName)) return false;
 
         Attr attr = element.getAttributeNode(attributeName);
@@ -264,30 +267,26 @@ public class XmlUtils {
         }
     }
 
-    public Document replaceAt(Document doc){
-        doc = replaceStuffInXml(doc, "@+", "@");
+    public Document replaceAt(Document doc) throws Exception{
         findAbnormallyLongGravity(doc.getDocumentElement());
+        doc = replaceStuffInXml(doc, "@+", "@");
         doc = replaceStuffInXml(doc, "@", "@*com.android.systemui:");
-        return replaceStuffInXml(doc, "@*com.android.systemui:android", "@*android");
+        doc = replaceStuffInXml(doc, "@*com.android.systemui:android", "@*android");
+        return doc;
     }
 
-    public Document replaceStuffInXml(Document doc, String old, String news){
-        try {
-            TransformerFactory tf = TransformerFactory.newInstance();
-            Transformer transformer = tf.newTransformer();
-            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-            StringWriter writer = new StringWriter();
-            transformer.transform(new DOMSource(doc), new StreamResult(writer));
-            String output = writer.getBuffer().toString();
-            output = output.replace(old, news);
-            doc = stringToDom(output);
-            doc.normalizeDocument();
-
-
-        }catch (Exception e){Log.e("klock", e.getMessage());
-
-        }
+    public Document replaceStuffInXml(Document doc, String old, String news) throws Exception{
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer transformer = tf.newTransformer();
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        StringWriter writer = new StringWriter();
+        transformer.transform(new DOMSource(doc), new StreamResult(writer));
+        String output = writer.getBuffer().toString();
+        output = output.replace(old, news);
+        doc = stringToDom(output);
+        doc.normalizeDocument();
         return doc;
+
     }
 
     public static Document stringToDom(String xmlSource)
@@ -308,39 +307,24 @@ public class XmlUtils {
     }
 
     private String pathToMerger = Environment.getExternalStorageDirectory() + "/K-Klock/tempF";
+    private boolean hasAttrs = false;
 
-    public boolean moveAttrsIfPresent(String xmlFolder){
+    public void moveAttrsIfPresent(String xmlFolder) throws IOException{
         File attrs = new File(xmlFolder + "/attrs.xml");
         if (attrs.exists()){
-            Log.d("klock", "Moving attrs.xml to rom.zip");
-            FileHelper fileHelper = new FileHelper();
-            fileHelper.newFolder(pathToMerger + "/Rom.zip/assets/overlays/com.android.systemui/res/");
-            fileHelper.newFolder(pathToMerger + "/Rom.zip/assets/overlays/com.android.systemui/res/values");
-            File a = fileHelper.newFolder(pathToMerger + "/Rom.zip/assets/overlays/com.android.systemui/res/values");
+            hasAttrs = true;
+            File a = new File(pathToMerger + "/Rom.zip/assets/overlays/com.android.systemui/res/values");
+            a.mkdirs();
 
-            try{
-                FileUtils.copyFileToDirectory(attrs, a);
-            }catch (IOException e){
-                Log.e("klock", e.getMessage());
-            }
-            return true;
+            FileUtils.copyFileToDirectory(attrs, a);
         }
-        return false;
     }
 
-    public Document fixUpForAttrs(Document document, boolean hasAttrs){
+    public void fixUpForAttrs(Document document){
         if (hasAttrs){
-            Log.d("klock", "trying to fix up res-auto");
             Element rootElement = document.getDocumentElement();
-            try{
-                rootElement.removeAttribute("xmlns:systemui");
-                rootElement.setAttribute("xmlns:systemui", "http://schemas.android.com/apk/res-auto");
-            }
-            catch (Exception e){
-                Log.d("klock", "Couldn't set res-auto attribute for xmlns:systemui");
-            }
+            changeAttribute(rootElement, "xmlns:systemui", "http://schemas.android.com/apk/res-auto");
         }
-        return document;
     }
 
     public boolean isPushyOutElement(Element element){
@@ -357,29 +341,40 @@ public class XmlUtils {
     public ArrayList<Element> getRightElementsTo(Element parentElement, String tagName, String idName){
         ArrayList<Element> elements = getChildElements(parentElement);
         ArrayList<Element> rightElements = new ArrayList<>();
+        boolean passedElement  = false;
 
         for (Element element : elements){
             if (idName == null){
-                if (element.getTagName().equals(tagName)) break;
+                if (element.getTagName().equals(tagName))
+                    break;
             }
-            else if (isTheElement(element, tagName, idName)) break;
-            rightElements.add(element);
+            else if (isTheElement(element, tagName, idName))
+                passedElement = true;
+            if (passedElement)
+                rightElements.add(element);
         }
 
         return rightElements;
+    }
+
+    public void insertBefore(Element toInsert, Element insertBefore){
+        insertBefore.getParentNode().insertBefore(toInsert, insertBefore);
     }
 
     public ArrayList<Element> getLeftElementsTo(Element parentElement, String tagName, String idName){
         ArrayList<Element> elements = getChildElements(parentElement);
         ArrayList<Element> leftElements = new ArrayList<>();
 
-        for (int i = elements.size() - 1; i >= 0; i--) {
-            Element element = elements.get(i);
-            if (idName == null && element.getTagName().equals(tagName)) break;
-            else if (isTheElement(element, tagName, idName)) break;
+        for (Element element : elements){
+            if (idName == null){
+                if (element.getTagName().equals(tagName))
+                    break;
+            }
+            else if (isTheElement(element, tagName, idName))
+                break;
             leftElements.add(element);
         }
-        Collections.reverse(leftElements);
+
         return leftElements;
     }
 
@@ -394,6 +389,16 @@ public class XmlUtils {
         }
 
         return doc;
+    }
+
+    public Document cloneDocument(Document doc) throws Exception{
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
+        Document cloneDoc = documentBuilder.newDocument();
+        cloneDoc.appendChild(
+                cloneDoc.importNode(doc.getDocumentElement(), true)
+        );
+        return cloneDoc;
     }
 
     public void writeDocToFile(Document doc, File dest) throws Exception{

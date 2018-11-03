@@ -86,4 +86,46 @@
 
     </string-array>
 
+    <string-array name="clock_am_style">
+        <item>Normal</item>
+        <item>Small</item>
+        <item>Gone</item>
+    </string-array>
+
+    <string-array name="statusbar_bg_colors">
+        <item>@string/black</item>
+        <item>@string/black_transparent</item>
+        <item>@string/white</item>
+        <item>@string/other_specify</item>
+    </string-array>
+
+    <string-array name="contact_ways">
+        <item>Email</item>
+        <item>Telegram</item>
+        <item>XDA Forums</item>
+        <item>Github Issue</item>
+    </string-array>
+
+    <string-array name="positions">
+        <item>Left</item>
+        <item>Right</item>
+    </string-array>
+
+    <string-array name="positions_keys">
+        <item>0</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="positions_center">
+        <item>Left</item>
+        <item>Center</item>
+        <item>Right</item>
+    </string-array>
+
+    <string-array name="positions_keys_center">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
 </resources>

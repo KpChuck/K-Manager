@@ -1,15 +1,18 @@
 package kpchuck.kklock.adapters;
 
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.os.Environment;
+import android.support.v13.app.FragmentPagerAdapter;
+import android.util.Pair;
+import android.widget.Toast;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
-import kpchuck.kklock.fragments.ClockFragment;
-import kpchuck.kklock.fragments.IconsFragment;
-import kpchuck.kklock.fragments.MiscFragment;
-import kpchuck.kklock.fragments.StatusBarFragment;
+import kpchuck.kklock.preferences.SettingsFragment;
 
 /**
  * Created by karol on 16/01/18.
@@ -18,30 +21,22 @@ import kpchuck.kklock.fragments.StatusBarFragment;
 public class SwipeTabAdapter extends FragmentPagerAdapter
 {
 
-    ClockFragment clockFragment;
-    IconsFragment iconsFragment;
-    StatusBarFragment statusBarFragment;
-    MiscFragment miscFragment;
+    private List<SettingsFragment> fragments = new ArrayList<>();
+    private List<String> titles = new ArrayList<>();
 
-    public SwipeTabAdapter(FragmentManager fm, ClockFragment clockFragment, IconsFragment iconsFragment, StatusBarFragment statusBarFragment,
-                           MiscFragment miscFragment) {
+    public SwipeTabAdapter(FragmentManager fm, List<Pair<String, Integer>> fragments) {
         super(fm);
-        this.clockFragment = clockFragment;
-        this.iconsFragment=iconsFragment;
-        this.statusBarFragment=statusBarFragment;
-        this.miscFragment=miscFragment;
+        for (Pair<String, Integer> pair : fragments){
+            SettingsFragment settingsFragment = SettingsFragment.newInstance(pair.first, pair.second);
+            this.fragments.add(settingsFragment);
+            this.titles.add(pair.first);
+        }
     }
 
     // This determines the fragment for each tab
     @Override
     public Fragment getItem(int position) {
-        switch (position){
-            case 0: return clockFragment;
-            case 1: return iconsFragment;
-            case 2: return statusBarFragment;
-            case 3: return miscFragment;
-        }
-        return null;
+        return fragments.get(position).getFragment();
     }
 
 
@@ -49,20 +44,16 @@ public class SwipeTabAdapter extends FragmentPagerAdapter
     // This determines the number of tabs
     @Override
     public int getCount() {
-        return 4;
+        return fragments.size();
     }
 
     // This determines the title for each tab
     @Override
     public CharSequence getPageTitle(int position) {
         // Generate title based on item position
-        switch (position){
-            case 0: return "Clock";
-            case 1: return "Icons";
-            case 2: return "StatusBar";
-            case 3: return "Misc";
-        }
-        return "Undefined";
+        return titles.get(position);
     }
+
+
 }
 

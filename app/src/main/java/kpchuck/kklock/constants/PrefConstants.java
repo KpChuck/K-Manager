@@ -46,6 +46,15 @@ public class PrefConstants {
     public static final String PREF_HEADS_UP = "prefHeadsUpTimeout";
     public static final String PREF_LOCK_CLOCK = "prefhidelockscreenclock";
 
+    public static final String PREF_INCLUDE_NONE_OPT = "prefshowoptionwithnoclock";
+    public static final String PREF_HTML_CUSTOM_TEXT = "allowHtmlForCustomText";
+    public static final String PREF_CUSTOM_TEXT_POSITION = "customTextPosition";
+    public static final String PREF_CUSTOM_ICON_POSITION = "customIconPosition";
+    public static final String PREF_HIDE_BATTERY_ICON = "hideBatteryIcon";
+    public static final int PREF_LEFT = 0;
+    public static final int PREF_CENTER = 1;
+    public static final int PREF_RIGHT = 2;
+
     // Array keys
     public static final String COLOR_TITLES = "colorsTitles";
     public static final String COLOR_VALUES = "colorsValues";
@@ -64,6 +73,15 @@ public class PrefConstants {
     // Custom Icon Stuff
     public static final String PREF_CUSTOM_ICON = "customIconPref";
     public static final String PREF_CUSTOM_ICON_FILE = "customIconFilePath";
+    // Lock clock stuff
+    public static final String PREF_LOCK_CLOCK_CHANGE = "changeLockClockMod";
+    public static final String PREF_LOCK_DATE_CHANGE = "changeLockDateMod";
+    public static final String PREF_LOCK_CLOCK_COLOR = "lockClockColor";
+    public static final String PREF_LOCK_CLOCK_FORMAT = "lockClockFormat";
+    public static final String PREF_LOCK_DATE_FORMAT = "lockDateFormat";
+    public static final String PREF_LOCK_FONT = "lockFont";
+
+    public static final String  PREF_AMPM_STYLE = "stockClockAmPmSTyle";
 
 
 }

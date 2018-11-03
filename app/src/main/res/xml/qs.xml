@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Quick Settings"
+        >
+
+        <!-- TODO maybe slider for this too -->
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="qsPref"
+            android:title="@string/qs_tile_no" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="qsTitlePref"
+            android:title="@string/qs_tile_text" />
+
+        <kpchuck.kklock.preferences.ImagePickerPreference
+            android:key="qsBgPref"
+            android:title="@string/qs_background"
+            android:summary="This doesn't work with OxygenOS on Oneplus devices"
+            app:imageFilePath="qs_background"
+            app:imageFilePref="qsBgFilePath"/>
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Qs Header Image">
+
+        <kpchuck.kklock.preferences.ImagePickerPreference
+            android:key="@string/key_qs_header_switch"
+            android:title="@string/qs_header"
+            app:imageFilePath="qs_header"
+            app:imageFilePref="qsHeaderFilePath"
+            />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="alternate_qs_header"
+            android:summary="@string/alt_qs_header_desc"
+            android:title="@string/alt_qs_header"
+            android:dependency="@string/key_qs_header_switch"
+            />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="opaque_qs_header"
+            android:title="@string/opaque_qs_header"
+            android:dependency="@string/key_qs_header_switch"
+
+            />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Miscellaneous"
+        >
+
+        <!-- TODO maybe add slider here -->
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="prefHeadsUpTimeout"
+            android:title="@string/heads_up_timeout" />
+
+    </PreferenceCategory>
+
+
+
+</PreferenceScreen>
