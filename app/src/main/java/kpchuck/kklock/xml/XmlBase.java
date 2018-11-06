@@ -84,11 +84,10 @@ public class XmlBase{
 
         if (isStatusBar){
             Element system_icon_area = utils.findElementById(doc, "@*com.android.systemui:id/system_icon_area");
-            Element status_bar_contents = utils.findElementById(doc, "@*com.android.systemui:id/status_bar_contents");
             Element one = utils.findElementByTag(doc, "com.lge.systemui.widget.StatusIconsLinearLayout");
 
-            status_bar_contents.removeChild(one);
-            status_bar_contents.removeChild(two);
+            one.getParentNode().removeChild(one);
+            two.getParentNode().removeChild(two);
 
             system_icon_area.insertBefore(two, utils.getFirstChildElement(system_icon_area));
             system_icon_area.insertBefore(one, two);
