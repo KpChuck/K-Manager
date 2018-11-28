@@ -49,7 +49,7 @@ public class SystemIcons extends XmlBase{
     }
 
     private void hideStatusIcons(){
-        if(prefUtils.getInt(PREF_MOVE_LEFT) == 2) return;
+        if(prefUtils.getInt(PREF_MOVE_LEFT) == 0) return;
 
         NodeList list = getDocumentElement().getElementsByTagName("include");
         Element includeElement = (Element) list.item(0);

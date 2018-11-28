@@ -1,5 +1,6 @@
 package kpchuck.kklock.xml;
 
+import android.content.Context;
 import android.util.Log;
 
 import org.w3c.dom.Document;
@@ -21,12 +22,15 @@ public class XmlBase{
     public PrefUtils prefUtils;
     public final Document document;
     public Document workingCopy;
+    public Context context;
 
-    public XmlBase(XmlUtils utils, PrefUtils prefUtils, File inFile) throws Exception{
+    public XmlBase(XmlUtils utils, PrefUtils prefUtils, File inFile, Context ... contexts) throws Exception{
         this.utils = utils;
         this.prefUtils = prefUtils;
-        Document document = utils.getDocument(inFile);
+        if (contexts.length > 0)
+            this.context=contexts[0];
 
+        Document document = utils.getDocument(inFile);
         document = utils.replaceAt(document);
         utils.fixUpForAttrs(document);
         this.document=document;
@@ -61,6 +65,7 @@ public class XmlBase{
             customTextElement.setAttribute("android:text", "@*com.android.systemui:string/" + hijack_name);
             File stringsF = new File(utils.baseFolders, "res/values/");
             stringsF.mkdirs();
+            Log.d("klock", prefUtils.getString(PREF_CARRIER_CUSTOM_TEXT, ""));
             new XmlCreation().createStringDoc(new File(stringsF, "strings.xml"), hijack_name,
                     prefUtils.getString(PREF_CARRIER_CUSTOM_TEXT, ""));
         }
@@ -80,21 +85,21 @@ public class XmlBase{
     public void fixForLg(Document doc, boolean isStatusBar){
 
         Element two = utils.findElementByTag(doc, "com.lge.systemui.widget.StatusIconAnimatorView");
-        if (two == null) return;
+        Element one = utils.findElementByTag(doc, "com.lge.systemui.widget.StatusIconsLinearLayout");
+        if (two == null && one == null) return;
 
         if (isStatusBar){
             Element system_icon_area = utils.findElementById(doc, "@*com.android.systemui:id/system_icon_area");
-            Element one = utils.findElementByTag(doc, "com.lge.systemui.widget.StatusIconsLinearLayout");
-
-            one.getParentNode().removeChild(one);
-            two.getParentNode().removeChild(two);
-
-            system_icon_area.insertBefore(two, utils.getFirstChildElement(system_icon_area));
-            system_icon_area.insertBefore(one, two);
+            for (Element s: new Element[]{two, one}) {
+                if (s == null) continue;
+                s.getParentNode().removeChild(s);
+                system_icon_area.insertBefore(s, utils.getFirstChildElement(system_icon_area));
+            }
         }
         else {
-            Element one = utils.findElementByTag(doc, "com.lge.systemui.widget.StatusIconsLinearLayout");
+            one = utils.findElementByTag(doc, "com.lge.systemui.widget.StatusIconsLinearLayout");
             for (Element s: new Element[]{one, two}){
+                if (s == null) continue;
                 utils.changeAttribute(s, X_LAYOUT_WIDTH, "0dip");
                 utils.changeAttribute(s, "android:visibility", "gone");
             }
