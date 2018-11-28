@@ -14,6 +14,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.io.IOUtils;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -93,7 +94,6 @@ public class XmlCreation {
         String fullXml = start + color + middle + color + end;
 
         try{
-            XmlUtils utils = new XmlUtils();
             Document doc = XmlUtils.stringToDom(fullXml);
 
             String slash = "/";
@@ -118,12 +118,9 @@ public class XmlCreation {
     }
 
     public void createStringDoc(File dest, String name, String value)throws Exception{
-        XmlUtils utils = new XmlUtils();
-
         String start = String.format("<?xml version=\"1.0\" encoding=\"utf-8\"?><resources><string name=\"%s\"> ", name);
         String end = " </string></resources>";
-        Document doc = XmlUtils.stringToDom(start + value + end);
-        utils.writeDocToFile(doc, dest);
+        IOUtils.write(start + value + end, new FileOutputStream(dest), "UTF-8");
     }
 
 }
