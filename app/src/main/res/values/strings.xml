@@ -70,7 +70,7 @@
     <string name="add_color_name_hint">Enter color name here. Eg. Dark Blue</string>
     <string name="add_format_name_title">Add a Custom Format</string>
     <string name="add_format_value_hint">Enter java clock format. Eg. EEE HH:mm</string>
-    <string name="add_format_name_hint">Enter color format name here. Eg. Abbreviated Day</string>
+    <string name="add_format_name_hint">Enter color format name here</string>
     <string name="included_colors">Included Colors</string>
     <string name="added_colors">Added Colors</string>
     <string name="included_formats">Included Formats</string>

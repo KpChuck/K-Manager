@@ -46,7 +46,11 @@
 
     <PreferenceCategory android:title="Custom Clock Formats">
 
-       <!-- TODO needs format adder -->
+        <kpchuck.kklock.preferences.FormatPickerPreference
+            android:title="Add a format"
+            app:keyNames="formatsTitles"
+            app:keyValues="formatsValues"
+            />
 
         <kpchuck.kklock.preferences.ListDialogPreference
             app:textArray="@array/included_formats_title"

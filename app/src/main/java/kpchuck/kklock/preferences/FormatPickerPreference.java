@@ -1,6 +1,7 @@
 package kpchuck.kklock.preferences;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -19,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
@@ -33,16 +35,14 @@ import java.util.TreeMap;
 import kpchuck.kklock.R;
 import kpchuck.kklock.utils.PrefUtils;
 
-public class ColorPickerPreference extends Preference{
+public class FormatPickerPreference extends Preference{
 
     private String keyNames;
     private String keyValues;
-    private String nameHint;
-    private ListView listView;
     private ArrayList<String> names = new ArrayList<>();
     private ArrayList<String> values = new ArrayList<>();
 
-    public ColorPickerPreference(Context context, AttributeSet attrs) {
+    public FormatPickerPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
     }
@@ -53,7 +53,6 @@ public class ColorPickerPreference extends Preference{
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.ColorPickerPreference);
         keyNames = a.getString(R.styleable.ColorPickerPreference_keyNames);
         keyValues = a.getString(R.styleable.ColorPickerPreference_keyValues);
-        nameHint = a.getString(R.styleable.ColorPickerPreference_nameHint);
         a.recycle();
 
     }
@@ -62,13 +61,12 @@ public class ColorPickerPreference extends Preference{
     protected void onBindView(View view) {
         super.onBindView(view);
 
-        //listView = view.findViewById(R.id.list_view);
         // Set adapter for contents.
         PrefUtils prefUtils = new PrefUtils(getContext());
         names = prefUtils.loadArray(keyNames);
         values = prefUtils.loadArray(keyValues);
-        names.add(0, "Add a color");
-        values.add(0, "#ffffff");
+        names.add(0, getContext().getString(R.string.add_format_name_hint));
+        values.add(0, getContext().getString(R.string.add_format_value_hint));
 
         RecyclerView recyclerView = view.findViewById(R.id.recycler_view);
         // use a linear layout manager
@@ -76,14 +74,13 @@ public class ColorPickerPreference extends Preference{
         recyclerView.setLayoutManager(layoutManager);
 
         // specify an adapter (see also next example)
-        ColorAdapter colorAdapter = new ColorAdapter();
-        recyclerView.setAdapter(colorAdapter);
+        FormatAdapter formatAdapter = new FormatAdapter();
+        recyclerView.setAdapter(formatAdapter);
     }
 
-    private class ColorAdapter extends RecyclerView.Adapter<ColorAdapter.MyViewHolder>{
+    private class FormatAdapter extends RecyclerView.Adapter<FormatAdapter.MyViewHolder>{
 
         private PrefUtils prefUtils;
-        private boolean editing = false;
         private View curr_view;
 
 
@@ -92,20 +89,16 @@ public class ColorPickerPreference extends Preference{
         // you provide access to all the views for a data item in a view holder
         public class MyViewHolder extends RecyclerView.ViewHolder {
             // each data item is just a string in this case
-            private EditText editText;
-            private ImageView imageView;
+            private Button editFormat;
             private Button deleteButton;
-            private Button saveButton;
             private MyViewHolder(View view) {
                 super(view);
-                editText = view.findViewById(R.id.colorListEditTextView);
-                imageView = view.findViewById(R.id.colorImage);
+                editFormat = view.findViewById(R.id.formatTextViewButton);
                 deleteButton = view.findViewById(R.id.deleteOverlays);
-                saveButton = view.findViewById(R.id.editOverlays);
             }
         }
 
-        private ColorAdapter() {
+        private FormatAdapter() {
             prefUtils = new PrefUtils(getContext());
             // Sort colors
             Map<String, String> sortedValues = new HashMap<>();
@@ -124,11 +117,11 @@ public class ColorPickerPreference extends Preference{
 
         // Create new views (invoked by the layout manager)
         @Override
-        public ColorAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
-                                                         int viewType) {
+        public FormatAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
+                                                            int viewType) {
 
             View row = LayoutInflater.from(getContext())
-                    .inflate(R.layout.color_preference, parent, false);
+                    .inflate(R.layout.format_preference, parent, false);
             MyViewHolder vh = new MyViewHolder(row);
             return vh;
         }
@@ -137,59 +130,91 @@ public class ColorPickerPreference extends Preference{
         @Override
         public void onBindViewHolder(MyViewHolder holder, int position) {
 
-            setColor(holder.imageView, position == 0 ? "#ffffff" : values.get(position));
-
             if (position == 0){
-                holder.editText.setHint(nameHint);
-                holder.imageView.setTag("#ffffff");
+                holder.editFormat.setText(getContext().getString(R.string.add_format_name_hint));
+                holder.deleteButton.setVisibility(View.INVISIBLE);
             }
             else {
-                holder.editText.setText(names.get(position));
-                holder.saveButton.setVisibility(View.INVISIBLE);
+                holder.editFormat.setText(names.get(position));
             }
 
-
-            holder.editText.setOnFocusChangeListener((view, hasFocus) -> {
-                if (hasFocus) {
-                    if (editing && getPosition(view) != getPosition(curr_view))
-                        savePrefs();
-                    setEditing(view);
-                }
-            });
-
-            holder.saveButton.setOnClickListener(view -> {
-                if (holder.saveButton.getVisibility() == View.VISIBLE) {
-                    savePrefs(view);
-                    holder.saveButton.setVisibility(View.INVISIBLE);
-                    holder.editText.setText("");
-                    holder.editText.setHint(nameHint);
-                    editing = false;
-                }
-            });
-
-            holder.imageView.setOnClickListener(view -> {
-                if(editing && getPosition(view) != getPosition(curr_view))
-                    savePrefs();
-                setEditing(view);
-                pickColor();
+            holder.editFormat.setOnClickListener(view -> {
+                this.curr_view = view;
+                showFormatDialog();
             });
 
             holder.deleteButton.setOnClickListener(view -> {
                 int pos = getPosition(view);
-                if (pos == 0){
-                    setColor(holder.imageView, "#ffffff");
-                    holder.imageView.setTag("#ffffff");
-                    holder.editText.setText("");
-                    holder.editText.setHint(nameHint);
-                    return;
-                }
+                if (pos == 0) return;
                 names.remove(pos);
                 values.remove(pos);
                 saveArrays();
                 notifyDataSetChanged();
             });
+        }
+
+        private void showFormatDialog(){
+
+            int position = getPosition(curr_view);
+            boolean toEdit = position != 0;
+            String nameHint = names.get(position);
+            String valueHint = values.get(position);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), android.R.style.Theme_Material_Dialog_Alert);
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+
+            View view = inflater.inflate(R.layout.input_menu_dialog, null);
+            builder.setView(view);
+
+            TextView textView = view.findViewById(R.id.title);
+            EditText nameEdit = view.findViewById(R.id.name);
+            EditText valueEdit = view.findViewById(R.id.value);
+            textView.setText(getContext().getString(R.string.add_format));
 
 
+            if (toEdit){
+                nameEdit.setText(nameHint);
+                valueEdit.setText(valueHint);
+            }
+            else {
+                nameEdit.setHint(nameHint);
+                valueEdit.setHint(valueHint);
+            }
+            builder.setPositiveButton(getContext().getString(R.string.save), (dialogInterface, i) -> {
+                String name = nameEdit.getText().toString();
+                String value = valueEdit.getText().toString();
+                savePrefs(name, value);
+            });
+            builder.setNegativeButton(getContext().getString(R.string.cancel), (dialogInterface, i) -> {
+                dialogInterface.cancel();
+            });
+
+            AlertDialog alertDialog = builder.create();
+            // Show it
+            alertDialog.show();
+
+        }
+
+        private void savePrefs(String name, String value){
+
+            int position = getPosition(curr_view);
+            if (name.equals("") || value.equals("")){
+                Toast.makeText(getContext(), "You must enter a name and format!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            name = nameUsed(name, position);
+
+            names.remove(position);
+            values.remove(position);
+            names.add(name);
+            values.add(value);
+
+            if (position == 0){
+                names.add(0, getContext().getString(R.string.add_format_name_hint));
+                values.add(0, getContext().getString(R.string.add_format_value_hint));
+            }
+            saveArrays();
+            notifyDataSetChanged();
         }
 
         // Return the size of your dataset (invoked by the layout manager)
@@ -198,80 +223,12 @@ public class ColorPickerPreference extends Preference{
             return names.size();
         }
 
-        private void setColor(ImageView image, String color){
-            if(color.startsWith("#") && (color.length() == 7 || color.length() == 9))
-                image.setColorFilter(Color.parseColor(color));
-            else
-                image.setColorFilter(Color.parseColor("#ffffff"));
-        }
-
-        private void pickColor(){
-            ColorPickerDialog dialog = ColorPickerDialog.newBuilder()
-                    .setShowAlphaSlider(true)
-                    .setDialogId(0)
-                    .create();
-            dialog.setColorPickerDialogListener(new ColorPickerDialogListener() {
-                @Override
-                public void onColorSelected(int dialogId, int color) {
-                    ViewGroup row = (ViewGroup) curr_view.getParent();
-                    ImageView colorView = row.findViewById(R.id.colorImage);
-                    colorView.setTag("#" + Integer.toHexString(color));
-                    setColor(colorView, "#" + Integer.toHexString(color));
-                }
-
-                @Override
-                public void onDialogDismissed(int dialogId) {
-
-                }
-            });
-            dialog.show(((Activity) getContext()).getFragmentManager(), "color-picker");
-        }
-
-        private void setEditing(View view){
-            this.curr_view=view;
-            editing=true;
-            Button edit = ((ViewGroup) view.getParent()).findViewById(R.id.editOverlays);
-            edit.setVisibility(View.VISIBLE);
-        }
-
-        private void savePrefs(){
-            savePrefs(curr_view);
-        }
-
-        private void savePrefs(View curr_view){
-
-            int position = getPosition(curr_view);
-            ViewGroup row = (ViewGroup) curr_view.getParent();
-            EditText text = row.findViewById(R.id.colorListEditTextView);
-            String name = nameUsed(text.getText().toString(), position);
-            if (name.equals("")){
-                Toast.makeText(getContext(), "You must enter a name!", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            ImageView colorImage = row.findViewById(R.id.colorImage);
-            String color = (String) colorImage.getTag();
-
-            names.remove(position);
-            values.remove(position);
-            names.add(name);
-            values.add(color);
-
-            if (position == 0){
-                names.add(0, nameHint);
-                values.add(0, "#ffffff");
-            }
-            saveArrays();
-
-            notifyDataSetChanged();
-        }
-
         private void saveArrays(){
             prefUtils.saveArray(getWithoutFirst(names), keyNames);
             prefUtils.saveArray(getWithoutFirst(values), keyValues);
 
-            names.add(0, nameHint);
-            values.add(0, "#ffffff");
+            names.add(0, getContext().getString(R.string.add_format_name_hint));
+            values.add(0, getContext().getString(R.string.add_format_value_hint));
         }
 
         private ArrayList<String> getWithoutFirst(ArrayList<String> list){

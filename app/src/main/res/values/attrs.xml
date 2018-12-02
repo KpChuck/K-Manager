@@ -13,6 +13,7 @@
         <attr name="nameHint" format="string"/>
     </declare-styleable>
 
+
     <declare-styleable name="DialogSwitch">
         <attr name="message" format="string"/>
         <attr name="title" format="string"/>
