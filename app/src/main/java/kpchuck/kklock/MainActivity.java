@@ -225,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
         this.fileHelper = new FileHelper();
         this.prefUtils = new PrefUtils(context);
 
-        setTheme(prefUtils.getBool(PREF_BLACK_THEME) ? R.style.AppTheme_Dark : R.style.AppTheme);
+        setTheme(prefUtils.getBoolTrue(PREF_BLACK_THEME) ? R.style.AppTheme_Dark : R.style.AppTheme);
         setContentView(R.layout.activity_main);
         super.onCreate(savedInstanceState);
 
@@ -517,7 +517,7 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
     protected void onResume(){
         super.onResume();
         LocalBroadcastManager.getInstance(this).registerReceiver(BReceiver, new IntentFilter("message"));
-        setTheme(prefUtils.getBool(PREF_BLACK_THEME) ? R.style.AppTheme_Dark : R.style.AppTheme);
+        setTheme(prefUtils.getBoolTrue(PREF_BLACK_THEME) ? R.style.AppTheme_Dark : R.style.AppTheme);
 
     }
 

@@ -15,7 +15,7 @@
 
         <kpchuck.kklock.preferences.DialogSwitchPreference
             android:key="chooseredthemewhite"
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:title="@string/set_dark_theme"
             app:title="App Restart"
             app:message="@string/app_restart_required"
