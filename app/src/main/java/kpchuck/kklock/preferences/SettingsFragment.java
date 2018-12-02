@@ -40,6 +40,7 @@ import kpchuck.kklock.Checks;
 import kpchuck.kklock.R;
 import kpchuck.kklock.dialogs.ProOptionDialog;
 import kpchuck.kklock.utils.PrefUtils;
+import kpchuck.kklock.xml.XmlUtils;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -69,6 +70,10 @@ public class SettingsFragment extends PreferenceFragment {
         for (ImagePickerPreference imagePicker : findImagePicker()){
             imagePicker.setOnPreferenceClickListener(this::onPreferenceChange);
             imagePickerPreferenceMap.put(imagePicker.getHash(), imagePicker);
+        }
+
+        if (!new XmlUtils().hasResource(getContext(), "layout", "signal_cluster_view")){
+            removeOption();
         }
 
         init();
@@ -173,8 +178,16 @@ public class SettingsFragment extends PreferenceFragment {
         Toast.makeText(getContext(), String.valueOf(obj), Toast.LENGTH_SHORT).show();
     }
 
-    private List<ImagePickerPreference> findImagePicker(){
-        List<ImagePickerPreference> imagePickerPreferenceList = new ArrayList<>();
+    private void removeOption(){
+        getPreferencesByClass(SpinnerPreference.class).forEach(preference -> {
+            if (((Preference) preference).getTitle().equals("Network Icon Position")){
+                ((SpinnerPreference) preference).removeIndex(2);
+            }
+        });
+    }
+
+    private <T> List<T> getPreferencesByClass(Class className){
+        List<T> list = new ArrayList<>();
         PreferenceScreen prefScreen = getPreferenceScreen();
         int prefCount = prefScreen.getPreferenceCount();
 
@@ -185,14 +198,19 @@ public class SettingsFragment extends PreferenceFragment {
                 PreferenceCategory preferenceCategory = (PreferenceCategory) pref;
                 for (int j=0; j< preferenceCategory.getPreferenceCount(); j++) {
                     Preference myPref = preferenceCategory.getPreference(j);
-                    if (myPref.getClass().equals(ImagePickerPreference.class)){
-                        imagePickerPreferenceList.add((ImagePickerPreference) myPref);
-
+                    if (myPref.getClass().equals(className)){
+                        list.add((T) myPref);
                     }
                 }
+            } else if (pref.getClass().equals(className)){
+                list.add((T)pref);
             }
         }
-        return imagePickerPreferenceList;
+        return list;
+    }
+
+    private List<ImagePickerPreference> findImagePicker(){
+        return getPreferencesByClass(ImagePickerPreference.class);
     }
 
     private void init(){

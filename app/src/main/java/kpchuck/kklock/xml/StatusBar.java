@@ -1,12 +1,16 @@
 package kpchuck.kklock.xml;
 
+import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
 
 import org.apache.commons.io.FileUtils;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,8 +34,22 @@ public class StatusBar extends XmlBase{
     private boolean isCentered = false;
     private Element leftPushyElement;
 
-    public StatusBar(XmlUtils utils, PrefUtils prefUtils, File document) throws Exception{
-        super(utils, prefUtils, document);
+    private boolean debug = false;
+    private int counter = 0;
+    private String[] colors = new String[]{
+            "#ff00ff00", // green
+            "#ffff0000", // red
+            "#ff0000ff", // blue
+            "#ff00ffff", // cyan
+            "#ffff00ff", // magenta/pink
+            "#ffffff00", // yellow
+            "#ffffffff", // white
+            "#ff444444", // black
+            "#ffbbbbbb"  // grey
+    };
+
+    public StatusBar(XmlUtils utils, PrefUtils prefUtils, File document, Context context) throws Exception{
+        super(utils, prefUtils, document, context);
     }
 
     @Override
@@ -46,6 +64,11 @@ public class StatusBar extends XmlBase{
 
         statusBarContents = utils.findElementById(status, "@*com.android.systemui:id/status_bar_contents");
         systemIconArea = utils.findElementById(status, "@*com.android.systemui:id/system_icon_area");
+
+        if (debug){
+            setDebug((statusBarContents));
+            setDebug(systemIconArea);
+        }
 
         fixForLg(status, true);
 
@@ -125,6 +148,8 @@ public class StatusBar extends XmlBase{
         textClock.setAttribute("android:singleLine", "true");
         textClock.setAttribute("android:layout_width", width);
         textClock.setAttribute("android:gravity", gravity);
+        if (debug)
+            setDebug(textClock);
 
         setPadding(textClock);
 
@@ -197,6 +222,8 @@ public class StatusBar extends XmlBase{
             // image.setAttribute("android:background", "@*com.android.systemui:drawable/abc_list_selector_holo_light");
             image.setAttribute("android:padding", "2.0dip");
             image.setAttribute("android:scaleType", "centerInside");
+            if (debug)
+                setDebug(image);
 
            insertLeft(image);
         }
@@ -206,6 +233,8 @@ public class StatusBar extends XmlBase{
 
         Element customTextElement = status.createElement("TextView");
         createCustomTextElement(customTextElement);
+        if (debug)
+            setDebug(customTextElement);
 
         // Insert TextView
         insertLeft(customTextElement);
@@ -213,14 +242,72 @@ public class StatusBar extends XmlBase{
 
     private void moveNetworkLeft(){
         int position = prefUtils.getInt(PREF_MOVE_LEFT);
-        if (position == 2) return; // Already on right
+        if (position == 1) return; // Already on right
 
-        Element toInclude = status.createElement("include");
-        toInclude.setAttribute("android:layout_width", "wrap_content");
-        toInclude.setAttribute("android:layout_height", "fill_parent");
-        toInclude.setAttribute("android:layout_marginStart", "2.5dip");
-        toInclude.setAttribute("layout", "@*com.android.systemui:layout/signal_cluster_view");
-        toInclude.setAttribute("android:gravity", "center_vertical");
+        Element toInclude;
+        if (utils.hasResource(context, "layout", "signal_cluster_view")) {
+            toInclude = status.createElement("include");
+            toInclude.setAttribute("android:layout_width", "wrap_content");
+            toInclude.setAttribute("android:layout_height", "fill_parent");
+            toInclude.setAttribute("android:layout_marginStart", "2.5dip");
+            toInclude.setAttribute("layout", "@*com.android.systemui:layout/signal_cluster_view");
+            toInclude.setAttribute("android:gravity", "center_vertical");
+            if (debug)
+                setDebug(toInclude);
+        } else {
+            if (position == 2)
+                return;
+            toInclude = status.createElement("com.android.systemui.statusbar.phone.StatusIconContainer");
+            toInclude.setAttribute("android:id", "@*com.android.systemui:id/statusIcons");
+            toInclude.setAttribute(X_LAYOUT_WIDTH, "0dp");
+            toInclude.setAttribute(X_WEIGHT, "1.0");
+            toInclude.setAttribute(X_LAYOUT_HEIGHT, "match_parent");
+            toInclude.setAttribute("android:paddingEnd", "@*com.android.systemui:dimen/signal_cluster_battery_padding");
+            toInclude.setAttribute(X_GRAVITY, "center_vertical");
+            toInclude.setAttribute("android:layoutDirection", "rtl");
+            toInclude.setAttribute("android:orientation", "horizontal");
+            if (debug)
+                setDebug(toInclude);
+
+            if (prefUtils.getInt(PREF_MOVE_NOTIFICATIONS_RIGHT) == position){
+                Element notification = utils.findElementById(status,
+                        "@*com.android.systemui:id/notification_icon_area");
+                if (debug)
+                    setDebug(notification);
+                Element relativeLayout = status.createElement("RelativeLayout");
+                if (debug)
+                    setDebug(relativeLayout);
+                relativeLayout.setAttribute(X_LAYOUT_WIDTH, "0dp");
+                relativeLayout.setAttribute(X_WEIGHT, "1.0");
+                relativeLayout.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
+                utils.changeAttribute(toInclude, X_LAYOUT_WIDTH, X_WRAP_CONTENT);
+                utils.changeAttribute(notification, X_LAYOUT_WIDTH, X_WRAP_CONTENT);
+                notification.getParentNode().insertBefore(relativeLayout, notification);
+                toInclude.removeAttribute("android:layoutDirection");
+                toInclude.setAttribute("android:layout_alignParentStart", "true");
+                notification.setAttribute("android:layout_toRightOf", "@*com.android.systemui:id/statusIcons");
+                notification.setAttribute("android:layout_alignParentEnd", "true");
+                relativeLayout.appendChild(toInclude);
+                relativeLayout.appendChild(notification);
+            }
+            else {
+                Element rightMostElement;
+                rightMostElement = utils.findElementById(status, "@*com.android.systemui:id/status_bar_left_side");
+                if (rightMostElement != null) {
+                    rightMostElement.appendChild(toInclude);
+                    return;
+                }
+
+                // Either before cutout space or system_icon_area
+                rightMostElement = utils.findElementById(status, "@*com.android.systemui:id/cutout_space_view");
+                if (rightMostElement == null){
+                    rightMostElement = utils.findElementById(status, "@*com.android.systemui:id/system_icon_area");
+                }
+
+                rightMostElement.getParentNode().insertBefore(toInclude, rightMostElement);
+            }
+            return;
+        }
 
         if (position == 0)
             insertLeft(toInclude);
@@ -242,32 +329,14 @@ public class StatusBar extends XmlBase{
         notificationArea.setAttribute(X_LAYOUT_WIDTH, "0.0dip");
         notificationArea.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
         notificationArea.setAttribute(X_WEIGHT, "1.0");
-        if (position == 2)
-            notificationArea.setAttribute("android:layoutDirection", "rtl");
+        notificationArea.setAttribute("android:layoutDirection", "rtl");
+        if (debug)
+            setDebug(notificationArea);
 
-        if (position == 2) {
-            insertInnerRight(notificationArea);
-            utils.changeAttribute(systemIconArea, X_LAYOUT_WIDTH, "0dip");
-            utils.changeAttribute(systemIconArea, X_WEIGHT, "1.0");
-        }
-        else {
+        utils.changeAttribute(systemIconArea, X_WEIGHT, "1.0");
+        utils.changeAttribute(systemIconArea, X_LAYOUT_WIDTH, "0dp");
 
-            notificationArea = status.createElement("LinearLayout");
-            notificationArea.setAttribute("android:orientation", "horizontal");
-            notificationArea.setAttribute(X_ID, "@*com.android.systemui:id/notification_icon_area");
-            notificationArea.setAttribute(X_LAYOUT_WIDTH, "0.0dip");
-            notificationArea.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
-            notificationArea.setAttribute(X_WEIGHT, "1.0");
-            notificationArea.setAttribute("android:weightSum", "100");
-            notificationArea.setAttribute("android:background", "#ffff0000");
-
-            Element v = createViewElement();
-            notificationArea.appendChild(v);
-
-            insertCenter(notificationArea);
-            utils.changeAttribute(systemIconArea, "android:background", "#ff00ff00");
-            utils.changeAttribute(statusBarContents, "android:background", "#ff0000ff");
-        }
+        insertInnerRight(notificationArea);
 
     }
 
@@ -296,9 +365,13 @@ public class StatusBar extends XmlBase{
         else
             statusBarContents.appendChild(linearLayout);
 
-        // If there are right elements or the first one hasnt got layout_width
+        // If there aren't right elements insert
+        // or if the first one hasnt got layout_width and weight
+        // And it isn't moving notifications right
         // Create layout with android:layout_width
-        if (rightElements.size() == 0 || !utils.isPushyOutElement(rightElements.get(0))) {
+        if (rightElements.size() == 0 || (
+                !utils.isPushyOutElement(rightElements.get(0))
+                        && prefUtils.getInt(PREF_MOVE_NOTIFICATIONS_RIGHT) != 1)){
             leftPushyElement = createViewElement();
             linearLayout.appendChild(leftPushyElement);
         }
@@ -327,9 +400,42 @@ public class StatusBar extends XmlBase{
             statusBarContents.removeChild(element);
             linearLayout.appendChild(element);
         }
-        if (leftElements.size() == 0 || !utils.isPushyOutElement(leftElements.get(leftElements.size()-1)))
+        // If no elements insert
+        // OR if the last element doesnt have a weight and notifications or the status icons with a weight arent present
+        if (leftElements.size() == 0 ||
+                (!utils.isPushyOutElement(leftElements.get(leftElements.size()-1))
+                    && (prefUtils.getInt(PREF_MOVE_NOTIFICATIONS_RIGHT) != 0
+                        || (prefUtils.getInt(PREF_MOVE_LEFT) != 0
+                                && !utils.hasResource(context, "layout", "signal_cluster_view")))))
             linearLayout.appendChild(createViewElement());
 
         statusBarContents=linearLayout;
+    }
+
+    private boolean isViewElement(Element testElement){
+        Element viewElement = createViewElement();
+        if (!viewElement.getTagName().equals(testElement.getTagName()))
+            return false;
+        NamedNodeMap map = viewElement.getAttributes();
+        for (int i=0; i<map.getLength(); i++){
+            Node node = map.item(i);
+            if (node.getNodeType() == Node.ATTRIBUTE_NODE){
+                Attr attr = (Attr) node;
+                if (!testElement.hasAttribute(attr.getName()))
+                    return false;
+                Attr testAttr = testElement.getAttributeNode(attr.getName());
+                if (!testAttr.getValue().equals(attr.getValue()))
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    private void setDebug(Element element){
+        utils.changeAttribute(element, "android:background", colors[counter]);
+        counter++;
+        if (counter == colors.length){
+            counter = 0;
+        }
     }
 }

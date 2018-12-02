@@ -28,16 +28,14 @@
             app:imageFilePref="customIconFilePath"/>
 
         <kpchuck.kklock.preferences.SpinnerPreference
-            android:defaultValue="2"
+            android:defaultValue="1"
             android:key="moveLeftPref"
-            app:keys="@array/positions_keys_center"
             app:names="@array/positions_center"
             android:title="Network Icon Position" />
 
         <kpchuck.kklock.preferences.SpinnerPreference
             android:defaultValue="0"
             app:names="@array/positions"
-            app:keys="@array/positions_keys"
             android:key="moveNotificationsRightPref"
             android:title="Notification Icons Position"
             android:summary="This might not work great all the time. So if you have any issues, check if they're still present without this."/>
@@ -61,6 +59,13 @@
             android:key="inputtedCarrierText"
             android:selectAllOnFocus="true"
             android:singleLine="true"
+            android:dependency="@string/key_carrier_text_enable"/>
+
+        <SwitchPreference
+            android:title="Don't allow HTML Formatting"
+            android:key="allowHtmlForCustomText"
+            android:defaultValue="true"
+            android:summary="Turn this off if VPN is displayed instead of custom text."
             android:dependency="@string/key_carrier_text_enable"/>
 
         <SwitchPreference

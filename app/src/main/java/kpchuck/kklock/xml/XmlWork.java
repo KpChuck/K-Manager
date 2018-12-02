@@ -45,7 +45,7 @@ public class XmlWork {
     }
 
     private void modStatusBar() throws Exception{
-        StatusBar statusBar = new StatusBar(utils, prefUtils, new File(srcFolder, "status_bar.xml"));
+        StatusBar statusBar = new StatusBar(utils, prefUtils, new File(srcFolder, "status_bar.xml"), context);
         Element customClock;
         Element hideE;
 

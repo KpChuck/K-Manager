@@ -9,6 +9,7 @@ import kpchuck.kklock.utils.PrefUtils;
 import static kpchuck.kklock.constants.PrefConstants.*;
 import static kpchuck.kklock.constants.XmlConstants.X_LAYOUT_WIDTH;
 import static kpchuck.kklock.constants.XmlConstants.X_WEIGHT;
+import static kpchuck.kklock.constants.XmlConstants.X_WRAP_CONTENT;
 
 public class SystemIcons extends XmlBase{
 
@@ -49,7 +50,7 @@ public class SystemIcons extends XmlBase{
     }
 
     private void hideStatusIcons(){
-        if(prefUtils.getInt(PREF_MOVE_LEFT) == 0) return;
+        if(prefUtils.getInt(PREF_MOVE_LEFT) == 1) return;
 
         NodeList list = getDocumentElement().getElementsByTagName("include");
         Element includeElement = (Element) list.item(0);
@@ -57,7 +58,10 @@ public class SystemIcons extends XmlBase{
             utils.changeAttribute(includeElement, X_LAYOUT_WIDTH, "0dip");
         else {
             includeElement = utils.findElementById(workingCopy, "@*com.android.systemui:id/statusIcons");
-            utils.changeAttribute(includeElement, X_WEIGHT, "0");
+            if (includeElement.hasAttribute(X_WEIGHT))
+                includeElement.removeAttribute(X_WEIGHT);
+            if (getDocumentElement().getAttribute(X_LAYOUT_WIDTH).equals("match_parent"))
+                utils.changeAttribute(getDocumentElement(), X_LAYOUT_WIDTH, X_WRAP_CONTENT);
         }
     }
 

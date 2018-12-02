@@ -12,6 +12,7 @@ import android.util.Xml;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Attr;
@@ -70,6 +71,17 @@ public class XmlUtils {
     public File romzip = new File(Environment.getExternalStorageDirectory() + "/K-Klock/tempF/Rom.zip");
     public File baseFolders = new File(romzip, "assets/overlays/com.android.systemui");
 
+    public boolean hasResource(Context context, String type, String name){
+        try {
+            String packageName = "com.android.systemui";
+            Resources res = context.getPackageManager().getResourcesForApplication(packageName);
+            int id = res.getIdentifier(name, type, packageName);
+            return id != 0;
+        }catch (PackageManager.NameNotFoundException e){
+            return false;
+        }
+    }
+
     public Element getFirstChildElement(Node parent) {
         Element myElement = null;
         NodeList childs = parent.getChildNodes();
@@ -80,6 +92,18 @@ public class XmlUtils {
                 break;
             }else {
                 myElement = null;
+            }
+        }
+        return myElement;
+    }
+
+    public Element getLastChildElement(Node parent){
+        Element myElement = null;
+        NodeList childs = parent.getChildNodes();
+        for (int i = 0; i < childs.getLength(); i++) {
+            Node child = childs.item(i);
+            if (child.getNodeType() == Node.ELEMENT_NODE) {
+                myElement = (Element) child;
             }
         }
         return myElement;
