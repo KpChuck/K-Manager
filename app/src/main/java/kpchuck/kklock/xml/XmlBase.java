@@ -24,11 +24,10 @@ public class XmlBase{
     public Document workingCopy;
     public Context context;
 
-    public XmlBase(XmlUtils utils, PrefUtils prefUtils, File inFile, Context ... contexts) throws Exception{
+    public XmlBase(XmlUtils utils, PrefUtils prefUtils, File inFile, Context context) throws Exception{
         this.utils = utils;
         this.prefUtils = prefUtils;
-        if (contexts.length > 0)
-            this.context=contexts[0];
+        this.context = context;
 
         Document document = utils.getDocument(inFile);
         document = utils.replaceAt(document);
@@ -39,6 +38,10 @@ public class XmlBase{
 
     public void writeDocument(File outFile) throws Exception{
         utils.writeDocToFile(workingCopy, outFile);
+    }
+
+    public String getString(int id){
+        return context.getString(id);
     }
 
     public void createWorkCopy() throws Exception{

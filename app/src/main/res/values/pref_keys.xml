@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- TODO move all keys from PrefConstants.java to here -->
+    <!-- TODO go through code and change all references to PrefConstants.java to here -->
     <string name="key_hide_stock">devHideStockClock</string>
     <string name="key_no_clock_option">prefshowoptionwithnoclock</string>
     <string name="key_statusbar_clock_size">statusBarClockSizePref</string>
@@ -8,4 +10,5 @@
     <string name="pref_hide_icons_lockscreen">hideStatusBaronLockscreen</string>
     <string name="key_carrier_text_enable">showCarrierEverywhereNotJustOnLockscren</string>
     <string name="key_qs_header_switch">qsHeaderSwitchPref</string>
+    <string name="key_hide_carrier_text">hideCarrierTextAlways</string>
 </resources>

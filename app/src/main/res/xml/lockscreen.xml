@@ -3,9 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
+        android:title="Status Bar">
+
+        <SwitchPreference
+            android:title="Hide Carrier Text"
+            android:key="@string/key_hide_carrier_text"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:title="Lockscreen"
+        android:title="Lockscreen Clock"
         >
 
         <SwitchPreference

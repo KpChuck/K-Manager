@@ -1,5 +1,6 @@
 package kpchuck.kklock.xml;
 
+import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
@@ -9,6 +10,7 @@ import org.w3c.dom.Element;
 import java.io.File;
 import java.util.List;
 
+import kpchuck.kklock.R;
 import kpchuck.kklock.utils.PrefUtils;
 
 import static kpchuck.kklock.constants.XmlConstants.X_LAYOUT_WIDTH;
@@ -18,8 +20,8 @@ public class KeyguardStatusBar extends XmlBase {
 
     private Element carrierTextElement;
 
-    public KeyguardStatusBar(XmlUtils utils, PrefUtils prefUtils, File document) throws Exception{
-        super(utils, prefUtils, document);
+    public KeyguardStatusBar(XmlUtils utils, PrefUtils prefUtils, File document, Context context) throws Exception{
+        super(utils, prefUtils, document, context);
     }
 
     @Override
@@ -80,7 +82,7 @@ public class KeyguardStatusBar extends XmlBase {
             addCustomTextToLockscreen();
             hideCarrierText();
         }
-        else if (prefUtils.getInt(PREF_MOVE_LEFT) == 0) {
+        else if (prefUtils.getInt(PREF_MOVE_LEFT) == 0 || prefUtils.getBool(getString(R.string.key_hide_carrier_text))) {
             hideCarrierText();
         }
         if (prefUtils.getBool(PREF_BLACKOUT_LOCKSCREEN)){

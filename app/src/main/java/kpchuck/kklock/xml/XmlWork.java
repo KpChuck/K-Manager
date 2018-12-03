@@ -142,7 +142,7 @@ public class XmlWork {
 
     private void modKeyguardStatusBar() throws Exception{
 
-        KeyguardStatusBar keyguardStatusBar = new KeyguardStatusBar(utils, prefUtils, new File(srcFolder, "keyguard_status_bar.xml"));
+        KeyguardStatusBar keyguardStatusBar = new KeyguardStatusBar(utils, prefUtils, new File(srcFolder, "keyguard_status_bar.xml"), context);
 
         String[] unmodPlaces = {utils.getType2(context, R.string.right_no_clock), utils.getType2(context, R.string.right_dynamic),
                 utils.getType2(context, R.string.right_stock), context.getString(R.string.right_clock),
@@ -167,7 +167,7 @@ public class XmlWork {
     }
 
     private void modSystemIcons() throws Exception{
-        SystemIcons systemIcons = new SystemIcons(utils, prefUtils, new File(srcFolder, "/system_icons.xml"));
+        SystemIcons systemIcons = new SystemIcons(utils, prefUtils, new File(srcFolder, "/system_icons.xml"), context);
         systemIcons.writeDocument(new File(utils.baseFolders, "res/layout/system_icons.xml"));
     }
 

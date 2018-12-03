@@ -1,5 +1,7 @@
 package kpchuck.kklock.xml;
 
+import android.content.Context;
+
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -16,8 +18,8 @@ public class SystemIcons extends XmlBase{
     private boolean batteryIconGone = false;
     private Element battery;
 
-    public SystemIcons(XmlUtils utils, PrefUtils prefUtils, File inFile) throws Exception{
-        super(utils, prefUtils, inFile);
+    public SystemIcons(XmlUtils utils, PrefUtils prefUtils, File inFile, Context context) throws Exception{
+        super(utils, prefUtils, inFile, context);
     }
 
     @Override
