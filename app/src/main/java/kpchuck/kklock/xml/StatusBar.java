@@ -365,15 +365,29 @@ public class StatusBar extends XmlBase{
         else
             statusBarContents.appendChild(linearLayout);
 
+        // Gotta check if first element and all its first children are pushy elements
+        Element firstCheck = rightElements.get(0);
+        boolean hasPushyElement = utils.isPushyOutElement(firstCheck);
+        boolean insertInside = false;
+        while (firstCheck.hasChildNodes()){
+            Element check = utils.getFirstChildElement(firstCheck);
+            if (check == null) break;
+            firstCheck = check;
+            hasPushyElement = utils.isPushyOutElement(firstCheck);
+            insertInside = true;
+        }
         // If there aren't right elements insert
         // or if the first one hasnt got layout_width and weight
         // And it isn't moving notifications right
         // Create layout with android:layout_width
         if (rightElements.size() == 0 || (
-                !utils.isPushyOutElement(rightElements.get(0))
+                !hasPushyElement
                         && prefUtils.getInt(PREF_MOVE_NOTIFICATIONS_RIGHT) != 1)){
             leftPushyElement = createViewElement();
-            linearLayout.appendChild(leftPushyElement);
+            if (insertInside)
+                utils.insertBefore(leftPushyElement, firstCheck);
+            else
+                linearLayout.appendChild(leftPushyElement);
         }
 
         // Remove all right elements and append them to linearLayout
@@ -400,13 +414,21 @@ public class StatusBar extends XmlBase{
             statusBarContents.removeChild(element);
             linearLayout.appendChild(element);
         }
+
+        // Gotta check if first element and all its first children are pushy elements
+        Element firstCheck = leftElements.get(leftElements.size()-1);
+        boolean hasPushyElement = utils.isPushyOutElement(firstCheck);
+        while (firstCheck.hasChildNodes()){
+            firstCheck = utils.getLastChildElement(firstCheck);
+            hasPushyElement = utils.isPushyOutElement(firstCheck);
+        }
         // If no elements insert
         // OR if the last element doesnt have a weight and notifications or the status icons with a weight arent present
         if (leftElements.size() == 0 ||
-                (!utils.isPushyOutElement(leftElements.get(leftElements.size()-1))
+                (!hasPushyElement)
                     && (prefUtils.getInt(PREF_MOVE_NOTIFICATIONS_RIGHT) != 0
                         || (prefUtils.getInt(PREF_MOVE_LEFT) != 0
-                                && !utils.hasResource(context, "layout", "signal_cluster_view")))))
+                                && !utils.hasResource(context, "layout", "signal_cluster_view"))))
             linearLayout.appendChild(createViewElement());
 
         statusBarContents=linearLayout;

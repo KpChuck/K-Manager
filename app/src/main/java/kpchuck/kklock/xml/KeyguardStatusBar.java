@@ -15,6 +15,7 @@ import kpchuck.kklock.utils.PrefUtils;
 
 import static kpchuck.kklock.constants.XmlConstants.X_LAYOUT_WIDTH;
 import static kpchuck.kklock.constants.PrefConstants.*;
+import static kpchuck.kklock.constants.XmlConstants.X_WEIGHT;
 
 public class KeyguardStatusBar extends XmlBase {
 
@@ -57,11 +58,14 @@ public class KeyguardStatusBar extends XmlBase {
     public void hideStatusIcons(){
         Element superContainer = utils.findElementById(getDocumentElement(),
                 "@*com.android.systemui:id/system_icons_super_container");
+        if (superContainer == null)
+            superContainer = utils.findElementById(workingCopy, "@*com.android.systemui:id/system_icons_container");
         if (superContainer == null && Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1)
             superContainer = utils.findElementById(workingCopy, "@*com.android.systemui:id/status_icon_area");
 
         utils.changeAttribute(superContainer, X_LAYOUT_WIDTH, "0dip");
         superContainer.setAttribute("android:visibility", "gone");
+        superContainer.removeAttribute(X_WEIGHT);
         fixForLg(workingCopy, false);
     }
 
