@@ -3,40 +3,33 @@ package kpchuck.kklock;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.Pair;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import android.os.Bundle;
-import android.view.View;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuItem;
-
-import java.util.ArrayList;
-
-import java.io.IOException;
-import java.io.File;
-import android.net.Uri;
-import android.content.Intent;
 import android.widget.Toast;
 
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
@@ -58,6 +51,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -65,20 +61,19 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cat.ereza.customactivityoncrash.config.CaocConfig;
-
+import kpchuck.kklock.activities.CustomCrashActivity;
 import kpchuck.kklock.activities.InformationWebViewActivity;
 import kpchuck.kklock.activities.MyWelcomeActivity;
 import kpchuck.kklock.activities.SettingsActivity;
 import kpchuck.kklock.adapters.ColorAdapter;
 import kpchuck.kklock.adapters.FormatAdapter;
 import kpchuck.kklock.adapters.SwipeTabAdapter;
-import kpchuck.kklock.fragments.ClockFragment;
-import kpchuck.kklock.preferences.SettingsFragment;
-import kpchuck.kklock.fragments.IconsFragment;
 import kpchuck.kklock.dialogs.InputAlertDialogFragment;
+import kpchuck.kklock.dialogs.TextAlertDialogFragment;
+import kpchuck.kklock.fragments.ClockFragment;
+import kpchuck.kklock.fragments.IconsFragment;
 import kpchuck.kklock.fragments.MiscFragment;
 import kpchuck.kklock.fragments.StatusBarFragment;
-import kpchuck.kklock.dialogs.TextAlertDialogFragment;
 import kpchuck.kklock.interfaces.BtnClickListener;
 import kpchuck.kklock.interfaces.DialogClickListener;
 import kpchuck.kklock.services.CheckforUpdatesService;
@@ -87,7 +82,15 @@ import kpchuck.kklock.utils.FileHelper;
 import kpchuck.kklock.utils.MessageEvent;
 import kpchuck.kklock.utils.PrefUtils;
 
-import static kpchuck.kklock.constants.PrefConstants.*;
+import static kpchuck.kklock.constants.PrefConstants.CHANGELOG_ARRAY;
+import static kpchuck.kklock.constants.PrefConstants.COLOR_TITLES;
+import static kpchuck.kklock.constants.PrefConstants.COLOR_VALUES;
+import static kpchuck.kklock.constants.PrefConstants.FORMAT_TITLES;
+import static kpchuck.kklock.constants.PrefConstants.FORMAT_VALUES;
+import static kpchuck.kklock.constants.PrefConstants.ICON_TITLES;
+import static kpchuck.kklock.constants.PrefConstants.ICON_VALUES;
+import static kpchuck.kklock.constants.PrefConstants.LATEST_GITHUB_VERSION_NAME;
+import static kpchuck.kklock.constants.PrefConstants.PREF_BLACK_THEME;
 
 
 public class MainActivity extends AppCompatActivity implements ColorPickerDialogListener{
@@ -266,9 +269,9 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
 
         // Setup Custom Crash Activity
         CaocConfig.Builder.create()
-                .backgroundMode(CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM) //default: CaocConfig.BACKGROUND_MODE_SHOW_CUSTOM
                 .trackActivities(true) //default: false
                 .restartActivity(MainActivity.class) //default: null (your app's launch activity)
+                .errorActivity(CustomCrashActivity.class)
                 .apply();
 
         if(!hasPermissions(this, PERMISSIONS)){

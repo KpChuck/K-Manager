@@ -123,6 +123,17 @@ android {
         }
     }
 
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+    }
+
 }
 
 
@@ -142,7 +153,7 @@ dependencies {
     //Ziputils
     implementation "org.zeroturnaround:zt-zip:${1.8}"
     //Commons io
-    implementation "commons-io:commons-io:${2.5}"
+    implementation 'commons-io:commons-io:2.5'
     //Loading Animation
     implementation 'com.github.ybq:Android-SpinKit:1.1.0'
     //All those com.android.s
@@ -200,8 +211,9 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.1.1'
     // APK Signer
     implementation 'com.android.tools.build:apksig:3.1.4'
-
-
+    // Gihtub
+    implementation 'org.eclipse.mylyn.github:org.eclipse.egit.github.core:2.1.5'
+    implementation 'com.squareup.okhttp3:okhttp:3.12.0'
 
 
 }

@@ -198,6 +198,9 @@
     <string name="changelogItem">View Changelog</string>
     <string name="aboutItem">About &amp; Licenses</string>
 
+    <!-- Custom crash activity strings -->
+    <string name="customactivityoncrash_send_error">Do you want to let the Dev know about this?</string>
+
     <!-- pro strings -->
     <string name="pro">PRO</string>
     <string name="pro_message">This is a K-Manager Pro feature. If you want to use it upgrade to K-Manager Pro.</string>
@@ -231,6 +234,7 @@
     <string name="open">Open</string>
     <string name="no_clock_added">No Clock added to StatusBar Option</string>
     <string name="title_activity_main_settings">Settings</string>
+
 
     <!-- Strings related to Settings -->
 
