@@ -2,8 +2,6 @@ package kpchuck.kklock.xml;
 
 import android.content.Context;
 import android.os.Build;
-import android.util.Log;
-import android.view.View;
 
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Attr;
@@ -15,15 +13,30 @@ import org.w3c.dom.Node;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import kpchuck.kklock.constants.PrefConstants;
+import kpchuck.kklock.R;
 import kpchuck.kklock.utils.FileHelper;
 import kpchuck.kklock.utils.PrefUtils;
 
-import static kpchuck.kklock.constants.PrefConstants.*;
-import static kpchuck.kklock.constants.XmlConstants.*;
+import static kpchuck.kklock.constants.PrefConstants.DEV_HIDE_CLOCK;
+import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_EVERYWHERE;
+import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_HIDE_NOTIFICATIONS;
+import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_TEXT;
+import static kpchuck.kklock.constants.PrefConstants.PREF_CHANGE_STATBAR_COLOR;
+import static kpchuck.kklock.constants.PrefConstants.PREF_CLOCK_HIDEABLE;
+import static kpchuck.kklock.constants.PrefConstants.PREF_CUSTOM_ICON;
+import static kpchuck.kklock.constants.PrefConstants.PREF_CUSTOM_ICON_FILE;
+import static kpchuck.kklock.constants.PrefConstants.PREF_MOVE_LEFT;
+import static kpchuck.kklock.constants.PrefConstants.PREF_MOVE_NOTIFICATIONS_RIGHT;
+import static kpchuck.kklock.constants.PrefConstants.PREF_STATBAR_COLOR;
+import static kpchuck.kklock.constants.XmlConstants.X_FILL_PARENT;
+import static kpchuck.kklock.constants.XmlConstants.X_GRAVITY;
+import static kpchuck.kklock.constants.XmlConstants.X_ID;
+import static kpchuck.kklock.constants.XmlConstants.X_LAYOUT_HEIGHT;
+import static kpchuck.kklock.constants.XmlConstants.X_LAYOUT_WIDTH;
+import static kpchuck.kklock.constants.XmlConstants.X_WEIGHT;
+import static kpchuck.kklock.constants.XmlConstants.X_WRAP_CONTENT;
 
 public class StatusBar extends XmlBase{
 
@@ -74,6 +87,9 @@ public class StatusBar extends XmlBase{
 
         addCustomIcon();
 
+        if (prefUtils.getBool(getString(R.string.key_hide_carrier_text)))
+            hideCarrierText();
+
         if (prefUtils.getBool(PREF_CARRIER_EVERYWHERE) ){
             if (!prefUtils.getBool(PREF_CARRIER_TEXT)) addCustomTextEverywhere();
             if (prefUtils.getBool(PREF_CARRIER_HIDE_NOTIFICATIONS) && !prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT))
@@ -121,6 +137,18 @@ public class StatusBar extends XmlBase{
         else {
             utils.insertBefore(element, utils.getFirstChildElement(systemIconArea));
         }
+    }
+
+    private void hideCarrierText(){
+        String[] ids = new String[]{"zte_barlabels"};
+        Element carrierText = null;
+        int c = 0;
+        while (carrierText == null || c == ids.length )
+            carrierText = utils.findElementById(status, "@*com.android.systemui:id/"+ids[c++]);
+        if (carrierText == null)
+            return;
+        utils.changeAttribute(carrierText, X_LAYOUT_WIDTH, "0dp");
+        utils.changeAttribute(carrierText, X_WEIGHT, "0");
     }
 
     public Element createClock(boolean stock, String gravity, String width){
