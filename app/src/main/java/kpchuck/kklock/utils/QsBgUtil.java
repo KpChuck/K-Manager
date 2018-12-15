@@ -1,30 +1,24 @@
 package kpchuck.kklock.utils;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.os.Environment;
-import android.preference.Preference;
-import android.preference.PreferenceManager;
-import android.util.Log;
-
 
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import kpchuck.kklock.R;
 import kpchuck.kklock.xml.XmlUtils;
-import static kpchuck.kklock.constants.PrefConstants.*;
-import static kpchuck.kklock.constants.XmlConstants.*;
+
+import static kpchuck.kklock.constants.PrefConstants.PREF_QS_BG;
+import static kpchuck.kklock.constants.PrefConstants.PREF_QS_BG_FILE;
+import static kpchuck.kklock.constants.PrefConstants.PREF_QS_HEADER;
+import static kpchuck.kklock.constants.PrefConstants.PREF_QS_HEADER_FILE;
+import static kpchuck.kklock.constants.XmlConstants.X_LAYOUT_HEIGHT;
+import static kpchuck.kklock.constants.XmlConstants.X_LAYOUT_WIDTH;
 
 /**
  * Created by karol on 20/09/17.
@@ -101,7 +95,7 @@ public class QsBgUtil {
 
         Document xml = xmlUtils.getDocument(qsHeader);
         xmlUtils.replaceAt(xml);
-        xmlUtils.replaceStuffInXml(xml, "?attr/wallpaperTextColorSecondary", "#ffffffff");
+        xmlUtils.replaceStuffInXml(xml, new String[]{"?attr/wallpaperTextColorSecondary"}, new String[]{"#ffffffff"});
 
         Element rootElement = xml.getDocumentElement();
 

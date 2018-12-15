@@ -7,12 +7,8 @@ import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.os.Environment;
 import android.util.Log;
-import android.util.Pair;
-import android.util.Xml;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Attr;
@@ -22,23 +18,17 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
 import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.sax2.Driver;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -49,18 +39,17 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stream.StreamResult;
 
-import kpchuck.kklock.R;
 import kpchuck.kklock.utils.FileHelper;
 
-import static kpchuck.kklock.constants.XmlConstants.*;
+import static kpchuck.kklock.constants.XmlConstants.X_GRAVITY;
+import static kpchuck.kklock.constants.XmlConstants.X_ID;
+import static kpchuck.kklock.constants.XmlConstants.X_LAYOUT_WIDTH;
+import static kpchuck.kklock.constants.XmlConstants.X_WEIGHT;
 
 /**
  * Created by karol on 26/12/17.
@@ -293,24 +282,24 @@ public class XmlUtils {
 
     public Document replaceAt(Document doc) throws Exception{
         findAbnormallyLongGravity(doc.getDocumentElement());
-        doc = replaceStuffInXml(doc, "@+", "@");
-        doc = replaceStuffInXml(doc, "@", "@*com.android.systemui:");
-        doc = replaceStuffInXml(doc, "@*com.android.systemui:android", "@*android");
+        doc = replaceStuffInXml(doc,
+                new String[]{"@+", "@", "@*com.android.system:android"},
+                new String[]{"@", "@*com.android.systemui:", "@*android"});
         return doc;
     }
 
-    public Document replaceStuffInXml(Document doc, String old, String news) throws Exception{
+    public Document replaceStuffInXml(Document doc, String[] old, String[] news) throws Exception{
         TransformerFactory tf = TransformerFactory.newInstance();
         Transformer transformer = tf.newTransformer();
         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
         StringWriter writer = new StringWriter();
         transformer.transform(new DOMSource(doc), new StreamResult(writer));
         String output = writer.getBuffer().toString();
-        output = output.replace(old, news);
+        for (int i=0; i<old.length; i++)
+            output = output.replace(old[i], news[i]);
         doc = stringToDom(output);
         doc.normalizeDocument();
         return doc;
-
     }
 
     public static Document stringToDom(String xmlSource)
