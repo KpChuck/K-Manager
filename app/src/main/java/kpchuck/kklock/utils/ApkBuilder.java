@@ -110,7 +110,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             }
             publishProgress(context.getString(R.string.apkBuilderLoading));
             //TODO Fix translating signing
-            translateAll();
+            //translateAll();
             modTheRomZip();
             insertCustomXmls();
             dealWivQsBg();
