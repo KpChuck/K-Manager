@@ -122,7 +122,7 @@ public class StatusBar extends XmlBase{
         systemIconArea.appendChild(element);
     }
 
-    public void insertCenter(Element element){
+    public void insertCenter(Element element) throws Exception{
         if (!isCentered) center();
         utils.insertBefore(element, systemIconArea);
 
@@ -140,15 +140,18 @@ public class StatusBar extends XmlBase{
     }
 
     private void hideCarrierText(){
-        String[] ids = new String[]{"zte_barlabels"};
-        Element carrierText = null;
+        String[] ids = new String[]{"zte_barlabels", "zte_barlabel", "bar_sim_one", "bar_sim_two"};
+        Element carrierText;
         int c = 0;
-        while (carrierText == null || c == ids.length )
-            carrierText = utils.findElementById(status, "@*com.android.systemui:id/"+ids[c++]);
-        if (carrierText == null)
-            return;
-        utils.changeAttribute(carrierText, X_LAYOUT_WIDTH, "0dp");
-        utils.changeAttribute(carrierText, X_WEIGHT, "0");
+        for (String id: ids) {
+            carrierText = utils.findElementById(status, "@*com.android.systemui:id/" + id);
+            if (carrierText == null)
+                continue;
+            utils.changeAttribute(carrierText, X_LAYOUT_WIDTH, "0dp");
+            utils.changeAttribute(carrierText, X_WEIGHT, "0");
+            utils.changeAttribute(carrierText, "android:addStatesFromChildren", "false");
+            utils.changeAttribute(carrierText, "android:clipChildren", "true");
+        }
     }
 
     public Element createClock(boolean stock, String gravity, String width){
@@ -204,18 +207,19 @@ public class StatusBar extends XmlBase{
         return hideyLayout;
     }
 
-    public void center(){
+    public void center() throws Exception{
         String system_icon_area_id = "@*com.android.systemui:id/system_icon_area";
         ArrayList<Element> rightElements = utils.getRightElementsTo(statusBarContents, "", system_icon_area_id);
         ArrayList<Element> leftElements = utils.getLeftElementsTo(statusBarContents, "", system_icon_area_id);
+        boolean rightElementsIsEmpty = rightElements.isEmpty();
         packRightOf(rightElements);
-        packLeftOf(leftElements);
+        packLeftOf(leftElements, rightElementsIsEmpty);
         isCentered = true;
     }
 
     private void hideStockClock() {
         List<Element> clock_elements = new ArrayList<>();
-        for (String s : new String[]{"clock", "center_clock", "left_clock"}){
+        for (String s : new String[]{"clock", "center_clock", "left_clock", "clock_container"}){
             clock_elements.addAll(utils.findElementsById(status, "@*com.android.systemui:id/"+s));
         }
         for (Element e: clock_elements) {
@@ -268,7 +272,7 @@ public class StatusBar extends XmlBase{
         insertLeft(customTextElement);
     }
 
-    private void moveNetworkLeft(){
+    private void moveNetworkLeft() throws Exception{
         int position = prefUtils.getInt(PREF_MOVE_LEFT);
         if (position == 1) return; // Already on right
 
@@ -378,7 +382,15 @@ public class StatusBar extends XmlBase{
         return view;
     }
 
-    private void packRightOf(ArrayList<Element> rightElements){
+    private void packRightOf(ArrayList<Element> rightElements) throws Exception{
+
+        // Workaround for Miui
+        if (rightElements.size() == 0){
+            List<Element> parents = utils.findElementsById(status, "@*com.android.systemui:id/system_icon_area");
+            Element parent = (Element) parents.get(parents.size()-1).getParentNode();
+            if (utils.isPushyOutElement(parent))
+                rightElements.add(parent);
+        }
 
         Element linearLayout = status.createElement("LinearLayout");
         linearLayout.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
@@ -428,7 +440,13 @@ public class StatusBar extends XmlBase{
         systemIconArea=linearLayout;
     }
 
-    private void packLeftOf(ArrayList<Element> leftElements){
+    private void packLeftOf(ArrayList<Element> leftElements, boolean rightElementsEmpty){
+
+        // Workaround for Miui
+        if (rightElementsEmpty){
+            while (leftElements.size() != 1)
+                leftElements.remove(leftElements.size()-1);
+        }
 
         Element linearLayout = status.createElement("LinearLayout");
         linearLayout.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);

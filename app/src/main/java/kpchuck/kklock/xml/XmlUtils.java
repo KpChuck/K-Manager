@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.LinearLayout;
@@ -99,10 +100,12 @@ public class XmlUtils {
     }
 
 
+    @Nullable
     public Element findElementById(Document document, String idName){
         return findElementById(document.getDocumentElement(), idName);
     }
 
+    @Nullable
     public Element findElementById(Element parentElement, String idName){
         if (parentElement.getAttribute(X_ID).equals(idName)) return parentElement;
 
@@ -126,6 +129,7 @@ public class XmlUtils {
         return layout;
     }
 
+    @Nullable
     public List<Element> findElementsById(Document document, String idName){
         return findElementsById(document.getDocumentElement(), idName, new ArrayList<Element>());
     }

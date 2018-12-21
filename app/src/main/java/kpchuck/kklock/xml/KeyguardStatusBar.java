@@ -1,10 +1,7 @@
 package kpchuck.kklock.xml;
 
 import android.content.Context;
-import android.os.Build;
-import android.util.Log;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.io.File;
@@ -13,8 +10,11 @@ import java.util.List;
 import kpchuck.kklock.R;
 import kpchuck.kklock.utils.PrefUtils;
 
+import static kpchuck.kklock.constants.PrefConstants.PREF_BLACKOUT_LOCKSCREEN;
+import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_EVERYWHERE;
+import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_TEXT;
+import static kpchuck.kklock.constants.PrefConstants.PREF_MOVE_LEFT;
 import static kpchuck.kklock.constants.XmlConstants.X_LAYOUT_WIDTH;
-import static kpchuck.kklock.constants.PrefConstants.*;
 import static kpchuck.kklock.constants.XmlConstants.X_WEIGHT;
 
 public class KeyguardStatusBar extends XmlBase {
@@ -56,12 +56,21 @@ public class KeyguardStatusBar extends XmlBase {
     }
 
     public void hideStatusIcons(){
-        Element superContainer = utils.findElementById(getDocumentElement(),
-                "@*com.android.systemui:id/system_icons_super_container");
-        if (superContainer == null)
-            superContainer = utils.findElementById(workingCopy, "@*com.android.systemui:id/system_icons_container");
-        if (superContainer == null && Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1)
-            superContainer = utils.findElementById(workingCopy, "@*com.android.systemui:id/status_icon_area");
+        String[] ids = new String[]{
+                "system_icons_super_container",
+                "system_icons_container", "status_icon_area"
+        };
+        int c = 0;
+        Element superContainer = null;
+        while (superContainer == null && c != ids.length)
+            superContainer = utils.findElementById(workingCopy, "@*com.android.systemui:id/"+ids[c++]);
+        if (superContainer == null){
+            superContainer = utils.findElementByTag(workingCopy, "include");
+            if (superContainer.hasAttribute("layout") &&
+                    superContainer.getAttribute("layout").equals("@*com.android.systemui:layout/keyguard_status_bar_system_icons_container"))
+                superContainer.getParentNode().removeChild(superContainer);
+            return;
+        }
 
         utils.changeAttribute(superContainer, X_LAYOUT_WIDTH, "0dip");
         superContainer.setAttribute("android:visibility", "gone");
