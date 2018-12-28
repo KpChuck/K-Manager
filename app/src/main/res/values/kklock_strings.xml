@@ -18,6 +18,8 @@
 
     </string-array>
 
+    <string name="res">res</string>
+
     <string name="right_no_clock">Right: No Clock on Lockscreen</string>
     <string name="right_clock">Right: Clock on Lockscreen</string>
     <string name="right_dynamic">Right: Dynamic Clock</string>
@@ -36,7 +38,7 @@
     <string name="sysui_type2_none">Clock Position: Style (Default NONE)</string>
     <string name="sysui_type1a">Clock Color (White)</string>
     <string name="sysui_type1b">Custom Clock Format (Clock with Am/Pm)</string>
-    <string name="sysui_type1c">Font Type (Sans-Serif Normal)</string>
+    <string name="sysui_type1c">Font Type (Roboto Normal)</string>
 
     <string-array name="headers_type1a">
         <item>Seconds 2</item>

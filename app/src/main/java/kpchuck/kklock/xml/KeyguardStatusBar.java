@@ -2,9 +2,7 @@ package kpchuck.kklock.xml;
 
 import android.content.Context;
 import android.os.Build;
-import android.util.Log;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.io.File;
@@ -13,8 +11,11 @@ import java.util.List;
 import kpchuck.kklock.R;
 import kpchuck.kklock.utils.PrefUtils;
 
+import static kpchuck.kklock.constants.PrefConstants.PREF_BLACKOUT_LOCKSCREEN;
+import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_EVERYWHERE;
+import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_TEXT;
+import static kpchuck.kklock.constants.PrefConstants.PREF_MOVE_LEFT;
 import static kpchuck.kklock.constants.XmlConstants.X_LAYOUT_WIDTH;
-import static kpchuck.kklock.constants.PrefConstants.*;
 import static kpchuck.kklock.constants.XmlConstants.X_WEIGHT;
 
 public class KeyguardStatusBar extends XmlBase {
@@ -34,7 +35,7 @@ public class KeyguardStatusBar extends XmlBase {
     public void writeDocuments(List<String> folders) throws Exception{
         for (String s : folders) {
             if (new File(utils.baseFolders, s).exists())
-                writeDocument(new File(utils.baseFolders, s + "/layout/keyguard_status_bar.xml"));
+                writeDocument(new File(utils.baseFolders, s + "/" + XmlWork.layout + "/keyguard_status_bar.xml"));
         }
     }
 
