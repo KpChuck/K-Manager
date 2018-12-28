@@ -340,6 +340,8 @@ public class XmlUtils {
         if (hasAttrs){
             Element rootElement = document.getDocumentElement();
             changeAttribute(rootElement, "xmlns:systemui", "http://schemas.android.com/apk/res-auto");
+            changeAttribute(rootElement, "xmlns:tools", "http://schemas.android.com/tools");
+            changeAttribute(rootElement, "xmlns:app", "http://schemas.android.com/apk/res-auto");
         }
     }
 

@@ -11,7 +11,6 @@ public class PrefConstants {
 
     public static final String CHANGELOG_ARRAY = "changelogArray";
 
-    public static final String DEV_HIDE_CLOCK = "devHideStockClock";
     public static final String DEV_MAKE_DYNAMIC = "devMakeDynamicClock";
 
     // SharedPreferences Keys

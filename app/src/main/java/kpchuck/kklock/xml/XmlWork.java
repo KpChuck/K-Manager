@@ -27,7 +27,7 @@ public class XmlWork {
     private Context context;
     private PrefUtils prefUtils;
     private XmlUtils utils;
-    public static final String layout = "layout-v24";
+    public static final String layout = "layout-v22";
     private String formatXmlPath;
 
     public XmlWork(Context context) throws Exception{

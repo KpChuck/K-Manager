@@ -39,7 +39,6 @@ import kpchuck.kklock.interfaces.DialogClickListener;
 import kpchuck.kklock.utils.FileHelper;
 import kpchuck.kklock.utils.PrefUtils;
 
-import static kpchuck.kklock.constants.PrefConstants.DEV_HIDE_CLOCK;
 import static kpchuck.kklock.constants.PrefConstants.DEV_MAKE_DYNAMIC;
 import static kpchuck.kklock.constants.PrefConstants.PREF_AM;
 import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_CUSTOM_TEXT;
@@ -48,7 +47,6 @@ import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_HIDE_NOTIFICAT
 import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_TEXT;
 import static kpchuck.kklock.constants.PrefConstants.PREF_CHANGE_STATBAR_COLOR;
 import static kpchuck.kklock.constants.PrefConstants.PREF_CLOCK_HIDEABLE;
-import static kpchuck.kklock.constants.PrefConstants.PREF_INDICATORS;
 import static kpchuck.kklock.constants.PrefConstants.PREF_MOVE_LEFT;
 import static kpchuck.kklock.constants.PrefConstants.PREF_MOVE_NOTIFICATIONS_RIGHT;
 import static kpchuck.kklock.constants.PrefConstants.PREF_STATBAR_COLOR;
@@ -127,7 +125,6 @@ public class StatusBarFragment extends Fragment {
         ButterKnife.apply(notifsRightSwitch, ENABLED, prefUtils.getBool(PREF_MOVE_NOTIFICATIONS_RIGHT));
         ButterKnife.apply(statBarColorSwitch, ENABLED, prefUtils.getBool(PREF_CHANGE_STATBAR_COLOR));
         ButterKnife.apply(clockHideableSwitch, ENABLED, prefUtils.getBool(PREF_CLOCK_HIDEABLE));
-        ButterKnife.apply(hideStockSwitch, ENABLED, prefUtils.getBool(DEV_HIDE_CLOCK));
         ButterKnife.apply(makeDynamicSwitch, ENABLED, prefUtils.getBool(DEV_MAKE_DYNAMIC));
 
 
@@ -203,11 +200,6 @@ public class StatusBarFragment extends Fragment {
     @OnClick(R.id.make_dynamic)
     public void checkClicka(){
         prefUtils.setSwitchPrefs(makeDynamicSwitch, DEV_MAKE_DYNAMIC);
-    }
-
-    @OnClick(R.id.hide_stock)
-    public void checkClickc(){
-        prefUtils.setSwitchPrefs(hideStockSwitch, DEV_HIDE_CLOCK);
     }
 
     @OnClick(R.id.clockHideable)

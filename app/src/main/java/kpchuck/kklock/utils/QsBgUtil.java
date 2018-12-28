@@ -12,6 +12,7 @@ import java.io.IOException;
 
 import kpchuck.kklock.R;
 import kpchuck.kklock.xml.XmlUtils;
+import kpchuck.kklock.xml.XmlWork;
 
 import static kpchuck.kklock.constants.PrefConstants.PREF_QS_BG;
 import static kpchuck.kklock.constants.PrefConstants.PREF_QS_BG_FILE;
@@ -72,7 +73,7 @@ public class QsBgUtil {
         fileHelper.newFolder(t + "/res/drawable");
         fileHelper.newFolder(t + "/res/values");
 
-        fileHelper.newFolder(t + "/res/layout");
+        fileHelper.newFolder(t + "/res/" + XmlWork.layout);
     }
 
     private void moveImage(String file_pref, String newName) throws IOException{
@@ -87,15 +88,15 @@ public class QsBgUtil {
 
     private boolean modQsHeader() throws Exception{
 
-        File destFolder = new File(dir,  "/assets/overlays/com.android.systemui.headers/res/layout");
+        File destFolder = new File(dir,  "/assets/overlays/com.android.systemui.headers/res/" + XmlWork.layout);
 
         File qsHeader = new File(Environment.getExternalStorageDirectory() + "/K-Klock/" + inputFolder +  "/quick_status_bar_expanded_header.xml");
         if (!qsHeader.exists()) return false;
         XmlUtils xmlUtils = new XmlUtils();
 
         Document xml = xmlUtils.getDocument(qsHeader);
-        xmlUtils.replaceAt(xml);
-        xmlUtils.replaceStuffInXml(xml, new String[]{"?attr/wallpaperTextColorSecondary"}, new String[]{"#ffffffff"});
+        xml = xmlUtils.replaceAt(xml);
+        xml = xmlUtils.replaceStuffInXml(xml, new String[]{"?attr/wallpaperTextColorSecondary"}, new String[]{"#ffffffff"});
 
         Element rootElement = xml.getDocumentElement();
 

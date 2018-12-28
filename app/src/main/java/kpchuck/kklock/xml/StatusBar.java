@@ -19,7 +19,6 @@ import kpchuck.kklock.R;
 import kpchuck.kklock.utils.FileHelper;
 import kpchuck.kklock.utils.PrefUtils;
 
-import static kpchuck.kklock.constants.PrefConstants.DEV_HIDE_CLOCK;
 import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_EVERYWHERE;
 import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_HIDE_NOTIFICATIONS;
 import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_TEXT;
@@ -81,7 +80,6 @@ public class StatusBar extends XmlBase{
         Element statusBarLeft = utils.findElementById(status, "@*com.android.systemui:id/status_bar_left_side");
         if (statusBarLeft != null){
             statusBarContents = statusBarLeft;
-            isCentered = true;
         }
 
 
@@ -105,9 +103,7 @@ public class StatusBar extends XmlBase{
 
         moveNotificationsRight();
         moveNetworkLeft();
-
-        if (prefUtils.getBool(DEV_HIDE_CLOCK))
-            hideStockClock();
+        hideStockClock();
 
         if (prefUtils.getBool(PREF_CHANGE_STATBAR_COLOR)){
             String bg = "#" + Integer.toHexString(prefUtils.getInt(PREF_STATBAR_COLOR));
@@ -215,6 +211,16 @@ public class StatusBar extends XmlBase{
     }
 
     public void center() throws Exception{
+        if (statusBarContents.getAttribute(X_ID).equals("@*com.android.systemui:id/status_bar_left_side")){
+            for (Element e : new Element[]{(Element) statusBarContents.getParentNode(), systemIconArea}){
+                utils.changeAttribute(e, X_WEIGHT, "1.0");
+                utils.changeAttribute(e, X_LAYOUT_WIDTH, "0dip");
+            }
+            if (!utils.isPushyOutElement(utils.getFirstChildElement(systemIconArea)))
+                utils.insertBefore(createViewElement(), utils.getFirstChildElement(systemIconArea));
+            isCentered = true;
+            return;
+        }
         String system_icon_area_id = "@*com.android.systemui:id/system_icon_area";
         ArrayList<Element> rightElements = utils.getRightElementsTo(statusBarContents, "", system_icon_area_id);
         ArrayList<Element> leftElements = utils.getLeftElementsTo(statusBarContents, "", system_icon_area_id);

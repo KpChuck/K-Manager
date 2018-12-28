@@ -29,10 +29,6 @@
             android:defaultValue="false"
             android:key="@string/key_no_clock_option"
             android:title="@string/no_clock_added" />
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="@string/key_hide_stock"
-            android:title="@string/hide_stock" />
 
         <kpchuck.kklock.preferences.ApiSwitchPreference
             android:defaultValue="false"
