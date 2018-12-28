@@ -315,7 +315,6 @@ public class XmlUtils {
 
     public void writeType2Desc(String desc, String path){
         File file = new File(path);
-      //  String data = "Clock Style (Clock on Lockscreen Center";
         try {
             FileUtils.writeStringToFile(file, desc, "utf-8", false);
         }catch (IOException e){

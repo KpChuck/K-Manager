@@ -34,7 +34,7 @@ public class KeyguardStatusBar extends XmlBase {
     public void writeDocuments(List<String> folders) throws Exception{
         for (String s : folders) {
             if (new File(utils.baseFolders, s).exists())
-                writeDocument(new File(utils.baseFolders, s + "/layout/keyguard_status_bar.xml"));
+                writeDocument(new File(utils.baseFolders, s + "/" + XmlWork.layout + "/keyguard_status_bar.xml"));
         }
     }
 

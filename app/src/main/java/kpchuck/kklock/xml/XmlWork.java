@@ -1,24 +1,24 @@
 package kpchuck.kklock.xml;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Environment;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import kpchuck.kklock.R;
-import kpchuck.kklock.utils.FileHelper;
 import kpchuck.kklock.utils.PrefUtils;
 
-import static kpchuck.kklock.constants.PrefConstants.*;
-import static kpchuck.kklock.constants.XmlConstants.*;
+import static kpchuck.kklock.constants.PrefConstants.DEV_MAKE_DYNAMIC;
+import static kpchuck.kklock.constants.PrefConstants.PREF_INCLUDE_NONE_OPT;
+import static kpchuck.kklock.constants.PrefConstants.PREF_MOVE_LEFT;
+import static kpchuck.kklock.constants.XmlConstants.X_FILL_PARENT;
+import static kpchuck.kklock.constants.XmlConstants.X_ID;
+import static kpchuck.kklock.constants.XmlConstants.X_WRAP_CONTENT;
 
 public class XmlWork {
 
@@ -27,12 +27,15 @@ public class XmlWork {
     private Context context;
     private PrefUtils prefUtils;
     private XmlUtils utils;
+    public static final String layout = "layout-v24";
+    private String formatXmlPath;
 
     public XmlWork(Context context) throws Exception{
 
         this.prefUtils = new PrefUtils(context);
         this.utils = new XmlUtils();
         this.context=context;
+        this.formatXmlPath = utils.baseFolders.getAbsolutePath() + "/%s/%s/%s.xml";
 
         // Start Modding
         makeFolders();
@@ -42,6 +45,10 @@ public class XmlWork {
         modKeyguardStatusBar();
         modSystemIcons();
 
+    }
+
+    private void writeStatusBar(StatusBar statusBar, int clockStyle) throws Exception{
+        statusBar.writeDocument(new File(String.format(formatXmlPath, utils.getType2(context, clockStyle), layout, "status_bar")));
     }
 
     private void modStatusBar() throws Exception{
@@ -54,8 +61,7 @@ public class XmlWork {
         statusBar.createWorkCopy();
         customClock = statusBar.createClock(false, "left|center", X_WRAP_CONTENT);
         statusBar.insertLeft(customClock);
-        statusBar.writeDocument(new File(utils.baseFolders, utils.getType2(context, R.string.left_clock)+"/layout/status_bar.xml"));
-
+        writeStatusBar(statusBar, R.string.left_clock);
         // Left not on lockscreen
         statusBar.createWorkCopy();
         hideE = statusBar.createHideyLayout(X_WRAP_CONTENT, "left");
@@ -63,25 +69,23 @@ public class XmlWork {
         hideE.appendChild(customClock);
         statusBar.insertLeft(hideE);
 
-        statusBar.writeDocument(new File(utils.baseFolders, utils.getType2(context, R.string.left_no_clock)+"/layout/status_bar.xml"));
-
+        writeStatusBar(statusBar, R.string.left_no_clock);
         //Dynamic Clock
         if (prefUtils.getBool(DEV_MAKE_DYNAMIC)){
             utils.changeAttribute(customClock, X_ID, "@*com.android.systemui:id/clock");
-            statusBar.writeDocument(new File(utils.baseFolders, utils.getType2(context, R.string.left_dynamic)+"/layout/status_bar.xml"));
+            writeStatusBar(statusBar, R.string.left_dynamic);
         }
         //Stock-Like
         hideE.removeChild(customClock);
         customClock = statusBar.createClock(true, "left|center", X_WRAP_CONTENT);
         hideE.appendChild(customClock);
-        statusBar.writeDocument(new File(utils.baseFolders, utils.getType2(context, R.string.left_stock)+"/layout/status_bar.xml"));
-
+        writeStatusBar(statusBar, R.string.left_stock);
 
         //Insert Right Clocks First
         // Right on lockscreen
         customClock = statusBar.createClock(false, "start|center", X_WRAP_CONTENT);
         statusBar.insertRight(customClock);
-        statusBar.writeDocument(new File(utils.baseFolders, utils.getType2(context, R.string.right_clock)+"/layout/status_bar.xml"));
+        writeStatusBar(statusBar, R.string.right_clock);
 
         // Right not on lockscreen
         statusBar.createWorkCopy();
@@ -89,20 +93,19 @@ public class XmlWork {
         hideE = statusBar.createHideyLayout(X_FILL_PARENT, "center");
         hideE.appendChild(customClock);
         statusBar.insertRight(hideE);
+        writeStatusBar(statusBar, R.string.right_no_clock);
 
-        statusBar.writeDocument(new File(utils.baseFolders,utils.getType2(context, R.string.right_no_clock)+"/layout/status_bar.xml"));
         // Dynamic
         if (prefUtils.getBool(DEV_MAKE_DYNAMIC)) {
             utils.changeAttribute(customClock, X_ID, "@*com.android.systemui:id/clock");
-            statusBar.writeDocument(new File(utils.baseFolders, utils.getType2(context, R.string.right_dynamic)+"/layout/status_bar.xml"));
+            writeStatusBar(statusBar, R.string.right_dynamic);
         }
 
         // Stock-Like
         hideE.removeChild(customClock);
         customClock = statusBar.createClock(true, "start|center", X_WRAP_CONTENT);
         hideE.appendChild(customClock);
-        statusBar.writeDocument(new File(utils.baseFolders, utils.getType2(context, R.string.right_stock)+"/layout/status_bar.xml"));
-
+        writeStatusBar(statusBar, R.string.right_stock);
 
 
         // Center Clocks
@@ -110,7 +113,7 @@ public class XmlWork {
         statusBar.createWorkCopy();
         customClock = statusBar.createClock(false, "center", X_WRAP_CONTENT);
         statusBar.insertCenter(customClock);
-        statusBar.writeDocument(new File(utils.baseFolders, "res/layout/status_bar.xml"));
+        statusBar.writeDocument(new File(String.format(formatXmlPath, "res", layout, "status_bar")));
 
         // Not on Lockscreen
         statusBar.createWorkCopy();
@@ -118,22 +121,23 @@ public class XmlWork {
         hideE = statusBar.createHideyLayout(X_WRAP_CONTENT, "center");
         hideE.appendChild(customClock);
         statusBar.insertCenter(hideE);
-        statusBar.writeDocument(new File(utils.baseFolders, utils.getType2(context, R.string.center_no_clock)+"/layout/status_bar.xml"));
+        writeStatusBar(statusBar, R.string.center_no_clock);
+
         //Dynamic
         if (prefUtils.getBool(DEV_MAKE_DYNAMIC)){
             customClock = utils.changeAttribute(customClock, X_ID, "@*com.android.systemui:id/clock");
-            statusBar.writeDocument(new File(utils.baseFolders, utils.getType2(context, R.string.center_dynamic)+"/layout/status_bar.xml"));
+            writeStatusBar(statusBar, R.string.center_dynamic);
         }
         //STock-Like
         hideE.removeChild(customClock);
         customClock = statusBar.createClock(true, "center", X_WRAP_CONTENT);
         hideE.appendChild(customClock);
-        statusBar.writeDocument( new File(utils.baseFolders, utils.getType2(context, R.string.center_stock)+"/layout/status_bar.xml"));
+        writeStatusBar(statusBar, R.string.center_stock);
 
         // No Clock
         if (prefUtils.getBool(PREF_INCLUDE_NONE_OPT)) {
             statusBar.createWorkCopy();
-            statusBar.writeDocument(new File(utils.baseFolders, utils.getType2(context, R.string.no_clock) + "/layout/status_bar.xml"));
+            writeStatusBar(statusBar, R.string.no_clock);
         }
 
         utils.writeType2Desc(context.getString(R.string.sysui_type2_center),
@@ -168,7 +172,7 @@ public class XmlWork {
 
     private void modSystemIcons() throws Exception{
         SystemIcons systemIcons = new SystemIcons(utils, prefUtils, new File(srcFolder, "/system_icons.xml"), context);
-        systemIcons.writeDocument(new File(utils.baseFolders, "res/layout/system_icons.xml"));
+        systemIcons.writeDocument(new File(String.format(formatXmlPath, "res", layout, "system_icons")));
     }
 
 
@@ -196,7 +200,7 @@ public class XmlWork {
         if (prefUtils.getBool(PREF_INCLUDE_NONE_OPT))
             startFolder.add(utils.getType2(context, R.string.no_clock));
 
-        startFolder.forEach(k -> new File(String.format("%s/%s/layout", s, k)).mkdirs());
+        startFolder.forEach(k -> new File(String.format("%s/%s/%s", s, k, layout)).mkdirs());
     }
 
     private void translate(){

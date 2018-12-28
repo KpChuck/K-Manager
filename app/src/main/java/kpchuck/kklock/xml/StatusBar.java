@@ -78,6 +78,13 @@ public class StatusBar extends XmlBase{
         statusBarContents = utils.findElementById(status, "@*com.android.systemui:id/status_bar_contents");
         systemIconArea = utils.findElementById(status, "@*com.android.systemui:id/system_icon_area");
 
+        Element statusBarLeft = utils.findElementById(status, "@*com.android.systemui:id/status_bar_left_side");
+        if (statusBarLeft != null){
+            statusBarContents = statusBarLeft;
+            isCentered = true;
+        }
+
+
         if (debug){
             setDebug((statusBarContents));
             setDebug(systemIconArea);

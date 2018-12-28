@@ -18,6 +18,8 @@
 
     </string-array>
 
+    <string name="res">res</string>
+
     <string name="right_no_clock">Right: No Clock on Lockscreen</string>
     <string name="right_clock">Right: Clock on Lockscreen</string>
     <string name="right_dynamic">Right: Dynamic Clock</string>
