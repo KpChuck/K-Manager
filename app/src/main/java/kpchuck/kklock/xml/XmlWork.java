@@ -175,6 +175,13 @@ public class XmlWork {
         systemIcons.writeDocument(new File(String.format(formatXmlPath, "res", layout, "system_icons")));
     }
 
+    private void blackoutTopQs() throws Exception{
+        if (prefUtils.getBool(context.getString(R.string.key_blackout_qs_top))){
+            XmlBase qs = new XmlBase(utils, prefUtils, new File(srcFolder, "quick_status_bar_header_system_icons.xml"), context);
+            utils.changeAttribute(qs.getDocumentElement(), "android:background", "#ff000000");
+            qs.writeDocument(new File(String.format(formatXmlPath, "res", layout, "quick_status_bar_header_system_icons.xml")));
+        }
+    }
 
     private void makeFolders() {
 

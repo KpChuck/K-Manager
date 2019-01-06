@@ -10,4 +10,5 @@
     <string name="key_carrier_text_enable">showCarrierEverywhereNotJustOnLockscren</string>
     <string name="key_qs_header_switch">qsHeaderSwitchPref</string>
     <string name="key_hide_carrier_text">hideCarrierTextAlways</string>
+    <string name="key_blackout_qs_top">blackouttopofqspart</string>
 </resources>

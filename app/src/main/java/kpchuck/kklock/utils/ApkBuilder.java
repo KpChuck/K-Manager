@@ -211,14 +211,13 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         jadx.saveResources();
 
         List<File> xmls = new ArrayList<>();
-        xmls.add(new File(resOut, "res/layout/status_bar.xml"));
-        xmls.add(new File(resOut, "res/layout/keyguard_status_bar.xml"));
-        xmls.add(new File(resOut, "res/layout/system_icons.xml"));
-        xmls.add(new File(resOut, "res/layout/quick_status_bar_expanded_header.xml"));
         File userInput = sysui.getParentFile();
-        for (File f : xmls){
+
+        for (String s: new String[]{"status_bar", "keyguard_status_bar", "system_icons", "quick_status_bar_expanded_header", "quick_status_bar_header_system_icons"}){
+            File f = new File(resOut, String.format("res/layout/%s.xml", s));
             FileUtils.copyFileToDirectory(f, userInput);
         }
+
         fixAttrsDec(new File(resOut, "res/values/attrs.xml"), new File(userInput, "attrs.xml"));
 
 

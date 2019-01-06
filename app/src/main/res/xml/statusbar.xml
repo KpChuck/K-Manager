@@ -131,6 +131,11 @@
             android:title="@string/blackout_lockscreen"
             android:summary="Leaves you with just a black bar at the top of the lockscreen. Very effective for hiding everything, particularly if your lockscreen wallpaper is black at the top."/>
 
+        <SwitchPreference
+            android:key="@string/key_blackout_qs_top"
+            android:title="Blackout Top Qs Bar"
+            android:summary="Change the background color of the top Qs bar from transparent to black. Prevents statusbar icons from showing in Qs."/>
+
     </PreferenceCategory>
 
 
