@@ -25,8 +25,16 @@ public class PrefUtils {
 
     }
 
+    private String getKey(int key){
+        return mContext.getString(key);
+    }
+
     public String getString(String stringPref, String defaultString){
         return myPref.getString(stringPref, defaultString);
+    }
+
+    public String getString(int stringPref, String defaultString){
+        return getString(getKey(stringPref), defaultString);
     }
 
     public void putString (String prefName, String input){
@@ -34,9 +42,17 @@ public class PrefUtils {
         editor.apply();
     }
 
+    public void putString(int prefName, String input){
+        putString(getKey(prefName), input);
+    }
+
     public void putBool (String prefName, boolean input){
         editor.putBoolean(prefName, input);
         editor.apply();
+    }
+
+    public void putBool(int prefName, boolean input){
+        putBool(getKey(prefName), input);
     }
 
     public void remove (String prefName){
@@ -44,16 +60,32 @@ public class PrefUtils {
         editor.apply();
     }
 
+    public void remove(int prefName){
+        remove(getKey(prefName));
+    }
+
     public int getInt(String prefName) {
         return myPref.getInt(prefName, 0);
+    }
+
+    public int getInt(int prefName){
+        return getInt(getKey(prefName));
     }
 
     public boolean getBool(String boolPref){
         return myPref.getBoolean(boolPref, false);
     }
 
+    public boolean getBool(int boolPref){
+        return getBool(getKey(boolPref));
+    }
+
     public boolean getBoolTrue(String boolPref){
         return myPref.getBoolean(boolPref, true);
+    }
+
+    public boolean getBoolTrue(int boolPref){
+        return getBoolTrue(getKey(boolPref));
     }
 
     public void setSwitchPrefs(Switch mswitch, String key){
@@ -66,6 +98,10 @@ public class PrefUtils {
         }
     }
 
+    public void setSwitchPrefs(Switch mswitch, int key){
+        setSwitchPrefs(mswitch, getKey(key));
+    }
+
     public void setCheckboxPrefs(CheckBox mswitch, String key){
         if(mswitch.isChecked()) {
             editor.putBoolean(key, true);
@@ -74,6 +110,10 @@ public class PrefUtils {
             editor.putBoolean(key, false);
             editor.apply();
         }
+    }
+
+    public void setCheckboxPrefs(CheckBox checkBox, int key){
+        setCheckboxPrefs(checkBox, getKey(key));
     }
 
     public void saveArray(ArrayList<String> arrayList, String arrayListKey)
@@ -97,6 +137,10 @@ public class PrefUtils {
         editor.commit();
     }
 
+    public void saveArray(ArrayList<String> arrayList, int arrayListKey){
+        saveArray(arrayList, getKey(arrayListKey));
+    }
+
     public ArrayList<String> loadArray(String arrayListKey)
     {
         ArrayList<String> arrayList = new ArrayList<>();
@@ -111,8 +155,18 @@ public class PrefUtils {
 
     }
 
+    public ArrayList<String> loadArray(int arrayListKey){
+        return loadArray(getKey(arrayListKey));
+    }
+
     public void deleteArrayLists (String[] arrayListsKey){
         for (String s: arrayListsKey) deleteArrayList(s);
+    }
+
+    public void deleteArrayLists(int[] arrayListsKey){
+        for (int key : arrayListsKey){
+            deleteArrayList(getKey(key));
+        }
     }
 
     public void deleteArrayList (String arrayListKey){
@@ -124,4 +178,9 @@ public class PrefUtils {
         editor.remove(arrayListKey);
         editor.apply();
     }
+
+    public void deleteArrayList(int arrayListKey){
+        deleteArrayList(getKey(arrayListKey));
+    }
+
 }
