@@ -23,26 +23,33 @@
 
         <kpchuck.kklock.preferences.ImagePickerPreference
             android:title="@string/custom_icon_statbar"
-            android:key="customIconPref"
+            android:key="@string/key_custom_icon"
             app:imageFilePath="custom__icons"
             app:imageFilePref="customIconFilePath"/>
 
         <kpchuck.kklock.preferences.SpinnerPreference
+            android:defaultValue="0"
+            android:key="@string/key_custom_icon_position"
+            app:names="@array/positions_center"
+            android:title="Custom Icon Position"
+            android:dependency="@string/key_custom_icon"/>
+
+        <kpchuck.kklock.preferences.SpinnerPreference
             android:defaultValue="1"
-            android:key="moveLeftPref"
+            android:key="@string/key_move_network"
             app:names="@array/positions_center"
             android:title="Network Icon Position" />
 
         <kpchuck.kklock.preferences.SpinnerPreference
             android:defaultValue="0"
             app:names="@array/positions"
-            android:key="moveNotificationsRightPref"
+            android:key="@string/key_move_notifications"
             android:title="Notification Icons Position"
             android:summary="This might not work great all the time. So if you have any issues, check if they're still present without this."/>
 
         <SwitchPreference
             android:defaultValue="false"
-            android:key="hideNotificationIconsEverywhere"
+            android:key="@string/key_hide_notifications"
             android:title="@string/hide_notifications"/>
 
     </PreferenceCategory>
@@ -70,7 +77,7 @@
 
         <SwitchPreference
             android:defaultValue="false"
-            android:key="customCarrierTextPref"
+            android:key="@string/key_custom_text_lockscreen"
             android:title="@string/text_on_lockscreen"
             android:dependency="@string/key_carrier_text_enable"/>
 
@@ -102,23 +109,10 @@
         android:summary="Different ways to deal with icons on lockscreen not hiding"
         >
 
-        <kpchuck.kklock.preferences.DialogSwitchPreference
-            android:defaultValue="false"
-            android:key="@string/pref_hide_icons_lockscreen"
-            android:title="@string/hide_icons_lockscreen"
-            android:summary="Hide the statusbar icons like SystemUI tuner would everytime the lockscreen is on."
-            app:title="@string/warning"
-            app:message="@string/hide_icons_warning"
-            app:confirmButton="@string/okay"
-            app:confirmButtonClickListener="kpchuck.kklock.utils.ListenerCollection.hide_icons"
-            />
-
         <SwitchPreference
-            android:dependency="@string/pref_hide_icons_lockscreen"
-            android:defaultValue="false"
-            android:key="hideStatusBarIconsOnLockscreenButNotFully"
-            android:title="@string/leave_wifi_networks"
-            />
+            android:key="@string/key_hide_statusbar_icons_lockscreen"
+            android:title="Hide StatusBar Icons on Lockscreen and Qs"
+            android:summary="Hides the whole statusbar on the lockscreen and when Qs are opened."/>
 
         <SwitchPreference
             android:defaultValue="false"

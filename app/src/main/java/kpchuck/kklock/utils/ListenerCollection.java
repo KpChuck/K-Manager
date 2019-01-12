@@ -1,63 +1,25 @@
 package kpchuck.kklock.utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.preference.Preference;
 import android.preference.SwitchPreference;
 import android.support.v4.app.FragmentActivity;
-import android.widget.Toast;
 
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 
-import kpchuck.kklock.Checks;
 import kpchuck.kklock.R;
-import kpchuck.kklock.dialogs.ProOptionDialog;
 import kpchuck.kklock.dialogs.TextAlertDialogFragment;
 import kpchuck.kklock.interfaces.DialogClickListener;
 import kpchuck.kklock.services.CheckforUpdatesService;
-import kpchuck.kklock.services.HideIconsService;
 
 import static kpchuck.kklock.constants.PrefConstants.PREF_BLACK_THEME;
 
 public class ListenerCollection {
 
     public void doNothing(){
-    }
-
-    public void hide_icons(Context context, SwitchPreference preference){
-        if (!new Checks().isPro(context)){
-            FragmentActivity activity1 = (FragmentActivity) context;
-            new ProOptionDialog().show(activity1.getSupportFragmentManager(), "");
-            preference.setChecked(false);
-            return;
-        }
-        if (preference.isChecked()) {
-            StatusBarIconsUtils utils = new StatusBarIconsUtils();
-            if (utils.hasPerms(context)) {
-                Intent i = new Intent(context, HideIconsService.class);
-                if (Build.VERSION.SDK_INT > 25) context.startForegroundService(i);
-                else context.startService(i);
-            }
-            else {
-                if (utils.setPerms()){
-                    Intent i = new Intent(context, HideIconsService.class);
-                    if (Build.VERSION.SDK_INT > 25) context.startForegroundService(i);
-                    else context.startService(i);
-                }
-                else {
-                    showAdbSteps(context);
-                    preference.setChecked(false);
-                }
-            }
-        }
-        else {
-            Intent i = new Intent(context, HideIconsService.class);
-            context.stopService(i);
-        }
     }
 
     private void showAdbSteps(Context context){

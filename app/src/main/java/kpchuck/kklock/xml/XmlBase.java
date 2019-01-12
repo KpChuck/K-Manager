@@ -8,13 +8,17 @@ import org.w3c.dom.Element;
 
 import java.io.File;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import kpchuck.kklock.utils.PrefUtils;
 
-import static kpchuck.kklock.constants.PrefConstants.*;
-import static kpchuck.kklock.constants.XmlConstants.*;
+import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_CUSTOM_TEXT;
+import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_EVERYWHERE;
+import static kpchuck.kklock.constants.PrefConstants.PREF_HTML_CUSTOM_TEXT;
+import static kpchuck.kklock.constants.XmlConstants.X_FILL_PARENT;
+import static kpchuck.kklock.constants.XmlConstants.X_GRAVITY;
+import static kpchuck.kklock.constants.XmlConstants.X_GRAVITY_CENTER_VERTICAL;
+import static kpchuck.kklock.constants.XmlConstants.X_LAYOUT_HEIGHT;
+import static kpchuck.kklock.constants.XmlConstants.X_LAYOUT_WIDTH;
+import static kpchuck.kklock.constants.XmlConstants.X_WRAP_CONTENT;
 
 public class XmlBase{
 
@@ -77,6 +81,7 @@ public class XmlBase{
 
         if (prefUtils.getBool(PREF_CARRIER_EVERYWHERE)) {
             customTextElement.setAttribute(X_LAYOUT_WIDTH, X_WRAP_CONTENT);
+            customTextElement.setAttribute("android:paddingEnd", "3dp");
         }
         else {
             customTextElement.setAttribute("android:layout_toStartOf", "@*com.android.systemui:id/system_icons_super_container");

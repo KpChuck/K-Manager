@@ -70,10 +70,6 @@ import kpchuck.kklock.adapters.FormatAdapter;
 import kpchuck.kklock.adapters.SwipeTabAdapter;
 import kpchuck.kklock.dialogs.InputAlertDialogFragment;
 import kpchuck.kklock.dialogs.TextAlertDialogFragment;
-import kpchuck.kklock.fragments.ClockFragment;
-import kpchuck.kklock.fragments.IconsFragment;
-import kpchuck.kklock.fragments.MiscFragment;
-import kpchuck.kklock.fragments.StatusBarFragment;
 import kpchuck.kklock.interfaces.BtnClickListener;
 import kpchuck.kklock.interfaces.DialogClickListener;
 import kpchuck.kklock.services.CheckforUpdatesService;
@@ -101,11 +97,6 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
     @BindView (R.id.loadingTextView) TextView loadingTextView;
     @BindView (R.id.defaultLayout) RelativeLayout defaultLayout;
     SwipeTabAdapter tabAdapter;
-    // Fragment Stuff
-    private ClockFragment clockFragment;
-    private IconsFragment iconsFragment;
-    private StatusBarFragment statusBarFragment;
-    private MiscFragment miscFragment;
 
     // Call Strings, Arraylists and Classes for later use
     ArrayList<String> colorsTitles = new ArrayList<>();
@@ -238,19 +229,6 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
         setSupportActionBar(toolbar);
 
         // Setup tabs
-        // Create an adapter that knows which fragment should be shown on each page
-        this.clockFragment = new ClockFragment();
-        this.iconsFragment = new IconsFragment();
-        this.statusBarFragment = new StatusBarFragment();
-        this.miscFragment = new MiscFragment();
-
-
-       // new Checks().checkPro(this);
-        //LocalBroadcastManager.getInstance(this).registerReceiver(BReceiver, new IntentFilter("message"));
-
-       // setTheme(prefUtils.getBool(PREF_BLACK_THEME) ? R.style.AppTheme_Dark : R.style.AppTheme);
-
-        //tabAdapter = new SwipeTabAdapter(getSupportFragmentManager(), clockFragment, iconsFragment, statusBarFragment, miscFragment);
         List<Pair<String, Integer>> fragments = new ArrayList<>();
         fragments.add(new Pair<>("Clock", R.xml.clock));
         fragments.add(new Pair<>("StatusBar", R.xml.statusbar));

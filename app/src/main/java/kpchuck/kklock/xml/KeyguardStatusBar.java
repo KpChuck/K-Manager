@@ -11,9 +11,6 @@ import kpchuck.kklock.R;
 import kpchuck.kklock.utils.PrefUtils;
 
 import static kpchuck.kklock.constants.PrefConstants.PREF_BLACKOUT_LOCKSCREEN;
-import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_EVERYWHERE;
-import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_TEXT;
-import static kpchuck.kklock.constants.PrefConstants.PREF_MOVE_LEFT;
 import static kpchuck.kklock.constants.XmlConstants.X_LAYOUT_WIDTH;
 import static kpchuck.kklock.constants.XmlConstants.X_WEIGHT;
 
@@ -91,11 +88,11 @@ public class KeyguardStatusBar extends XmlBase {
         utils.changeAttribute(carrierTextElement, "android:textAppearance", "?android:textAppearanceSmall");
         getCarrierTextLike();
 
-        if ((prefUtils.getBool(PREF_CARRIER_TEXT) && prefUtils.getBool(PREF_CARRIER_EVERYWHERE))) {
+        if ((prefUtils.getBool(R.string.key_carrier_text_enable) && prefUtils.getBool(R.string.key_custom_text_lockscreen))) {
             addCustomTextToLockscreen();
             hideCarrierText();
         }
-        else if (prefUtils.getInt(PREF_MOVE_LEFT) == 0 || prefUtils.getBool(getString(R.string.key_hide_carrier_text))) {
+        else if (prefUtils.getBool(R.string.key_hide_carrier_text)) {
             hideCarrierText();
         }
         if (prefUtils.getBool(PREF_BLACKOUT_LOCKSCREEN)){

@@ -11,4 +11,11 @@
     <string name="key_qs_header_switch">qsHeaderSwitchPref</string>
     <string name="key_hide_carrier_text">hideCarrierTextAlways</string>
     <string name="key_blackout_qs_top">blackouttopofqspart</string>
+    <string name="key_move_network">moveLeftPref</string>
+    <string name="key_move_notifications">moveNotificationsRightPref</string>
+    <string name="key_custom_icon_position">customiconposition</string>
+    <string name="key_custom_icon">customIconPref</string>
+    <string name="key_hide_notifications">hideNotificationIconsEverywhere</string>
+    <string name="key_custom_text_lockscreen">customCarrierTextPref</string>
+    <string name="key_hide_statusbar_icons_lockscreen">hideallstatusbariconsonlockscreen</string>
 </resources>

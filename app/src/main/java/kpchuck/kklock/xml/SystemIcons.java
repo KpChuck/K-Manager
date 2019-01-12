@@ -7,8 +7,12 @@ import org.w3c.dom.NodeList;
 
 import java.io.File;
 
+import kpchuck.kklock.R;
 import kpchuck.kklock.utils.PrefUtils;
-import static kpchuck.kklock.constants.PrefConstants.*;
+
+import static kpchuck.kklock.constants.PrefConstants.PREF_HIDE_BATTERY_ICON;
+import static kpchuck.kklock.constants.PrefConstants.PREF_MINIT;
+import static kpchuck.kklock.constants.PrefConstants.PREF_MOVE_LEFT;
 import static kpchuck.kklock.constants.XmlConstants.X_LAYOUT_WIDTH;
 import static kpchuck.kklock.constants.XmlConstants.X_WEIGHT;
 import static kpchuck.kklock.constants.XmlConstants.X_WRAP_CONTENT;
@@ -52,19 +56,23 @@ public class SystemIcons extends XmlBase{
     }
 
     private void hideStatusIcons(){
-        if(prefUtils.getInt(PREF_MOVE_LEFT) == 1) return;
+        if(prefUtils.getInt(PREF_MOVE_LEFT) == XmlUtils.RIGHT &&
+                prefUtils.getInt(R.string.key_move_notifications) != XmlUtils.RIGHT) return;
 
         NodeList list = getDocumentElement().getElementsByTagName("include");
         Element includeElement = (Element) list.item(0);
-        if (includeElement != null)
-            utils.changeAttribute(includeElement, X_LAYOUT_WIDTH, "0dip");
-        else {
-            includeElement = utils.findElementById(workingCopy, "@*com.android.systemui:id/statusIcons");
-            if (includeElement.hasAttribute(X_WEIGHT))
-                includeElement.removeAttribute(X_WEIGHT);
-            if (getDocumentElement().getAttribute(X_LAYOUT_WIDTH).equals("match_parent"))
-                utils.changeAttribute(getDocumentElement(), X_LAYOUT_WIDTH, X_WRAP_CONTENT);
+        if (includeElement != null) {
+            if (prefUtils.getInt(R.string.key_move_network) != XmlUtils.RIGHT)
+                utils.changeAttribute(includeElement, X_LAYOUT_WIDTH, "0dip");
+            return;
         }
+        includeElement = utils.findElementById(workingCopy, "@*com.android.systemui:id/statusIcons");
+        includeElement.removeAttribute(X_WEIGHT);
+        if (prefUtils.getInt(R.string.key_move_notifications) == XmlUtils.RIGHT)
+            getDocumentElement().setAttribute(X_LAYOUT_WIDTH, X_WRAP_CONTENT);
+        else
+            utils.insertBefore(utils.createViewElement(workingCopy), includeElement);
+
     }
 
     private void setupSystem(){

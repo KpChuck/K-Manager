@@ -49,6 +49,7 @@ import kpchuck.kklock.utils.FileHelper;
 
 import static kpchuck.kklock.constants.XmlConstants.X_GRAVITY;
 import static kpchuck.kklock.constants.XmlConstants.X_ID;
+import static kpchuck.kklock.constants.XmlConstants.X_LAYOUT_HEIGHT;
 import static kpchuck.kklock.constants.XmlConstants.X_LAYOUT_WIDTH;
 import static kpchuck.kklock.constants.XmlConstants.X_WEIGHT;
 
@@ -60,6 +61,18 @@ public class XmlUtils {
 
     public File romzip = new File(Environment.getExternalStorageDirectory() + "/K-Klock/tempF/Rom.zip");
     public File baseFolders = new File(romzip, "assets/overlays/com.android.systemui");
+    private boolean hasRightInserted = false;
+    public static final int LEFT = 0;
+    public static final int RIGHT = 1;
+    public static final int CENTER = 2;
+
+    public boolean isHasRightInserted() {
+        return hasRightInserted;
+    }
+
+    public void setHasRightInserted(boolean hasRightInserted) {
+        this.hasRightInserted = hasRightInserted;
+    }
 
     public boolean hasResource(Context context, String type, String name){
         try {
@@ -135,7 +148,7 @@ public class XmlUtils {
     }
 
     public List<Element> findElementsById(Element parentElement, String idName, List<Element> elements){
-        if (parentElement.getAttribute(X_ID).equals(idName)) elements.add(parentElement);
+        //if (parentElement.getAttribute(X_ID).equals(idName)) elements.add(parentElement);
 
 
         NodeList list = parentElement.getChildNodes();
@@ -192,6 +205,33 @@ public class XmlUtils {
         return (Element) elements.item(0);
     }
 
+    @Nullable
+    public Element findElementByTagAttr(Element parentElement, String tagName, String attrName, String attrValue){
+        if (isTheTagElement(parentElement, tagName, attrName, attrValue))
+            return parentElement;
+
+        NodeList elements = parentElement.getElementsByTagName(tagName);
+        for (int i = 0; i<elements.getLength(); i++){
+            Element element = (Element) elements.item(i);
+            if (isTheTagElement(element, tagName, attrName, attrValue))
+                return element;
+        }
+        return null;
+    }
+
+    public Element createViewElement(Document doc){
+        Element view = doc.createElement("View");
+        view.setAttribute("android:visibility", "invisible");
+        view.setAttribute(X_LAYOUT_WIDTH, "0.0dip");
+        view.setAttribute(X_LAYOUT_HEIGHT, "fill_parent");
+        view.setAttribute(X_WEIGHT, "1.0");
+
+        return view;
+    }
+
+    private boolean isTheTagElement(Element element, String elementTag, String attrName, String attrValue){
+        return element.getTagName().equals(elementTag) && element.getAttribute(attrName).equals(attrValue);
+    }
 
     private boolean isTheElement(Element element, String layoutTag, String idName){
         return isTheElement(element, layoutTag, idName, X_ID);
@@ -203,6 +243,11 @@ public class XmlUtils {
 
         Attr attr = element.getAttributeNode(attributeName);
         return attr != null && attr.getValue().equals(idName);
+    }
+
+    public void removeElement(Element element){
+        if (element.getParentNode() != null)
+            element.getParentNode().removeChild(element);
     }
 
     public Element changeAttribute(Element element, String attribute, String value){
@@ -345,6 +390,10 @@ public class XmlUtils {
         }
     }
 
+    public boolean isWeightedElement(Element element){
+        return isPushyOutElement(element);
+    }
+
     public boolean isPushyOutElement(Element element){
         if (element.hasAttribute(X_WEIGHT) && element.hasAttribute(X_LAYOUT_WIDTH)) {
             String weight = element.getAttribute(X_WEIGHT).substring(0, 1);
@@ -377,6 +426,16 @@ public class XmlUtils {
 
     public void insertBefore(Element toInsert, Element insertBefore){
         insertBefore.getParentNode().insertBefore(toInsert, insertBefore);
+    }
+
+    public ArrayList<Element> getLeftElementsTo(Element parentElement, Element divider){
+        String tagName = null;
+        String idName = null;
+        if (divider.hasAttribute(X_ID))
+            idName = divider.getAttribute(X_ID);
+        else
+            tagName = divider.getTagName();
+        return getLeftElementsTo(parentElement, tagName, idName);
     }
 
     public ArrayList<Element> getLeftElementsTo(Element parentElement, String tagName, String idName){

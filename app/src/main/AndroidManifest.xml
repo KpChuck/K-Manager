@@ -75,24 +75,6 @@
             android:process=":error_activity"
             android:theme="@style/AppTheme.Dark" />
 
-        <service
-            android:name=".services.HideIconsService"
-            android:label="Hide Icon on Lockscreen Service" />
-
-        <receiver
-            android:name=".services.OnBootReceiver"
-            android:enabled="true"
-            android:exported="true"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-                <!-- For HTC devices -->
-                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
-            </intent-filter>
-        </receiver>
         <receiver
             android:name=".services.ProReceiver"
             android:permission="kpchuck.k_klock.LicenseCheck">

@@ -1,7 +1,5 @@
 package kpchuck.kklock.preferences;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
@@ -14,7 +12,6 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -34,11 +31,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
 
 import kpchuck.kklock.Checks;
 import kpchuck.kklock.R;
-import kpchuck.kklock.dialogs.ProOptionDialog;
 import kpchuck.kklock.utils.PrefUtils;
 import kpchuck.kklock.xml.XmlUtils;
 
@@ -214,7 +209,7 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private void init(){
-        ArrayList<String> stuff = new ArrayList<>(Arrays.asList(getString(R.string.pref_hide_icons_lockscreen), "hideStatusBarIconsOnLockscreenButNotFully",
+        ArrayList<String> stuff = new ArrayList<>(Arrays.asList(getString(R.string.key_hide_statusbar_icons_lockscreen),
                             getString(R.string.key_qs_header_switch), getString(R.string.key_am_everywhere)));
         String not_stuff = "goPro";
         boolean to_pro = new Checks().isPro(getContext());
