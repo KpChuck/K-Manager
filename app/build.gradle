@@ -4,7 +4,7 @@ apply from: 'Constants.gradle'
 
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     buildToolsVersion '28.0.3'
 
     def versionPropsFile = file('version.properties')
@@ -39,7 +39,7 @@ android {
     defaultConfig {
         applicationId "kpchuck.k_klock"
         minSdkVersion 24
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 28
         versionName "32"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
