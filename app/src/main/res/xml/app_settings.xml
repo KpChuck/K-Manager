@@ -46,6 +46,14 @@
             android:title="@string/report_a_bug"
             app:switchListener="kpchuck.kklock.utils.ListenerCollection.report_bug"/>
 
+        <Preference
+            android:key="hellothere"
+            android:title="@string/action_settings">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://www.paypal.me/KarolPrzes"/>
+        </Preference>
+
 
     </PreferenceCategory>
 
