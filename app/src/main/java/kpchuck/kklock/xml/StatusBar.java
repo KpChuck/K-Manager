@@ -125,7 +125,7 @@ public class StatusBar extends XmlBase {
                 new File(new FileHelper().newFolder(utils.baseFolders, "res/drawable"), "abc_list_selector_holo_light.png"));
 
         Element image = workingCopy.createElement("ImageView");
-        image.setAttribute(X_LAYOUT_WIDTH, X_WRAP_CONTENT);
+        image.setAttribute(X_LAYOUT_WIDTH, "@*com.android.systemui:dimen/status_bar_icon_size");
         image.setAttribute(X_LAYOUT_HEIGHT, "@*com.android.systemui:dimen/status_bar_icon_size");
         image.setAttribute("android:src", "@*com.android.systemui:drawable/abc_list_selector_holo_light");
         image.setAttribute("android:padding", "3.0dip");
