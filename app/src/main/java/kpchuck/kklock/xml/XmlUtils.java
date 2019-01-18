@@ -194,6 +194,20 @@ public class XmlUtils {
         return layout;
     }
 
+    public ArrayList<Element> findElementsByTag(Document document, String tagName){
+        return findElementsByTag(document.getDocumentElement(), tagName, new ArrayList<>());
+    }
+
+    public ArrayList<Element> findElementsByTag(Element parent, String tagName, ArrayList<Element> elements){
+        if (parent.getTagName().equals(tagName))
+            elements.add(parent);
+        NodeList es = parent.getElementsByTagName(tagName);
+        for (int i=0; i<es.getLength(); i++)
+            elements.add((Element) es.item(i));
+
+        return elements;
+    }
+
     public Element findElementByTag(Document document, String tagName){
         return findElementByTag(document.getDocumentElement(), tagName);
     }

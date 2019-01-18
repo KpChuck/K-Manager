@@ -92,12 +92,15 @@ public class StatusBar extends XmlBase {
         Element statusBarContents = utils.findElementById(workingCopy, idStart + "status_bar_contents");
 
         left = utils.findElementById(workingCopy, idStart + "status_bar_left_side");
-        // Gotta throw everything into a linear layout now, to left of system_icon_area
-        Element divider = utils.findElementById(workingCopy, idStart + "system_icon_area");
-        Element leftSide = createLinearContainer("left");
-        moveElementsIntoElement(leftSide, utils.getLeftElementsTo(statusBarContents, divider));
-        utils.insertBefore(leftSide, divider);
-        if (left == null) left = leftSide;
+
+        if (left == null) {
+            // Gotta throw everything into a linear layout now, to left of system_icon_area
+            Element divider = utils.findElementById(workingCopy, idStart + "system_icon_area");
+            Element leftSide = createLinearContainer("left");
+            moveElementsIntoElement(leftSide, utils.getLeftElementsTo(statusBarContents, divider));
+            utils.insertBefore(leftSide, divider);
+        }
+        hideOneHighlightHintViewOOS();
 
         right = utils.findElementById(workingCopy, idStart + "system_icon_area");
         right.setAttribute("android:gravity", "right");
@@ -306,6 +309,15 @@ public class StatusBar extends XmlBase {
             networkElement.setAttribute("android:paddingEnd", "3dp");
         }
         return networkElement;
+    }
+
+    private void hideOneHighlightHintViewOOS(){
+        ArrayList<Element> includes = utils.findElementsByTag(workingCopy, "include");
+        for (Element e: includes){
+            if (utils.isWeightedElement(e) && e.hasAttribute("layout") && e.getAttribute("layout").equals(idStart + "highlight_hint_view")){
+                e.removeAttribute(X_WEIGHT);
+            }
+        }
     }
 
     /*
