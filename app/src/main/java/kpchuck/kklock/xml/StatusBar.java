@@ -96,9 +96,9 @@ public class StatusBar extends XmlBase {
         if (left == null) {
             // Gotta throw everything into a linear layout now, to left of system_icon_area
             Element divider = utils.findElementById(workingCopy, idStart + "system_icon_area");
-            Element leftSide = createLinearContainer("left");
-            moveElementsIntoElement(leftSide, utils.getLeftElementsTo(statusBarContents, divider));
-            utils.insertBefore(leftSide, divider);
+            left = createLinearContainer("left");
+            moveElementsIntoElement(left, utils.getLeftElementsTo(statusBarContents, divider));
+            utils.insertBefore(left, divider);
         }
         hideOneHighlightHintViewOOS();
 
