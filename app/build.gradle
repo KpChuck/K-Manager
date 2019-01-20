@@ -51,6 +51,9 @@ android {
     signingConfigs {
         release {
             storeFile file("/home/przestrzelskicom/bin/kmanager_key.jks")
+            if (!storeFile.canRead()){
+                storeFile = file("/home/karol/Documents/AndroidStudioProjects/keys/kmanager_key.jks")
+            }
             storePassword "Password.tar"
             keyAlias "key0"
             keyPassword "Password.tar"
