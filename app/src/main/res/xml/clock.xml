@@ -8,6 +8,14 @@
         android:title="General Clock"
         >
 
+        <kpchuck.kklock.preferences.ApiSwitchPreference
+            android:defaultValue="false"
+            android:key="@string/key_oos_is_bad"
+            android:title="I am using OxygenOS"
+            android:summary="OxygenOS is special and needs workarounds for it to work properly."
+            app:minApi="27"
+        />
+
         <SwitchPreference
             android:defaultValue="false"
             android:key="@string/key_statusbar_clock_size"

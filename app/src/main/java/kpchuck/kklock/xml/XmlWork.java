@@ -103,10 +103,19 @@ public class XmlWork {
 
         // Center Clocks
         // On Lockscreen
+        boolean oos = prefUtils.getBool(R.string.key_oos_is_bad);
+
         statusBar.createWorkCopy(XmlUtils.CENTER);
-        customClock = statusBar.createClock(false, false);
+        customClock = statusBar.createClock(false, oos ? true : false);
+        Element temp = null;
+        if (oos){
+            temp = statusBar.createSystemAreaElement();
+            statusBar.insertCenter(temp);
+        }
         statusBar.insertCenter(customClock);
         statusBar.writeDocument(new File(String.format(formatXmlPath, "res", layout, "status_bar")));
+
+        if (temp != null) utils.removeElement(temp);
 
         // Not on Lockscreen
         utils.removeElement(customClock);
@@ -122,7 +131,7 @@ public class XmlWork {
         //STock-Like
         utils.removeElement(customClock);
         statusBar.removeClock();
-        customClock = statusBar.createClock(true, false);
+        customClock = statusBar.createClock(true, oos ? true : false);
         statusBar.insertCenter(customClock);
         writeStatusBar(statusBar, R.string.center_stock);
 
