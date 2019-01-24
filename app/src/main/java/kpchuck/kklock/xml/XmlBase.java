@@ -66,18 +66,15 @@ public class XmlBase{
         customTextElement.setAttribute(X_GRAVITY, X_GRAVITY_CENTER_VERTICAL);
         customTextElement.setAttribute("android:singleLine", "true");
         customTextElement.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
-        if (prefUtils.getBoolTrue(PREF_HTML_CUSTOM_TEXT)) {
-            String hijack_name = "legacy_vpn_name";
-            //String hijack_name = "accessibility_wimax_signal_full";
-            customTextElement.setAttribute("android:text", "@*com.android.systemui:string/" + hijack_name);
-            File stringsF = new File(utils.baseFolders, "res/values/");
-            stringsF.mkdirs();
-            Log.d("klock", prefUtils.getString(PREF_CARRIER_CUSTOM_TEXT, ""));
-            new XmlCreation().createStringDoc(new File(stringsF, "strings.xml"), hijack_name,
-                    prefUtils.getString(PREF_CARRIER_CUSTOM_TEXT, ""));
-        }
-        else
-            customTextElement.setAttribute("android:text", prefUtils.getString(PREF_CARRIER_CUSTOM_TEXT, ""));
+
+        //String hijack_name = "legacy_vpn_name";
+        String hijack_name = "qs_paging";
+        customTextElement.setAttribute("android:text", "@*com.android.systemui:string/" + hijack_name);
+        File stringsF = new File(utils.baseFolders, "res/values/");
+        stringsF.mkdirs();
+        Log.d("klock", prefUtils.getString(PREF_CARRIER_CUSTOM_TEXT, ""));
+        new XmlCreation().createStringDoc(new File(stringsF, "strings.xml"), hijack_name,
+                prefUtils.getString(PREF_CARRIER_CUSTOM_TEXT, ""));
 
         if (prefUtils.getBool(PREF_CARRIER_EVERYWHERE)) {
             customTextElement.setAttribute(X_LAYOUT_WIDTH, X_WRAP_CONTENT);

@@ -69,13 +69,6 @@
             android:dependency="@string/key_carrier_text_enable"/>
 
         <SwitchPreference
-            android:title="Don't allow HTML Formatting"
-            android:key="allowHtmlForCustomText"
-            android:defaultValue="true"
-            android:summary="Turn this off if VPN is displayed instead of custom text."
-            android:dependency="@string/key_carrier_text_enable"/>
-
-        <SwitchPreference
             android:defaultValue="false"
             android:key="@string/key_custom_text_lockscreen"
             android:title="@string/text_on_lockscreen"
