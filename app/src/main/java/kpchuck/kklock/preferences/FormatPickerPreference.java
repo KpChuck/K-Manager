@@ -155,9 +155,6 @@ public class FormatPickerPreference extends Preference{
             builder.setView(view);
             WebView webView = view.findViewById(R.id.web_view);
             String info = String.format(format_info, fetchColor(R.attr.secondaryBackgroundColor), fetchColor(R.attr.textColor));
-            Toast.makeText(getContext(),
-                    "Background Color: " + fetchColor(R.attr.secondaryBackgroundColor) + " . And textColor " + fetchColor(R.attr.textColor),
-                    Toast.LENGTH_LONG).show();
             webView.loadDataWithBaseURL(null, info, "text/html", "utf-8", null);
 
             builder.setTitle("")

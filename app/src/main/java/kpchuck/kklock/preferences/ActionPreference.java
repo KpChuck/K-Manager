@@ -33,8 +33,6 @@ public class ActionPreference extends Preference {
 
     private boolean onPreferenceClick(Preference preference) {
 
-        Toast.makeText(getContext(), "Hello there", Toast.LENGTH_SHORT).show();
-
         try {
             String className = clickListener.substring(0, clickListener.lastIndexOf("."));
             String methodName = clickListener.substring(clickListener.lastIndexOf(".") + 1);
@@ -42,7 +40,6 @@ public class ActionPreference extends Preference {
             Object obj = Class.forName(className).newInstance();
             Method method = obj.getClass().getMethod(methodName, Context.class, Preference.class);
             method.invoke(obj, getContext(), preference);
-            Toast.makeText(getContext(), "Hello there", Toast.LENGTH_SHORT).show();
 
         } catch (Exception e) {
             Log.e("klock", e.getMessage());

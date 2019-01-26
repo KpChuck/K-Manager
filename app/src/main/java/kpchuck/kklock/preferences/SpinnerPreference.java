@@ -45,7 +45,6 @@ public class SpinnerPreference extends Preference {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 persistInt(i);
-                Toast.makeText(getContext(), String.valueOf(i), Toast.LENGTH_SHORT).show();
             }
 
             @Override
