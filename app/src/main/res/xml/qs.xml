@@ -68,6 +68,20 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory
+        android:title="Lockscreen">
+
+        <SwitchPreference
+            android:title="Hide Carrier Text"
+            android:key="@string/key_hide_carrier_text"/>
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="prefhidelockscreenclock"
+            android:title="@string/hide_lockscreen_clock" />
+
+    </PreferenceCategory>
+
 
 
 </PreferenceScreen>

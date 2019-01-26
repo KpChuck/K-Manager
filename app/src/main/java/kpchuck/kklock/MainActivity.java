@@ -230,8 +230,8 @@ public class MainActivity extends AppCompatActivity implements ColorPickerDialog
         List<Pair<String, Integer>> fragments = new ArrayList<>();
         fragments.add(new Pair<>("Clock", R.xml.clock));
         fragments.add(new Pair<>("StatusBar", R.xml.statusbar));
-        fragments.add(new Pair<>("Lockscreen", R.xml.lockscreen));
-        fragments.add(new Pair<>("Qs & Misc", R.xml.qs));
+        //fragments.add(new Pair<>("Lockscreen", R.xml.lockscreen));
+        fragments.add(new Pair<>("Misc", R.xml.qs));
         fragments.add(new Pair<>("Settings", R.xml.app_settings));
 
         tabAdapter = new SwipeTabAdapter(getFragmentManager(), fragments);
