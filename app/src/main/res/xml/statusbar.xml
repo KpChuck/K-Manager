@@ -21,6 +21,11 @@
             app:cpv_allowPresets="true"
             app:cpv_showDialog="true"/>
 
+	    <SwitchPreference
+		    android:key="@string/key_hide_statusbar_icons_lockscreen"
+		    android:title="Hide StatusBar Icons on Lockscreen and Qs"
+		    android:summary="Hides the whole statusbar on the lockscreen and when Qs are opened."/>
+
         <kpchuck.kklock.preferences.ImagePickerPreference
             android:title="@string/custom_icon_statbar"
             android:key="@string/key_custom_icon"
@@ -77,7 +82,8 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="@string/si_manager">
+        android:title="@string/si_manager"
+	    android:summary="These colors are for the dark icon color. \nLight icon color will be whatever you selected as the clock color in the SystemUI overlay.">
 
         <kpchuck.kklock.preferences.ColorPickerPreference
             android:title="Add a Color"
@@ -94,36 +100,5 @@
 
 
     </PreferenceCategory>
-
-    <PreferenceCategory
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:title="Icon Workarounds"
-        android:summary="Different ways to deal with icons on lockscreen not hiding"
-        >
-
-        <SwitchPreference
-            android:key="@string/key_hide_statusbar_icons_lockscreen"
-            android:title="Hide StatusBar Icons on Lockscreen and Qs"
-            android:summary="Hides the whole statusbar on the lockscreen and when Qs are opened."/>
-
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="hideStatusBarPref"
-            android:title="@string/lockscreen_statusbar_size"
-            android:summary="You can make the lockscreen the same size as the normal statusbar - aligns carrier text and stuff.\nYou can make the size 0 - hides everything so nothing will overlap with the normal statusbar."/>
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="blackoutTheLockscreenStatusbar"
-            android:title="@string/blackout_lockscreen"
-            android:summary="Leaves you with just a black bar at the top of the lockscreen. Very effective for hiding everything, particularly if your lockscreen wallpaper is black at the top."/>
-
-        <SwitchPreference
-            android:key="@string/key_blackout_qs_top"
-            android:title="Blackout Top Qs Bar"
-            android:summary="Change the background color of the top Qs bar from transparent to black. Prevents statusbar icons from showing in Qs."/>
-
-    </PreferenceCategory>
-
 
 </PreferenceScreen>

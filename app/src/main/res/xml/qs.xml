@@ -80,6 +80,13 @@
             android:key="prefhidelockscreenclock"
             android:title="@string/hide_lockscreen_clock" />
 
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="hideStatusBarPref"
+            android:title="@string/lockscreen_statusbar_size"
+            android:summary="You can make the lockscreen the same size as the normal statusbar - aligns carrier text and stuff.\nYou can make the size 0 - hides everything so nothing will overlap with the normal statusbar."/>
+
+
     </PreferenceCategory>
 
 
