@@ -111,6 +111,10 @@ public class StatusBar extends XmlBase {
         setupLeftRight();
         if (!(left.getAttribute(X_ID).equals(idStart + "status_bar_left_side") && utils.isWeightedElement((Element) left.getParentNode())))
             makeWeightedElement(left);
+        if (prefUtils.getBool(R.string.key_oos_is_bad)) {
+            left.removeAttribute(X_WEIGHT);
+            left.setAttribute(X_LAYOUT_WIDTH, X_FILL_PARENT);
+        }
         makeWeightedElement(right);
         center = createLinearContainer("center");
         unweightElement(center);
@@ -359,8 +363,12 @@ public class StatusBar extends XmlBase {
     }
 
     private void makeWeightedElement(Element element){
-        element.setAttribute(X_WEIGHT, "1");
-        element.setAttribute(X_LAYOUT_WIDTH, "0dp");
+        Element temp = element;
+        while (!temp.hasAttribute(X_ID) || !temp.getAttribute(X_ID).equals(idStart + "status_bar_contents")){
+            temp.setAttribute(X_WEIGHT, "1");
+            temp.setAttribute(X_LAYOUT_WIDTH, "0dp");
+            temp = (Element) temp.getParentNode();
+        }
     }
 
     private void unweightElement(Element element){
