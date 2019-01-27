@@ -106,7 +106,7 @@ public class XmlWork {
         boolean oos = prefUtils.getBool(R.string.key_oos_is_bad);
 
         statusBar.createWorkCopy(XmlUtils.CENTER);
-        customClock = statusBar.createClock(false, oos ? true : false);
+        customClock = statusBar.createClock(false, oos);
         Element temp = null;
         if (oos){
             temp = statusBar.createSystemAreaElement();
@@ -131,7 +131,7 @@ public class XmlWork {
         //STock-Like
         utils.removeElement(customClock);
         statusBar.removeClock();
-        customClock = statusBar.createClock(true, oos ? true : false);
+        customClock = statusBar.createClock(true, oos);
         statusBar.insertCenter(customClock);
         writeStatusBar(statusBar, R.string.center_stock);
 
@@ -158,8 +158,13 @@ public class XmlWork {
             // Left and Center - No clock on lockscreen and dynamic
             modPlaces = new String[]{
                     utils.getType2(context, R.string.center_no_clock), utils.getType2(context, R.string.center_dynamic),
-                    utils.getType2(context, R.string.left_no_clock), utils.getType2(context, R.string.left_dynamic)
-            };
+                    utils.getType2(context, R.string.left_no_clock), utils.getType2(context, R.string.left_dynamic)};
+            if (prefUtils.getBool(R.string.key_oos_is_bad))
+                modPlaces = new String[]{
+                        utils.getType2(context, R.string.center_no_clock), utils.getType2(context, R.string.center_dynamic),
+                        utils.getType2(context, R.string.left_no_clock), utils.getType2(context, R.string.left_dynamic),
+                        utils.getType2(context, R.string.center_clock), utils.getType2(context, R.string.center_stock)};
+
         }
 
         // Write unmodified keyguard
