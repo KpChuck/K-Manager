@@ -15,7 +15,9 @@ import kpchuck.kklock.utils.PrefUtils;
 
 import static kpchuck.kklock.constants.PrefConstants.DEV_MAKE_DYNAMIC;
 import static kpchuck.kklock.constants.PrefConstants.PREF_INCLUDE_NONE_OPT;
+import static kpchuck.kklock.constants.XmlConstants.X_FILL_PARENT;
 import static kpchuck.kklock.constants.XmlConstants.X_ID;
+import static kpchuck.kklock.constants.XmlConstants.X_LAYOUT_WIDTH;
 
 public class XmlWork {
 
@@ -81,7 +83,12 @@ public class XmlWork {
         statusBar.createWorkCopy(XmlUtils.RIGHT);
         customClock = statusBar.createClock(false, false);
         statusBar.insertAfterRight(customClock);
+
+        Element sysiconarea = statusBar.createSystemAreaElement();
+        sysiconarea.setAttribute(X_LAYOUT_WIDTH, X_FILL_PARENT);
+        statusBar.insertAtRoot(sysiconarea);
         writeStatusBar(statusBar, R.string.right_clock);
+        utils.removeElement(sysiconarea);
 
         // Right not on lockscreen
         utils.removeElement(customClock);
@@ -158,12 +165,16 @@ public class XmlWork {
             // Left and Center - No clock on lockscreen and dynamic
             modPlaces = new String[]{
                     utils.getType2(context, R.string.center_no_clock), utils.getType2(context, R.string.center_dynamic),
-                    utils.getType2(context, R.string.left_no_clock), utils.getType2(context, R.string.left_dynamic)};
+                    utils.getType2(context, R.string.left_no_clock), utils.getType2(context, R.string.left_dynamic),
+                    utils.getType2(context, R.string.right_clock)
+            };
             if (prefUtils.getBool(R.string.key_oos_is_bad))
                 modPlaces = new String[]{
                         utils.getType2(context, R.string.center_no_clock), utils.getType2(context, R.string.center_dynamic),
                         utils.getType2(context, R.string.left_no_clock), utils.getType2(context, R.string.left_dynamic),
-                        utils.getType2(context, R.string.center_clock), utils.getType2(context, R.string.center_stock)};
+                        utils.getType2(context, R.string.center_clock), utils.getType2(context, R.string.center_stock),
+                        utils.getType2(context, R.string.right_clock)
+                };
 
         }
 
