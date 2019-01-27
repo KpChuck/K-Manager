@@ -29,6 +29,10 @@ public class PrefUtils {
         return mContext.getString(key);
     }
 
+    public void deleteAllPrefs(){
+        editor.clear().apply();
+    }
+
     public String getString(String stringPref, String defaultString){
         return myPref.getString(stringPref, defaultString);
     }

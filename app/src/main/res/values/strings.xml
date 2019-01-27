@@ -199,7 +199,7 @@
     <string name="aboutItem">About &amp; Licenses</string>
 
     <!-- Custom crash activity strings -->
-    <string name="customactivityoncrash_send_error">Do you want to let the Dev know about this?</string>
+    <string name="customactivityoncrash_send_error">Let the Dev know about this crash.</string>
 
     <!-- pro strings -->
     <string name="pro">PRO</string>

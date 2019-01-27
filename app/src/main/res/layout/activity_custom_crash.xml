@@ -62,8 +62,18 @@
                     android:layout_height="match_parent"
                     android:layout_marginRight="@dimen/customactivityoncrash_button_spacing"
                     android:layout_marginLeft="@dimen/customactivityoncrash_button_spacing"
-                    android:text="Send Dev Details"
-                    android:id="@+id/crash_send_details"
+                    android:text="Telegram"
+                    android:id="@+id/crash_telegram_group"
+                    />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="@dimen/customactivityoncrash_button_spacing"
+                    android:layout_marginLeft="@dimen/customactivityoncrash_button_spacing"
+                    android:text="Gmail"
+                    android:id="@+id/crash_gmail"
                     />
 
                 <Button
@@ -73,9 +83,16 @@
                     android:layout_marginLeft="@dimen/customactivityoncrash_button_spacing"
                     android:layout_marginRight="@dimen/customactivityoncrash_button_spacing"
                     android:layout_weight="1"
-                    android:text="Open Github Issue" />
+                    android:text="Github" />
 
             </LinearLayout>
+
+            <Button
+                android:id="@+id/crash_clear_app_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/customactivityoncrash_activity_vertical_margin"
+                android:text="Clear App Data and Restart" />
 
             <Button
                 android:id="@+id/customactivityoncrash_error_activity_restart_button"
