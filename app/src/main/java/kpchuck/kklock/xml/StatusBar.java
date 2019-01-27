@@ -62,6 +62,14 @@ public class StatusBar extends XmlBase {
     }
 
     public void insertRight(Element element){
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1 && utils.getChildElements(right).size() == 1){
+            Element include = utils.getChildElements(right).get(0);
+            if (include.getAttribute("layout").equals("@*com.android.systemui:layout/system_icons")){
+                include.setAttribute(X_LAYOUT_WIDTH, "0dip");
+                include.setAttribute(X_WEIGHT, "1.0");
+                include.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
+            }
+        }
         right.appendChild(element);
     }
 
