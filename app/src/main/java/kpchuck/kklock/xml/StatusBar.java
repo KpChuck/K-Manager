@@ -130,7 +130,7 @@ public class StatusBar extends XmlBase {
     }
 
     private void hideClock(){
-        hideElements(new String[]{"clock", "center_clock", "left_clock", "clock_container"});
+        hideElements(new String[]{"clock", "center_clock", "left_clock", "clock_container", "right_clock_container", "left_clock_container"});
     }
 
     private void addCustomIcon() throws IOException {
@@ -222,8 +222,9 @@ public class StatusBar extends XmlBase {
     }
 
     public void removeClock(){
-        for (Element clock : utils.findElementsById(workingCopy, idStart + "clock"))
+        for (Element clock : utils.findElementsById(workingCopy, idStart + "clock")) {
             utils.removeElement(clock);
+        }
     }
 
     public Element createClock(boolean stock, boolean wrapInSystemIconArea){
