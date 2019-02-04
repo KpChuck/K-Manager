@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import kpchuck.kklock.R;
+import kpchuck.kklock.utils.PrefUtils;
 
 public class SpinnerPreference extends Preference {
 
@@ -70,7 +71,11 @@ public class SpinnerPreference extends Preference {
 
     @Override
     protected void onSetInitialValue(boolean restore, Object defaultValue) {
-        persistInt(restore ? getPersistedInt(-22) : (Integer) defaultValue);
+        try {
+            persistInt(restore ? getPersistedInt(-22) : (Integer) defaultValue);
+        }catch (ClassCastException e){
+            new PrefUtils(getContext()).remove(getKey());
+        }
     }
     @Override
     protected Object onGetDefaultValue(TypedArray a, int index) {
