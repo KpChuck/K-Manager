@@ -234,8 +234,6 @@ public class StatusBar extends XmlBase {
         if (stock) {
             textClock = workingCopy.createElement("com.android.systemui.statusbar.policy.Clock");
             textClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
-            int style = prefUtils.getInt("clockAmStyle");
-            textClock.setAttribute("systemui:amPmStyle", String.valueOf(style));
         }
         else {
             textClock = workingCopy.createElement("TextClock");
