@@ -19,4 +19,5 @@
     <string name="key_custom_text_lockscreen">customCarrierTextPref</string>
     <string name="key_hide_statusbar_icons_lockscreen">hideallstatusbariconsonlockscreen</string>
     <string name="key_oos_is_bad">oosMessedStuffUpsobaditneedsitsownsetting</string>
+    <string name="key_pref_icon">iconPref</string>
 </resources>

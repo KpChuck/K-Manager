@@ -85,18 +85,24 @@
         android:title="@string/si_manager"
 	    android:summary="These colors are for the dark icon color. \nLight icon color will be whatever you selected as the clock color in the SystemUI overlay.">
 
+	    <SwitchPreference
+		    android:title="Theme Icons"
+		    android:key="@string/key_pref_icon"/>
+
         <kpchuck.kklock.preferences.ColorPickerPreference
             android:title="Add a Color"
             app:keyNames="iconsTitles"
             app:keyValues="iconsValues"
-            app:nameHint="Add a Color"/>
+            app:nameHint="Add a Color"
+	        android:dependency="@string/key_pref_icon"/>
 
         <kpchuck.kklock.preferences.ListDialogPreference
             app:showColors="true"
             app:textArray="@array/included_icons_title"
             app:colorArray="@array/included_icons_value"
             android:title="See Included Icon Colors"
-            android:dialogTitle="Icon Colors"/>
+            android:dialogTitle="Icon Colors"
+	        android:dependency="@string/key_pref_icon"/>
 
 
     </PreferenceCategory>
