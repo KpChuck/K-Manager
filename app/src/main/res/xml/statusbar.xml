@@ -14,7 +14,7 @@
 
         <com.jaredrummler.android.colorpicker.ColorPreference
             android:dependency="changeStatusbarColor"
-            android:key="newStatBarColor"
+            android:key="@string/key_new_statusbar_color"
             android:title="Statusbar Color"
             app:cpv_allowCustom="true"
             app:cpv_showAlphaSlider="true"

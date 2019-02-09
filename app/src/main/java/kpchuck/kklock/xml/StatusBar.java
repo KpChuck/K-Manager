@@ -20,7 +20,6 @@ import static kpchuck.kklock.constants.PrefConstants.PREF_CHANGE_STATBAR_COLOR;
 import static kpchuck.kklock.constants.PrefConstants.PREF_CLOCK_HIDEABLE;
 import static kpchuck.kklock.constants.PrefConstants.PREF_CUSTOM_ICON;
 import static kpchuck.kklock.constants.PrefConstants.PREF_CUSTOM_ICON_FILE;
-import static kpchuck.kklock.constants.PrefConstants.PREF_STATBAR_COLOR;
 import static kpchuck.kklock.constants.XmlConstants.X_FILL_PARENT;
 import static kpchuck.kklock.constants.XmlConstants.X_GRAVITY;
 import static kpchuck.kklock.constants.XmlConstants.X_ID;
@@ -89,7 +88,7 @@ public class StatusBar extends XmlBase {
         moveNotificationAndNetwork();
         if (prefUtils.getBool(PREF_CHANGE_STATBAR_COLOR)){
             Element statusBarContents = utils.findElementById(workingCopy, idStart + "status_bar_contents");
-            String bg = "#" + Integer.toHexString(prefUtils.getInt(PREF_STATBAR_COLOR));
+            String bg = "#" + Integer.toHexString(prefUtils.getInt(R.string.key_new_statusbar_color));
             if (bg.equals("#0")) bg = "#ff000000";
             statusBarContents.setAttribute("android:background", bg);
         }

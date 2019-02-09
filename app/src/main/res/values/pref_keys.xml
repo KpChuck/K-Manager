@@ -20,4 +20,5 @@
     <string name="key_hide_statusbar_icons_lockscreen">hideallstatusbariconsonlockscreen</string>
     <string name="key_oos_is_bad">oosMessedStuffUpsobaditneedsitsownsetting</string>
     <string name="key_pref_icon">iconPref</string>
+	<string name="key_new_statusbar_color">changestatusbarcolortothis</string>
 </resources>
