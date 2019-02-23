@@ -79,6 +79,8 @@ public class KeyguardStatusBar extends XmlBase {
         Element carrierTextElement = utils.findElementById(workingCopy, "@*com.android.systemui:id/keyguard_carrier_text");
         if (carrierTextElement == null)
             carrierTextElement = utils.findElementLikeId(workingCopy, "@*com.android.systemui:id/keyguard_carrier_text");
+        if (carrierTextElement == null)
+            carrierTextElement =utils.findElementById(workingCopy, "@*com.android.systemui:id/operator_name_container");
         this.carrierTextElement=carrierTextElement;
     }
 
@@ -86,7 +88,6 @@ public class KeyguardStatusBar extends XmlBase {
         getCarrierTextLike();
         utils.changeAttribute(carrierTextElement, "android:textColor", "#ffffffff");
         utils.changeAttribute(carrierTextElement, "android:textAppearance", "?android:textAppearanceSmall");
-        getCarrierTextLike();
 
         if ((prefUtils.getBool(R.string.key_carrier_text_enable) && prefUtils.getBool(R.string.key_custom_text_lockscreen))) {
             addCustomTextToLockscreen();
