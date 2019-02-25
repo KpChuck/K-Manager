@@ -10,7 +10,6 @@
     <string name="key_carrier_text_enable">showCarrierEverywhereNotJustOnLockscren</string>
     <string name="key_qs_header_switch">qsHeaderSwitchPref</string>
     <string name="key_hide_carrier_text">hideCarrierTextAlways</string>
-    <string name="key_blackout_qs_top">blackouttopofqspart</string>
     <string name="key_move_network">moveLeftPref</string>
     <string name="key_move_notifications">moveNotificationsRightPref</string>
     <string name="key_custom_icon_position">customiconposition</string>

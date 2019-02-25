@@ -213,7 +213,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         List<File> xmls = new ArrayList<>();
         File userInput = sysui.getParentFile();
 
-        for (String s: new String[]{"status_bar", "keyguard_status_bar", "system_icons", "quick_status_bar_expanded_header", "quick_status_bar_header_system_icons"}){
+        for (String s: new String[]{"status_bar", "keyguard_status_bar", "system_icons", "quick_status_bar_expanded_header"}){
             File f = new File(resOut, String.format("res/layout/%s.xml", s));
             FileUtils.copyFileToDirectory(f, userInput);
         }
