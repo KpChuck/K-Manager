@@ -138,7 +138,7 @@ public class CustomCrashActivity extends AppCompatActivity {
         findViewById(R.id.crash_github_issue).setOnClickListener(view -> {
             copyErrorToClipboard();
             Toast.makeText(CustomCrashActivity.this, "Error details copied to clipboard.\nPaste them into the github issue", Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/KpChuck/K-Manager/issues/new/choose"));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(CustomCrashActivity.this.getString(R.string.github_issues)));
             startActivity(intent);
         });
 

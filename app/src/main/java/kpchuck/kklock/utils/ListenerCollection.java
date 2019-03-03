@@ -11,6 +11,7 @@ import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 
 import kpchuck.kklock.R;
+import kpchuck.kklock.activities.CustomCrashActivity;
 import kpchuck.kklock.dialogs.TextAlertDialogFragment;
 import kpchuck.kklock.interfaces.DialogClickListener;
 import kpchuck.kklock.services.CheckforUpdatesService;
