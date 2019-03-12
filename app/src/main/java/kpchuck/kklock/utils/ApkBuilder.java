@@ -113,7 +113,6 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             //translateAll();
             modTheRomZip();
             insertCustomXmls();
-            dealWivQsBg();
             appendOptionsZip();// Takes long about 10s
             // Takes long about 5s
             publishProgress(context.getString(R.string.signing));
@@ -380,10 +379,6 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             }
         }
         }
-
-    public void dealWivQsBg() throws Exception{
-        new QsBgUtil(context, tempFolder, "userInput");
-    }
 
     public void appendOptionsZip () throws IOException{
 

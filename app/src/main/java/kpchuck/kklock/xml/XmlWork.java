@@ -12,6 +12,7 @@ import java.util.List;
 
 import kpchuck.kklock.R;
 import kpchuck.kklock.utils.PrefUtils;
+import kpchuck.kklock.utils.QsBgUtil;
 
 import static kpchuck.kklock.constants.PrefConstants.DEV_MAKE_DYNAMIC;
 import static kpchuck.kklock.constants.PrefConstants.PREF_INCLUDE_NONE_OPT;
@@ -43,6 +44,7 @@ public class XmlWork {
         modStatusBar();
         modKeyguardStatusBar();
         modSystemIcons();
+        new QsBgUtil(context, utils);
     }
 
     private void writeStatusBar(StatusBar statusBar, int clockStyle) throws Exception{
