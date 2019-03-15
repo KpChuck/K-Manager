@@ -187,7 +187,7 @@ public class CustomCrashActivity extends AppCompatActivity {
         File outputDir = new File(Environment.getExternalStorageDirectory() + "/K-Manager/");
         if (!outputDir.exists()) outputDir.mkdirs();
         String errorInformation = CustomActivityOnCrash.getAllErrorDetailsFromIntent(getApplicationContext(), getIntent());
-        File logFile = new File(outputDir, "crash.log");
+        File logFile = new File(outputDir, "crash.txt");
         try {
             IOUtils.write(errorInformation, new FileOutputStream(logFile), "utf-8");
             return logFile;
