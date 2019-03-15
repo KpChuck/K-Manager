@@ -3,18 +3,24 @@ package kpchuck.kklock.xml;
 
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 
 import org.apache.commons.io.FileUtils;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import kpchuck.kklock.R;
 import kpchuck.kklock.utils.FileHelper;
 import kpchuck.kklock.utils.PrefUtils;
 
+import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_CUSTOM_TEXT;
 import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_HIDE_NOTIFICATIONS;
 import static kpchuck.kklock.constants.PrefConstants.PREF_CHANGE_STATBAR_COLOR;
 import static kpchuck.kklock.constants.PrefConstants.PREF_CLOCK_HIDEABLE;
@@ -127,6 +133,7 @@ public class StatusBar extends XmlBase {
         unweightElement(center);
         utils.insertBefore(center, right);
     }
+
 
     private void hideClock(){
         hideElements(new String[]{"clock", "center_clock", "left_clock", "clock_container", "right_clock_container", "left_clock_container"});

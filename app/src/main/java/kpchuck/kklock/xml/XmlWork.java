@@ -173,7 +173,7 @@ public class XmlWork {
                         utils.getType2(context, R.string.center_no_clock), utils.getType2(context, R.string.center_dynamic),
                         utils.getType2(context, R.string.left_no_clock), utils.getType2(context, R.string.left_dynamic),
                         utils.getType2(context, R.string.center_clock), utils.getType2(context, R.string.center_stock),
-                        utils.getType2(context, R.string.right_clock)
+                        utils.getType2(context, R.string.right_clock), "res"
                 };
 
         }
