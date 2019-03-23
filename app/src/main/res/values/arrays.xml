@@ -68,16 +68,26 @@
 
     <string-array name="included_formats_title">
         <item>Default - Normal Clock</item>
+        <item>Abbreviated Day and Date</item>
         <item>Abbreviated Day, Date and Month</item>
         <item>Abbreviated Day</item>
-        <item>Abbreviated Day and Date</item>
         <item>Big Hour with AmPm</item>
         <item>Date and Month</item>
         <item>Full Day</item>
-        <item>Full Day After Clock</item>
         <item>Month, Date, Abbreviated Day and Seconds</item>
-        <item>Normal no AmPm</item>
         <item>Small Day, Big Hour</item>
+    </string-array>
+
+    <string-array name="included_formats_values">
+        <item>hh:mm</item>
+        <item><small> EEE dd </small>h:mm</item>
+        <item><small> EEE d MMM</small> h:mm</item>
+        <item>EEE h:mm</item>
+        <item><big> h</big>:mm</item>
+        <item><small> d MMM</small> h:mm</item>
+        <item>EEEE h:mm</item>
+        <item><small> MMM d EEE</small> h:mm:ss</item>
+        <item><small> EEE </small><big>h:mm</big> </item>
     </string-array>
 
     <string-array name="translators">

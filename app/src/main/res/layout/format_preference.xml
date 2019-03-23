@@ -23,8 +23,17 @@
     <Button
         android:layout_width="25dip"
         android:layout_height="25dip"
-        android:background="@android:drawable/ic_menu_delete"
+        android:background="@android:drawable/ic_menu_close_clear_cancel"
         android:id="@+id/deleteOverlays"
+        android:layout_gravity="center_vertical|end"
+        android:layout_weight="0"
+        android:layout_marginEnd="10dp"/>
+
+    <Button
+        android:layout_width="25dip"
+        android:layout_height="25dip"
+        android:background="@android:drawable/ic_menu_help"
+        android:id="@+id/formatHelp"
         android:layout_gravity="center_vertical|end"
         android:layout_weight="0"
         android:layout_marginEnd="10dp"/>

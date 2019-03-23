@@ -20,4 +20,9 @@
     <string name="key_oos_is_bad">oosMessedStuffUpsobaditneedsitsownsetting</string>
     <string name="key_pref_icon">iconPref</string>
 	<string name="key_new_statusbar_color">changestatusbarcolortothis</string>
+
+    <string name="key_clock_font">keyclockFont</string>
+    <string name="key_clock_color">keyClockColor</string>
+    <string name="key_use_included_format">keyUsingAnIncludedFormat</string>
+    <string name="key_clock_format">keyClockFormat</string>
 </resources>
