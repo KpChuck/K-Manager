@@ -271,7 +271,9 @@ public class StatusBar extends XmlBase {
 
     public Element createSystemAreaElement(){
 
-        Element hideyLayout = workingCopy.createElement("LinearLayout");
+        boolean oos = prefUtils.getBool(R.string.key_oos_is_bad);
+        String tagName = oos ? utils.findElementById(workingCopy, idStart + "system_icon_area").getTagName() : "LinearLayout";
+        Element hideyLayout = workingCopy.createElement(tagName);
         hideyLayout.setAttribute("android:layout_width", X_WRAP_CONTENT);
         hideyLayout.setAttribute("android:layout_height", "fill_parent");
         hideyLayout.setAttribute("android:gravity", "center");
