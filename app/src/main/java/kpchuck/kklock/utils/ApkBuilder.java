@@ -8,7 +8,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.design.widget.Snackbar;
+import com.google.android.material.snackbar.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -112,7 +112,6 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             //TODO Fix translating signing
             //translateAll();
             modTheRomZip();
-            insertCustomXmls();
             appendOptionsZip();// Takes long about 10s
             // Takes long about 5s
             publishProgress(context.getString(R.string.signing));
@@ -283,7 +282,6 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         LinkedHashMap<String, String> hashMap = new LinkedHashMap<String, String>(){{
             put(PREF_RECENTS, "recents.zip");
             put(PREF_QS, "qsTiles.zip");
-            put(PREF_ICON, "colorIcons.zip");
             put(PREF_LOCKSCREEN_STATUSBAR_SIZE, "hideStatusbar.zip");
             put(PREF_QS_LABEL, "qsTitle.zip");
             put(PREF_AM, "ampm.zip");
@@ -305,80 +303,6 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
     private void modTheRomZip() throws Exception{
         new XmlWork(context);
     }
-
-    public void xmlBuilder(){
-
-        ArrayList<String> colorsTitles = prefUtils.loadArray(COLOR_TITLES);
-        ArrayList<String> colorsValues = prefUtils.loadArray(COLOR_VALUES);
-        ArrayList<String> formatsTitles = prefUtils.loadArray(FORMAT_TITLES);
-        ArrayList<String> formatsValues = prefUtils.loadArray(FORMAT_VALUES);
-
-        int colorLimit = colorsTitles.size();
-        for (int i = 0; i < colorLimit; i++) {
-            String colorTitle = colorsTitles.get(i);
-            colorTitle = colorTitle.replace(" ", "_") + ".xml";
-            String colorValue = colorsValues.get(i);
-            XmlCreation xmlCreator = new XmlCreation();
-            xmlCreator.putContext(context);
-            xmlCreator.createTypeA(colorTitle, colorValue);
-        }
-
-        int formatLimit = formatsTitles.size();
-        for (int i = 0; i < formatLimit; i++) {
-            String formatTitle = formatsTitles.get(i);
-            formatTitle = formatTitle.replace(" ", "_") + ".xml";
-            String formatValue = formatsValues.get(i);
-            XmlCreation xmlCreator = new XmlCreation();
-            xmlCreator.putContext(context);
-            xmlCreator.createTypeB(formatTitle, formatValue);
-        }
-
-        if (prefUtils.getBool(PREF_ICON)){
-            ArrayList<String> titles = prefUtils.loadArray(ICON_TITLES);
-            ArrayList<String> values = prefUtils.loadArray(ICON_VALUES);
-            for (int i = 0; i < titles.size(); i ++){
-                String title = titles.get(i);
-                title = title.replace(" ", "_") + ".xml";
-                String value = values.get(i);
-                XmlCreation xmlcreation = new XmlCreation();
-                xmlcreation.putContext(context);
-                xmlcreation.createIcons(title, value);
-            }
-        }
-    }
-
-    public void insertCustomXmls() throws IOException{
-
-        xmlBuilder();
-
-        boolean themeIcons = prefUtils.getBool(PREF_ICON);
-
-        File dir = fileHelper.newFolder(new File(tempFolder, "xmls.zip"));
-        File root = new File(rootFolder);
-        String[] xmlArray = root.list(fileHelper.XML);
-
-        fileHelper.newFolder(new File(dir, "assets"));
-        fileHelper.newFolder(dir.getAbsolutePath() + slash + "assets" + slash + "overlays");
-
-        File abDest = fileHelper.newFolder(dir.getAbsolutePath() + slash + "assets" + slash + "overlays" + slash + "com.android.systemui");
-
-        for(String s : xmlArray){
-            File xml = new File(rootFolder + slash + s);
-
-            if (themeIcons){
-                File cDest = fileHelper.newFolder(dir.getAbsolutePath() + slash + "assets" + slash + "overlays" + slash + "com.android.systemui.statusbars");
-
-                if (s.substring(0, 6).equals("type1c")) {
-                    FileUtils.copyFileToDirectory(xml, cDest);
-                    xml.delete();
-                }
-            }
-            if (xml.exists()) {
-                FileUtils.copyFileToDirectory(xml, abDest);
-                xml.delete();
-            }
-        }
-        }
 
     public void appendOptionsZip () throws IOException{
 

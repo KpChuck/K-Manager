@@ -5,29 +5,26 @@
     android:orientation="horizontal"
     android:layout_marginTop="4dp">
 
-    <Button
-        android:id="@+id/formatTextViewButton"
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_weight="6.0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:singleLine="true"
-        android:textColor="?textColor"
-        android:textAppearance="@style/ListViewStyle"
-        android:layout_gravity="center_vertical" />
+        >
+
+        <Button
+	        android:layout_margin="20dp"
+            android:id="@+id/formatTextViewButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:textColor="?textColor"
+	        android:background="?secondaryBackgroundColor"/>
+
+    </LinearLayout>
 
     <View android:layout_weight="1"
         android:layout_height="match_parent"
         android:layout_width="0dip"/>
-
-    <Button
-        android:layout_width="25dip"
-        android:layout_height="25dip"
-        android:background="@android:drawable/ic_menu_close_clear_cancel"
-        android:id="@+id/deleteOverlays"
-        android:layout_gravity="center_vertical|end"
-        android:layout_weight="0"
-        android:layout_marginEnd="10dp"/>
 
     <Button
         android:layout_width="25dip"

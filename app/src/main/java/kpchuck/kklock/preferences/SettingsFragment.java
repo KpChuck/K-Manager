@@ -25,6 +25,7 @@ import com.kbeanie.multipicker.api.entity.ChosenImage;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -209,6 +210,35 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private void init(){
+        Preference stockStyle = findPreference(getString(R.string.key_stock_style));
+        if (stockStyle != null) {
+            stockStyle.setOnPreferenceChangeListener((preference, o) -> {
+                PreferenceCategory pc = (PreferenceCategory) findPreference("formatOptionsPreference");
+                pc.setEnabled(!Boolean.valueOf(o.toString()));
+                return true;
+            });
+        }
+        Preference fo = findPreference(getString(R.string.key_clock_font));
+        if (fo != null){
+            SummaryListPreference fontOptions = (SummaryListPreference) fo;
+            File sysFonts = new File("/system/fonts");
+            CharSequence[] fonts;
+            if (sysFonts.exists()){
+                File[] fontFiles = sysFonts.listFiles(file -> {
+                    if (file.getName().endsWith(".ttf"))
+                        return true;
+                    return false;
+                });
+                fonts = new CharSequence[fontFiles.length];
+                for (int i=0; i<fontFiles.length; i++){
+                    fonts[i] = fontFiles[i].getName().substring(0, fontFiles[i].getName().lastIndexOf(".ttf"));
+                }
+            } else {
+                fonts = getResources().getStringArray(R.array.default_fonts);
+            }
+            fontOptions.setEntries(fonts);
+            fontOptions.setEntryValues(fonts);
+        }
         ArrayList<String> stuff = new ArrayList<>(Arrays.asList(getString(R.string.key_hide_statusbar_icons_lockscreen),
                             getString(R.string.key_qs_header_switch), getString(R.string.key_am_everywhere)));
         String not_stuff = "goPro";

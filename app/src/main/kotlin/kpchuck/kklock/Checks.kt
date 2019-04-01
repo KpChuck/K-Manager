@@ -4,15 +4,8 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.support.v4.content.LocalBroadcastManager
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import android.util.Log
-import android.widget.Toast
-import com.github.javiersantos.piracychecker.PiracyChecker
-import com.github.javiersantos.piracychecker.enums.InstallerID
-import com.github.javiersantos.piracychecker.enums.PiracyCheckerCallback
-import com.github.javiersantos.piracychecker.enums.PiracyCheckerError
-import com.github.javiersantos.piracychecker.enums.PirateApp
-import kpchuck.kklock.utils.FileHelper
 import kpchuck.kklock.utils.PrefUtils
 
 /**

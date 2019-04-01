@@ -1,32 +1,23 @@
 package kpchuck.kklock.activities;
 
-import org.apache.commons.io.FileUtils;
-
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
 import android.preference.SwitchPreference;
-import android.support.annotation.ColorInt;
-import android.support.v7.app.ActionBar;
+import androidx.annotation.ColorInt;
+import androidx.appcompat.app.ActionBar;
 import android.preference.PreferenceManager;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import androidx.appcompat.widget.Toolbar;
+
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
-import java.io.File;
-import java.io.FilenameFilter;
-import java.io.IOException;
 
 import kpchuck.kklock.AppCompatPreferenceActivity;
 import kpchuck.kklock.Checks;

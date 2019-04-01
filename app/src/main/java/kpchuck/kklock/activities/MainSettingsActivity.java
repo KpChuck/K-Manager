@@ -1,43 +1,23 @@
 package kpchuck.kklock.activities;
 
-import android.annotation.TargetApi;
-import android.app.Dialog;
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
-import android.support.annotation.ColorInt;
-import android.support.v7.app.ActionBar;
-import android.preference.PreferenceFragment;
+import androidx.annotation.ColorInt;
+import androidx.appcompat.app.ActionBar;
+
 import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
-import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
+
+import androidx.appcompat.widget.Toolbar;
+
 import android.util.TypedValue;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import kpchuck.kklock.MainActivity;
 import kpchuck.kklock.R;
 import kpchuck.kklock.AppCompatPreferenceActivity;
 import kpchuck.kklock.utils.PrefUtils;
-
-import java.util.List;
 
 import static kpchuck.kklock.constants.PrefConstants.PREF_BLACK_THEME;
 

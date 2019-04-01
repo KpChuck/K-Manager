@@ -5,13 +5,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.preference.Preference;
 import android.preference.SwitchPreference;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 
 import kpchuck.kklock.R;
-import kpchuck.kklock.activities.CustomCrashActivity;
 import kpchuck.kklock.dialogs.TextAlertDialogFragment;
 import kpchuck.kklock.interfaces.DialogClickListener;
 import kpchuck.kklock.services.CheckforUpdatesService;

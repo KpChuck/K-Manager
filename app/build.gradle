@@ -42,7 +42,7 @@ android {
         targetSdkVersion 28
         versionCode 32
         versionName "35"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "BASE_64_LICENSE_KEY", "\"" + BASE_64_LICENSE_KEY + "\""
         buildConfigField "String", "APK_SIGNATURE_PRODUCTION", "\"" + APK_SIGNATURE_PRODUCTION + "\""
@@ -144,12 +144,13 @@ android {
 
 dependencies {
 
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:support-v4:28.0.0'
-    implementation 'com.android.support:support-v13:+'
+    def gLibsVersion = "1.0.0-beta01"
+    implementation "androidx.legacy:legacy-support-v4:${gLibsVersion}"
+    implementation "androidx.legacy:legacy-support-v13:${gLibsVersion}"
 
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0-alpha4', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
@@ -160,26 +161,22 @@ dependencies {
     //Loading Animation
     implementation 'com.github.ybq:Android-SpinKit:1.1.0'
     //All those com.android.s
-    implementation "com.android.support:design:${rootProject.ext.supportLibVersion}"
-    implementation "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
-    implementation "com.android.support:recyclerview-v7:${rootProject.ext.supportLibVersion}"
-    implementation "com.android.support:cardview-v7:${rootProject.ext.supportLibVersion}"
-    implementation "com.android.support:support-annotations:${rootProject.ext.supportLibVersion}"
-    implementation "com.android.support:support-v4:${rootProject.ext.supportLibVersion}"
+    implementation "com.google.android.material:material:${gLibsVersion}"
+    implementation "androidx.appcompat:appcompat:${gLibsVersion}"
+    implementation "androidx.recyclerview:recyclerview:${gLibsVersion}"
+    implementation "androidx.cardview:cardview:${gLibsVersion}"
+    implementation "androidx.annotation:annotation:${gLibsVersion}"
+    implementation "androidx.legacy:legacy-support-v4:${gLibsVersion}"
     // Adding this line (according to above warning message)
-    implementation "com.android.support:design:${rootProject.ext.supportLibVersion}"
+    implementation "com.google.android.material:material:${gLibsVersion}"
 
     //Image Picker
     implementation 'com.kbeanie:multipicker:1.6@aar'
-    //Searchable Spinner
-    implementation 'gr.escsoft.michaelprimez.searchablespinner:SearchableSpinner:1.0.9'
-    implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
-    implementation 'gr.escsoft.michaelprimez.revealedittext:RevealEditText:1.0.2'
     //Welcome Activity
     implementation 'com.stephentuso:welcome:1.4.1'
     // Butterknife
-    implementation 'com.jakewharton:butterknife:8.8.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    implementation 'com.jakewharton:butterknife:10.1.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
     // MaterialDrawer
     implementation("com.mikepenz:materialdrawer:6.0.7@aar") {
         transitive = true
@@ -195,7 +192,7 @@ dependencies {
 
     // Jadx
     implementation 'org.ow2.asm:asm:5.0.3'
-    implementation 'com.intellij:annotations:12.0'
+    implementation 'org.jetbrains:annotations:13.0'
     implementation 'uk.com.robust-it:cloning:1.9.2'
     implementation 'org.slf4j:slf4j-api:1.7.10'
 
@@ -203,7 +200,7 @@ dependencies {
     implementation files('libs/dx-1.14.jar')
 
     // Piracy Checker
-    implementation 'com.github.javiersantos:PiracyChecker:1.2.3'
+    implementation 'com.github.javiersantos:PiracyChecker:1.2.5'
     //Kotlin
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version") {
         transitive = true

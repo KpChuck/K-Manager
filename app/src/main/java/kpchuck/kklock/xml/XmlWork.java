@@ -39,151 +39,117 @@ public class XmlWork {
 
         // Start Modding
         makeFolders();
-        translate();
         utils.moveAttrsIfPresent(srcFolder.getAbsolutePath());
+        insertCustomXmls();
         modStatusBar();
         modKeyguardStatusBar();
         modSystemIcons();
         new QsBgUtil(context, utils);
     }
 
-    private void writeStatusBar(StatusBar statusBar, int clockStyle) throws Exception{
-        statusBar.writeDocument(new File(String.format(formatXmlPath, utils.getType2(context, clockStyle), layout, "status_bar")));
+    private void addStatusBarValues(File values) throws Exception{
+        String clockColor = "#" + Integer.toHexString(prefUtils.getInt(R.string.key_clock_color));
+        utils.writeResource(new File(values, "clockcolor.xml"), "color", "status_bar_clock_color", clockColor);
+
+        String clockFormat = prefUtils.getString(R.string.key_clock_format, "hh:mm");
+        String[] fnames = new String[]{"keyguard_widget_12_hours_format", "keyguard_widget_24_hours_format"};
+        String[] fvalues = new String[]{clockFormat, clockFormat};
+        if (!prefUtils.getBool(R.string.key_use_included_format))
+            fvalues[0] = clockFormat + " a";
+        utils.writeResources(new File(values, "clockformats.xml"), "string", fnames, fvalues);
+
+        String font = prefUtils.getString(R.string.key_clock_font, "roboto-regular").toLowerCase();
+        utils.writeResources(new File(values, "clockfonts.xml"), "style",
+                new String[]{"android:textSize", "android:textColor", "android:fontFamily"},
+                new String[]{"@*com.android.systemui:dimen/status_bar_clock_size", "#ffffffff", font},
+                "TextAppearance.StatusBar.Clock", "@*android:style/TextAppearance.StatusBar.Icon");
     }
 
     private void modStatusBar() throws Exception{
-        StatusBar statusBar = new StatusBar(utils, prefUtils, new File(srcFolder, "status_bar.xml"), context);
-        Element customClock;
-
-        // Now Left Clock
-        // Left on lockscreen
-        statusBar.createWorkCopy(XmlUtils.LEFT);
-        customClock = statusBar.createClock(false, false);
-        statusBar.insertLeft(customClock);
-        writeStatusBar(statusBar, R.string.left_clock);
-        // Left not on lockscreen
-        utils.removeElement(customClock);
-        customClock = statusBar.createClock(false, true);
-        statusBar.insertLeft(customClock);
-        writeStatusBar(statusBar, R.string.left_no_clock);
-        //Dynamic Clock
-        if (prefUtils.getBool(DEV_MAKE_DYNAMIC)){
-            utils.changeAttribute(utils.getFirstChildElement(customClock), X_ID, "@*com.android.systemui:id/clock");
-            writeStatusBar(statusBar, R.string.left_dynamic);
-        }
-        //Stock-Like
-        utils.removeElement(customClock);
-        statusBar.removeClock();
-        customClock = statusBar.createClock(true, false);
-        statusBar.insertLeft(customClock);
-        writeStatusBar(statusBar, R.string.left_stock);
-
-        //Insert Right Clocks First
-        // Right on lockscreen
-        statusBar.createWorkCopy(XmlUtils.RIGHT);
-        customClock = statusBar.createClock(false, false);
-        statusBar.insertAfterRight(customClock);
-
-        Element sysiconarea = statusBar.createSystemAreaElement();
-        sysiconarea.setAttribute(X_LAYOUT_WIDTH, X_FILL_PARENT);
-        statusBar.insertAtRoot(sysiconarea);
-        writeStatusBar(statusBar, R.string.right_clock);
-        utils.removeElement(sysiconarea);
-
-        // Right not on lockscreen
-        utils.removeElement(customClock);
-        customClock = statusBar.createClock(false, false);
-        statusBar.insertRight(customClock);
-        writeStatusBar(statusBar, R.string.right_no_clock);
-        // Dynamic
-        if (prefUtils.getBool(DEV_MAKE_DYNAMIC)) {
-            utils.changeAttribute(customClock, X_ID, "@*com.android.systemui:id/clock");
-            writeStatusBar(statusBar, R.string.right_dynamic);
-        }
-
-        // Stock-Like
-        statusBar.removeClock();
-        utils.removeElement(customClock);
-        customClock = statusBar.createClock(true, false);
-        statusBar.insertRight(customClock);
-        writeStatusBar(statusBar, R.string.right_stock);
-
-        // Center Clocks
-        // On Lockscreen
+        int clockPosition = prefUtils.getInt(R.string.key_clock_position);
+        boolean stockClock = prefUtils.getBool(R.string.key_stock_style);
+        boolean clockOnLockscreen = stockClock ? false : prefUtils.getBool(R.string.key_sb_clock_on_lockscreen);
         boolean oos = prefUtils.getBool(R.string.key_oos_is_bad);
 
-        statusBar.createWorkCopy(XmlUtils.CENTER);
-        customClock = statusBar.createClock(false, oos);
-        Element temp = null;
-        if (oos){
-            temp = statusBar.createSystemAreaElement();
-            statusBar.insertCenter(temp);
+        StatusBar statusBar = new StatusBar(utils, prefUtils, new File(srcFolder, "status_bar.xml"), context);
+        statusBar.createWorkCopy(clockPosition);
+        if (clockPosition == XmlUtils.NONE){
+            statusBar.writeDocument(new File(String.format(formatXmlPath, "res", layout, "status_bar")));
+            return;
         }
-        statusBar.insertCenter(customClock);
+
+        Element customClock;
+
+        /*
+        Left ->
+            clockOnLockscreen ->    false
+            !clockOnLockscreen ->   true
+            stock ->                false
+         Right ->
+            clockOnLockscreen ->    false    Needs SysIconArea Inserted at Root
+            !clockOnLockscreen ->   false
+            stock ->                false
+         Center ->
+            clockOnLockscreen ->    oos      If oos Needs SysIconArea inserted at center
+            !clockOnLockscreen ->   true
+            stock ->                oos
+         Stock removes clock
+
+
+         */
+        if (stockClock){
+            statusBar.removeClock();
+        }
+
+        if (clockPosition == XmlUtils.LEFT){
+            customClock = statusBar.createClock(stockClock, !clockOnLockscreen);
+            statusBar.insertLeft(customClock);
+        }
+        else if (clockPosition == XmlUtils.RIGHT){
+            customClock = statusBar.createClock(stockClock, false);
+            if (clockOnLockscreen){
+                Element sysiconarea = statusBar.createSystemAreaElement();
+                sysiconarea.setAttribute(X_LAYOUT_WIDTH, X_FILL_PARENT);
+                statusBar.insertAtRoot(sysiconarea);
+            }
+            statusBar.insertRight(customClock);
+        }
+        else {
+            customClock = statusBar.createClock(stockClock, !clockOnLockscreen ? oos : true);
+            if (oos && clockOnLockscreen){
+                Element temp = statusBar.createSystemAreaElement();
+                statusBar.insertCenter(temp);
+            }
+            statusBar.insertCenter(customClock);
+        }
         statusBar.writeDocument(new File(String.format(formatXmlPath, "res", layout, "status_bar")));
 
-        if (temp != null) utils.removeElement(temp);
-
-        // Not on Lockscreen
-        utils.removeElement(customClock);
-        customClock = statusBar.createClock(false, true);
-        statusBar.insertCenter(customClock);
-        writeStatusBar(statusBar, R.string.center_no_clock);
-
-        //Dynamic
-        if (prefUtils.getBool(DEV_MAKE_DYNAMIC)){
-            customClock = utils.changeAttribute(utils.getFirstChildElement(customClock), X_ID, "@*com.android.systemui:id/clock");
-            writeStatusBar(statusBar, R.string.center_dynamic);
-        }
-        //STock-Like
-        utils.removeElement(customClock);
-        statusBar.removeClock();
-        customClock = statusBar.createClock(true, oos);
-        statusBar.insertCenter(customClock);
-        writeStatusBar(statusBar, R.string.center_stock);
-
-        // No Clock
-        if (prefUtils.getBool(PREF_INCLUDE_NONE_OPT)) {
-            statusBar.createWorkCopy(XmlUtils.LEFT);
-            writeStatusBar(statusBar, R.string.no_clock);
-        }
-
-        utils.writeType2Desc(context.getString(R.string.sysui_type2_center),
-                utils.baseFolders.getAbsolutePath() + "/type2");
     }
 
     private void modKeyguardStatusBar() throws Exception{
 
         KeyguardStatusBar keyguardStatusBar = new KeyguardStatusBar(utils, prefUtils, new File(srcFolder, "keyguard_status_bar.xml"), context);
+        int clockPosition = prefUtils.getInt(R.string.key_clock_position);
+        boolean clockOnLockscreen = prefUtils.getBool(R.string.key_sb_clock_on_lockscreen);
 
-        String[] modPlaces, unmodPlaces;
-        if (prefUtils.getInt(R.string.key_move_network) != XmlUtils.RIGHT) {
-            modPlaces = new String[]{"res"};
-            unmodPlaces = new String[]{};
-        } else {
-            unmodPlaces = new String[]{"res"};
-            // Left and Center - No clock on lockscreen and dynamic
-            modPlaces = new String[]{
-                    utils.getType2(context, R.string.center_no_clock), utils.getType2(context, R.string.center_dynamic),
-                    utils.getType2(context, R.string.left_no_clock), utils.getType2(context, R.string.left_dynamic),
-                    utils.getType2(context, R.string.right_clock)
-            };
-            if (prefUtils.getBool(R.string.key_oos_is_bad))
-                modPlaces = new String[]{
-                        utils.getType2(context, R.string.center_no_clock), utils.getType2(context, R.string.center_dynamic),
-                        utils.getType2(context, R.string.left_no_clock), utils.getType2(context, R.string.left_dynamic),
-                        utils.getType2(context, R.string.center_clock), utils.getType2(context, R.string.center_stock),
-                        utils.getType2(context, R.string.right_clock), "res"
-                };
+        boolean modClock = false;
 
-        }
+        /*
+        Only need to hide stock lockscreen icons if
+        ->  Moving statusbar icons to not right - there'll be duplicateds
+        ->  Using oos - it just complicates adding any clock that much
+        ->  Read the rest of conditions
+         */
+        if (prefUtils.getInt(R.string.key_move_network) != XmlUtils.RIGHT
+                || prefUtils.getBool(R.string.key_oos_is_bad)
+                || (!clockOnLockscreen && (clockPosition == XmlUtils.CENTER) || (clockPosition == XmlUtils.LEFT))
+                || clockOnLockscreen && clockPosition == XmlUtils.RIGHT)
+            modClock = true;
 
-        // Write unmodified keyguard
-        keyguardStatusBar.writeDocuments(Arrays.asList(unmodPlaces));
+        if (modClock)
+            keyguardStatusBar.hideStatusIcons();
 
-        // Write modified keyguard
-        keyguardStatusBar.hideStatusIcons();
-        keyguardStatusBar.writeDocuments(Arrays.asList(modPlaces));
+        keyguardStatusBar.writeDocument(new File(String.format(formatXmlPath, "res", layout, "keyguard_status_bar.xml")));
     }
 
     private void modSystemIcons() throws Exception{
@@ -193,41 +159,28 @@ public class XmlWork {
 
     private void makeFolders() {
 
-        File s = new File(utils.romzip, "/assets/overlays/com.android.systemui");
+        File s = new File(utils.romzip, "/assets/overlays/com.android.systemui/res");
         s.mkdirs();
 
-        List<String> startFolder = new ArrayList<>(Arrays.asList(
-                utils.getType2(context, R.string.right_no_clock),
-                utils.getType2(context, R.string.right_stock),
-                utils.getType2(context, R.string.right_clock),
-                utils.getType2(context, R.string.left_clock),
-                "res",
-                utils.getType2(context, R.string.center_no_clock),
-                utils.getType2(context, R.string.center_stock),
-                utils.getType2(context, R.string.left_no_clock),
-                utils.getType2(context, R.string.left_stock)));
+        new File(s, "values").mkdir();
+        new File(s, layout).mkdir();
+    }
 
-        if (prefUtils.getBool(DEV_MAKE_DYNAMIC)) {
-            startFolder.add(utils.getType2(context, R.string.right_dynamic));
-            startFolder.add(utils.getType2(context, R.string.left_dynamic));
-            startFolder.add(utils.getType2(context, R.string.center_dynamic));
+    private void insertCustomXmls() throws Exception{
+        File values = new File(utils.baseFolders.getAbsolutePath() + "/res/values/");
+
+        addStatusBarValues(values);
+
+        if (prefUtils.getBool(R.string.key_theme_sb_icons)){
+            String darkColor = "#" + Integer.toHexString(prefUtils.getInt(R.string.key_stock_dark_color));
+            String clockRef = "@*com.android.systemui:color/status_bar_clock_color";
+            XmlUtils utils = new XmlUtils();
+            utils.writeResources(new File(values, "sbiconcolors.xml"), "color",
+                    new String[]{"dark_mode_icon_color_single_tone", "dark_mode_icon_color_dual_tone_fill",
+                    "light_mode_icon_color_single_tone", "light_mode_icon_color_dual_tone_fill"},
+                    new String[]{darkColor, darkColor, clockRef, clockRef});
         }
-        if (prefUtils.getBool(PREF_INCLUDE_NONE_OPT))
-            startFolder.add(utils.getType2(context, R.string.no_clock));
 
-        startFolder.forEach(k -> new File(String.format("%s/%s/%s", s, k, layout)).mkdirs());
     }
-
-    private void translate(){
-        ArrayList<String> filenames = utils.substratize(utils.getEngArray(context, R.array.included_colors_title), "type1a", ".xml");
-        filenames.addAll(utils.substratize(utils.getEngArray(context, R.array.included_formats_title), "type1b", ".xml"));
-        filenames.addAll(utils.substratize(utils.getEngArray(context, R.array.font_names), "type1c", ".xml"));
-        ArrayList<String> translated_filenames = utils.substratize(utils.getArray(context, R.array.included_colors_title), "type1a", ".xml");
-        translated_filenames.addAll(utils.substratize(utils.getArray(context, R.array.included_formats_title), "type1b", ".xml"));
-        translated_filenames.addAll(utils.substratize(utils.getArray(context, R.array.font_names), "type1c", ".xml"));
-
-        utils.translate(context, utils.baseFolders, filenames, translated_filenames, R.string.sysui_type1a, R.string.sysui_type1b, R.string.sysui_type1c, 0);
-    }
-
 
 }

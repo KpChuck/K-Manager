@@ -2,42 +2,96 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+	<PreferenceCategory
+		android:title="Position and Style Options">
+
+		<kpchuck.kklock.preferences.SpinnerPreference
+			android:defaultValue="0"
+			android:key="@string/key_clock_position"
+			app:names="@array/clock_positions"
+			android:title="Clock Position"/>
+
+		<SwitchPreference
+			android:title="Use Stock Clock Style"
+			android:summary="Make K-Manager re-use the stock clock style when adding the clock.\n
+This allows it to change color dynamically depending on the statusbar background. \n
+But changing clock formats doesn't work and is disabled."
+			android:key="@string/key_stock_style"/>
+
+		<SwitchPreference
+			android:key="@string/key_sb_clock_on_lockscreen"
+			android:title="Show Statusbar Clock on Lockscreen"
+			android:summary="Hidden by default. Showing clock won't work when Stock Clock Style is used."/>
+
+	</PreferenceCategory>
+
     <PreferenceCategory
-        android:title="New Options">
+        android:title="Format Options"
+	    android:key="formatOptionsPreference">
+
 
         <kpchuck.kklock.preferences.SummaryListPreference
-            android:title="Choose a Format"
+            android:title="Choose a Preset Format"
             android:dialogTitle="Formats"
+            android:key="@string/key_clock_format"
+	        android:defaultValue="hh:mm"
             android:entries="@array/included_formats_title"
             android:entryValues="@array/included_formats_values"
-            android:dependency="@string/key_use_included_format"/>
+            />
+
+	    <SwitchPreference
+		    android:key="@string/key_use_included_format"
+		    android:title="Or add a Custom Format"
+		    android:defaultValue="false"
+		    />
 
         <kpchuck.kklock.preferences.FormatPickerPreference
-            android:title="Or add a custom format"
+	        android:dependency="@string/key_use_included_format"
+	        android:title="Press to set a Format"
             android:key="@string/key_clock_format"
             app:enabledKey="@string/key_use_included_format"
             />
 
-        <!-- Entries and entriesValues added dynamically -->
-        <kpchuck.kklock.preferences.SummaryListPreference
-            android:key="@string/key_clock_font"
-            android:title="Choose a Font"
-            />
-
-        <com.jaredrummler.android.colorpicker.ColorPreference
-            android:key="@string/key_clock_color"
-            android:title="Choose a color"
-            android:defaultValue="@android:color/white"/>
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:title="General Clock"
+        android:title="Color Options">
+
+        <com.jaredrummler.android.colorpicker.ColorPreference
+            android:key="@string/key_clock_color"
+            android:title="Clock Color"
+            android:defaultValue="@android:color/white"/>
+
+	    <SwitchPreference
+		    android:key="@string/key_theme_sb_icons"
+		    android:title="Change Stock Clock and StatusBar Icon Colors"
+		    android:summary="The color against a dark background is picked by the Clock Color option above.\n
+The color against a light background is below."/>
+
+	    <com.jaredrummler.android.colorpicker.ColorPreference
+		    android:key="@string/key_stock_dark_color"
+		    android:title="Stock Clock Dark Color"
+		    android:summary="Color of clock and statusbar icons against a light background."
+		    android:defaultValue="@android:color/black"
+		    android:dependency="@string/key_theme_sb_icons"/>
+    </PreferenceCategory>
+
+	<PreferenceCategory
+		android:title="Font Options">
+
+		<!-- Entries and entriesValues added dynamically -->
+		<kpchuck.kklock.preferences.SummaryListPreference
+			android:key="@string/key_clock_font"
+			android:title="Choose a Font"
+			/>
+
+	</PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="Misc Options"
         >
 
         <kpchuck.kklock.preferences.ApiSwitchPreference
-            android:defaultValue="false"
             android:key="@string/key_oos_is_bad"
             android:title="I am using OxygenOS"
             android:summary="OxygenOS is special and needs workarounds for it to work properly."
@@ -45,83 +99,13 @@
         />
 
         <SwitchPreference
-            android:defaultValue="false"
             android:key="@string/key_statusbar_clock_size"
             android:title="@string/clock_size" />
 
-        <kpchuck.kklock.preferences.DialogSwitchPreference
-            android:defaultValue="false"
-            android:key="@string/key_clock_hideable"
-            android:title="@string/clock_hide_launcher"
-            app:title="@string/warning"
-            app:message="@string/clock_hideable_warning"
-            app:confirmButton="@string/enable"
-            app:confirmButtonClickListener="kpchuck.kklock.utils.ListenerCollection.doNothing"/>
         <SwitchPreference
-            android:defaultValue="false"
             android:key="@string/key_am_everywhere"
             android:title="@string/ampm_stock_clock" />
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="@string/key_no_clock_option"
-            android:title="@string/no_clock_added" />
 
-        <kpchuck.kklock.preferences.ApiSwitchPreference
-            android:defaultValue="false"
-            android:key="devMakeDynamicClock"
-            android:title="@string/make_dynamic"
-            android:summary="Lets the clock switch between dark and light colors depending on the background."
-            app:maxApi="26"/>
-
-    </PreferenceCategory>
-
-
-    <PreferenceCategory android:title="Custom Clock Formats">
-
-        <kpchuck.kklock.preferences.FormatPickerPreference
-            android:title="Add a format"
-            app:keyNames="formatsTitles"
-            app:keyValues="formatsValues"
-            />
-
-        <kpchuck.kklock.preferences.ListDialogPreference
-            app:textArray="@array/included_formats_title"
-            app:colorArray="@array/included_formats_title"
-            app:showColors="false"
-            android:title="See Included Clock Formats"
-            android:dialogTitle="Included Formats"/>
-
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="Custom Clock Colors">
-
-        <kpchuck.kklock.preferences.ColorPickerPreference
-            android:title="Add a color"
-            app:keyNames="colorsTitles"
-            app:keyValues="colorsValues"
-            app:nameHint="Add a Color"/>
-
-        <kpchuck.kklock.preferences.ListDialogPreference
-            app:showColors="true"
-            app:textArray="@array/included_colors_title"
-            app:colorArray="@array/included_colors_value"
-            android:title="See Included Stock Colors"
-            android:dialogTitle="Clock Colors"/>
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="Stock-Like Clock and Icon Colors">
-
-        <kpchuck.kklock.preferences.ColorPickerPreference
-            app:keyValues="iconsValues"
-            app:keyNames="iconsTitles"
-            app:nameHint="Add a Color"/>
-
-        <kpchuck.kklock.preferences.ListDialogPreference
-            app:textArray="@array/included_icons_title"
-            app:colorArray="@array/included_icons_value"
-            app:showColors="true"
-            android:title="See Included Icon Colors"
-            android:dialogTitle="Icon Colors"/>
 
     </PreferenceCategory>
 

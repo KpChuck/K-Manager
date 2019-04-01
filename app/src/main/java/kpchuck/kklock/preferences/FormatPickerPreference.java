@@ -5,24 +5,17 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.preference.Preference;
-import android.support.annotation.ColorInt;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.ColorInt;
+
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
 
 import kpchuck.kklock.R;
 import kpchuck.kklock.utils.PrefUtils;
@@ -31,6 +24,7 @@ public class FormatPickerPreference extends Preference{
 
     private String enabledKey;
     private PrefUtils prefUtils;
+    private Button editFormat;
 
     public FormatPickerPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -39,6 +33,8 @@ public class FormatPickerPreference extends Preference{
 
     public void init(AttributeSet attrs){
         prefUtils = new PrefUtils(getContext());
+        prefUtils.putBool(enabledKey, prefUtils.getBoolTrue(enabledKey));
+
         setLayoutResource(R.layout.recycler_view);
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.FormatPickerPreference);
         enabledKey = a.getString(R.styleable.FormatPickerPreference_enabledKey);
@@ -50,14 +46,23 @@ public class FormatPickerPreference extends Preference{
     protected void onBindView(View view) {
         super.onBindView(view);
         Button formatHelp = view.findViewById(R.id.formatHelp);
-        Button deleteFormat = view.findViewById(R.id.deleteOverlays);
-        Button editFormat = view.findViewById(R.id.formatTextViewButton);
+        editFormat = view.findViewById(R.id.formatTextViewButton);
 
-        editFormat.setText(getTitle());
+        setFormatText();
 
-        formatHelp.setOnClickListener(v -> {
-            showFormatInfo();
-        });
+        formatHelp.setOnClickListener(v -> showFormatInfo());
+        editFormat.setOnClickListener(v -> showFormatDialog());
+    }
+
+    private void setFormatText(){
+        String text = prefUtils.getString(getKey(), "");
+        if (!text.equals(""))
+            text = " ( " + text + " )";
+        if (prefUtils.getBool(enabledKey)) {
+            editFormat.setText(getTitle().toString() + text);
+        } else {
+            editFormat.setText(getTitle());
+        }
     }
 
     private void showFormatInfo(){
@@ -122,12 +127,14 @@ public class FormatPickerPreference extends Preference{
         nameEdit.setVisibility(View.GONE);
         EditText valueEdit = view.findViewById(R.id.value);
         textView.setText("Enter a format");
+        valueEdit.setText(prefUtils.getString(getKey(), ""));
 
         valueEdit.setText(prefUtils.getBool(enabledKey) ? "" : prefUtils.getString(getKey(), ""));
 
         builder.setPositiveButton(getContext().getString(R.string.save), (dialogInterface, i) -> {
             String value = valueEdit.getText().toString();
-            pers
+            persistString(value);
+            setFormatText();
         });
         builder.setNegativeButton(getContext().getString(R.string.cancel), (dialogInterface, i) -> {
             dialogInterface.cancel();

@@ -6,7 +6,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.os.Environment;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.LinearLayout;
@@ -65,6 +65,7 @@ public class XmlUtils {
     public static final int LEFT = 0;
     public static final int RIGHT = 1;
     public static final int CENTER = 2;
+    public static final int NONE = 4;
 
     public boolean isHasRightInserted() {
         return hasRightInserted;
@@ -480,6 +481,34 @@ public class XmlUtils {
         }
 
         return doc;
+    }
+
+    public void writeResource(File file, String resourceType, String name, String value) throws Exception{
+        writeResources(file, resourceType, new String[]{name}, new String[]{value});
+    }
+
+    public void writeResources(File file, String resourceType, String[] name, String[] values, String... arrayVals) throws Exception{
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
+        Document doc = documentBuilder.newDocument();
+        Element root = doc.createElement("resources");
+        doc.appendChild(root);
+        if (resourceType.equals("string-array") || resourceType.equals("style")){
+            Element array = doc.createElement(resourceType);
+            array.setAttribute("name", arrayVals[0]);
+            if (arrayVals.length > 1)
+                array.setAttribute("parent", arrayVals[1]);
+            root.appendChild(array);
+            resourceType = "item";
+            root = array;
+        }
+        for (int i=0; i<values.length; i++){
+            Element newElement = doc.createElement(resourceType);
+            newElement.setAttribute("name", name[i]);
+            newElement.setTextContent(values[i]);
+            root.appendChild(newElement);
+        }
+        writeDocToFile(doc, file);
     }
 
     public Document cloneDocument(Document doc) throws Exception{

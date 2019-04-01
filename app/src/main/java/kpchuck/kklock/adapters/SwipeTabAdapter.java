@@ -3,12 +3,10 @@ package kpchuck.kklock.adapters;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.os.Environment;
-import android.support.v13.app.FragmentPagerAdapter;
-import android.util.Pair;
-import android.widget.Toast;
 
-import java.io.File;
+import androidx.legacy.app.FragmentPagerAdapter;
+import android.util.Pair;
+
 import java.util.ArrayList;
 import java.util.List;
 

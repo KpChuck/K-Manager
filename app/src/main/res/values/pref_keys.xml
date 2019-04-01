@@ -25,4 +25,9 @@
     <string name="key_clock_color">keyClockColor</string>
     <string name="key_use_included_format">keyUsingAnIncludedFormat</string>
     <string name="key_clock_format">keyClockFormat</string>
+    <string name="key_stock_dark_color">keystockClockDarkColor</string>
+    <string name="key_clock_position">keyClockPosition</string>
+    <string name="key_stock_style">keyStockStyle</string>
+    <string name="key_sb_clock_on_lockscreen">keyStatusbarClockShownOnLockscreen</string>
+    <string name="key_theme_sb_icons">keyThemeStatusBarIcons</string>
 </resources>

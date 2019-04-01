@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+	<string-array name="default_fonts">
+
+		<item>Cursive-Bold</item>
+		<item>Cursive-Italic</item>
+		<item>Cursive-Normal</item>
+		<item>Roboto-Bold</item>
+		<item>Roboto-Italic</item>
+		<item>Roboto-Normal</item>
+		<item>Serif-Bold</item>
+		<item>Serif-Italic</item>
+		<item>Serif-Normal</item>
+		<item>Sans-Serif-Bold</item>
+		<item>Sans-Serif-Italic</item>
+
+	</string-array>
+
     <string-array name="included_icons_title">
         <item>Amber</item>
         <item>Black</item>
@@ -125,6 +141,13 @@
         <item>Left</item>
         <item>Right</item>
         <item>Center</item>
+    </string-array>
+
+    <string-array name="clock_positions">
+        <item>Left</item>
+        <item>Right</item>
+        <item>Center</item>
+        <item>No Clock</item>
     </string-array>
 
 </resources>
