@@ -88,8 +88,8 @@ public class FormatPickerPreference extends Preference{
                 "                <li>hh............Hour (12 hour, double digit) 08</li>\n" +
                 "                <li>H.............Hour (24 hour, single digit) 8 20</li>\n" +
                 "                <li>HH...........Hour (24 hour, double digit) 08 20 (Note: some roms use kk instead)</li>\n" +
-                "                <li>M.............Minute (single digit) 9</li>\n" +
-                "                <li>MM..........Minute (double digit) 09</li>\n" +
+                "                <li>m.............Minute (single digit) 9</li>\n" +
+                "                <li>mm..........Minute (double digit) 09</li>\n" +
                 "                <li>s..............Second (single digit) 9</li>\n" +
                 "                <li>ss............Second (double digit) 09</li>\n" +
                 "                <li>a..............Marker AM/PM</li>\n" +

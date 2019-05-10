@@ -87,7 +87,7 @@ public class XmlWork {
             stock ->                false
          Right ->
             clockOnLockscreen ->    false    Needs SysIconArea Inserted at Root
-            !clockOnLockscreen ->   false
+            !clockOnLockscreen ->   false ;
             stock ->                false
          Center ->
             clockOnLockscreen ->    oos      If oos Needs SysIconArea inserted at center
