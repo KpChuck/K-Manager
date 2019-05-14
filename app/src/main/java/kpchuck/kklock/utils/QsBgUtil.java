@@ -4,11 +4,15 @@ import android.content.Context;
 import android.os.Environment;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import kpchuck.kklock.R;
 import kpchuck.kklock.xml.XmlBase;
@@ -44,9 +48,11 @@ public class QsBgUtil {
             buildDirs();
             File attention = new File(dir.getAbsolutePath() + "/assets/overlays/com.android.systemui.headers/attention");
 
-            if (prefUtils.getBool(PREF_QS_BG))
+            if (prefUtils.getBool(PREF_QS_BG)) {
                 moveImage(PREF_QS_BG_FILE, "qs_background_primary");
                 xmlUtils.writeType2Desc(context.getString(R.string.qs_images_attention), attention.getAbsolutePath());
+                checkForOtherUses();
+            }
 
             if (prefUtils.getBool(PREF_QS_HEADER)) {
                 if (modQsHeader()){
@@ -95,8 +101,8 @@ public class QsBgUtil {
         if (!qsHeader.exists()) return false;
 
         XmlBase base = new XmlBase(xmlUtils, prefUtils, qsHeader, null);
-        xmlUtils.replaceStuffInXml(base.workingCopy, new String[]{"?attr/wallpaperTextColorSecondary"}, new String[]{"#ffffffff"});
-        xmlUtils.replaceStuffInXml(base.workingCopy, new String[]{"@style/Widget.Material.Button.Borderless"},
+        base.workingCopy = xmlUtils.replaceStuffInXml(base.workingCopy, new String[]{"?attr/wallpaperTextColorSecondary"}, new String[]{"#ffffffff"});
+        base.workingCopy = xmlUtils.replaceStuffInXml(base.workingCopy, new String[]{"@style/Widget.Material.Button.Borderless"},
                 new String[]{"@android:style/Widget.Material.Button.Borderless"});
 
         Element rootElement = base.getDocumentElement();
@@ -129,4 +135,27 @@ public class QsBgUtil {
         return true;
     }
 
+    private void checkForOtherUses() throws Exception{
+        File startDir = new File(Environment.getExternalStorageDirectory() + "/K-Manager/res_out/res");
+        for (File d : startDir.listFiles()){
+            if (d.getName().startsWith("layout")){
+                for (File xml : d.listFiles()){
+                    if (xml.getName().equals("qs_panel.xml")) continue;
+                    checkForStringAndFix(xml, d.getName());
+                }
+            }
+        }
+    }
+
+    private void checkForStringAndFix(File xml, String topDirName) throws Exception{
+        String file = IOUtils.toString(new FileInputStream(xml), "utf-8");
+        if (file.contains("@drawable/qs_background_primary")) {
+            File destFolder = new File(dir.getAbsolutePath() + "/assets/overlays/com.android.systemui.headers/res/" + topDirName);
+            if (!destFolder.exists()) destFolder.mkdirs();
+            XmlBase base = new XmlBase(xmlUtils, prefUtils, xml, null);
+            // @*com.android.systemui:drawable/qs_background_primary
+            base.workingCopy = xmlUtils.replaceStuffInXml(base.workingCopy, new String[]{"@*com.android.systemui:drawable/qs_background_primary"}, new String[]{"?*android:colorPrimary"});
+            base.writeDocument(new File(destFolder, xml.getName()));
+        }
+    }
 }
