@@ -130,6 +130,7 @@ public class XmlWork {
 
         KeyguardStatusBar keyguardStatusBar = new KeyguardStatusBar(utils, prefUtils, new File(srcFolder, "keyguard_status_bar.xml"), context);
         int clockPosition = prefUtils.getInt(R.string.key_clock_position);
+        boolean stockClock = prefUtils.getBool(R.string.key_stock_style);
         boolean clockOnLockscreen = prefUtils.getBool(R.string.key_sb_clock_on_lockscreen);
 
         boolean modClock = false;
@@ -141,7 +142,7 @@ public class XmlWork {
         ->  Read the rest of conditions
          */
         if (prefUtils.getInt(R.string.key_move_network) != XmlUtils.RIGHT
-                || prefUtils.getBool(R.string.key_oos_is_bad)
+                || (prefUtils.getBool(R.string.key_oos_is_bad) && (!stockClock || clockPosition == XmlUtils.CENTER))
                 || (!clockOnLockscreen && (clockPosition == XmlUtils.CENTER) || (clockPosition == XmlUtils.LEFT))
                 || clockOnLockscreen && clockPosition == XmlUtils.RIGHT)
             modClock = true;
