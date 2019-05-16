@@ -21,7 +21,7 @@ But changing clock formats doesn't work and is disabled."
 		<SwitchPreference
 			android:key="@string/key_sb_clock_on_lockscreen"
 			android:title="Show Statusbar Clock on Lockscreen"
-			android:summary="Hidden by default. Showing clock won't work when Stock Clock Style is used."/>
+			android:summary="Hidden by default."/>
 
 	</PreferenceCategory>
 

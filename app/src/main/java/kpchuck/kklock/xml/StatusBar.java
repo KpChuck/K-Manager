@@ -233,13 +233,14 @@ public class StatusBar extends XmlBase {
         }
     }
 
-    public Element createClock(boolean stock, boolean wrapInSystemIconArea){
+    public Element createClock(boolean stock, boolean wrapInSystemIconArea, boolean addIdStockClock){
 
         Element textClock;
 
         if (stock) {
             textClock = workingCopy.createElement("com.android.systemui.statusbar.policy.Clock");
-            textClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
+            if (addIdStockClock)
+                textClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
         }
         else {
             textClock = workingCopy.createElement("TextClock");
