@@ -22,7 +22,7 @@
         <kpchuck.kklock.preferences.ImagePickerPreference
             android:key="qsBgPref"
             android:title="@string/qs_background"
-            android:summary="This doesn't work with OxygenOS on Oneplus devices"
+            android:summary="This doesn't work with OxygenOS on Oneplus devices. The size of the image should be around 1080x800 or 1080x1000 pixels."
             app:imageFilePath="qs_background"
             app:imageFilePref="qsBgFilePath"/>
 
@@ -34,6 +34,7 @@
         <kpchuck.kklock.preferences.ImagePickerPreference
             android:key="@string/key_qs_header_switch"
             android:title="@string/qs_header"
+            android:summary="The size of the image should be around 1080x400 pixels."
             app:imageFilePath="qs_header"
             app:imageFilePref="qsHeaderFilePath"
             />
