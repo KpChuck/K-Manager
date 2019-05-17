@@ -31,6 +31,11 @@
             />
 
         <kpchuck.kklock.preferences.ActionPreference
+            android:key="telegram_group"
+            android:title="Go to Telegram Support Group"
+            app:switchListener="kpchuck.kklock.utils.ListenerCollection.open_telegram_group"/>
+
+        <kpchuck.kklock.preferences.ActionPreference
             android:key="reportBug"
             android:title="@string/report_a_bug"
             app:switchListener="kpchuck.kklock.utils.ListenerCollection.report_bug"/>

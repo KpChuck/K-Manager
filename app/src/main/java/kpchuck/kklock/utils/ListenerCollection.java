@@ -87,4 +87,9 @@ public class ListenerCollection {
         context.startActivity(rgb);
     }
 
+    public void open_telegram_group(Context context, Preference preference){
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/kklock"));
+        context.startActivity(intent);
+    }
+
 }
