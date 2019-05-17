@@ -40,81 +40,6 @@
 
     </RelativeLayout>
 
-    <!-- List Views -->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:background="?transparentBackgroundColor"
-        android:id="@+id/listViewLayout"
-        android:visibility="gone"
-        android:onClick="hideList"
-        android:layout_height="match_parent">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?secondaryBackgroundColor"
-        android:layout_margin="60dp"
-        android:layout_centerInParent="true"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_marginTop="10dp"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/firstTextView"
-                android:layout_marginStart="10dp"
-                android:layout_alignParentStart="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="?textColor"
-                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"/>
-
-            <Button
-                android:id="@+id/addButton"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="10dp"
-                android:backgroundTint="?textColor"
-                android:background="@android:drawable/ic_input_add"/>
-
-        </RelativeLayout>
-
-        <ListView
-            android:id="@+id/firstListView"
-            android:layout_width="match_parent"
-            android:layout_marginEnd="10dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp">
-
-        </ListView>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:textColor="?textColor"
-            android:id="@+id/secondTextView"
-            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
-
-            android:layout_height="wrap_content"/>
-
-        <ListView
-            android:id="@+id/secondListView"
-            android:layout_width="wrap_content"
-
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp">
-
-        </ListView>
-    </LinearLayout>
-</RelativeLayout>
-
-
-
     <!-- Loading Animation -->
     <RelativeLayout
         android:layout_width="match_parent"
@@ -124,14 +49,13 @@
         android:id="@+id/loadingId"
         >
 
-    <com.github.ybq.android.spinkit.SpinKitView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/spin_kit"
-        style="@style/SpinKitView.Large.FadingCircle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        app:SpinKit_Color="@color/colorAccent" />
+        <com.github.ybq.android.spinkit.SpinKitView
+            android:id="@+id/spin_kit"
+            style="@style/SpinKitView.Large.FadingCircle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:SpinKit_Color="@color/colorAccent" />
 
         <TextView
             android:id="@+id/loadingTextView"

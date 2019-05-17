@@ -19,7 +19,7 @@
     </style>
 
     <!-- Base application theme. -->
-    <style name="AppTheme.Dark" parent="MaterialDrawerTheme.ActionBar">
+    <style name="AppTheme.Dark" parent="MaterialTheme.ActionBar">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="colorPrimary">@color/colorPrimary</item>

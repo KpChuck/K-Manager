@@ -146,7 +146,7 @@ dependencies {
 
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    def gLibsVersion = "1.0.0-beta01"
+    def gLibsVersion = "1.0.0"
     implementation "androidx.legacy:legacy-support-v4:${gLibsVersion}"
     implementation "androidx.legacy:legacy-support-v13:${gLibsVersion}"
 
@@ -167,9 +167,10 @@ dependencies {
     implementation "androidx.cardview:cardview:${gLibsVersion}"
     implementation "androidx.annotation:annotation:${gLibsVersion}"
     implementation "androidx.legacy:legacy-support-v4:${gLibsVersion}"
-    // Adding this line (according to above warning message)
-    implementation "com.google.android.material:material:${gLibsVersion}"
-
+    // About libraries
+    implementation "com.mikepenz:aboutlibraries:6.2.3"
+    // https://github.com/mikepenz/Materialize
+    api 'com.mikepenz:materialize:1.2.0'
     //Image Picker
     implementation 'com.kbeanie:multipicker:1.6@aar'
     //Welcome Activity
@@ -177,16 +178,6 @@ dependencies {
     // Butterknife
     implementation 'com.jakewharton:butterknife:10.1.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
-    // MaterialDrawer
-    implementation("com.mikepenz:materialdrawer:6.0.7@aar") {
-        transitive = true
-    }
-    // Jsoup
-    implementation 'org.jsoup:jsoup:1.11.2'
-    // About Libraries
-    implementation('com.mikepenz:aboutlibraries:6.0.8@aar') {
-        transitive = true
-    }
     // Custom Activity on Crash
     implementation 'cat.ereza:customactivityoncrash:2.2.0'
 
@@ -208,21 +199,9 @@ dependencies {
     }
     // Color Picker
     implementation 'com.jaredrummler:colorpicker:1.0.2'
-    implementation 'org.greenrobot:eventbus:3.1.1'
     // APK Signer
     implementation 'com.android.tools.build:apksig:3.3.2'
 
-}
-
-configurations.all {
-    resolutionStrategy.force "com.mikepenz:fastadapter:3.2.5"
-    resolutionStrategy.force "com.mikepenz:iconics-core:3.0.3"
-    resolutionStrategy.force "com.android.support:support-v4:${rootProject.ext.supportLibVersion}"
-    resolutionStrategy.force "com.android.support:appcompat-v7:${rootProject.ext.supportLibVersion}"
-    resolutionStrategy.force "com.android.support:cardview-v7:${rootProject.ext.supportLibVersion}"
-    resolutionStrategy.force "com.android.support:recyclerview-v7:${rootProject.ext.supportLibVersion}"
-    resolutionStrategy.force "com.android.support:design:${rootProject.ext.supportLibVersion}"
-    resolutionStrategy.force "com.android.support:support-annotations:${rootProject.ext.supportLibVersion}"
 }
 
 repositories {

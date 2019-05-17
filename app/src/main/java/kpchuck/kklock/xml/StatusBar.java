@@ -246,9 +246,6 @@ public class StatusBar extends XmlBase {
             textClock = workingCopy.createElement("TextClock");
             textClock.setAttribute("android:format12Hour", "@*com.android.systemui:string/keyguard_widget_12_hours_format");
             textClock.setAttribute("android:format24Hour", "@*com.android.systemui:string/keyguard_widget_24_hours_format");
-
-            if (Build.VERSION.SDK_INT > 26 && prefUtils.getBool(PREF_CLOCK_HIDEABLE))
-                textClock.setAttribute(X_ID, "@*com.android.systemui:id/clock");
         }
 
         textClock.setAttribute("android:textAppearance", "@*com.android.systemui:style/TextAppearance.StatusBar.Clock");

@@ -13,7 +13,6 @@ import com.mikepenz.aboutlibraries.LibsBuilder;
 import kpchuck.kklock.R;
 import kpchuck.kklock.dialogs.TextAlertDialogFragment;
 import kpchuck.kklock.interfaces.DialogClickListener;
-import kpchuck.kklock.services.CheckforUpdatesService;
 
 import static kpchuck.kklock.constants.PrefConstants.PREF_BLACK_THEME;
 
@@ -53,11 +52,6 @@ public class ListenerCollection {
         context.startActivity(i);
     }
 
-    public void check_updates(Context context, Preference preference){
-        Intent i = new Intent(context, CheckforUpdatesService.class);
-        i.putExtra("action", 1);
-        context.startService(i);
-    }
 
     public void about_libraries(Context context, Preference preference){
         StringBuilder tr = new StringBuilder();

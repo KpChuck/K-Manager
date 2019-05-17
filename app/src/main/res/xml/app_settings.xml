@@ -25,35 +25,21 @@
             />
 
         <kpchuck.kklock.preferences.ActionPreference
-            android:key="keyCheckUpdates"
-            android:title="Check for Updates"
-            app:switchListener="kpchuck.kklock.utils.ListenerCollection.check_updates"/>
-
-        <kpchuck.kklock.preferences.ActionPreference
             android:key="licenses"
             android:title="About and Licenses"
             app:switchListener="kpchuck.kklock.utils.ListenerCollection.about_libraries"
             />
 
         <kpchuck.kklock.preferences.ActionPreference
-            android:key="goPro"
-            android:title="@string/upgrade_to_pro"
-            android:summary="@string/upgrade_to_pro_desc"
-            app:switchListener="kpchuck.kklock.utils.ListenerCollection.go_pro"/>
-
-        <kpchuck.kklock.preferences.ActionPreference
             android:key="reportBug"
             android:title="@string/report_a_bug"
             app:switchListener="kpchuck.kklock.utils.ListenerCollection.report_bug"/>
 
-        <!--<Preference-->
-            <!--android:key="hellothere"-->
-            <!--android:title="@string/action_settings">-->
-            <!--<intent-->
-                <!--android:action="android.intent.action.VIEW"-->
-                <!--android:data="https://www.paypal.me/KarolPrzes"/>-->
-        <!--</Preference>-->
-
+        <kpchuck.kklock.preferences.ActionPreference
+            android:key="goPro"
+            android:title="@string/upgrade_to_pro"
+            android:summary="@string/upgrade_to_pro_desc"
+            app:switchListener="kpchuck.kklock.utils.ListenerCollection.go_pro"/>
 
     </PreferenceCategory>
 

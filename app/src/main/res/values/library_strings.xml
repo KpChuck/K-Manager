@@ -164,32 +164,5 @@
     <!-- License section -->
     <string name="library_multipicker_licenseId" translatable="false" tools:keep="@string/library_multipicker_licenseId">apache_2_0</string>
 
-    <!-- Searchable Spinner -->
-    <string name="define_searchablespinner" tools:keep="@string/define_searchablespinner" />
-    <!-- Author section -->
-    <string name="library_searchablespinner_author" translatable="false" tools:keep="@string/library_searchablespinner_author">Michael Keskinidis</string>
-    <string name="library_searchablespinner_authorWebsite" translatable="false" tools:keep="@string/library_searchablespinner_authorWebsite">
-        https://github.com/michaelprimez/searchablespinner
-    </string>
-    <!-- Library section -->
-    <string name="library_searchablespinner_libraryName" translatable="false" tools:keep="@string/library_searchablespinner_libraryName">Searchable Spinner</string>
-    <string name="library_searchablespinner_libraryDescription" tools:keep="@string/library_searchablespinner_libraryDescription">Searchable Spinner is an easy to
-        use material spinner.
-    </string>
-    <string name="library_searchablespinner_libraryWebsite" translatable="false" tools:keep="@string/library_searchablespinner_libraryWebsite">
-        https://github.com/michaelprimez/searchablespinner
-    </string>
-    <string name="library_searchablespinner_libraryVersion" translatable="false" tools:keep="@string/library_searchablespinner_libraryVersion">1.0.9</string>
-    <!-- OpenSource section -->
-    <string name="library_searchablespinner_isOpenSource" translatable="false" tools:keep="@string/library_searchablespinner_isOpenSource">true</string>
-    <string name="library_searchablespinner_repositoryLink" translatable="false" tools:keep="@string/library_searchablespinner_repositoryLink">
-        https://github.com/michaelprimez/searchablespinner
-    </string>
-    <!-- ClassPath for autoDetect section -->
-    <string name="library_searchablespinner_classPath" translatable="false" tools:keep="@string/library_searchablespinner_classPath">gr.escsoft.michaelprimez.searchablespinner:SearchableSpinner
-    </string>
-    <!-- License section -->
-    <string name="library_searchablespinner_licenseId" translatable="false" tools:keep="@string/library_searchablespinner_licenseId">apache_2_0</string>
-
 
 </resources>
