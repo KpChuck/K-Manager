@@ -30,6 +30,7 @@
         android:layout_width="25dip"
         android:layout_height="25dip"
         android:background="@android:drawable/ic_menu_help"
+	    android:backgroundTint="?colorAccent"
         android:id="@+id/formatHelp"
         android:layout_gravity="center_vertical|end"
         android:layout_weight="0"
