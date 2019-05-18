@@ -8,6 +8,12 @@
         android:title="K-Manager Settings"
         >
 
+        <kpchuck.kklock.preferences.ActionPreference
+            android:title="Delete Saved K-Klock Files"
+            android:key="deleteSystemUI"
+            android:summary="Run this if you're getting errors in substratum after building.\nSometimes after your phone is updated K-Manager will still use your old System values for building K-Klock. This option will delete those and might fix errors in substratum."
+            app:switchListener="kpchuck.kklock.utils.ListenerCollection.delete_folders"/>
+
         <kpchuck.kklock.preferences.RootDependentSwitchPreference
             android:key="installSilently"
             android:defaultValue="false"

@@ -1,14 +1,27 @@
 package kpchuck.kklock.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Environment;
 import android.preference.Preference;
 import android.preference.SwitchPreference;
+import android.view.View;
+
 import androidx.fragment.app.FragmentActivity;
 
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
+import java.io.File;
+import java.io.IOException;
 
 import kpchuck.kklock.R;
 import kpchuck.kklock.dialogs.TextAlertDialogFragment;
@@ -90,6 +103,62 @@ public class ListenerCollection {
     public void open_telegram_group(Context context, Preference preference){
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/kklock"));
         context.startActivity(intent);
+    }
+
+    public void delete_folders(Context context, Preference preference){
+        new DeleteFilesAsync(context).execute();
+    }
+
+    class DeleteFilesAsync extends AsyncTask<Void, String, Void>{
+
+        private Snackbar snackbar;
+        private Context context;
+
+        public DeleteFilesAsync(Context context){
+            this.context = context;
+        }
+
+        private void makeSnackbar(String text, int duration){
+            View rootView = ((Activity)context).getWindow().getDecorView().findViewById(android.R.id.content);
+            snackbar = Snackbar.make(rootView, text, duration);
+            snackbar.show();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            makeSnackbar("Deleting", Snackbar.LENGTH_INDEFINITE);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            makeSnackbar("Files Deleted Successfully", Snackbar.LENGTH_SHORT);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                for (String folder : new String[]{"K-Klock", "K-Manager"}) {
+                    publishProgress(folder);
+                    for (File file : new File(Environment.getExternalStorageDirectory() + "/" + folder).listFiles()) {
+                        if (folder.equals("K-Manager") && file.getName().equals("images"))
+                            continue;
+                        if (file.isDirectory())
+                            FileUtils.deleteDirectory(file);
+                        else
+                            file.delete();
+                    }
+                }
+            } catch (IOException e){}
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            snackbar.setText("Deleting " + values[0] + " folder");
+        }
     }
 
 }
