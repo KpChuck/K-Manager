@@ -75,11 +75,22 @@
         android:title="Miscellaneous"
         >
 
-        <!-- TODO maybe add slider here -->
         <SwitchPreference
             android:defaultValue="false"
             android:key="prefHeadsUpTimeout"
             android:title="@string/heads_up_timeout" />
+
+	    <com.pavelsikun.seekbarpreference.SeekBarPreference
+		    android:key="@string/key_heads_up_time"
+		    android:title="Heads up Timeout Time"
+		    android:dependency="prefHeadsUpTimeout"
+		    android:defaultValue="5"
+
+		    sample:msbp_minValue="0"
+		    sample:msbp_maxValue="20"
+		    sample:msbp_interval="1"
+		    sample:msbp_measurementUnit="Seconds"
+		    sample:msbp_dialogEnabled="false"/>
 
     </PreferenceCategory>
 

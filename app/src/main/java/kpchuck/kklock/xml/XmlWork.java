@@ -205,6 +205,10 @@ public class XmlWork {
         if (prefUtils.getBool("qsTitlePref")) { // Qs title gone
             utils.writeResource(new File(values, "qstitlegone.xml"), "dimen", "qs_tile_text_size", "0.0sp");
         }
+        if (prefUtils.getBool("prefHeadsUpTimeout")){
+            utils.writeResource(new File(values, "headsuptimeout.xml"), "integer", "heads_up_notification_decay",
+                    prefUtils.getString(R.string.key_heads_up_time, "5") + "000");
+        }
     }
 
 }

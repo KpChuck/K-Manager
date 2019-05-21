@@ -283,7 +283,6 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             put(PREF_RECENTS, "recents.zip");
             put(PREF_LOCKSCREEN_STATUSBAR_SIZE, "hideStatusbar.zip");
             put(PREF_LOCK_CLOCK, "lock_clock.zip");
-            put(PREF_HEADS_UP, "timeout.zip");
 
         }};
         for (String key: hashMap.keySet()){
