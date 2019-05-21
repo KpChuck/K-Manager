@@ -46,18 +46,14 @@ public class QsBgUtil {
         this.prefUtils = new PrefUtils(context);
         if (prefUtils.getBool(PREF_QS_BG) || prefUtils.getBool(PREF_QS_HEADER)){
             buildDirs();
-            File attention = new File(dir.getAbsolutePath() + "/assets/overlays/com.android.systemui.headers/attention");
-
             if (prefUtils.getBool(PREF_QS_BG)) {
                 moveImage(PREF_QS_BG_FILE, "qs_background_primary");
-                xmlUtils.writeType2Desc(context.getString(R.string.qs_images_attention), attention.getAbsolutePath());
                 checkForOtherUses();
             }
 
             if (prefUtils.getBool(PREF_QS_HEADER)) {
                 if (modQsHeader()){
                     moveImage(PREF_QS_HEADER_FILE, header_png);
-                    xmlUtils.writeType2Desc(context.getString(R.string.qs_images_attention), attention.getAbsolutePath());
                  }
             }
 
@@ -74,7 +70,7 @@ public class QsBgUtil {
         this.dir = myDir;
         fileHelper.newFolder(new File(myDir, "assets"));
         fileHelper.newFolder(myDir.getAbsolutePath() + "/assets/overlays");
-        String t = fileHelper.newFolder(myDir.getAbsolutePath() + "/assets/overlays/com.android.systemui.headers").getAbsolutePath();
+        String t = fileHelper.newFolder(myDir.getAbsolutePath() + "/assets/overlays/com.android.systemui").getAbsolutePath();
         fileHelper.newFolder(t + "/res");
         fileHelper.newFolder(t + "/res/drawable");
         fileHelper.newFolder(t + "/res/values");
@@ -83,7 +79,7 @@ public class QsBgUtil {
     }
 
     private void moveImage(String file_pref, String newName) throws IOException{
-        File destFolder = new File(dir.getAbsolutePath() + "/assets/overlays/com.android.systemui.headers/res/drawable");
+        File destFolder = new File(dir.getAbsolutePath() + "/assets/overlays/com.android.systemui/res/drawable");
 
         String filePath = prefUtils.getString(file_pref, "null");
         FileUtils.copyFileToDirectory(new File(filePath), destFolder);
@@ -95,7 +91,7 @@ public class QsBgUtil {
     private boolean modQsHeader() throws Exception{
 
         final String inputFolder = "userInput";
-        File destFolder = new File(dir,  "/assets/overlays/com.android.systemui.headers/res/" + XmlWork.layout);
+        File destFolder = new File(dir,  "/assets/overlays/com.android.systemui/res/" + XmlWork.layout);
 
         File qsHeader = new File(Environment.getExternalStorageDirectory() + "/K-Klock/" + inputFolder +  "/quick_status_bar_expanded_header.xml");
         if (!qsHeader.exists()) return false;
@@ -150,7 +146,7 @@ public class QsBgUtil {
     private void checkForStringAndFix(File xml, String topDirName) throws Exception{
         String file = IOUtils.toString(new FileInputStream(xml), "utf-8");
         if (file.contains("@drawable/qs_background_primary")) {
-            File destFolder = new File(dir.getAbsolutePath() + "/assets/overlays/com.android.systemui.headers/res/" + topDirName);
+            File destFolder = new File(dir.getAbsolutePath() + "/assets/overlays/com.android.systemui/res/" + topDirName);
             if (!destFolder.exists()) destFolder.mkdirs();
             XmlBase base = new XmlBase(xmlUtils, prefUtils, xml, null);
             // @*com.android.systemui:drawable/qs_background_primary
