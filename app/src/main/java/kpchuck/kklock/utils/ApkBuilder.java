@@ -96,7 +96,6 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
         try {
             makeDirs();
-            ExtractAssets();
             if (!hasAllXmls) {
                 publishProgress(context.getString(R.string.decompiling));
 
@@ -273,24 +272,6 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
                 parent.removeChild(child);
         }
         utils.writeDocToFile(document, outfile);
-    }
-
-    public void ExtractAssets () {
-        // Copy files used for every apk first
-        fileHelper.copyFromAssets(univ, "universalFiles.zip", mergerFolder, context, true);
-        // Copy optional files into the tempfolder
-        LinkedHashMap<String, String> hashMap = new LinkedHashMap<String, String>(){{
-            put(PREF_RECENTS, "recents.zip");
-
-        }};
-        for (String key: hashMap.keySet()){
-            checkPrefAndCopy(key, hashMap.get(key));
-        }
-    }
-
-    private void checkPrefAndCopy(String key, String zipName){
-        if(prefUtils.getBool(key))
-            fileHelper.copyFromAssets(univ, zipName, tempFolder, context, true);
     }
 
     private void modTheRomZip() throws Exception{

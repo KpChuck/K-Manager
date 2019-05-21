@@ -34,4 +34,6 @@
     <string name="key_clock_size">keyStatusBarClockSizeNotPref</string>
     <string name="key_num_qs_tiles">keyNumberQsTiles</string>
     <string name="key_heads_up_time">keyHeadsUpTimeoutTime</string>
+    <string name="key_recents">recentsPref</string>
+    <string name="key_recents_size">keyRecentsSize</string>
 </resources>

@@ -66,7 +66,7 @@ public class XmlWork {
 
         if (prefUtils.getBool(R.string.key_statusbar_clock_size)){
             utils.writeResource(new File(values, "clocksize.xml"), "dimen",
-                    "status_bar_clock_size", prefUtils.getString(R.string.key_clock_size, "") + "sp");
+                    "status_bar_clock_size", prefUtils.getString(R.string.key_clock_size, "14") + "sp");
         }
         if (prefUtils.getBool(R.string.key_am_everywhere)){
             utils.writeResource(new File(values, "ampm.xml"), "bool", "config_showAmpm", "true");
@@ -227,6 +227,12 @@ public class XmlWork {
         } else if (lockscreenHeight == 2){
             utils.writeResource(new File(values, "lockscreen_height.xml"), "dimen", "status_bar_header_height_keyguard",
                     "0.0dip");
+        }
+        if (prefUtils.getBool(R.string.key_recents)){
+            String radius = prefUtils.getString(R.string.key_recents_size, "6") + "dip";
+            utils.writeResources(new File(values, "rounded_recents.xml"), "dimen",
+                    new String[]{"recents_task_view_rounded_corners_radius", "recents_task_view_shadow_rounded_corners_radius"},
+                    new String[]{radius, radius});
         }
     }
 
