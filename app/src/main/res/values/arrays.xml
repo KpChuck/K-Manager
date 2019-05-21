@@ -152,8 +152,8 @@
 
     <string-array name="lockscreen_statusbar_height">
         <item>Normal Height</item>
-        <item>Same Height as the Statusbar</item>
-        <item>Lockscreen Statusbar Gone</item>
+        <item>Same Height</item>
+        <item>Zero Height</item>
     </string-array>
 
 </resources>

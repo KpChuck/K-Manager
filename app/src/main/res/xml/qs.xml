@@ -111,7 +111,7 @@
             android:key="hideStatusBarPref"
             android:title="@string/lockscreen_statusbar_size"
 	        app:names="@array/lockscreen_statusbar_height"
-            android:summary="You can make the lockscreen the same size as the normal statusbar - aligns carrier text and stuff.\nYou can make the size 0 - hides everything so nothing will overlap with the normal statusbar."/>
+            android:summary="Make it same height as the normal statusbar if icons aren't all aligned"/>
 
 
     </PreferenceCategory>
