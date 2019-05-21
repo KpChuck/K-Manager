@@ -281,7 +281,6 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         // Copy optional files into the tempfolder
         LinkedHashMap<String, String> hashMap = new LinkedHashMap<String, String>(){{
             put(PREF_RECENTS, "recents.zip");
-            put(PREF_QS, "qsTiles.zip");
             put(PREF_LOCKSCREEN_STATUSBAR_SIZE, "hideStatusbar.zip");
             put(PREF_QS_LABEL, "qsTitle.zip");
             put(PREF_LOCK_CLOCK, "lock_clock.zip");

@@ -193,4 +193,14 @@ public class XmlWork {
 
     }
 
+    private void addQsValues(File values) throws Exception{
+        if (prefUtils.getBool("qsPref")){ // Num qs tiles
+            for (File f: new File[]{values, new File(values.getAbsolutePath() + "-w550dp-land")}){
+                if (!f.exists()) f.mkdirs();
+                utils.writeResource(new File(f, "qs_tile_num.xml"), "integer", "quick_settings_num_columns",
+                        prefUtils.getString(R.string.key_num_qs_tiles, "4"));
+            }
+        }
+    }
+
 }

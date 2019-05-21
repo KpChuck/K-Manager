@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:sample="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
         android:layout_width="wrap_content"
@@ -12,8 +13,21 @@
         <SwitchPreference
             android:defaultValue="false"
             android:key="qsPref"
-            android:title="@string/qs_tile_no"
+            android:title="Change Number of Qs Tiles"
             android:summary="This option might not work on some Roms, especially if they are already customizing QS tiles."/>
+
+        <com.pavelsikun.seekbarpreference.SeekBarPreference
+            android:key="@string/key_num_qs_tiles"
+            android:title="Number of Tiles (Default: 4)"
+            android:dependency="qsPref"
+            android:defaultValue="4"
+
+            sample:msbp_minValue="0"
+            sample:msbp_maxValue="12"
+            sample:msbp_interval="1"
+            sample:msbp_measurementUnit="Tiles"
+            sample:msbp_dialogEnabled="false"/>
+
         <SwitchPreference
             android:defaultValue="false"
             android:key="qsTitlePref"

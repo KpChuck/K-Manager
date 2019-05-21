@@ -32,4 +32,5 @@
     <string name="key_theme_sb_icons">keyThemeStatusBarIcons</string>
 
     <string name="key_clock_size">keyStatusBarClockSizeNotPref</string>
+    <string name="key_num_qs_tiles">keyNumberQsTiles</string>
 </resources>
