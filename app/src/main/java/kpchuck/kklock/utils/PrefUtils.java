@@ -30,7 +30,15 @@ public class PrefUtils {
     }
 
     public void deleteAllPrefs(){
-        editor.clear().apply();
+        editor.clear().commit();
+    }
+
+    public String getIntString(String stringPref, int defaultValue){
+        return String.valueOf(myPref.getInt(stringPref, defaultValue));
+    }
+
+    public String getIntString(int stringPref, int defaultValue){
+        return getIntString(getKey(stringPref), defaultValue);
     }
 
     public String getString(String stringPref, String defaultString){

@@ -110,6 +110,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             publishProgress(context.getString(R.string.apkBuilderLoading));
             //TODO Fix translating signing
             //translateAll();
+            ExtractAssets();
             modTheRomZip();
             appendOptionsZip();// Takes long about 10s
             // Takes long about 5s
@@ -261,6 +262,8 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
     }
 
+
+
     private void fixAttrsDec(File attrs, File outfile) throws Exception{
 
         XmlUtils utils = new XmlUtils();
@@ -272,6 +275,24 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
                 parent.removeChild(child);
         }
         utils.writeDocToFile(document, outfile);
+    }
+
+    public void ExtractAssets () {
+        // Copy files used for every apk first
+        fileHelper.copyFromAssets(univ, "universalFiles.zip", mergerFolder, context, true);
+        // Copy optional files into the tempfolder
+        LinkedHashMap<String, String> hashMap = new LinkedHashMap<String, String>(){{
+            put(PREF_RECENTS, "recents.zip");
+
+        }};
+        for (String key: hashMap.keySet()){
+            checkPrefAndCopy(key, hashMap.get(key));
+        }
+    }
+
+    private void checkPrefAndCopy(String key, String zipName){
+        if(prefUtils.getBool(key))
+            fileHelper.copyFromAssets(univ, zipName, tempFolder, context, true);
     }
 
     private void modTheRomZip() throws Exception{
