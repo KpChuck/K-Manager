@@ -180,6 +180,7 @@ public class XmlWork {
         File values = new File(utils.baseFolders.getAbsolutePath() + "/res/values/");
 
         addStatusBarValues(values);
+        addQsValues(values);
 
         if (prefUtils.getBool(R.string.key_theme_sb_icons)){
             String darkColor = "#" + Integer.toHexString(prefUtils.getInt(R.string.key_stock_dark_color));
@@ -200,6 +201,9 @@ public class XmlWork {
                 utils.writeResource(new File(f, "qs_tile_num.xml"), "integer", "quick_settings_num_columns",
                         prefUtils.getString(R.string.key_num_qs_tiles, "4"));
             }
+        }
+        if (prefUtils.getBool("qsTitlePref")) { // Qs title gone
+            utils.writeResource(new File(values, "qstitlegone.xml"), "dimen", "qs_tile_text_size", "0.0sp");
         }
     }
 
