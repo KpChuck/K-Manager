@@ -220,6 +220,14 @@ public class XmlWork {
                     new String[]{"@*com.android.systemui:dimen/widget_label_font_size", "0.0"},
                     "widget_label");
         }
+        int lockscreenHeight = prefUtils.getInt("hideStatusBarPref");
+        if (lockscreenHeight == 1){
+            utils.writeResource(new File(values, "lockscreen_height.xml"), "dimen", "status_bar_header_height_keyguard",
+                    "@*android:dimen/status_bar_height");
+        } else if (lockscreenHeight == 2){
+            utils.writeResource(new File(values, "lockscreen_height.xml"), "dimen", "status_bar_header_height_keyguard",
+                    "0.0dip");
+        }
     }
 
 }

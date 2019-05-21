@@ -150,4 +150,10 @@
         <item>No Clock</item>
     </string-array>
 
+    <string-array name="lockscreen_statusbar_height">
+        <item>Normal Height</item>
+        <item>Same Height as the Statusbar</item>
+        <item>Lockscreen Statusbar Gone</item>
+    </string-array>
+
 </resources>
