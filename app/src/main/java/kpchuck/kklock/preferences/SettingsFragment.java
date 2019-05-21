@@ -21,6 +21,7 @@ import com.kbeanie.multipicker.api.ImagePicker;
 import com.kbeanie.multipicker.api.Picker;
 import com.kbeanie.multipicker.api.callbacks.ImagePickerCallback;
 import com.kbeanie.multipicker.api.entity.ChosenImage;
+import com.pavelsikun.seekbarpreference.SeekBarPreference;
 
 import org.apache.commons.io.FileUtils;
 
@@ -174,12 +175,24 @@ public class SettingsFragment extends PreferenceFragment {
         Toast.makeText(getContext(), String.valueOf(obj), Toast.LENGTH_SHORT).show();
     }
 
-    private void removeOption(){
-        getPreferencesByClass(SpinnerPreference.class).forEach(preference -> {
-            if (((Preference) preference).getTitle().equals("Network Icon Position")){
-                ((SpinnerPreference) preference).removeIndex(2);
+    private void fixSeekerDependencies(){
+        List<SeekBarPreference> l = getPreferencesByClass(SeekBarPreference.class);
+        for (SeekBarPreference preference: l){
+            if (preference.getDependency().length() > 0){
+                String dependency = preference.getDependency();
+                Preference depPref = findPreference(dependency);
+                preference.setEnabled(depPref.isEnabled());
+                depPref.setOnPreferenceChangeListener((preference1, o) -> {
+                    preference.setEnabled((boolean) o);
+                    return true;
+                });
             }
-        });
+        }
+    }
+
+    private void removeOption(){
+        SpinnerPreference preference = (SpinnerPreference) findPreference(getString(R.string.key_move_network));
+        preference.removeIndex(2);
     }
 
     private <T> List<T> getPreferencesByClass(Class className){
@@ -210,6 +223,7 @@ public class SettingsFragment extends PreferenceFragment {
     }
 
     private void init(){
+        fixSeekerDependencies();
         Preference stockStyle = findPreference(getString(R.string.key_stock_style));
         if (stockStyle != null) {
             stockStyle.setOnPreferenceChangeListener((preference, o) -> {

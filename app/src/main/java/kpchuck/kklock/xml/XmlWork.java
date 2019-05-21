@@ -63,6 +63,11 @@ public class XmlWork {
                 new String[]{"android:textSize", "android:textColor", "android:fontFamily"},
                 new String[]{"@*com.android.systemui:dimen/status_bar_clock_size", "#ffffffff", font},
                 "TextAppearance.StatusBar.Clock", "@*android:style/TextAppearance.StatusBar.Icon");
+
+        if (prefUtils.getBool(R.string.key_statusbar_clock_size)){
+            utils.writeResource(new File(values, "clocksize.xml"), "dimen",
+                    "status_bar_clock_size", prefUtils.getString(R.string.key_clock_size, "") + "sp");
+        }
     }
 
     private void modStatusBar() throws Exception{

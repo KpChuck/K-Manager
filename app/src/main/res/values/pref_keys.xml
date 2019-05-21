@@ -30,4 +30,6 @@
     <string name="key_stock_style">keyStockStyle</string>
     <string name="key_sb_clock_on_lockscreen">keyStatusbarClockShownOnLockscreen</string>
     <string name="key_theme_sb_icons">keyThemeStatusBarIcons</string>
+
+    <string name="key_clock_size">keyStatusBarClockSizeNotPref</string>
 </resources>

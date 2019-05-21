@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:sample="http://schemas.android.com/apk/res-auto">
 
 	<PreferenceCategory
 		android:title="Position and Style Options">
@@ -99,12 +100,24 @@ The color against a light background is below."/>
         />
 
         <SwitchPreference
-            android:key="@string/key_statusbar_clock_size"
-            android:title="@string/clock_size" />
-
-        <SwitchPreference
             android:key="@string/key_am_everywhere"
             android:title="@string/ampm_stock_clock" />
+
+	    <SwitchPreference
+		    android:key="@string/key_statusbar_clock_size"
+		    android:title="Change the Statusbar Clock Size" />
+
+	    <com.pavelsikun.seekbarpreference.SeekBarPreference
+		    android:key="@string/key_clock_size"
+		    android:title="Clock Size (Default: 14sp)"
+		    android:dependency="@string/key_statusbar_clock_size"
+		    android:defaultValue="14"
+
+		    sample:msbp_minValue="0"
+		    sample:msbp_maxValue="30"
+		    sample:msbp_interval="1"
+		    sample:msbp_measurementUnit="sp"
+		    sample:msbp_dialogEnabled="false"/>
 
 
     </PreferenceCategory>

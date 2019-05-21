@@ -200,7 +200,9 @@ dependencies {
     // Color Picker
     implementation 'com.jaredrummler:colorpicker:1.0.2'
     // APK Signer
-    implementation 'com.android.tools.build:apksig:3.3.2'
+    implementation 'com.android.tools.build:apksig:3.4.1'
+    // Material seekbar
+    implementation 'com.pavelsikun:material-seekbar-preference:2.3.0'
 
 }
 
