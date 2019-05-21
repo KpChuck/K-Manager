@@ -284,7 +284,6 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             put(PREF_QS, "qsTiles.zip");
             put(PREF_LOCKSCREEN_STATUSBAR_SIZE, "hideStatusbar.zip");
             put(PREF_QS_LABEL, "qsTitle.zip");
-            put(PREF_AM, "ampm.zip");
             put(PREF_LOCK_CLOCK, "lock_clock.zip");
             put(PREF_HEADS_UP, "timeout.zip");
 

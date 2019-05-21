@@ -68,6 +68,9 @@ public class XmlWork {
             utils.writeResource(new File(values, "clocksize.xml"), "dimen",
                     "status_bar_clock_size", prefUtils.getString(R.string.key_clock_size, "") + "sp");
         }
+        if (prefUtils.getBool(R.string.key_am_everywhere)){
+            utils.writeResource(new File(values, "ampm.xml"), "bool", "config_showAmpm", "true");
+        }
     }
 
     private void modStatusBar() throws Exception{

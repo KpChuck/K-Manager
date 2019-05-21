@@ -101,7 +101,8 @@ The color against a light background is below."/>
 
         <SwitchPreference
             android:key="@string/key_am_everywhere"
-            android:title="@string/ampm_stock_clock" />
+            android:title="@string/ampm_stock_clock"
+	        android:summary="Might not work on all Systems"/>
 
 	    <SwitchPreference
 		    android:key="@string/key_statusbar_clock_size"
