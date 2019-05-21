@@ -209,6 +209,17 @@ public class XmlWork {
             utils.writeResource(new File(values, "headsuptimeout.xml"), "integer", "heads_up_notification_decay",
                     prefUtils.getString(R.string.key_heads_up_time, "5") + "000");
         }
+        if (prefUtils.getBool("prefhidelockscreenclock")){
+            utils.writeResources(new File(values, "hidelockclock1.xml"), "style",
+                    new String[]{"android:textSize", "android:alpha"},
+                    new String[]{"@*com.android.systemui:dimen/widget_big_font_size", "0.0"},
+                    "widget_big_thin");
+
+            utils.writeResources(new File(values, "hidelockclock2.xml"), "style",
+                    new String[]{"android:textSize", "android:alpha"},
+                    new String[]{"@*com.android.systemui:dimen/widget_label_font_size", "0.0"},
+                    "widget_label");
+        }
     }
 
 }
