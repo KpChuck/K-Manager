@@ -192,7 +192,8 @@ public class SettingsFragment extends PreferenceFragment {
 
     private void removeOption(){
         SpinnerPreference preference = (SpinnerPreference) findPreference(getString(R.string.key_move_network));
-        preference.removeIndex(2);
+        if (preference != null)
+            preference.removeIndex(2);
     }
 
     private <T> List<T> getPreferencesByClass(Class className){
