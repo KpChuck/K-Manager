@@ -485,6 +485,10 @@ public class XmlUtils {
         return doc;
     }
 
+    public String wrapInFont(String string){
+        return "<font>" + string + "</font>";
+    }
+
     public void writeResource(File file, String resourceType, String name, String value) throws Exception{
         writeResources(file, resourceType, new String[]{name}, new String[]{value});
     }
