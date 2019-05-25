@@ -21,6 +21,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlPullParser;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,6 +29,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -470,13 +472,13 @@ public class XmlUtils {
         return leftElements;
     }
 
-    public Document getDocument(File file){
+    public Document getDocument(File file) {
         Document doc = null;
         try {
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             doc = db.parse(file);
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("klock", "Error getting document for file " + file.getName() + "\n" + e.getMessage());
         }
 
@@ -505,7 +507,13 @@ public class XmlUtils {
         for (int i=0; i<values.length; i++){
             Element newElement = doc.createElement(resourceType);
             newElement.setAttribute("name", name[i]);
-            newElement.setTextContent(values[i]);
+            try {
+                NodeList nodeList = stringToDom(values[i]).getChildNodes();
+                for (int j = 0; j < nodeList.getLength(); j++)
+                    newElement.appendChild(doc.importNode(nodeList.item(j), true));
+            } catch (Exception e){
+                newElement.setTextContent(values[i]);
+            }
             root.appendChild(newElement);
         }
         writeDocToFile(doc, file);
