@@ -71,41 +71,6 @@ public class FormatPickerPreference extends Preference{
         View view = inflater.inflate(R.layout.webview_layout, null);
         builder.setView(view);
         WebView webView = view.findViewById(R.id.web_view);
-        String format_info = "<style> * {background-color: %s; color: %s; }</style>\n" +
-                "            <b>Clock Format Codes</b>\n" +
-                "            <ul>\n" +
-                "                <li>d.............Day Of Month (single digit) 7</li>\n" +
-                "                <li>dd.......... Day Of Month (double digit) Zero, 07</li>\n" +
-                "                <li>EEEE......Day Of Week (Full) Monday</li>\n" +
-                "                <li>EEE........Week Day (Short) Mon</li>\n" +
-                "                <li>MMMM....Month (Full) AUGUST</li>\n" +
-                "                <li>MMM.......Month (Short) AUG</li>\n" +
-                "                <li>MM..........Month (double digit) 08</li>\n" +
-                "                <li>M............Month (Single digit) 8</li>\n" +
-                "                <li>yyyy........Year (Full) 2013</li>\n" +
-                "                <li>yy............Year (Short) 13</li>\n" +
-                "                <li>h..............Hour (12 hour, single digit) 8</li>\n" +
-                "                <li>hh............Hour (12 hour, double digit) 08</li>\n" +
-                "                <li>H.............Hour (24 hour, single digit) 8 20</li>\n" +
-                "                <li>HH...........Hour (24 hour, double digit) 08 20 (Note: some roms use kk instead)</li>\n" +
-                "                <li>m.............Minute (single digit) 9</li>\n" +
-                "                <li>mm..........Minute (double digit) 09</li>\n" +
-                "                <li>s..............Second (single digit) 9</li>\n" +
-                "                <li>ss............Second (double digit) 09</li>\n" +
-                "                <li>a..............Marker AM/PM</li>\n" +
-                "            </ul>\n" +
-                "            <br/>\n" +
-                "            <b>These can then be styled with HTML</b>\n" +
-                "            <ul>\n" +
-                "                <li>&lt;b&gt;...&lt;/b&gt; ..................................makes the enclosed text bold</li>\n" +
-                "                <li>&lt;i&gt;...&lt;/i&gt; ...................................makes the enclosed text italic</li>\n" +
-                "                <li>&lt;font size =\"X\"&gt;...&lt;/font&gt; ............sets the font size of the enclosed text to X.0dip</li>\n" +
-                "                <li>&lt;font fgcolor =\"#ffffffff\"&gt;...&lt;/&gt; ........sets the foreground colour of the enclosed text</li>\n" +
-                "                <li>&lt;font bgcolor =\"#ff000000\"&gt;...&lt;/&gt; .sets the background colour of the enclosed text</li>\n" +
-                "                <li>&lt;big&gt;...&lt;/big&gt;.....................increases the font size of the enclosed text</li>\n" +
-                "                <li>&lt;small&gt;...&lt;/small&gt;......................decreases the font size of the enclosed text</li>\n" +
-                "            </ul>\n" +
-                "        </body>";
         String info = String.format(format_info, fetchColor(R.attr.secondaryBackgroundColor), fetchColor(R.attr.textColor));
         webView.loadDataWithBaseURL(null, info, "text/html", "utf-8", null);
 
@@ -129,7 +94,7 @@ public class FormatPickerPreference extends Preference{
         textView.setText("Enter a format");
         valueEdit.setText(prefUtils.getString(getKey(), ""));
 
-        valueEdit.setText(prefUtils.getBool(enabledKey) ? "" : prefUtils.getString(getKey(), ""));
+        valueEdit.setText(prefUtils.getBool(enabledKey) ? prefUtils.getString(getKey(), "") : "");
 
         builder.setPositiveButton(getContext().getString(R.string.save), (dialogInterface, i) -> {
             String value = valueEdit.getText().toString();
@@ -153,6 +118,42 @@ public class FormatPickerPreference extends Preference{
         @ColorInt int color = typedValue.data;
         return String.format("#%06X", (0xFFFFFF & color));
     }
+
+    private static final String format_info = "<style> * {background-color: %s; color: %s; }</style>\n" +
+            "            <b>Clock Format Codes</b>\n" +
+            "            <ul>\n" +
+            "                <li>d.............Day Of Month (single digit) 7</li>\n" +
+            "                <li>dd.......... Day Of Month (double digit) Zero, 07</li>\n" +
+            "                <li>EEEE......Day Of Week (Full) Monday</li>\n" +
+            "                <li>EEE........Week Day (Short) Mon</li>\n" +
+            "                <li>MMMM....Month (Full) AUGUST</li>\n" +
+            "                <li>MMM.......Month (Short) AUG</li>\n" +
+            "                <li>MM..........Month (double digit) 08</li>\n" +
+            "                <li>M............Month (Single digit) 8</li>\n" +
+            "                <li>yyyy........Year (Full) 2013</li>\n" +
+            "                <li>yy............Year (Short) 13</li>\n" +
+            "                <li>h..............Hour (12 hour, single digit) 8</li>\n" +
+            "                <li>hh............Hour (12 hour, double digit) 08</li>\n" +
+            "                <li>H.............Hour (24 hour, single digit) 8 20</li>\n" +
+            "                <li>HH...........Hour (24 hour, double digit) 08 20 (Note: some roms use kk instead)</li>\n" +
+            "                <li>m.............Minute (single digit) 9</li>\n" +
+            "                <li>mm..........Minute (double digit) 09</li>\n" +
+            "                <li>s..............Second (single digit) 9</li>\n" +
+            "                <li>ss............Second (double digit) 09</li>\n" +
+            "                <li>a..............Marker AM/PM</li>\n" +
+            "            </ul>\n" +
+            "            <br/>\n" +
+            "            <b>These can then be styled with HTML</b>\n" +
+            "            <ul>\n" +
+            "                <li>&lt;b&gt;...&lt;/b&gt; ..................................makes the enclosed text bold</li>\n" +
+            "                <li>&lt;i&gt;...&lt;/i&gt; ...................................makes the enclosed text italic</li>\n" +
+            "                <li>&lt;font size =\"X\"&gt;...&lt;/font&gt; ............sets the font size of the enclosed text to X.0dip</li>\n" +
+            "                <li>&lt;font fgcolor =\"#ffffffff\"&gt;...&lt;/&gt; ........sets the foreground colour of the enclosed text</li>\n" +
+            "                <li>&lt;font bgcolor =\"#ff000000\"&gt;...&lt;/&gt; .sets the background colour of the enclosed text</li>\n" +
+            "                <li>&lt;big&gt;...&lt;/big&gt;.....................increases the font size of the enclosed text</li>\n" +
+            "                <li>&lt;small&gt;...&lt;/small&gt;......................decreases the font size of the enclosed text</li>\n" +
+            "            </ul>\n" +
+            "        </body>";
 
 }
 
