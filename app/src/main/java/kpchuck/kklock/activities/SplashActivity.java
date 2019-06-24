@@ -23,6 +23,13 @@ public class SplashActivity extends AppCompatActivity {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(BReceiver, new IntentFilter("splash"));
         new Checks().checkPro(this);
+        new Thread(() -> {
+            try {
+                Thread.sleep(2000);
+            } catch (Exception e){}
+            Intent i = new Intent("splash");
+            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
+        }).start();
 
     }
 

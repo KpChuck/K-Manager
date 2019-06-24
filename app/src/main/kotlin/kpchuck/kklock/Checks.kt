@@ -35,7 +35,7 @@ class Checks {
 
     fun checkPro(context: Context){
         Log.d("klock", "Starting pro check")
-        PrefUtils(context).putBool("hellothere", false)
+       // PrefUtils(context).putBool("hellothere", false)
         val manager = context.packageManager
 
         if (!isPackageInstalled(context, "kpchuck.k_klock.pro")){
