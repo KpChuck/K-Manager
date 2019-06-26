@@ -52,11 +52,13 @@ public class XmlWork {
         String clockColor = "#" + Integer.toHexString(prefUtils.getInt(R.string.key_clock_color));
         utils.writeResource(new File(values, "clockcolor.xml"), "color", "status_bar_clock_color", clockColor);
 
-        String clockFormat = utils.wrapInFont(prefUtils.getString(R.string.key_clock_format, "hh:mm"));
+        String clockFormat = prefUtils.getString(R.string.key_clock_format, "hh:mm");
         String[] fnames = new String[]{"keyguard_widget_12_hours_format", "keyguard_widget_24_hours_format"};
         String[] fvalues = new String[]{clockFormat, clockFormat};
         if (!prefUtils.getBool(R.string.key_use_included_format))
-            fvalues[0] = utils.wrapInFont(clockFormat + " a");
+            fvalues[0] = clockFormat + " a";
+        for (int i=0; i<fvalues.length; i++)
+            fvalues[i] = utils.wrapInFont(fvalues[i]);
         utils.writeResources(new File(values, "clockformats.xml"), "string", fnames, fvalues);
 
         String[] fonts = prefUtils.getString(R.string.key_clock_font, "roboto-regular ").toLowerCase().split(" ", 2);
