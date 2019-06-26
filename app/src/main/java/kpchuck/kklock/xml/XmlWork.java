@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import kpchuck.kklock.R;
+import kpchuck.kklock.utils.FontListParser;
 import kpchuck.kklock.utils.PrefUtils;
 import kpchuck.kklock.utils.QsBgUtil;
 
@@ -55,13 +56,15 @@ public class XmlWork {
         String[] fnames = new String[]{"keyguard_widget_12_hours_format", "keyguard_widget_24_hours_format"};
         String[] fvalues = new String[]{clockFormat, clockFormat};
         if (!prefUtils.getBool(R.string.key_use_included_format))
-            fvalues[0] = clockFormat + " a";
+            fvalues[0] = utils.wrapInFont(clockFormat + " a");
         utils.writeResources(new File(values, "clockformats.xml"), "string", fnames, fvalues);
 
-        String font = prefUtils.getString(R.string.key_clock_font, "roboto-regular").toLowerCase();
+        String[] fonts = prefUtils.getString(R.string.key_clock_font, "roboto-regular").toLowerCase().split(" ", 2);
+        String textStyle = fonts[1].replace(" ", "|");
+        if (textStyle.length() == 0) textStyle = "normal";
         utils.writeResources(new File(values, "clockfonts.xml"), "style",
-                new String[]{"android:textSize", "android:textColor", "android:fontFamily"},
-                new String[]{"@*com.android.systemui:dimen/status_bar_clock_size", "#ffffffff", font},
+                new String[]{"android:textSize", "android:textColor", "android:fontFamily", "android:textStyle"},
+                new String[]{"@*com.android.systemui:dimen/status_bar_clock_size", "#ffffffff", fonts[0].toLowerCase(), textStyle},
                 "TextAppearance.StatusBar.Clock", "@*android:style/TextAppearance.StatusBar.Icon");
 
         if (prefUtils.getBool(R.string.key_statusbar_clock_size)){
@@ -219,6 +222,9 @@ public class XmlWork {
                     new String[]{"android:textSize", "android:alpha"},
                     new String[]{"@*com.android.systemui:dimen/widget_label_font_size", "0.0"},
                     "widget_label");
+            utils.writeResources(new File(values, "hidelockclock3.xml"), "string",
+                    new String[]{"clock_12hr_format", "clock_24hr_format", "system_ui_aod_date_pattern"},
+                    new String[]{" "," "," "});
         }
         int lockscreenHeight = prefUtils.getInt("hideStatusBarPref");
         if (lockscreenHeight == 1){

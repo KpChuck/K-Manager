@@ -77,6 +77,23 @@ public class XmlUtils {
         this.hasRightInserted = hasRightInserted;
     }
 
+    public boolean hasStatusIconContainer(Context context)  {
+        String container = "com.android.systemui.statusbar.phone.StatusIconContainer";
+        try {
+            String packageName = "com.android.systemui";
+            Resources res = context.getPackageManager().getResourcesForApplication(packageName);
+            int id = res.getIdentifier("system_icons", "layout", packageName);
+            XmlResourceParser x = res.getLayout(id);
+            Document xml = getDocument(x, context);
+            String stringXml = domToString(xml);
+            return stringXml.contains(container);
+        }catch (PackageManager.NameNotFoundException e){
+            return false;
+        } catch (Exception f){
+            return false;
+        }
+    }
+
     public boolean hasResource(Context context, String type, String name){
         try {
             String packageName = "com.android.systemui";
@@ -366,6 +383,16 @@ public class XmlUtils {
         doc = stringToDom(output);
         doc.normalizeDocument();
         return doc;
+    }
+
+    public String domToString(Document doc) throws Exception {
+        TransformerFactory tf = TransformerFactory.newInstance();
+        Transformer transformer = tf.newTransformer();
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        StringWriter writer = new StringWriter();
+        transformer.transform(new DOMSource(doc), new StreamResult(writer));
+        String output = writer.getBuffer().toString();
+        return output;
     }
 
     public static Document stringToDom(String xmlSource)

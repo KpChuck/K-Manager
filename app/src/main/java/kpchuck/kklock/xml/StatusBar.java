@@ -179,6 +179,7 @@ public class StatusBar extends XmlBase {
         // Insert notifications
         utils.insertBefore(notificationElement, includeElement);
         if (utils.isWeightedElement(networkElement)){
+            utils.insertBefore(networkElement, includeElement);
             if (prefUtils.getInt(R.string.key_move_network) != XmlUtils.RIGHT)
                 networkElement.removeAttribute(X_WEIGHT);
             combineWeightedTogether(notificationElement, networkElement, false, "statusIcons");
@@ -307,7 +308,7 @@ public class StatusBar extends XmlBase {
     private Element createNetworkIconsElement(){
         Element networkElement;
 
-        if (utils.hasResource(context, "layout", "signal_cluster_view")) {
+        if (!utils.hasStatusIconContainer(context)) {
             networkElement = workingCopy.createElement("include");
             networkElement.setAttribute("android:layout_width", "wrap_content");
             networkElement.setAttribute("android:layout_height", "fill_parent");
