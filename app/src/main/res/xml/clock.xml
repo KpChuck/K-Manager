@@ -84,6 +84,7 @@ The color against a light background is below."/>
 		<kpchuck.kklock.preferences.SummaryListPreference
 			android:key="@string/key_clock_font"
 			android:title="Choose a Font"
+			app:showFont="true"
 			/>
 
 	</PreferenceCategory>

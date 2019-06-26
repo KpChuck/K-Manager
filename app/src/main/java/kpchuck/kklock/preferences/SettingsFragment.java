@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
@@ -36,6 +37,7 @@ import java.util.Map;
 
 import kpchuck.kklock.Checks;
 import kpchuck.kklock.R;
+import kpchuck.kklock.utils.FontListParser;
 import kpchuck.kklock.utils.PrefUtils;
 import kpchuck.kklock.xml.XmlUtils;
 
@@ -69,7 +71,7 @@ public class SettingsFragment extends PreferenceFragment {
             imagePickerPreferenceMap.put(imagePicker.getHash(), imagePicker);
         }
 
-        if (!new XmlUtils().hasResource(getContext(), "layout", "signal_cluster_view")){
+        if (new XmlUtils().hasStatusIconContainer(getContext())){
             removeOption();
         }
 
@@ -236,23 +238,19 @@ public class SettingsFragment extends PreferenceFragment {
         Preference fo = findPreference(getString(R.string.key_clock_font));
         if (fo != null){
             SummaryListPreference fontOptions = (SummaryListPreference) fo;
-            File sysFonts = new File("/system/fonts");
-            CharSequence[] fonts;
-            if (sysFonts.exists()){
-                File[] fontFiles = sysFonts.listFiles(file -> {
-                    if (file.getName().endsWith(".ttf"))
-                        return true;
-                    return false;
-                });
-                fonts = new CharSequence[fontFiles.length];
-                for (int i=0; i<fontFiles.length; i++){
-                    fonts[i] = fontFiles[i].getName().substring(0, fontFiles[i].getName().lastIndexOf(".ttf"));
+            final List<FontListParser.SystemFont> fonts = FontListParser.safelyGetSystemFonts();
+            CharSequence[] items = new CharSequence[fonts.size()*FontListParser.TYPES.size()];
+            int j = 0;
+            for (int i = 0; i < items.length;) {
+                String input = fonts.get(j++).name;
+                String name = input.substring(0, 1).toUpperCase() + input.substring(1);
+                for (String key: FontListParser.TYPES.keySet()) {
+                    items[i] = name + " " + key;
+                    i++;
                 }
-            } else {
-                fonts = getResources().getStringArray(R.array.default_fonts);
             }
-            fontOptions.setEntries(fonts);
-            fontOptions.setEntryValues(fonts);
+            fontOptions.setEntries(items);
+            fontOptions.setEntryValues(items);
         }
         ArrayList<String> stuff = new ArrayList<>(Arrays.asList(getString(R.string.key_hide_statusbar_icons_lockscreen),
                             getString(R.string.key_qs_header_switch), getString(R.string.key_am_everywhere)));

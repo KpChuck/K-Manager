@@ -34,6 +34,7 @@
         <attr name="textArray" format="reference"/>
         <attr name="colorArray" format="reference"/>
         <attr name="showColors" format="boolean"/>
+        <attr name="showFont" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="ApiSwitchPreference">
