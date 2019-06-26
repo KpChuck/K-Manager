@@ -59,7 +59,7 @@ public class XmlWork {
             fvalues[0] = utils.wrapInFont(clockFormat + " a");
         utils.writeResources(new File(values, "clockformats.xml"), "string", fnames, fvalues);
 
-        String[] fonts = prefUtils.getString(R.string.key_clock_font, "roboto-regular").toLowerCase().split(" ", 2);
+        String[] fonts = prefUtils.getString(R.string.key_clock_font, "roboto-regular ").toLowerCase().split(" ", 2);
         String textStyle = fonts[1].replace(" ", "|");
         if (textStyle.length() == 0) textStyle = "normal";
         utils.writeResources(new File(values, "clockfonts.xml"), "style",
