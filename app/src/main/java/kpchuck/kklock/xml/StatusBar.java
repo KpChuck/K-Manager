@@ -257,8 +257,6 @@ public class StatusBar extends XmlBase {
         textClock.setAttribute("android:gravity", "center");
         textClock.setAttribute("android:paddingStart", "3dp");
         textClock.setAttribute("android:paddingEnd", "3dp");
-        String font = prefUtils.getString(R.string.key_clock_font, "roboto-regular").toLowerCase();
-        textClock.setAttribute("android:fontFamily", font);
 
         if (wrapInSystemIconArea){
             Element area = createSystemAreaElement();

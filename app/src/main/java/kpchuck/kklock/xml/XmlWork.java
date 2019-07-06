@@ -62,8 +62,13 @@ public class XmlWork {
         utils.writeResources(new File(values, "clockformats.xml"), "string", fnames, fvalues);
 
         String[] fonts = prefUtils.getString(R.string.key_clock_font, "roboto-regular ").toLowerCase().split(" ", 2);
-        String textStyle = fonts[1].replace(" ", "|");
-        if (textStyle.length() == 0) textStyle = "normal";
+        String textStyle;
+        if (fonts.length < 2) {
+            textStyle = "normal";
+        }
+        else {
+            textStyle = fonts[1].replace(" ", "|");
+        }
         utils.writeResources(new File(values, "clockfonts.xml"), "style",
                 new String[]{"android:textSize", "android:textColor", "android:fontFamily", "android:textStyle"},
                 new String[]{"@*com.android.systemui:dimen/status_bar_clock_size", "#ffffffff", fonts[0].toLowerCase(), textStyle},
@@ -151,13 +156,15 @@ public class XmlWork {
 
         /*
         Only need to hide stock lockscreen icons if
-        ->  Moving statusbar icons to not right - there'll be duplicateds
-        ->  Using oos - it just complicates adding any clock that much
-        ->  Read the rest of conditions
+        ->  Moving statusbar icons
+        ->  Using oos - and custom clock or center clock
+        ->  Clock not on lockscreen - and center or left clock
+        ->  Clock on lockscreen and right clock
+        Need stock clock center excluded
          */
         if (prefUtils.getInt(R.string.key_move_network) != XmlUtils.RIGHT
                 || (prefUtils.getBool(R.string.key_oos_is_bad) && (!stockClock || clockPosition == XmlUtils.CENTER))
-                || (!clockOnLockscreen && (clockPosition == XmlUtils.CENTER) || (clockPosition == XmlUtils.LEFT))
+                || (!clockOnLockscreen && !stockClock && (clockPosition == XmlUtils.CENTER) || (clockPosition == XmlUtils.LEFT))
                 || clockOnLockscreen && clockPosition == XmlUtils.RIGHT)
             modClock = true;
 
