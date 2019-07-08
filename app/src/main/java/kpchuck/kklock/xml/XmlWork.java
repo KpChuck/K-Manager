@@ -61,19 +61,6 @@ public class XmlWork {
             fvalues[i] = utils.wrapInFont(fvalues[i]);
         utils.writeResources(new File(values, "clockformats.xml"), "string", fnames, fvalues);
 
-        String[] fonts = prefUtils.getString(R.string.key_clock_font, "roboto-regular ").toLowerCase().split(" ", 2);
-        String textStyle;
-        if (fonts.length < 2) {
-            textStyle = "normal";
-        }
-        else {
-            textStyle = fonts[1].replace(" ", "|");
-        }
-        utils.writeResources(new File(values, "clockfonts.xml"), "style",
-                new String[]{"android:textSize", "android:textColor", "android:fontFamily", "android:textStyle"},
-                new String[]{"@*com.android.systemui:dimen/status_bar_clock_size", "#ffffffff", fonts[0].toLowerCase(), textStyle},
-                "TextAppearance.StatusBar.Clock", "@*android:style/TextAppearance.StatusBar.Icon");
-
         if (prefUtils.getBool(R.string.key_statusbar_clock_size)){
             utils.writeResource(new File(values, "clocksize.xml"), "dimen",
                     "status_bar_clock_size", prefUtils.getIntString(R.string.key_clock_size, 14) + "sp");

@@ -8,6 +8,7 @@ import org.w3c.dom.Element;
 
 import java.io.File;
 
+import kpchuck.kklock.R;
 import kpchuck.kklock.utils.PrefUtils;
 
 import static kpchuck.kklock.constants.PrefConstants.PREF_CARRIER_CUSTOM_TEXT;
@@ -27,6 +28,8 @@ public class XmlBase{
     public final Document document;
     public Document workingCopy;
     public Context context;
+    public String fontStyle = "";
+    public String fontType = "";
 
     public XmlBase(XmlUtils utils, PrefUtils prefUtils, File inFile, Context context) throws Exception{
         this.utils = utils;
@@ -37,11 +40,22 @@ public class XmlBase{
         document = utils.replaceAt(document);
         utils.fixUpForAttrs(document);
         this.document=document;
+
+        initFonts();
         createWorkCopy();
     }
 
     public void writeDocument(File outFile) throws Exception{
         utils.writeDocToFile(workingCopy, outFile);
+    }
+
+    private void initFonts(){
+        String[] fonts = prefUtils.getString(R.string.key_clock_font, "roboto-regular ").toLowerCase().split(" ", 2);
+        if (fonts.length < 2)
+            fontStyle = "normal";
+        else
+            fontStyle = fonts[1].replace(" ", "|");
+        fontType = fonts[0].toLowerCase();
     }
 
     public String getString(int id){
@@ -66,6 +80,8 @@ public class XmlBase{
         customTextElement.setAttribute(X_GRAVITY, X_GRAVITY_CENTER_VERTICAL);
         customTextElement.setAttribute("android:singleLine", "true");
         customTextElement.setAttribute(X_LAYOUT_HEIGHT, X_FILL_PARENT);
+        customTextElement.setAttribute("android:textStyle", fontStyle);
+        customTextElement.setAttribute("android:fontFamily", fontType);
 
         //String hijack_name = "legacy_vpn_name";
         String hijack_name = "qs_paging";
