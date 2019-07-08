@@ -584,7 +584,7 @@ public class XmlUtils {
     public void translate(Context context, File baseFolder, ArrayList<String> filenames, ArrayList<String> translated_filenames,
                            int id_1a, int id_1b, int id_1c, int id_2){
         try {
-            FileHelper fileHelper = new FileHelper();
+            FileHelper fileHelper = new FileHelper(context);
             File[] files = baseFolder.listFiles();
             for (File file : files) {
                 if (filenames.contains(file.getName())) {

@@ -37,6 +37,10 @@ public class FileHelper {
 
     private Context ctx;
 
+    public FileHelper(Context context){
+        this.ctx = context;
+    }
+
     public File newFolder(File file, String file1){
         return newFolder(new File(file, file1));
     }
@@ -54,10 +58,9 @@ public class FileHelper {
         }
     }
 
-    public void installApk(File file, Context context){
-        this.ctx=context;
+    public void installApk(File file){
 
-        PackageManager packageManager = context.getPackageManager();
+        PackageManager packageManager = ctx.getPackageManager();
        try {
            if (Build.VERSION.SDK_INT == 26){
                if (packageManager.canRequestPackageInstalls()) {
@@ -77,6 +80,35 @@ public class FileHelper {
        }catch (Exception e){
         Log.e("klock", e.getMessage());
     }
+    }
+
+    public boolean isPackageInstalled(String... packagename) {
+        PackageManager packageManager = ctx.getPackageManager();
+        for (String p: packagename){
+            try {
+                packageManager.getPackageInfo(p, 0);
+                return true;
+            } catch (PackageManager.NameNotFoundException e) {
+            }
+        }
+        return false;
+    }
+
+    public void openInstalledPackage(String... packages){
+        Intent i;
+        PackageManager manager = ctx.getPackageManager();
+        for (String p: packages) {
+            try {
+                i = manager.getLaunchIntentForPackage(p);
+                if (i == null)
+                    throw new PackageManager.NameNotFoundException();
+                i.addCategory(Intent.CATEGORY_LAUNCHER);
+                ctx.startActivity(i);
+                return;
+            } catch (PackageManager.NameNotFoundException e) {
+
+            }
+        }
     }
 
     public ArrayList<String> deleteItemFromArray(String item, ArrayList<String> tempList){

@@ -36,7 +36,7 @@ public class ListenerCollection {
 
     private void showAdbSteps(Context context){
         TextAlertDialogFragment dialogFragment = new TextAlertDialogFragment();
-        FileHelper fileHelper = new FileHelper();
+        FileHelper fileHelper = new FileHelper(context);
         DialogClickListener dialogClickListener = new DialogClickListener() {
             @Override
             public void onPositiveBtnClick() {

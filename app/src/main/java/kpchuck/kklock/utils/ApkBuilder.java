@@ -67,7 +67,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
     private String univ = "universal";
 
     public ApkBuilder(Context context, RelativeLayout relativeLayout, TextView textView, RelativeLayout defaultLayout, boolean xmls){
-        this.fileHelper = new FileHelper();
+        this.fileHelper = new FileHelper(context);
         this.context = context;
         this.prefUtils = new PrefUtils(context);
         this.relativeLayout = relativeLayout;
@@ -129,13 +129,12 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
             if (!prefs.getBoolean("installSilently", true) || !su.hasRoot()) {
-                FileHelper fh = new FileHelper();
-                fh.installApk(apk, context);
+                fileHelper.installApk(apk);
             } else {
-                String install = String.format("pm install -r %s/K-Klock/" + apkVersion[0], Environment.getExternalStorageDirectory().getPath());
+                String install = String.format("cp %s/K-Klock/K-Klock.apk /data/local/tmp/ && pm install -r /data/local/tmp/K-Klock.apk", Environment.getExternalStorageDirectory().getPath());
                 String output = su.runSuCommand(install).toString();
                 if (!output.contains("Success"))
-                    fileHelper.installApk(apk, context);
+                    fileHelper.installApk(apk);
             }
             showSnackbar();
 
@@ -234,24 +233,8 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
                     public void onClick(View view) {
 
                         final String SUBSTRATUM_PACKAGE_NAME = "projekt.substratum";
-                        final String THEME_PACKAGE_NAME = "com.kpchuck.kklock";
-
-                        Intent intentActivity = new Intent();
-                        intentActivity = intentActivity.setClassName(SUBSTRATUM_PACKAGE_NAME, "projekt.substratum.activities.launch.ThemeLaunchActivity");
-
-                        intentActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intentActivity.putExtra("package_name", THEME_PACKAGE_NAME);
-                        intentActivity.setAction("projekt.substratum.THEME");
-                        intentActivity.setPackage(THEME_PACKAGE_NAME);
-                        intentActivity.putExtra("calling_package_name", THEME_PACKAGE_NAME);
-                        intentActivity.putExtra("oms_check", true);
-                        intentActivity.putExtra("theme_mode", (String) null);
-                        intentActivity.putExtra("notification", false);
-                        intentActivity.putExtra("hash_passthrough", true);
-                        intentActivity.putExtra("certified", false);
-
-
-                        context.startActivity(intentActivity);
+                        final String SUBSTRATUM_LITE_PACKAGE_NAME =  "projekt.substratum.lite";
+                        fileHelper.openInstalledPackage(SUBSTRATUM_PACKAGE_NAME, SUBSTRATUM_LITE_PACKAGE_NAME);
                     }
                 });
 

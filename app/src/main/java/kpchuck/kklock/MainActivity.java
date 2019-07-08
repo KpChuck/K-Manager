@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity{
     protected void onPostResume() {
         if(prefUtils.getBoolTrue("joinTelegram")) promptTelegram();
 
-        if (!isPackageInstalled("projekt.substratum", context.getPackageManager())){
+        if (!fileHelper.isPackageInstalled("projekt.substratum", "projekt.substratum.lite")) {
 
             TextAlertDialogFragment textAlertDialogFragment = new TextAlertDialogFragment();
             DialogClickListener clickListener = new DialogClickListener() {
@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
 
         this.context = this;
-        this.fileHelper = new FileHelper();
+        this.fileHelper = new FileHelper(context);
         this.prefUtils = new PrefUtils(context);
 
         setTheme(prefUtils.getBoolTrue(PREF_BLACK_THEME) ? R.style.AppTheme_Dark : R.style.AppTheme);
@@ -246,9 +246,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
     private void promptTelegram(){
-        if (isPackageInstalled("org.telegram.messenger", context.getPackageManager()) ||
-                isPackageInstalled("org.telegram.plus", context.getPackageManager()) ||
-                isPackageInstalled("org.thunderdog.challegram", context.getPackageManager())){
+        if (fileHelper.isPackageInstalled("org.telegram.messenger", "org.telegram.plus", "org.thunderdog.challegram")) {
 
             TextAlertDialogFragment fragment = new TextAlertDialogFragment();
             fragment.Instantiate("K-Klock Telegram", getString(R.string.joinTelegram), getString(R.string.okay),
@@ -266,15 +264,6 @@ public class MainActivity extends AppCompatActivity{
 
         }
         prefUtils.putBool("joinTelegram", false);
-    }
-
-    private boolean isPackageInstalled(String packagename, PackageManager packageManager) {
-        try {
-            packageManager.getPackageInfo(packagename, 0);
-            return true;
-        } catch (PackageManager.NameNotFoundException e) {
-            return false;
-        }
     }
 
     public static boolean hasPermissions(android.content.Context context, String... permissions) {

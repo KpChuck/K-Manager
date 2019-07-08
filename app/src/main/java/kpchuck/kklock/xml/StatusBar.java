@@ -142,8 +142,10 @@ public class StatusBar extends XmlBase {
     private void addCustomIcon() throws IOException {
         if (!prefUtils.getBool(PREF_CUSTOM_ICON) && prefUtils.getString(PREF_CUSTOM_ICON_FILE, "").equals(""))
             return;
+        File base = new File(utils.baseFolders, "res/drawable");
+        base.mkdirs();
         FileUtils.copyFile(new File(prefUtils.getString(PREF_CUSTOM_ICON_FILE, "")),
-                new File(new FileHelper().newFolder(utils.baseFolders, "res/drawable"), "abc_list_selector_holo_light.png"));
+                new File(base, "abc_list_selector_holo_light.png"));
 
         Element image = workingCopy.createElement("ImageView");
         image.setAttribute(X_LAYOUT_WIDTH, "@*com.android.systemui:dimen/status_bar_icon_size");

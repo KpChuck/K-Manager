@@ -41,7 +41,7 @@ public class QsBgUtil {
 
 
     public QsBgUtil(Context context, XmlUtils xmlUtils) throws Exception{
-        this.fileHelper = new FileHelper();
+        this.fileHelper = new FileHelper(context);
         this.xmlUtils = xmlUtils;
         this.prefUtils = new PrefUtils(context);
         if (prefUtils.getBool(PREF_QS_BG) || prefUtils.getBool(PREF_QS_HEADER)){

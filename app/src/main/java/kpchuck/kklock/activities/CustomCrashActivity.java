@@ -140,7 +140,7 @@ public class CustomCrashActivity extends AppCompatActivity {
 
     private void copyErrorToClipboard() {
         String errorInformation = CustomActivityOnCrash.getAllErrorDetailsFromIntent(CustomCrashActivity.this, getIntent());
-        new FileHelper().copyToClipBoard(CustomCrashActivity.this, errorInformation);
+        new FileHelper(getApplicationContext()).copyToClipBoard(CustomCrashActivity.this, errorInformation);
     }
 
     private void  prepareAndShare(){
