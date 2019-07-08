@@ -52,9 +52,8 @@ public class QsBgUtil {
             }
 
             if (prefUtils.getBool(PREF_QS_HEADER)) {
-                if (modQsHeader()){
-                    moveImage(PREF_QS_HEADER_FILE, header_png);
-                 }
+                modQsHeader();
+                moveImage(PREF_QS_HEADER_FILE, header_png);
             }
 
         }
@@ -88,14 +87,19 @@ public class QsBgUtil {
 
     }
 
-    private boolean modQsHeader() throws Exception{
+    private void modQsHeader() throws Exception{
 
         final String inputFolder = "userInput";
         File destFolder = new File(dir,  "/assets/overlays/com.android.systemui/res/" + XmlWork.layout);
 
-        File qsHeader = new File(Environment.getExternalStorageDirectory() + "/K-Klock/" + inputFolder +  "/quick_status_bar_expanded_header.xml");
-        if (!qsHeader.exists()) return false;
+        File qsHeaderBase = new File(Environment.getExternalStorageDirectory() + "/K-Klock/" + inputFolder);
+        String qsHeaderName = "quick_status_bar_expanded_header.xml";
 
+        for (File f: new File(qsHeaderBase, "res/layout").listFiles((dir, s1) -> s1.endsWith(qsHeaderName)))
+            modHeaderFile(destFolder, f);
+    }
+
+    private void modHeaderFile(File destFolder, File qsHeader) throws Exception {
         XmlBase base = new XmlBase(xmlUtils, prefUtils, qsHeader, null);
         base.workingCopy = xmlUtils.replaceStuffInXml(base.workingCopy, new String[]{"?attr/wallpaperTextColorSecondary"}, new String[]{"#ffffffff"});
         base.workingCopy = xmlUtils.replaceStuffInXml(base.workingCopy, new String[]{"@style/Widget.Material.Button.Borderless"},
@@ -127,8 +131,6 @@ public class QsBgUtil {
             xmlUtils.changeAttribute(rootElement, "android:background", "@*com.android.systemui:drawable/" + header_png);
         }
         base.writeDocument(new File(destFolder, "quick_status_bar_expanded_header.xml"));
-
-        return true;
     }
 
     private void checkForOtherUses() throws Exception{

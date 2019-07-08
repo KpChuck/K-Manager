@@ -25,6 +25,7 @@ import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
@@ -211,9 +212,14 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         List<File> xmls = new ArrayList<>();
         File userInput = sysui.getParentFile();
 
-        for (String s: new String[]{"status_bar", "keyguard_status_bar", "system_icons", "quick_status_bar_expanded_header"}){
+        for (String s: new String[]{"status_bar", "keyguard_status_bar", "system_icons"}){
             File f = new File(resOut, String.format("res/layout/%s.xml", s));
             FileUtils.copyFileToDirectory(f, userInput);
+        }
+        // Workaround for samsungs one ui using a different layout xml
+        for (String s: new String[]{"quick_status_bar_expanded_header"}){
+            for (File f: new File(resOut, "res/layout").listFiles((dir, s1) -> s1.endsWith(s + ".xml")))
+                FileUtils.copyFileToDirectory(f, userInput);
         }
 
         fixAttrsDec(new File(resOut, "res/values/attrs.xml"), new File(userInput, "attrs.xml"));
