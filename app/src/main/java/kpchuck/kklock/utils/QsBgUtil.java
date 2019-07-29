@@ -95,7 +95,7 @@ public class QsBgUtil {
         File qsHeaderBase = new File(Environment.getExternalStorageDirectory() + "/K-Klock/" + inputFolder);
         String qsHeaderName = "quick_status_bar_expanded_header.xml";
 
-        for (File f: new File(qsHeaderBase, "res/layout").listFiles((dir, s1) -> s1.endsWith(qsHeaderName)))
+        for (File f: qsHeaderBase.listFiles((dir, s1) -> s1.endsWith(qsHeaderName)))
             modHeaderFile(destFolder, f);
     }
 
