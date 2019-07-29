@@ -88,6 +88,9 @@ public class KeyguardStatusBar extends XmlBase {
         getCarrierTextLike();
         utils.changeAttribute(carrierTextElement, "android:textColor", "#ffffffff");
         utils.changeAttribute(carrierTextElement, "android:textAppearance", "?android:textAppearanceSmall");
+        // These are private attributes so just remove them
+        carrierTextElement.removeAttribute("systemui:showAirplaneMode");
+        carrierTextElement.removeAttribute("systemui:showMissingSim");
 
         if ((prefUtils.getBool(R.string.key_carrier_text_enable) && prefUtils.getBool(R.string.key_custom_text_lockscreen))) {
             addCustomTextToLockscreen();
