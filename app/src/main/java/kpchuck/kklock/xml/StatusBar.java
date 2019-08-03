@@ -131,7 +131,12 @@ public class StatusBar extends XmlBase {
             left.removeAttribute(X_WEIGHT);
             left.setAttribute(X_LAYOUT_WIDTH, X_FILL_PARENT);
         }
-        makeWeightedElement(right);
+        Element newRight = createLinearContainer("right");
+        utils.insertBefore(newRight, right);
+        utils.removeElement(right);
+        newRight.appendChild(right);
+        right = newRight;
+
         center = createLinearContainer("center");
         unweightElement(center);
         utils.insertBefore(center, right);
