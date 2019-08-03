@@ -8,6 +8,7 @@ import android.util.Log;
 import org.apache.commons.io.FileUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import java.io.File;
 import java.io.IOException;
@@ -105,17 +106,19 @@ public class StatusBar extends XmlBase {
         Element statusBarContents = utils.findElementById(workingCopy, idStart + "status_bar_contents");
 
         left = utils.findElementById(workingCopy, idStart + "status_bar_left_side");
+        if (left == null)
+            left = utils.findElementById(workingCopy, idStart + "left_icons");
 
         if (left == null) {
             // Gotta throw everything into a linear layout now, to left of system_icon_area
-            Element divider = utils.findElementById(workingCopy, idStart + "system_icon_area");
+            Element divider = findSystemIconArea();
             left = createLinearContainer("left");
             moveElementsIntoElement(left, utils.getLeftElementsTo(statusBarContents, divider));
             utils.insertBefore(left, divider);
         }
         hideOneHighlightHintViewOOS();
 
-        right = utils.findElementById(workingCopy, idStart + "system_icon_area");
+        right = findSystemIconArea();
         right.setAttribute("android:gravity", "right");
         right.setAttribute("android:layout_gravity", "right");
     }
@@ -132,6 +135,13 @@ public class StatusBar extends XmlBase {
         center = createLinearContainer("center");
         unweightElement(center);
         utils.insertBefore(center, right);
+    }
+
+    private Element findSystemIconArea(){
+        Element element = utils.findElementById(workingCopy, idStart + "system_icon_area");
+        if (element == null)
+            element = utils.findElementById(workingCopy, idStart + "signal_battery_icons");
+        return element;
     }
 
 
@@ -273,7 +283,7 @@ public class StatusBar extends XmlBase {
     public Element createSystemAreaElement(){
 
         boolean oos = prefUtils.getBool(R.string.key_oos_is_bad);
-        String tagName = oos ? utils.findElementById(workingCopy, idStart + "system_icon_area").getTagName() : "LinearLayout";
+        String tagName = oos ? findSystemIconArea().getTagName() : "LinearLayout";
         Element hideyLayout = workingCopy.createElement(tagName);
         hideyLayout.setAttribute("android:layout_width", X_WRAP_CONTENT);
         hideyLayout.setAttribute("android:layout_height", "fill_parent");
