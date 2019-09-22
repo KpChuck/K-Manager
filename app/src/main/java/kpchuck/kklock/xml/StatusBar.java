@@ -151,7 +151,8 @@ public class StatusBar extends XmlBase {
 
 
     private void hideClock(){
-        hideElements(new String[]{"clock", "center_clock", "left_clock", "clock_container", "right_clock_container", "left_clock_container"});
+        hideElements(new String[]{"clock", "center_clock", "left_clock", "clock_container",
+                "right_clock_container", "left_clock_container", "notch_clock_stub"});
     }
 
     private void addCustomIcon() throws IOException {
@@ -265,6 +266,9 @@ public class StatusBar extends XmlBase {
             textClock.setAttribute("android:format12Hour", "@*com.android.systemui:string/keyguard_widget_12_hours_format");
             textClock.setAttribute("android:format24Hour", "@*com.android.systemui:string/keyguard_widget_24_hours_format");
         }
+
+        if (prefUtils.getBool(R.string.key_statusbar_clock_size))
+            textClock.setAttribute("android:textSize", prefUtils.getIntString(R.string.key_clock_size, 14) + "sp");
 
         textClock.setAttribute("android:textAppearance", "@*com.android.systemui:style/TextAppearance.StatusBar.Clock");
         textClock.setAttribute("android:textColor", "@*com.android.systemui:color/status_bar_clock_color");

@@ -86,7 +86,10 @@ public class KeyguardStatusBar extends XmlBase {
 
     private void setupKeyguard() throws Exception{
         getCarrierTextLike();
-        utils.changeAttribute(carrierTextElement, "android:textColor", "#ffffffff");
+        // Get carrier text color
+        String color = "#" + Integer.toHexString(prefUtils.getInt(R.string.key_change_carrier_text_color));
+        if (color.equals("#f") || color.equals("#0")) color = "#ffffff";
+        utils.changeAttribute(carrierTextElement, "android:textColor", color);
         utils.changeAttribute(carrierTextElement, "android:textAppearance", "?android:textAppearanceSmall");
         // These are private attributes so just remove them
         carrierTextElement.removeAttribute("systemui:showAirplaneMode");

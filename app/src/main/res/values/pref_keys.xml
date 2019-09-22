@@ -36,4 +36,5 @@
     <string name="key_heads_up_time">keyHeadsUpTimeoutTime</string>
     <string name="key_recents">recentsPref</string>
     <string name="key_recents_size">keyRecentsSize</string>
+    <string name="key_change_carrier_text_color">keyChangeCarrierTextColor</string>
 </resources>

@@ -101,6 +101,12 @@
             android:title="Hide Carrier Text"
             android:key="@string/key_hide_carrier_text"/>
 
+	    <com.jaredrummler.android.colorpicker.ColorPreference
+		    android:key="@string/key_change_carrier_text_color"
+		    android:title="Change Carrier Text Color (Beta)"
+		    android:summary="This isn't working for me yetbut if you want to try go ahead."
+		    android:defaultValue="@android:color/white"/>
+
         <SwitchPreference
             android:defaultValue="false"
             android:key="prefhidelockscreenclock"
