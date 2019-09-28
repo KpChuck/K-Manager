@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:sample="http://schemas.android.com/tools">
 
     <PreferenceCategory
         android:layout_width="wrap_content"
@@ -58,6 +59,31 @@
             android:title="@string/hide_notifications"/>
 
     </PreferenceCategory>
+
+	<PreferenceCategory
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:title="StatusBar Height"
+		>
+
+		<SwitchPreference
+			android:defaultValue="false"
+			android:key="@string/key_statusbar_height_enable"
+			android:title="Change StatusBar Height" />
+
+		<com.pavelsikun.seekbarpreference.SeekBarPreference
+			android:key="@string/key_statusbar_height"
+			android:title="New StatusBar Height"
+			android:dependency="@string/key_statusbar_height_enable"
+			android:defaultValue="24"
+
+			sample:msbp_minValue="0"
+			sample:msbp_maxValue="100"
+			sample:msbp_interval="1"
+			sample:msbp_measurementUnit="dp"
+			sample:msbp_dialogEnabled="false"/>
+
+	</PreferenceCategory>
 
     <PreferenceCategory android:title="Custom Text in StatusBar">
 
