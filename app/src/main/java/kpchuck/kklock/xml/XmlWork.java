@@ -190,7 +190,7 @@ public class XmlWork {
         if (prefUtils.getBool(R.string.key_statusbar_height_enable)){
             File androidOverlay = new File(utils.romzip, "/assets/overlays/android/res/values");
             androidOverlay.mkdirs();
-            utils.writeResource(new File(androidOverlay, "status_bar_height.xml"), "dimen", "status_bar_height",
+            utils.writeResource(new File(androidOverlay, "status_bar_height.xml"), "dimen", "status_bar_height_portrait",
                     prefUtils.getIntString(R.string.key_statusbar_height, 24) + "dp");
         }
     }
