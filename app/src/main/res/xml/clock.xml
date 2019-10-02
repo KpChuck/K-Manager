@@ -53,6 +53,11 @@ But changing clock formats doesn't work and is disabled."
             app:enabledKey="@string/key_use_included_format"
             />
 
+	    <SwitchPreference
+		    android:key="@string/key_uppercase_clock_format"
+		    android:title="Make the Clock Format Uppercase"
+		    android:summary="Things like html tags in the clock format won't work, they'll appear as plain text."/>
+
     </PreferenceCategory>
 
     <PreferenceCategory

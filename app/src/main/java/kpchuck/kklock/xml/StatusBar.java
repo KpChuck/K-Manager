@@ -263,12 +263,18 @@ public class StatusBar extends XmlBase {
         }
         else {
             textClock = workingCopy.createElement("TextClock");
-            textClock.setAttribute("android:format12Hour", "@*com.android.systemui:string/keyguard_widget_12_hours_format");
-            textClock.setAttribute("android:format24Hour", "@*com.android.systemui:string/keyguard_widget_24_hours_format");
+            String hour12 = prefUtils.getBool(R.string.key_uppercase_clock_format) ?
+                    prefUtils.getString(R.string.key_clock_format, "hh:mm") : "@*com.android.systemui:string/keyguard_widget_12_hours_format";
+            String hour24 = prefUtils.getBool(R.string.key_uppercase_clock_format) ?
+                    prefUtils.getString(R.string.key_clock_format, "HH:mm") : "@*com.android.systemui:string/keyguard_widget_24_hours_format";
+            textClock.setAttribute("android:format12Hour", hour12);
+            textClock.setAttribute("android:format24Hour", hour24);
         }
 
         if (prefUtils.getBool(R.string.key_statusbar_clock_size))
             textClock.setAttribute("android:textSize", prefUtils.getIntString(R.string.key_clock_size, 14) + "sp");
+        if (prefUtils.getBool(R.string.key_uppercase_clock_format))
+            textClock.setAttribute("android:textAllCaps", "true");
 
         textClock.setAttribute("android:textAppearance", "@*com.android.systemui:style/TextAppearance.StatusBar.Clock");
         textClock.setAttribute("android:textColor", "@*com.android.systemui:color/status_bar_clock_color");

@@ -40,4 +40,6 @@
 
     <string name="key_statusbar_height_enable">keyEnableStatusbarHeightSwitch</string>
     <string name="key_statusbar_height">keyStatusbarHeightValue</string>
+
+    <string name="key_uppercase_clock_format">keyMakeClockUppercase</string>
 </resources>
