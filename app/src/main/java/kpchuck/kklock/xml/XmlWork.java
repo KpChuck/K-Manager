@@ -61,6 +61,10 @@ public class XmlWork {
             fvalues[i] = utils.wrapInFont(fvalues[i]);
         utils.writeResources(new File(values, "clockformats.xml"), "string", fnames, fvalues);
 
+        if (prefUtils.getBool(R.string.key_statusbar_clock_size)){
+            utils.writeResource(new File(values, "clocksize.xml"), "dimen",
+                    "status_bar_clock_size", prefUtils.getIntString(R.string.key_clock_size, 14) + "sp");
+        }
         if (prefUtils.getBool(R.string.key_am_everywhere)){
             utils.writeResource(new File(values, "ampm.xml"), "bool", "config_showAmpm", "true");
         }
@@ -117,7 +121,7 @@ public class XmlWork {
             statusBar.insertRight(customClock);
         }
         else {
-            customClock = statusBar.createClock(stockClock, !clockOnLockscreen || oos, stockClockNotOnLockscreen);
+            customClock = statusBar.createClock(stockClock, !clockOnLockscreen ? oos : true, stockClockNotOnLockscreen);
             if (oos && clockOnLockscreen){
                 Element temp = statusBar.createSystemAreaElement();
                 statusBar.insertCenter(temp);
@@ -154,7 +158,7 @@ public class XmlWork {
         if (modClock)
             keyguardStatusBar.hideStatusIcons();
 
-        keyguardStatusBar.writeDocument(new File(String.format(formatXmlPath, "res", layout, "keyguard_status_bar")));
+        keyguardStatusBar.writeDocument(new File(String.format(formatXmlPath, "res", layout, "keyguard_status_bar.xml")));
     }
 
     private void modSystemIcons() throws Exception{

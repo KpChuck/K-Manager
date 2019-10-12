@@ -271,8 +271,6 @@ public class StatusBar extends XmlBase {
             textClock.setAttribute("android:format24Hour", hour24);
         }
 
-        if (prefUtils.getBool(R.string.key_statusbar_clock_size))
-            textClock.setAttribute("android:textSize", prefUtils.getIntString(R.string.key_clock_size, 14) + "sp");
         if (prefUtils.getBool(R.string.key_uppercase_clock_format))
             textClock.setAttribute("android:textAllCaps", "true");
 
