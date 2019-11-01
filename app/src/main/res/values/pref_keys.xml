@@ -42,4 +42,6 @@
     <string name="key_statusbar_height">keyStatusbarHeightValue</string>
 
     <string name="key_uppercase_clock_format">keyMakeClockUppercase</string>
+    <string name="key_clock_left_padding">keyClockLeftPadding</string>
+    <string name="key_clock_right_padding">keyClockRightPadding</string>
 </resources>

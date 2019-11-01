@@ -180,7 +180,7 @@ public class SettingsFragment extends PreferenceFragment {
     private void fixSeekerDependencies(){
         List<SeekBarPreference> l = getPreferencesByClass(SeekBarPreference.class);
         for (SeekBarPreference preference: l){
-            if (preference.getDependency().length() > 0){
+            if (preference.getDependency() != null && preference.getDependency().length() > 0){
                 String dependency = preference.getDependency();
                 Preference depPref = findPreference(dependency);
                 preference.setEnabled(depPref.isEnabled());

@@ -94,6 +94,32 @@ The color against a light background is below."/>
 
 	</PreferenceCategory>
 
+	<PreferenceCategory
+		android:title="Clock Padding">
+
+		<com.pavelsikun.seekbarpreference.SeekBarPreference
+			android:key="@string/key_clock_left_padding"
+			android:title="Clock Left Padding (Default: 3dp)"
+			android:defaultValue="3"
+
+			sample:msbp_minValue="0"
+			sample:msbp_maxValue="15"
+			sample:msbp_interval="1"
+			sample:msbp_measurementUnit="dp"
+			sample:msbp_dialogEnabled="false"/>
+
+		<com.pavelsikun.seekbarpreference.SeekBarPreference
+			android:key="@string/key_clock_right_padding"
+			android:title="Clock Right Padding (Default: 3dp)"
+			android:defaultValue="3"
+
+			sample:msbp_minValue="0"
+			sample:msbp_maxValue="15"
+			sample:msbp_interval="1"
+			sample:msbp_measurementUnit="dp"
+			sample:msbp_dialogEnabled="false"/>
+	</PreferenceCategory>
+
     <PreferenceCategory
         android:title="Misc Options"
         >

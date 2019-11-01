@@ -280,8 +280,8 @@ public class StatusBar extends XmlBase {
         textClock.setAttribute("android:singleLine", "true");
         textClock.setAttribute("android:layout_width", X_WRAP_CONTENT);
         textClock.setAttribute("android:gravity", "center");
-        textClock.setAttribute("android:paddingStart", "3dp");
-        textClock.setAttribute("android:paddingEnd", "3dp");
+        textClock.setAttribute("android:paddingStart", prefUtils.getIntString(R.string.key_clock_left_padding, 3) + "dp");
+        textClock.setAttribute("android:paddingEnd", prefUtils.getIntString(R.string.key_clock_right_padding, 3) + "dp");
         textClock.setAttribute("android:textStyle", fontStyle);
         textClock.setAttribute("android:fontFamily", fontType);
 
@@ -429,15 +429,15 @@ public class StatusBar extends XmlBase {
             hideElement(id);
     }
 
-    private void hideElement(String id){
+    private void hideElement(String id) {
         Element e = utils.findElementById(workingCopy, idStart + id);
+        if (e == null) return;
         for (String attr : new String[]
                 {"android:paddingEnd", "android:paddingStart", "android:padding", X_LAYOUT_WIDTH}) {
-            if (e != null)
-                e.setAttribute(attr, "0dp");
+            e.setAttribute(attr, "0dp");
         }
-        if (e != null)
-            e.removeAttribute(X_WEIGHT);
+        e.removeAttribute(X_WEIGHT);
+        e.removeAttribute("android:layout");
     }
 
     private boolean isCustomIconCenter(){
