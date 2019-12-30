@@ -40,8 +40,8 @@ android {
         applicationId "kpchuck.k_klock"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 41
-        versionName "41"
+        versionCode 44
+        versionName "42"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "BASE_64_LICENSE_KEY", "\"" + BASE_64_LICENSE_KEY + "\""
@@ -161,8 +161,8 @@ dependencies {
     implementation 'com.github.ybq:Android-SpinKit:1.1.0'
     //All those com.android.s
     implementation 'com.google.android.material:material:1.0.0'
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -199,7 +199,7 @@ dependencies {
     // Color Picker
     implementation 'com.jaredrummler:colorpicker:1.0.2'
     // APK Signer
-    implementation 'com.android.tools.build:apksig:3.4.1'
+    implementation 'com.android.tools.build:apksig:3.5.3'
     // Material seekbar
     implementation 'com.pavelsikun:material-seekbar-preference:2.3.0'
 
