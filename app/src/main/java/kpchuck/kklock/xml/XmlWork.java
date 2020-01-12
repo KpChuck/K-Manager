@@ -77,10 +77,14 @@ public class XmlWork {
         boolean oos = prefUtils.getBool(R.string.key_oos_is_bad);
         boolean stockClockNotOnLockscreen = stockClock && !prefUtils.getBool(R.string.key_sb_clock_on_lockscreen);
 
-        StatusBar statusBar = new StatusBar(utils, prefUtils, new File(srcFolder, "status_bar.xml"), context);
+        String statusbar_name = "status_bar";
+        if (new File(srcFolder, "status_bar_contents_container.xml").exists())
+            statusbar_name = "status_bar_contents_container";
+
+        StatusBar statusBar = new StatusBar(utils, prefUtils, new File(srcFolder,  statusbar_name +".xml"), context);
         statusBar.createWorkCopy(clockPosition);
         if (clockPosition == XmlUtils.NONE){
-            statusBar.writeDocument(new File(String.format(formatXmlPath, "res", layout, "status_bar")));
+            statusBar.writeDocument(new File(String.format(formatXmlPath, "res", layout, statusbar_name)));
             return;
         }
 
@@ -128,7 +132,7 @@ public class XmlWork {
             }
             statusBar.insertCenter(customClock);
         }
-        statusBar.writeDocument(new File(String.format(formatXmlPath, "res", layout, "status_bar")));
+        statusBar.writeDocument(new File(String.format(formatXmlPath, "res", layout, statusbar_name)));
 
     }
 

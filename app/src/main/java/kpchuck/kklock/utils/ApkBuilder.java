@@ -220,6 +220,12 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             for (File f: new File(resOut, "res/layout").listFiles((dir, s1) -> s1.endsWith(s + ".xml")))
                 FileUtils.copyFileToDirectory(f, userInput);
         }
+        // Optional xmls that might not exist
+        for (String s: new String[]{"status_bar_contents_container"}){
+            File f = new File(resOut, String.format("res/layout/%s.xml", s));
+            if (!f.exists()) continue;
+            FileUtils.copyFileToDirectory(f, userInput);
+        }
 
         fixAttrsDec(new File(resOut, "res/values/attrs.xml"), new File(userInput, "attrs.xml"));
 

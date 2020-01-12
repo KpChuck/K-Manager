@@ -104,6 +104,8 @@ public class StatusBar extends XmlBase {
 
     private void setupLeftRight(){
         Element statusBarContents = utils.findElementById(workingCopy, idStart + "status_bar_contents");
+        if (statusBarContents == null)
+            statusBarContents = getDocumentElement();
 
         left = utils.findElementById(workingCopy, idStart + "status_bar_left_side");
         if (left == null)
