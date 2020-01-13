@@ -23,7 +23,7 @@ import static kpchuck.kklock.constants.XmlConstants.X_LAYOUT_WIDTH;
 
 public class XmlWork {
 
-    private File srcFolder = new File(Environment.getExternalStorageDirectory() + "/K-Klock/userInput");
+    private File srcFolder = new File(Environment.getExternalStorageDirectory() + "/K-Klock/inputFiles");
 
     private Context context;
     private PrefUtils prefUtils;

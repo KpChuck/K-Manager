@@ -49,10 +49,9 @@ import static kpchuck.kklock.constants.PrefConstants.*;
  * Created by karol on 04/12/17.
  */
 
-public class ApkBuilder extends AsyncTask<String, String, String>{
+public class ApkBuilder extends AsyncTask<Void, String, Void>{
 
-    String slash = "/";
-    String rootFolder = Environment.getExternalStorageDirectory() + slash + "K-Klock";
+    String rootFolder = Environment.getExternalStorageDirectory() + "/K-Klock";
 
     private Context context;
     private RelativeLayout relativeLayout;
@@ -63,6 +62,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
     private File mergerFolder;
     private File tempFolder;
     private String univ = "universal";
+    private static String apkVersion = "K-Klock.apk";
 
     public ApkBuilder(Context context, RelativeLayout relativeLayout, TextView textView, RelativeLayout defaultLayout){
         this.fileHelper = new FileHelper(context);
@@ -88,7 +88,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
 
     @Override
-    protected String doInBackground(String... apkVersion) {
+    protected Void doInBackground(Void... voids) {
 
         doStuff();
 
@@ -104,7 +104,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             appendOptionsZip();// Takes long about 10s
             // Takes long about 5s
             publishProgress(context.getString(R.string.signing));
-            createApkFromDir(new File(mergerFolder, "universalFiles.zip"), apkVersion[0]);
+            createApkFromDir(new File(mergerFolder, "universalFiles.zip"));
 
             publishProgress(context.getString(R.string.cleaning_files));
 
@@ -112,7 +112,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
 
             publishProgress(context.getString(R.string.installing_apk));
-            File apk = new File(rootFolder + slash + apkVersion[0]);
+            File apk = new File(rootFolder, apkVersion);
             SuUtils su = new SuUtils();
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -154,8 +154,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             throw new RuntimeException("Error modding rom I think: \n" + builder.toString() + e);
 
         }
-
-        return apkVersion[0];
+        return null;
     }
 
     @Override
@@ -170,8 +169,9 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         relativeLayout.setVisibility(View.GONE);
         tv.setText("");
     }
+
     @Override
-    protected void onPostExecute(String result) {
+    protected void onPostExecute(Void result) {
         super.onPostExecute(result);
 
         relativeLayout.setVisibility(View.GONE);
@@ -181,7 +181,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
     private void decompileSysUI() throws Exception{
 
-        File inputDir = new File(rootFolder, "userInput");
+        File inputDir = new File(rootFolder, "inputFiles");
         if (!prefUtils.getBool(R.string.key_decompile_everytime)){
             // Check if all xmls are present first though
             String[] xmlNames = {"status_bar.xml", "keyguard_status_bar.xml", "system_icons.xml", "quick_status_bar_expanded_header.xml"};
@@ -220,27 +220,12 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
     }
 
     public void makeDirs (){
-        this.mergerFolder = new File(rootFolder + "/merger");
-        this.tempFolder = new File(rootFolder + "/tempF");
+        mergerFolder = new File(rootFolder + "/merger");
+        tempFolder = new File(rootFolder + "/tempF");
 
         fileHelper.newFolder(mergerFolder.getAbsolutePath());
         fileHelper.newFolder(tempFolder.getAbsolutePath());
 
-    }
-
-
-
-    private void fixAttrsDec(File attrs, File outfile) throws Exception{
-
-        XmlUtils utils = new XmlUtils();
-        Document document = utils.getDocument(attrs);
-        Element parent = document.getDocumentElement();
-        ArrayList<Element> list = utils.getChildElements(parent);
-        for (Element child : list){
-            if (utils.elementString(child).contains("?"))
-                parent.removeChild(child);
-        }
-        utils.writeDocToFile(document, outfile);
     }
 
     public void ExtractAssets () {
@@ -280,9 +265,9 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
         ZipUtil.unexplode(univF);
     }
 
-    public void createApkFromDir(File universalZip, String apkVersion) throws IOException, GeneralSecurityException, ApkFormatException{
+    public void createApkFromDir(File universalZip) throws IOException, GeneralSecurityException, ApkFormatException{
 
-        File signedApk = new File(rootFolder + slash + apkVersion);
+        File signedApk = new File(rootFolder, apkVersion);
 
         File key = new File(Environment.getExternalStorageDirectory() + "/K-Manager/key");
         char[] keyPass = "overlay".toCharArray();
@@ -315,7 +300,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
     public void cleanup () throws IOException{
 
-        List<File> files = Arrays.asList(tempFolder, mergerFolder, new File(rootFolder + "/customInput"));
+        List<File> files = Arrays.asList(tempFolder, mergerFolder, new File(rootFolder + "/inputFiles"));
         for (File f: files){
             if (f.exists()) FileUtils.deleteDirectory(f);
         }

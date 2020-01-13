@@ -89,7 +89,7 @@ public class QsBgUtil {
 
     private void modQsHeader() throws Exception{
 
-        final String inputFolder = "userInput";
+        final String inputFolder = "inputFiles";
         File destFolder = new File(dir,  "/assets/overlays/com.android.systemui/res/" + XmlWork.layout);
 
         File qsHeaderBase = new File(Environment.getExternalStorageDirectory() + "/K-Klock/" + inputFolder);
