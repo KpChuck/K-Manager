@@ -39,7 +39,7 @@ android {
     defaultConfig {
         applicationId "kpchuck.k_klock"
         minSdkVersion 24
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 44
         versionName "42"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -52,7 +52,7 @@ android {
         release {
             storeFile file("/home/przestrzelskicom/bin/kmanager_key.jks")
             if (!storeFile.canRead()){
-                storeFile = file("/home/karol/Documents/AndroidStudioProjects/keys/kmanager_key.jks")
+                storeFile = file("/home/karol/Documents/kmanager_key.jks")
             }
             storePassword "Password.tar"
             keyAlias "key0"
@@ -180,15 +180,6 @@ dependencies {
     // Custom Activity on Crash
     implementation 'cat.ereza:customactivityoncrash:2.2.0'
 
-    // Jadx
-    implementation 'org.ow2.asm:asm:5.0.3'
-    implementation 'org.jetbrains:annotations:13.0'
-    implementation 'uk.com.robust-it:cloning:1.9.2'
-    implementation 'org.slf4j:slf4j-api:1.7.10'
-
-    implementation files('libs/android-5.1.jar')
-    implementation files('libs/dx-1.14.jar')
-
     // Piracy Checker
     implementation 'com.github.javiersantos:PiracyChecker:1.2.5'
     //Kotlin
@@ -203,6 +194,8 @@ dependencies {
     // Material seekbar
     implementation 'com.pavelsikun:material-seekbar-preference:2.3.0'
 
+    // Apktool
+    implementation project(":decompiler")
 }
 
 repositories {

@@ -1,5 +1,6 @@
 /**
- *  Copyright 2014 Ryszard Wiśniewski <brut.alll@gmail.com>
+ *  Copyright (C) 2019 Ryszard Wiśniewski <brut.alll@gmail.com>
+ *  Copyright (C) 2019 Connor Tumbleson <connor.tumbleson@gmail.com>
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -13,8 +14,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
-package jadx.core.utils.android;
+package brut.util;
 
 import java.io.DataInput;
 import java.io.IOException;

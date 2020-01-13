@@ -36,8 +36,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import jadx.api.JadxDecompiler;
-import jadx.core.utils.exceptions.JadxException;
+import brut.androlib.AndrolibException;
 import kpchuck.kklock.Checks;
 import kpchuck.kklock.R;
 import kpchuck.kklock.xml.XmlCreation;
@@ -97,7 +96,7 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
         try {
             makeDirs();
-            if (!hasAllXmls) {
+            if (!hasAllXmls || true) {
                 publishProgress(context.getString(R.string.decompiling));
 
                 File sysui = new File(Environment.getExternalStorageDirectory() + "/K-Klock/userInput/SystemUI.apk");
@@ -138,9 +137,9 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
             }
             showSnackbar();
 
-        } catch (JadxException e) {
+        } catch (AndrolibException e) {
             Log.e("klock", "Error decompiling SystemUI.apk " + e.getMessage());
-            throw new RuntimeException("Jadx error I think: \n" + e);
+            throw new RuntimeException("Apktool error:", e);
         }  catch (Exception e){
             Log.e("klock", "Error: ", e);
             File errormsg = new File(Environment.getExternalStorageDirectory() + "/K-Klock/error.txt");
@@ -193,41 +192,44 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
     private void decompileSysUI(File sysui) throws Exception{
 
-        File kManager = fileHelper.newFolder(Environment.getExternalStorageDirectory() + "/K-Manager/");
+        ApkDecompiler decompiler = new ApkDecompiler();
+        decompiler.decompile(context.getPackageManager(), sysui);
 
-        if (ZipUtil.containsEntry(sysui, "classes.dex")){
-            ZipUtil.removeEntry(sysui, "classes.dex");
-        }
-
-        File resOut = new File(kManager, "res_out");
-
-        JadxDecompiler jadx = new JadxDecompiler();
-        jadx.setSources(true);
-        jadx.loadFile(sysui);
-        jadx.setOutputDirRes(resOut);
-
-        jadx.saveResources();
-
-        List<File> xmls = new ArrayList<>();
-        File userInput = sysui.getParentFile();
-
-        for (String s: new String[]{"status_bar", "keyguard_status_bar", "system_icons"}){
-            File f = new File(resOut, String.format("res/layout/%s.xml", s));
-            FileUtils.copyFileToDirectory(f, userInput);
-        }
-        // Workaround for samsungs one ui using a different layout xml
-        for (String s: new String[]{"quick_status_bar_expanded_header"}){
-            for (File f: new File(resOut, "res/layout").listFiles((dir, s1) -> s1.endsWith(s + ".xml")))
-                FileUtils.copyFileToDirectory(f, userInput);
-        }
-        // Optional xmls that might not exist
-        for (String s: new String[]{"status_bar_contents_container"}){
-            File f = new File(resOut, String.format("res/layout/%s.xml", s));
-            if (!f.exists()) continue;
-            FileUtils.copyFileToDirectory(f, userInput);
-        }
-
-        fixAttrsDec(new File(resOut, "res/values/attrs.xml"), new File(userInput, "attrs.xml"));
+//        File kManager = fileHelper.newFolder(Environment.getExternalStorageDirectory() + "/K-Manager/");
+//
+//        if (ZipUtil.containsEntry(sysui, "classes.dex")){
+//            ZipUtil.removeEntry(sysui, "classes.dex");
+//        }
+//
+//        File resOut = new File(kManager, "res_out");
+//
+//        JadxDecompiler jadx = new JadxDecompiler();
+//        jadx.setSources(true);
+//        jadx.loadFile(sysui);
+//        jadx.setOutputDirRes(resOut);
+//
+//        jadx.saveResources();
+//
+//        List<File> xmls = new ArrayList<>();
+//        File userInput = sysui.getParentFile();
+//
+//        for (String s: new String[]{"status_bar", "keyguard_status_bar", "system_icons"}){
+//            File f = new File(resOut, String.format("res/layout/%s.xml", s));
+//            FileUtils.copyFileToDirectory(f, userInput);
+//        }
+//        // Workaround for samsungs one ui using a different layout xml
+//        for (String s: new String[]{"quick_status_bar_expanded_header"}){
+//            for (File f: new File(resOut, "res/layout").listFiles((dir, s1) -> s1.endsWith(s + ".xml")))
+//                FileUtils.copyFileToDirectory(f, userInput);
+//        }
+//        // Optional xmls that might not exist
+//        for (String s: new String[]{"status_bar_contents_container"}){
+//            File f = new File(resOut, String.format("res/layout/%s.xml", s));
+//            if (!f.exists()) continue;
+//            FileUtils.copyFileToDirectory(f, userInput);
+//        }
+//
+//        fixAttrsDec(new File(resOut, "res/values/attrs.xml"), new File(userInput, "attrs.xml"));
 
 
     }
