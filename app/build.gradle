@@ -188,7 +188,7 @@ dependencies {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
     // Color Picker
-    implementation 'com.jaredrummler:colorpicker:1.1.0'
+    implementation 'com.jaredrummler:colorpicker:1.0.2'
     // APK Signer
     implementation 'com.android.tools.build:apksig:3.5.3'
     // Material seekbar

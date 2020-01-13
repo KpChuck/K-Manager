@@ -300,7 +300,7 @@ public class ApkBuilder extends AsyncTask<Void, String, Void>{
 
     public void cleanup () throws IOException{
 
-        List<File> files = Arrays.asList(tempFolder, mergerFolder, new File(rootFolder + "/inputFiles"));
+        List<File> files = Arrays.asList(tempFolder, mergerFolder);
         for (File f: files){
             if (f.exists()) FileUtils.deleteDirectory(f);
         }

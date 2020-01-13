@@ -19,11 +19,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.commons.io.IOUtils;
+import org.zeroturnaround.zip.ZipUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.zip.ZipFile;
 
+import brut.directory.ZipRODirectory;
+import brut.directory.ZipUtils;
 import cat.ereza.customactivityoncrash.CustomActivityOnCrash;
 import cat.ereza.customactivityoncrash.config.CaocConfig;
 import kpchuck.kklock.BuildConfig;
@@ -145,7 +150,7 @@ public class CustomCrashActivity extends AppCompatActivity {
 
     private void  prepareAndShare(){
 
-        Intent i = new Intent(Intent.ACTION_SEND);
+        Intent i = new Intent(Intent.ACTION_SEND_MULTIPLE);
         i.setType(MAIL_TYPE);
         i.putExtra(Intent.EXTRA_EMAIL, new String[]{"przestrzelski.com@gmail.com"});
         addShareFlags(i);
@@ -161,14 +166,16 @@ public class CustomCrashActivity extends AppCompatActivity {
 
     private void addShareFlags(Intent i){
         File logFile = getErrorFile();
+        File xmls = zipUpXmls();
 
         i.putExtra(Intent.EXTRA_SUBJECT, "K-Manager Bug Report");
         i.putExtra(Intent.EXTRA_TEXT, "Hi,\nK-Manager crashed, can you help fix it?");
-        if (logFile != null)
-            i.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(
-                    CustomCrashActivity.this,
-                    BuildConfig.APPLICATION_ID + ".fileprovider",
-                    logFile));
+        ArrayList<Uri> uris = new ArrayList<>();
+        for (File f: new File[]{logFile, xmls}){
+            uris.add(FileProvider.getUriForFile(CustomCrashActivity.this,
+                    BuildConfig.APPLICATION_ID + ".fileprovider", f));
+        }
+        i.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
     }
 
     @Nullable
@@ -184,5 +191,13 @@ public class CustomCrashActivity extends AppCompatActivity {
             String s = e.getMessage();
             return null;
         }
+    }
+
+    private File zipUpXmls(){
+        File dir = new File(Environment.getExternalStorageDirectory(), "K-Klock/inputFiles");
+        File zipFile = new File(Environment.getExternalStorageDirectory(), "K-Klock/inputFiles.zip");
+        zipFile.delete();
+        ZipUtil.packEntries(dir.listFiles(f -> f.getName().endsWith(".xml")), zipFile);
+        return zipFile;
     }
 }
