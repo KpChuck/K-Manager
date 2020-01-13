@@ -109,49 +109,8 @@ public class MainActivity extends AppCompatActivity{
     @OnClick(R.id.fab)
     public void startBuilding() {
 
-        // Check for new version
-        boolean osVersion = !(System.getProperty("os.version")).equals(prefUtils.getString("osversion", ""));
-        boolean buildUser = !(Build.USER).equals(prefUtils.getString("builduser", ""));
-        boolean releaseVersion = !(Build.VERSION.RELEASE).equals(prefUtils.getString("buildversionrelease", ""));
-        boolean newVersion = osVersion || buildUser || releaseVersion;
-        if (newVersion) {
-            prefUtils.putString("osversion", System.getProperty("os.version"));
-            prefUtils.putString("builduser", Build.USER);
-            prefUtils.putString("buildversionrelease", Build.VERSION.RELEASE);
-        }
-        final String[] x = new File(rootFolder + "/userInput").list();
-        List<String> xmls = new ArrayList<>();
-        if (x != null) {
-            xmls = Arrays.asList(x);
-        }
-        String[] xmlNames = {"status_bar.xml", "keyguard_status_bar.xml", "system_icons.xml", "quick_status_bar_expanded_header.xml"};
-        hasAll = xmls.containsAll(Arrays.asList(xmlNames));
-        boolean hasSysUI = xmls.contains("SystemUI.apk");
-
-        if (newVersion && (hasAll || hasSysUI)) {
-
-            TextAlertDialogFragment fragment = new TextAlertDialogFragment();
-            DialogClickListener clickListener = new DialogClickListener() {
-                @Override
-                public void onPositiveBtnClick() {
-                    for (String f : x) {
-                        new File(rootFolder + "/userInput/" + f).delete();
-                    }
-                    hasAll = false;
-                    buildingProcess();
-                }
-
-                @Override
-                public void onCancelBtnClick() {
-                    buildingProcess();
-                }
-                };
-            fragment.Instantiate(getString(R.string.warning), getString(R.string.rom_files_updated),
-                    getString(R.string.okay), getString(R.string.use_ones_have), clickListener);
-            fragment.show(getSupportFragmentManager(), "");
-        }
-        else buildingProcess();
-
+        final String apkVersion = "K-Klock.apk";
+        new ApkBuilder(context, loadingLayout, loadingTextView, defaultLayout).execute(apkVersion, apkVersion, apkVersion);
     }
 
     @Override
@@ -231,13 +190,6 @@ public class MainActivity extends AppCompatActivity{
     protected void onResume(){
         super.onResume();
         setTheme(prefUtils.getBoolTrue(PREF_BLACK_THEME) ? R.style.AppTheme_Dark : R.style.AppTheme);
-
-    }
-
-    private void buildingProcess() {
-
-        final String apkVersion = "K-Klock.apk";
-        new ApkBuilder(context, loadingLayout, loadingTextView, defaultLayout, hasAll).execute(apkVersion, apkVersion, apkVersion);
 
     }
 

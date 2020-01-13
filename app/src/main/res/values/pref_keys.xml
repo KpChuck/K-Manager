@@ -44,4 +44,6 @@
     <string name="key_uppercase_clock_format">keyMakeClockUppercase</string>
     <string name="key_clock_left_padding">keyClockLeftPadding</string>
     <string name="key_clock_right_padding">keyClockRightPadding</string>
+
+    <string name="key_decompile_everytime">keyDecompileSysuiEveytime</string>
 </resources>

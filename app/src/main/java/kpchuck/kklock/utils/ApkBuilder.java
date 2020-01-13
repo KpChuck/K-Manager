@@ -58,21 +58,19 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
     private RelativeLayout relativeLayout;
     private TextView tv;
     private RelativeLayout defaultLayout;
-    private boolean hasAllXmls = false;
     private FileHelper fileHelper;
     private PrefUtils prefUtils;
     private File mergerFolder;
     private File tempFolder;
     private String univ = "universal";
 
-    public ApkBuilder(Context context, RelativeLayout relativeLayout, TextView textView, RelativeLayout defaultLayout, boolean xmls){
+    public ApkBuilder(Context context, RelativeLayout relativeLayout, TextView textView, RelativeLayout defaultLayout){
         this.fileHelper = new FileHelper(context);
         this.context = context;
         this.prefUtils = new PrefUtils(context);
         this.relativeLayout = relativeLayout;
         this.tv = textView;
         this.defaultLayout = defaultLayout;
-        this.hasAllXmls= xmls;
     }
 
     @Override
@@ -96,17 +94,8 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
         try {
             makeDirs();
-            if (!hasAllXmls || true) {
-                publishProgress(context.getString(R.string.decompiling));
-
-                File sysui = new File(Environment.getExternalStorageDirectory() + "/K-Klock/userInput/SystemUI.apk");
-                if (!sysui.exists()) {
-                    PackageInfo m = context.getPackageManager().getPackageInfo("com.android.systemui", 0);
-                    String src = m.applicationInfo.sourceDir;
-                    FileUtils.copyFile(new File(src), sysui);
-                }
-                decompileSysUI(sysui);
-            }
+            publishProgress(context.getString(R.string.decompiling));
+            decompileSysUI();
             publishProgress(context.getString(R.string.apkBuilderLoading));
             //TODO Fix translating signing
             //translateAll();
@@ -190,48 +179,28 @@ public class ApkBuilder extends AsyncTask<String, String, String>{
 
     }
 
-    private void decompileSysUI(File sysui) throws Exception{
+    private void decompileSysUI() throws Exception{
+
+        File inputDir = new File(rootFolder, "userInput");
+        if (!prefUtils.getBool(R.string.key_decompile_everytime)){
+            // Check if all xmls are present first though
+            String[] xmlNames = {"status_bar.xml", "keyguard_status_bar.xml", "system_icons.xml", "quick_status_bar_expanded_header.xml"};
+            String[] presentXml = inputDir.list(fileHelper.XML);
+            if (Arrays.asList(presentXml).containsAll(Arrays.asList(xmlNames)))
+                return;
+        }
+        for (File file: inputDir.listFiles())
+            file.delete();
+
+        File sysui = new File(inputDir, "SystemUI.apk");
+        if (!sysui.exists()) {
+            PackageInfo m = context.getPackageManager().getPackageInfo("com.android.systemui", 0);
+            String src = m.applicationInfo.sourceDir;
+            FileUtils.copyFile(new File(src), sysui);
+        }
 
         ApkDecompiler decompiler = new ApkDecompiler();
         decompiler.decompile(context.getPackageManager(), sysui);
-
-//        File kManager = fileHelper.newFolder(Environment.getExternalStorageDirectory() + "/K-Manager/");
-//
-//        if (ZipUtil.containsEntry(sysui, "classes.dex")){
-//            ZipUtil.removeEntry(sysui, "classes.dex");
-//        }
-//
-//        File resOut = new File(kManager, "res_out");
-//
-//        JadxDecompiler jadx = new JadxDecompiler();
-//        jadx.setSources(true);
-//        jadx.loadFile(sysui);
-//        jadx.setOutputDirRes(resOut);
-//
-//        jadx.saveResources();
-//
-//        List<File> xmls = new ArrayList<>();
-//        File userInput = sysui.getParentFile();
-//
-//        for (String s: new String[]{"status_bar", "keyguard_status_bar", "system_icons"}){
-//            File f = new File(resOut, String.format("res/layout/%s.xml", s));
-//            FileUtils.copyFileToDirectory(f, userInput);
-//        }
-//        // Workaround for samsungs one ui using a different layout xml
-//        for (String s: new String[]{"quick_status_bar_expanded_header"}){
-//            for (File f: new File(resOut, "res/layout").listFiles((dir, s1) -> s1.endsWith(s + ".xml")))
-//                FileUtils.copyFileToDirectory(f, userInput);
-//        }
-//        // Optional xmls that might not exist
-//        for (String s: new String[]{"status_bar_contents_container"}){
-//            File f = new File(resOut, String.format("res/layout/%s.xml", s));
-//            if (!f.exists()) continue;
-//            FileUtils.copyFileToDirectory(f, userInput);
-//        }
-//
-//        fixAttrsDec(new File(resOut, "res/values/attrs.xml"), new File(userInput, "attrs.xml"));
-
-
     }
 
     private void showSnackbar() {
