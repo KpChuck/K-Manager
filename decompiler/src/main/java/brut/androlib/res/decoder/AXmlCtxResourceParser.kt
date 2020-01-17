@@ -44,11 +44,6 @@ class AXmlCtxResourceParser(private val pm: PackageManager, private val onlyAndr
                 if (decoded == "@null") {
                     decoded = getEntryNameWithRes(valueData)
                 }
-                if (getAttributeNamespace(index) != android_ns && valueType == 16){
-                    val id = getAttributeNameResource(index)
-                    attrDecoder.currentPackage.resTable.addAttributeUsed(id)
-
-                }
                 if (decoded == "@null"){
                     LOGGER.log(
                             Level.WARNING, String.format("Could not decode attr value, using undecoded value "

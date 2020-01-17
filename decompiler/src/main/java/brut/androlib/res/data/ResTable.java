@@ -48,7 +48,6 @@ public class ResTable {
     private Map<String, String> mSdkInfo = new LinkedHashMap<>();
     private VersionInfo mVersionInfo = new VersionInfo();
 
-    private List<Integer> attrsUsed = new ArrayList<>();
 
     public ResTable() {
         mAndRes = null;
@@ -165,14 +164,6 @@ public class ResTable {
         } else {
             mFramePackages.add(pkg);
         }
-    }
-
-    public void addAttributeUsed(Integer attr){
-        attrsUsed.add(attr);
-    }
-
-    public List<Integer> getAttributesUsed(){
-        return attrsUsed;
     }
 
     public void setAnalysisMode(boolean mode) {

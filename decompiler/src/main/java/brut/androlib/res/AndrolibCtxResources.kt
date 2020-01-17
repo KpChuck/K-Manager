@@ -118,10 +118,8 @@ class AndrolibCtxResources(options: ApkOptions, private val pm: PackageManager):
         for (p in resTable.listMainPackages()){
             for (spec in p.getType("attr").listResSpecs()) {
                 for (res in spec.listResources()) {
-                    if (resTable.attributesUsed.contains(res.resSpec.id.id)){
-                        val defres = spec.defaultResource
-                        (defres.value as ResValuesXmlSerializable).serializeToResValuesXml(xmlSerializer, defres)
-                    }
+                    val defres = spec.defaultResource
+                    (defres.value as ResValuesXmlSerializable).serializeToResValuesXml(xmlSerializer, defres)
                 }
             }
         }
