@@ -72,12 +72,12 @@ class AXmlCtxResourceParser(private val pm: PackageManager, private val onlyAndr
         val res = getPackageRes()
         return try {
             val value = res?.getResourceEntryName(id)
-            var pkg = res?.getResourcePackageName(id)
-            pkg = if (pkg != attrDecoder.currentPackage.name)
-                "$pkg:"
-            else
+            var pkg = res?.getResourcePackageName(id)!!
+            pkg = if (pkg.contains(attrDecoder.currentPackage.name))
                 ""
-            val type = res!!.getResourceTypeName(id)
+            else
+                "android:"
+            val type = res.getResourceTypeName(id)
             "@$pkg$type/$value"
         } catch (e: Resources.NotFoundException){
             "@null"
