@@ -189,8 +189,10 @@ public class ApkBuilder extends AsyncTask<Void, String, Void>{
             if (Arrays.asList(presentXml).containsAll(Arrays.asList(xmlNames)))
                 return;
         }
-        for (File file: inputDir.listFiles())
-            file.delete();
+        if (inputDir.exists() && inputDir.listFiles() != null) {
+            for (File file : inputDir.listFiles())
+                file.delete();
+        }
 
         File sysui = new File(inputDir, "SystemUI.apk");
         if (!sysui.exists()) {
