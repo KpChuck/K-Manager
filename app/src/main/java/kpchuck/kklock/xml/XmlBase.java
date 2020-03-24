@@ -19,6 +19,7 @@ import static kpchuck.kklock.constants.XmlConstants.X_GRAVITY;
 import static kpchuck.kklock.constants.XmlConstants.X_GRAVITY_CENTER_VERTICAL;
 import static kpchuck.kklock.constants.XmlConstants.X_LAYOUT_HEIGHT;
 import static kpchuck.kklock.constants.XmlConstants.X_LAYOUT_WIDTH;
+import static kpchuck.kklock.constants.XmlConstants.X_WEIGHT;
 import static kpchuck.kklock.constants.XmlConstants.X_WRAP_CONTENT;
 
 public class XmlBase{
@@ -30,6 +31,8 @@ public class XmlBase{
     public Context context;
     public String fontStyle = "";
     public String fontType = "";
+    public String idStart = "@*com.android.systemui:id/";
+
 
     public XmlBase(XmlUtils utils, PrefUtils prefUtils, File inFile, Context context) throws Exception{
         this.utils = utils;
@@ -125,6 +128,27 @@ public class XmlBase{
                 utils.changeAttribute(s, "android:visibility", "gone");
             }
         }
+    }
+
+    void hideClock(){
+        hideElements(new String[]{"clock", "center_clock", "left_clock", "clock_container",
+                "right_clock_container", "left_clock_container", "notch_clock_stub"});
+    }
+
+    private void hideElements(String[] ids){
+        for (String id: ids)
+            hideElement(id);
+    }
+
+    void hideElement(String id) {
+        Element e = utils.findElementById(workingCopy, idStart + id);
+        if (e == null) return;
+        for (String attr : new String[]
+                {"android:paddingEnd", "android:paddingStart", "android:padding", X_LAYOUT_WIDTH}) {
+            e.setAttribute(attr, "0dp");
+        }
+        e.removeAttribute(X_WEIGHT);
+        e.removeAttribute("android:layout");
     }
 
 }

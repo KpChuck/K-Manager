@@ -76,6 +76,7 @@ public class SystemIcons extends XmlBase{
     }
 
     private void setupSystem(){
+        hideClock();
         hideStatusIcons();
         hideBatteryIcon();
         modForMinit();

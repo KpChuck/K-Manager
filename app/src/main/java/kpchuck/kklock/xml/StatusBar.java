@@ -38,7 +38,6 @@ import static kpchuck.kklock.constants.XmlConstants.X_WRAP_CONTENT;
 public class StatusBar extends XmlBase {
 
     private Element left, right, center;
-    private String idStart = "@*com.android.systemui:id/";
 
     public StatusBar(XmlUtils utils, PrefUtils prefUtils, File document, Context context) throws Exception{
         super(utils, prefUtils, document, context);
@@ -151,11 +150,6 @@ public class StatusBar extends XmlBase {
         return element;
     }
 
-
-    private void hideClock(){
-        hideElements(new String[]{"clock", "center_clock", "left_clock", "clock_container",
-                "right_clock_container", "left_clock_container", "notch_clock_stub"});
-    }
 
     private void addCustomIcon() throws IOException {
         if (!prefUtils.getBool(PREF_CUSTOM_ICON) && prefUtils.getString(PREF_CUSTOM_ICON_FILE, "").equals(""))
@@ -424,22 +418,6 @@ public class StatusBar extends XmlBase {
             utils.removeElement(element);
             newParent.appendChild(element);
         });
-    }
-
-    private void hideElements(String[] ids){
-        for (String id: ids)
-            hideElement(id);
-    }
-
-    private void hideElement(String id) {
-        Element e = utils.findElementById(workingCopy, idStart + id);
-        if (e == null) return;
-        for (String attr : new String[]
-                {"android:paddingEnd", "android:paddingStart", "android:padding", X_LAYOUT_WIDTH}) {
-            e.setAttribute(attr, "0dp");
-        }
-        e.removeAttribute(X_WEIGHT);
-        e.removeAttribute("android:layout");
     }
 
     private boolean isCustomIconCenter(){
