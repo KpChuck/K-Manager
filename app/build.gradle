@@ -40,8 +40,8 @@ android {
         applicationId "kpchuck.k_klock"
         minSdkVersion 24
         targetSdkVersion 29
-        versionCode 44
-        versionName "42"
+        versionCode 45
+        versionName "43"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField "String", "BASE_64_LICENSE_KEY", "\"" + BASE_64_LICENSE_KEY + "\""
@@ -149,7 +149,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
 
-    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0-alpha4', {
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.3.0-alpha05', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
@@ -160,7 +160,7 @@ dependencies {
     //Loading Animation
     implementation 'com.github.ybq:Android-SpinKit:1.1.0'
     //All those com.android.s
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.google.android.material:material:1.1.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
@@ -169,7 +169,7 @@ dependencies {
     // About libraries
     implementation "com.mikepenz:aboutlibraries:6.2.3"
     // https://github.com/mikepenz/Materialize
-    api 'com.mikepenz:materialize:1.2.0'
+    api 'com.mikepenz:materialize:1.2.1'
     //Image Picker
     implementation 'com.kbeanie:multipicker:1.6@aar'
     //Welcome Activity
@@ -190,7 +190,7 @@ dependencies {
     // Color Picker
     implementation 'com.jaredrummler:colorpicker:1.0.2'
     // APK Signer
-    implementation 'com.android.tools.build:apksig:3.5.3'
+    implementation 'com.android.tools.build:apksig:3.6.1'
     // Material seekbar
     implementation 'com.pavelsikun:material-seekbar-preference:2.3.0'
 
