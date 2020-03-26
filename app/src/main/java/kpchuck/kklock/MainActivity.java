@@ -35,6 +35,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import cat.ereza.customactivityoncrash.config.CaocConfig;
+import kotlin.io.FilesKt;
 import kpchuck.kklock.activities.CustomCrashActivity;
 import kpchuck.kklock.activities.MyWelcomeActivity;
 import kpchuck.kklock.adapters.SwipeTabAdapter;
@@ -232,11 +233,7 @@ class CleanupFiles extends AsyncTask<Void, Void, Void>{
 
     private void cleanDir (File file){
         if (file.exists()){
-            try{
-                FileUtils.deleteDirectory(file);
-            }catch (IOException e){
-                Log.e("klock", e.getMessage());
-            }
+            FilesKt.deleteRecursively(file);
         }
     }
 

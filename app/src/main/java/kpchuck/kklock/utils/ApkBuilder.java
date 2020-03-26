@@ -37,6 +37,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import brut.androlib.AndrolibException;
+import kotlin.io.FilesKt;
 import kpchuck.kklock.Checks;
 import kpchuck.kklock.R;
 import kpchuck.kklock.xml.XmlCreation;
@@ -304,7 +305,7 @@ public class ApkBuilder extends AsyncTask<Void, String, Void>{
 
         List<File> files = Arrays.asList(tempFolder, mergerFolder);
         for (File f: files){
-            if (f.exists()) FileUtils.deleteDirectory(f);
+            if (f.exists()) FilesKt.deleteRecursively(f);
         }
 
     }
