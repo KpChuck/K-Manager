@@ -162,7 +162,7 @@ public class XmlWork {
         if (modClock)
             keyguardStatusBar.hideStatusIcons();
 
-        keyguardStatusBar.writeDocument(new File(String.format(formatXmlPath, "res", layout, "keyguard_status_bar.xml")));
+        keyguardStatusBar.writeDocument(new File(String.format(formatXmlPath, "res", layout, "keyguard_status_bar")));
     }
 
     private void modSystemIcons() throws Exception{

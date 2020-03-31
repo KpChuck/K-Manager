@@ -106,5 +106,7 @@ public class KeyguardStatusBar extends XmlBase {
             setBackground("#ff000000");
         }
 
+        hideClock();
+
     }
 }
