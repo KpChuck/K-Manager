@@ -38,6 +38,7 @@ import static kpchuck.kklock.constants.XmlConstants.X_WRAP_CONTENT;
 public class StatusBar extends XmlBase {
 
     private Element left, right, center;
+    private String clockTextAppearance = "@*com.android.systemui:style/TextAppearance.StatusBar.Clock";
 
     public StatusBar(XmlUtils utils, PrefUtils prefUtils, File document, Context context) throws Exception{
         super(utils, prefUtils, document, context);
@@ -45,6 +46,7 @@ public class StatusBar extends XmlBase {
 
     public void createWorkCopy(int clockPosition) throws Exception{
         createWorkCopy();
+        getClockTextAppearance();
         if (clockPosition == XmlUtils.CENTER || isNetworkIconCenter() || isCustomIconCenter()){
             setupWithCenter();
         } else {
@@ -56,6 +58,13 @@ public class StatusBar extends XmlBase {
             container.setAttribute(X_LAYOUT_WIDTH, X_FILL_PARENT);
             moveElementsIntoElement(container, utils.getChildElements(getDocumentElement()));
             getDocumentElement().appendChild(container);
+        }
+    }
+
+    private void getClockTextAppearance(){
+        Element clock = utils.findElementById(document, idStart + "clock");
+        if (clock.hasAttribute("android:textAppearance")){
+            clockTextAppearance = clock.getAttribute("android:textAppearance");
         }
     }
 
@@ -270,7 +279,7 @@ public class StatusBar extends XmlBase {
         if (prefUtils.getBool(R.string.key_uppercase_clock_format))
             textClock.setAttribute("android:textAllCaps", "true");
 
-        textClock.setAttribute("android:textAppearance", "@*com.android.systemui:style/TextAppearance.StatusBar.Clock");
+        textClock.setAttribute("android:textAppearance", clockTextAppearance);
         textClock.setAttribute("android:textColor", "@*com.android.systemui:color/status_bar_clock_color");
         textClock.setAttribute("android:layout_height", "fill_parent");
         textClock.setAttribute("android:singleLine", "true");
