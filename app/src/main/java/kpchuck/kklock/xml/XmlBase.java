@@ -131,7 +131,8 @@ public class XmlBase{
     }
 
     void hideClock(){
-        hideElements(new String[]{"clock", "center_clock", "left_clock", "clock_container",
+        if (prefUtils.getInt(R.string.key_clock_position) != XmlUtils.USE_SYSTEM)
+            hideElements(new String[]{"clock", "center_clock", "left_clock", "clock_container",
                 "right_clock_container", "left_clock_container", "notch_clock_stub", "keyguard_clock"});
     }
 

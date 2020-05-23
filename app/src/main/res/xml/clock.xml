@@ -10,7 +10,9 @@
 			android:defaultValue="0"
 			android:key="@string/key_clock_position"
 			app:names="@array/clock_positions"
-			android:title="Clock Position"/>
+			android:title="Clock Position"
+			android:summary="System option doesn't modify your clock at all. Use it if you want to use K-Klock for other things."
+			/>
 
 		<SwitchPreference
 			android:title="Use Stock Clock Style"

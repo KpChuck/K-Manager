@@ -68,6 +68,7 @@ public class XmlUtils {
     public static final int RIGHT = 1;
     public static final int CENTER = 2;
     public static final int NONE = 3;
+    public static final int USE_SYSTEM = 4;
 
     public boolean isHasRightInserted() {
         return hasRightInserted;

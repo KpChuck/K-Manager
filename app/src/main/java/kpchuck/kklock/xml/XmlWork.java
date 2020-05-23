@@ -31,12 +31,15 @@ public class XmlWork {
     public static final String layout = "layout-v22";
     private String formatXmlPath;
 
+    private States states;
+
     public XmlWork(Context context) throws Exception{
 
         this.prefUtils = new PrefUtils(context);
         this.utils = new XmlUtils();
         this.context=context;
         this.formatXmlPath = utils.baseFolders.getAbsolutePath() + "/%s/%s/%s.xml";
+        this.states = new States(prefUtils);
 
         // Start Modding
         makeFolders();
@@ -71,19 +74,15 @@ public class XmlWork {
     }
 
     private void modStatusBar() throws Exception{
-        int clockPosition = prefUtils.getInt(R.string.key_clock_position);
-        boolean stockClock = prefUtils.getBool(R.string.key_stock_style);
-        boolean clockOnLockscreen = stockClock ? false : prefUtils.getBool(R.string.key_sb_clock_on_lockscreen);
-        boolean oos = prefUtils.getBool(R.string.key_oos_is_bad);
-        boolean stockClockNotOnLockscreen = stockClock && !prefUtils.getBool(R.string.key_sb_clock_on_lockscreen);
+        boolean stockClockOnLockscreen = !states.isStockClock() && states.isClockOnLockscreen();
 
         String statusbar_name = "status_bar";
         if (new File(srcFolder, "status_bar_contents_container.xml").exists())
             statusbar_name = "status_bar_contents_container";
 
         StatusBar statusBar = new StatusBar(utils, prefUtils, new File(srcFolder,  statusbar_name +".xml"), context);
-        statusBar.createWorkCopy(clockPosition);
-        if (clockPosition == XmlUtils.NONE){
+        statusBar.createWorkCopy(states.getClockPosition());
+        if (states.shouldModifyClock()){
             statusBar.writeDocument(new File(String.format(formatXmlPath, "res", layout, statusbar_name)));
             return;
         }
@@ -92,32 +91,32 @@ public class XmlWork {
 
         /*
         Left ->
-            clockOnLockscreen ->    false
-            !clockOnLockscreen ->   true
+            stockClockOnLockscreen ->    false
+            !stockClockOnLockscreen ->   true
             stock ->                false
          Right ->
-            clockOnLockscreen ->    false    Needs SysIconArea Inserted at Root
-            !clockOnLockscreen ->   false ;
+            stockClockOnLockscreen ->    false    Needs SysIconArea Inserted at Root
+            !stockClockOnLockscreen ->   false ;
             stock ->                false
          Center ->
-            clockOnLockscreen ->    oos      If oos Needs SysIconArea inserted at center
-            !clockOnLockscreen ->   true
+            stockClockOnLockscreen ->    oos      If oos Needs SysIconArea inserted at center
+            !stockClockOnLockscreen ->   true
             stock ->                oos
          Stock removes clock
 
 
          */
-        if (stockClockNotOnLockscreen){
+        if (!stockClockOnLockscreen){
             statusBar.removeClock();
         }
 
-        if (clockPosition == XmlUtils.LEFT){
-            customClock = statusBar.createClock(stockClock, !clockOnLockscreen, stockClockNotOnLockscreen);
+        if (states.isLeftClock()){
+            customClock = statusBar.createClock(states.isStockClock(), !stockClockOnLockscreen, !stockClockOnLockscreen);
             statusBar.insertLeft(customClock);
         }
-        else if (clockPosition == XmlUtils.RIGHT){
-            customClock = statusBar.createClock(stockClock, false, stockClockNotOnLockscreen);
-            if (clockOnLockscreen){
+        else if (states.isRightClock()){
+            customClock = statusBar.createClock(states.isStockClock(), false, !stockClockOnLockscreen);
+            if (stockClockOnLockscreen){
                 Element sysiconarea = statusBar.createSystemAreaElement();
                 sysiconarea.setAttribute(X_LAYOUT_WIDTH, X_FILL_PARENT);
                 statusBar.insertAtRoot(sysiconarea);
@@ -125,8 +124,8 @@ public class XmlWork {
             statusBar.insertRight(customClock);
         }
         else {
-            customClock = statusBar.createClock(stockClock, !clockOnLockscreen ? oos : true, stockClockNotOnLockscreen);
-            if (oos && clockOnLockscreen){
+            customClock = statusBar.createClock(states.isStockClock(), !stockClockOnLockscreen ? states.isOos() : true, !stockClockOnLockscreen);
+            if (states.isOos() && stockClockOnLockscreen){
                 Element temp = statusBar.createSystemAreaElement();
                 statusBar.insertCenter(temp);
             }
@@ -139,9 +138,6 @@ public class XmlWork {
     private void modKeyguardStatusBar() throws Exception{
 
         KeyguardStatusBar keyguardStatusBar = new KeyguardStatusBar(utils, prefUtils, new File(srcFolder, "keyguard_status_bar.xml"), context);
-        int clockPosition = prefUtils.getInt(R.string.key_clock_position);
-        boolean stockClock = prefUtils.getBool(R.string.key_stock_style);
-        boolean clockOnLockscreen = prefUtils.getBool(R.string.key_sb_clock_on_lockscreen);
 
         boolean modClock = false;
 
@@ -151,13 +147,15 @@ public class XmlWork {
         ->  Using oos - and custom clock or center clock
         ->  Clock not on lockscreen - and center or left clock
         ->  Clock on lockscreen and right clock
+
         Need stock clock center excluded
          */
-        if (prefUtils.getInt(R.string.key_move_network) != XmlUtils.RIGHT
-                || (prefUtils.getBool(R.string.key_oos_is_bad) && (!stockClock || clockPosition == XmlUtils.CENTER))
-                || (!clockOnLockscreen && !stockClock && (clockPosition == XmlUtils.CENTER) || (clockPosition == XmlUtils.LEFT))
-                || clockOnLockscreen && clockPosition == XmlUtils.RIGHT)
+        if (states.movingStatusbarIcons()
+                || (states.isOos() && states.hasCustomOrCenterClock())
+                || (!states.isClockOnLockscreen() && states.isCustomClock() && states.isCenterOrLeftClock())
+                || states.isClockOnLockscreen() && states.isRightClock())
             modClock = true;
+
 
         if (modClock)
             keyguardStatusBar.hideStatusIcons();

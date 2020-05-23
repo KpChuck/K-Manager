@@ -148,6 +148,7 @@
         <item>Right</item>
         <item>Center</item>
         <item>No Clock</item>
+        <item>System</item>
     </string-array>
 
     <string-array name="lockscreen_statusbar_height">
