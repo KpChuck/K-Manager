@@ -35,7 +35,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import kpchuck.kklock.Checks;
 import kpchuck.kklock.R;
 import kpchuck.kklock.utils.FontListParser;
 import kpchuck.kklock.utils.PrefUtils;
@@ -252,67 +251,6 @@ public class SettingsFragment extends PreferenceFragment {
             fontOptions.setEntries(items);
             fontOptions.setEntryValues(items);
         }
-        ArrayList<String> stuff = new ArrayList<>(Arrays.asList(getString(R.string.key_hide_statusbar_icons_lockscreen),
-                            getString(R.string.key_qs_header_switch), getString(R.string.key_am_everywhere)));
-        String not_stuff = "goPro";
-        boolean to_pro = new Checks().isPro(getContext());
-
-        PreferenceScreen prefScreen = getPreferenceScreen();
-        int prefCount = prefScreen.getPreferenceCount();
-
-        for(int i=0; i < prefCount; i++) {
-            Preference pref = prefScreen.getPreference(i);
-            // do something with the Preference
-            if (pref.getClass().equals(PreferenceCategory.class)) {
-                PreferenceCategory preferenceCategory = (PreferenceCategory) pref;
-                for (int j=0; j< preferenceCategory.getPreferenceCount(); j++) {
-                    Preference key_pref = preferenceCategory.getPreference(j);
-                    if (!to_pro && key_pref.hasKey() && stuff.contains(key_pref.getKey())){
-                        if (key_pref.getClass().equals(SwitchPreference.class))
-                            ((SwitchPreference) key_pref).setChecked(false);
-                        String text = key_pref.getTitle().toString();
-                        key_pref.setTitle(String.format("%s [%s]", text, getString(R.string.pro)));
-                        key_pref.setOnPreferenceClickListener(preference -> {
-                            if (key_pref.getClass().equals(SwitchPreference.class))
-                                ((SwitchPreference) key_pref).setChecked(false);
-                            showProDialog();
-                            return true;
-                        });
-                    }
-                    else if (to_pro && key_pref.hasKey() && key_pref.getKey().equals(not_stuff)){
-                        key_pref.setLayoutResource(R.layout.list_view);
-                    }
-                }
-            }
-        }
-    }
-
-    private void showProDialog(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        // Get the layout inflater
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
-        View view = inflater.inflate(R.layout.simple_text, null);
-        builder.setView(view);
-        TextView textView = view.findViewById(R.id.simple_text_dialog);
-        textView.setText(getString(R.string.pro_message));
-        builder.setTitle(getString(R.string.pro_title));
-        builder
-                .setPositiveButton(getString(R.string.upgrade), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.k_manager_pro_link)));
-                        startActivity(intent);
-                    }
-                })
-                .setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                // User cancelled the dialog
-                            }
-                        }
-                );
-        builder.create().show();
     }
 
 }

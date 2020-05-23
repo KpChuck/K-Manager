@@ -38,7 +38,6 @@ import java.util.List;
 
 import brut.androlib.AndrolibException;
 import kotlin.io.FilesKt;
-import kpchuck.kklock.Checks;
 import kpchuck.kklock.R;
 import kpchuck.kklock.xml.XmlCreation;
 import kpchuck.kklock.xml.XmlUtils;
@@ -90,8 +89,6 @@ public class ApkBuilder extends AsyncTask<Void, String, Void>{
 
     @Override
     protected Void doInBackground(Void... voids) {
-
-        doStuff();
 
         try {
             makeDirs();
@@ -308,22 +305,6 @@ public class ApkBuilder extends AsyncTask<Void, String, Void>{
             if (f.exists()) FilesKt.deleteRecursively(f);
         }
 
-    }
-
-    private void doStuff() {
-        boolean b = new Checks().getSelfVerifiedPirateTools(context);
-        if (b){
-            String eplan = context.getString(R.string.lucky_patcher_message);
-            String[] e = eplan.split(" ");
-            try {
-                for (String k : e) {
-                    publishProgress(k);
-                    Thread.sleep(750);
-                }
-            }catch (InterruptedException c){
-                Log.d("klock", "hi");
-            }
-        }
     }
 
     private void translateAll(){

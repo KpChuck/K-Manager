@@ -8,7 +8,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
-import kpchuck.kklock.Checks;
 import kpchuck.kklock.MainActivity;
 import kpchuck.kklock.R;
 
@@ -22,7 +21,6 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.splash);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(BReceiver, new IntentFilter("splash"));
-        new Checks().checkPro(this);
         new Thread(() -> {
             try {
                 Thread.sleep(2000);
