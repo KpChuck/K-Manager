@@ -46,4 +46,6 @@
     <string name="key_clock_right_padding">keyClockRightPadding</string>
 
     <string name="key_decompile_everytime">keyDecompileSysuiEveytime</string>
+
+    <string name="key_do_not_show_oos_warning">keyDontShowOOsWarning</string>
 </resources>

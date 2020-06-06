@@ -184,6 +184,8 @@ public class MainActivity extends AppCompatActivity{
         welcomeScreen.show(savedInstanceState);
 
         new CleanupFiles().execute();
+
+        showOosWarning();
     }
 
     protected void onResume(){
@@ -226,7 +228,30 @@ public class MainActivity extends AppCompatActivity{
             }
         }
         return true;
-    }}
+    }
+
+    private void showOosWarning(){
+        if (!prefUtils.getBool(R.string.key_do_not_show_oos_warning)) {
+            DialogClickListener clickListener = new DialogClickListener() {
+                @Override
+                public void onPositiveBtnClick() {
+
+                }
+
+                @Override
+                public void onCancelBtnClick() {
+                    prefUtils.putBool(R.string.key_do_not_show_oos_warning, true);
+                }
+            };
+            TextAlertDialogFragment dialogFragment = new TextAlertDialogFragment();
+            dialogFragment.Instantiate(getString(R.string.oos_warning_title), getString(R.string.oos_warning_message),
+                    getString(R.string.okay), "Do not show again", clickListener);
+            dialogFragment.show(getSupportFragmentManager(), "ooswarningtag");
+        }
+    }
+}
+
+
 
 class CleanupFiles extends AsyncTask<Void, Void, Void>{
 
